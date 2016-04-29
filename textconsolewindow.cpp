@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QMouseEvent>
 #include <QCursor>
+#include <QDesktopWidget>
 #include <QDebug>
 
 TextConsoleWindow::TextConsoleWindow(QWidget *parent) :
@@ -88,9 +89,7 @@ bool TextConsoleWindow::isMouseOnTitleBar(QPoint mousePosition)
         return true;
     }
     else
-    {
         return false;
-    }
 }
 
 void TextConsoleWindow::on_consoleInput_returnPressed()
@@ -231,6 +230,7 @@ void TextConsoleWindow::getMouseEventPosition()
 void TextConsoleWindow::mousePressEvent(QMouseEvent *event)
 {
     getMouseEventPosition();
+
     if(isMouseOnTitleBar(mouseEventPosition))
     {
         flagClickedOnTitleBar = true;
@@ -256,6 +256,8 @@ void TextConsoleWindow::mouseMoveEvent(QMouseEvent *event)
             move(event->globalPos() - mouseDragPosition);
             event->accept();
         }
+        else
+            event->ignore();
     }
 }
 
