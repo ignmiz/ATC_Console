@@ -27,6 +27,7 @@ public:
 
 private slots:
     void on_consoleInput_returnPressed();
+
     void on_closeButton_clicked();
     void on_minmaxButton_clicked();
     void on_closeButton_pressed();

@@ -52,4 +52,6 @@ void MainWindow::mainWindowSetup()
 
     this->setFixedSize(desktopWidth, desktopHeight);
     this->setWindowState(Qt::WindowFullScreen);
+
+    ui->mainToolBar->hide();
 }
