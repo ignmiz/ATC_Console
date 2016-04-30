@@ -18,6 +18,7 @@ TextConsoleWindow::TextConsoleWindow(QWidget *parent) :
 
 //    consoleInputSetup();
     consoleDisplaySetup();
+
 }
 
 TextConsoleWindow::~TextConsoleWindow()

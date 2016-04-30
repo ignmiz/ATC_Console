@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "textconsolewindow.h"
+#include "atctitlelabel.h"
 #include <QDesktopWidget>
 
 
