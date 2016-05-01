@@ -19,7 +19,6 @@ public:
 private slots:
     void on_buttonShowConsole_clicked();
     void on_buttonClose_clicked();
-    void on_listButton_clicked();
 
 private:
     Ui::MainWindow *ui;

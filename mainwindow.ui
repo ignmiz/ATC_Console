@@ -36,16 +36,34 @@ QPushButton::hover
 QPushButton::pressed
 {
 	background-color: #3c3c3c;
+}
+
+QPushButton::hover#buttonSpacerBottom
+{
+	color: #ffffff;
+	background-color: #000000;
+	border-style: outset;
+	border-width: 2px;
+	border-color: #3e3e3e;
+}
+
+QPushButton::hover#buttonSpacerTop
+{
+	color: #ffffff;
+	background-color: #000000;
+	border-style: outset;
+	border-width: 2px;
+	border-color: #3e3e3e;
 }</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QPushButton" name="buttonShowConsole">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>80</width>
-      <height>40</height>
+      <x>1880</x>
+      <y>1050</y>
+      <width>40</width>
+      <height>30</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -56,12 +74,12 @@ QPushButton::pressed
     </property>
     <property name="minimumSize">
      <size>
-      <width>80</width>
-      <height>40</height>
+      <width>0</width>
+      <height>0</height>
      </size>
     </property>
     <property name="text">
-     <string>Console</string>
+     <string>CSL</string>
     </property>
    </widget>
    <widget class="QPushButton" name="buttonClose">
@@ -70,10 +88,10 @@ QPushButton::pressed
     </property>
     <property name="geometry">
      <rect>
-      <x>160</x>
+      <x>1880</x>
       <y>0</y>
-      <width>80</width>
-      <height>40</height>
+      <width>40</width>
+      <height>30</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -84,24 +102,40 @@ QPushButton::pressed
     </property>
     <property name="minimumSize">
      <size>
-      <width>80</width>
-      <height>40</height>
+      <width>0</width>
+      <height>0</height>
      </size>
     </property>
     <property name="text">
-     <string>Close</string>
+     <string>X</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="listButton">
-    <property name="enabled">
-     <bool>true</bool>
+   <widget class="QPushButton" name="buttonMainMenu">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>80</width>
+      <height>30</height>
+     </rect>
     </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="text">
+     <string>MENU</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonSctSetup">
     <property name="geometry">
      <rect>
       <x>80</x>
       <y>0</y>
-      <width>80</width>
-      <height>40</height>
+      <width>160</width>
+      <height>30</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -110,14 +144,255 @@ QPushButton::pressed
       <verstretch>0</verstretch>
      </sizepolicy>
     </property>
-    <property name="minimumSize">
-     <size>
-      <width>80</width>
-      <height>40</height>
-     </size>
+    <property name="text">
+     <string>SCT_NAME</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonFrequency">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>0</y>
+      <width>100</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
     </property>
     <property name="text">
-     <string>Lists</string>
+     <string>121.088</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonTime">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>0</y>
+      <width>100</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="text">
+     <string>23:22:18</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonInboundList">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>0</y>
+      <width>40</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="text">
+     <string>I</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonOutboundList">
+    <property name="geometry">
+     <rect>
+      <x>720</x>
+      <y>0</y>
+      <width>40</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="text">
+     <string>O</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonRunway">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>0</y>
+      <width>80</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="text">
+     <string>RWY</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonLeaderLine">
+    <property name="geometry">
+     <rect>
+      <x>760</x>
+      <y>0</y>
+      <width>40</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="text">
+     <string>LDR</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonTrailingDots">
+    <property name="geometry">
+     <rect>
+      <x>800</x>
+      <y>0</y>
+      <width>40</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="text">
+     <string>TRD</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonTransitionLevel">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>0</y>
+      <width>80</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="text">
+     <string>TL080</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonSettings">
+    <property name="geometry">
+     <rect>
+      <x>840</x>
+      <y>0</y>
+      <width>80</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="text">
+     <string>SET</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonDistanceTool">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>0</y>
+      <width>40</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="text">
+     <string>DST</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonSeparationTool">
+    <property name="geometry">
+     <rect>
+      <x>640</x>
+      <y>0</y>
+      <width>40</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="text">
+     <string>SEP</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonSpacerTop">
+    <property name="geometry">
+     <rect>
+      <x>920</x>
+      <y>0</y>
+      <width>960</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonSpacerBottom">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>1050</y>
+      <width>1880</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>

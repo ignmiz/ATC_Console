@@ -3,7 +3,6 @@
 #include "textconsolewindow.h"
 
 #include <QDesktopWidget>
-#include <QSqlDatabase>
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -44,26 +43,6 @@ void MainWindow::on_buttonClose_clicked()
     close();
 }
 
-void MainWindow::on_listButton_clicked()
-{
-    QSqlDatabase db = QSqlDatabase::addDatabase("QODBC");
-    QString dbName = "DRIVER={Microsoft Access Driver (*.accdb)};"
-                     "FIL={MS Access};"
-                     "DBQ=E:/Qt/ATC_Console/ATC_Console/AcftPerformance.accdb";
-
-    db.setDatabaseName(dbName);
-
-    qDebug() << QSqlDatabase::drivers();
-
-    if(db.open())
-    {
-        qDebug() << "Open!";
-        db.close();
-    }
-    else
-        qDebug() << "Failed!";
-}
-
 void MainWindow::mainWindowSetup()
 {
     QDesktopWidget desktop;
@@ -76,4 +55,5 @@ void MainWindow::mainWindowSetup()
     this->setWindowState(Qt::WindowFullScreen);
 
     ui->mainToolBar->hide();
+    ui->statusBar->hide();
 }
