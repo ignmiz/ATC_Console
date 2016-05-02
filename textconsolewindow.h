@@ -28,12 +28,13 @@ public:
 private slots:
     void on_consoleInput_returnPressed();
 
-    void on_closeButton_clicked();
-    void on_minmaxButton_clicked();
-    void on_closeButton_pressed();
-    void on_minmaxButton_pressed();
-    void on_minmaxButton_released();
-    void on_closeButton_released();
+    void on_buttonClose_clicked();
+    void on_buttonMinMax_clicked();
+    void on_buttonClose_pressed();
+    void on_buttonMinMax_pressed();
+    void on_buttonClose_released();
+    void on_buttonMinMax_released();
+
 
 private:
     Ui::TextConsoleWindow *ui;

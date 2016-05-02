@@ -28,6 +28,15 @@
 	background-color: #000000;
 }
 
+QFrame#frameDialog
+{
+	background-color: #000000;
+	border-style: outset;
+	border-width: 1px;
+	border-color: #3e3e3e;
+
+}
+
 QTextEdit
 {
 	color: #ffffff;
@@ -42,7 +51,7 @@ QLineEdit
 	border-style: none;
 }
 
-QPushButton#closeButton
+QPushButton#buttonClose
 {
 	color: #828282;
 	background-color: #000000;
@@ -50,7 +59,7 @@ QPushButton#closeButton
 	font: bold;
 }
 
-QPushButton#closeButton::hover
+QPushButton#buttonClose::hover
 {
 	color: #ffffff;
 	background-color: #000000;
@@ -58,7 +67,7 @@ QPushButton#closeButton::hover
 	font: bold;
 }
 
-QPushButton#minmaxButton
+QPushButton#buttonMinMax
 {
 	color: #828282;
 	background-color: #000000;
@@ -66,7 +75,7 @@ QPushButton#minmaxButton
 	font: bold;
 }
 
-QPushButton#minmaxButton::hover
+QPushButton#buttonMinMax::hover
 {
 	color: #ffffff;
 	background-color: #000000;
@@ -80,122 +89,139 @@ QLabel#title
 	font: bold;
 }</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
-   <property name="spacing">
-    <number>6</number>
+  <widget class="QFrame" name="frameDialog">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>600</height>
+    </rect>
    </property>
-   <property name="leftMargin">
-    <number>6</number>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
    </property>
-   <property name="topMargin">
-    <number>6</number>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
    </property>
-   <property name="rightMargin">
-    <number>6</number>
-   </property>
-   <property name="bottomMargin">
-    <number>6</number>
-   </property>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <property name="spacing">
-      <number>5</number>
+   <widget class="QLineEdit" name="consoleInput">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>570</y>
+      <width>780</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="consoleDisplay">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>780</width>
+      <height>530</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QFrame" name="frameTitleBar">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>800</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="title">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>0</y>
+       <width>82</width>
+       <height>30</height>
+      </rect>
      </property>
-     <property name="leftMargin">
-      <number>2</number>
+     <property name="text">
+      <string>Text Console</string>
      </property>
-     <item>
-      <widget class="QLabel" name="title">
-       <property name="text">
-        <string>Text Console</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="minmaxButton">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>20</horstretch>
-         <verstretch>20</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="baseSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
-       </property>
-       <property name="text">
-        <string>▲</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="closeButton">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>20</horstretch>
-         <verstretch>20</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="baseSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
-       </property>
-       <property name="text">
-        <string>X</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <property name="spacing">
-      <number>6</number>
+    </widget>
+    <widget class="QPushButton" name="buttonMinMax">
+     <property name="geometry">
+      <rect>
+       <x>750</x>
+       <y>5</y>
+       <width>20</width>
+       <height>20</height>
+      </rect>
      </property>
-     <item>
-      <widget class="QTextEdit" name="consoleDisplay"/>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="consoleInput"/>
-     </item>
-    </layout>
-   </item>
-  </layout>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>20</horstretch>
+       <verstretch>20</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="baseSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string>▲</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="buttonClose">
+     <property name="geometry">
+      <rect>
+       <x>770</x>
+       <y>5</y>
+       <width>20</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>20</horstretch>
+       <verstretch>20</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="baseSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="text">
+      <string>X</string>
+     </property>
+    </widget>
+   </widget>
+  </widget>
  </widget>
  <resources/>
  <connections/>

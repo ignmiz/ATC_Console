@@ -47,21 +47,23 @@ void TextConsoleWindow::setConsoleInputFocus()
 
 void TextConsoleWindow::maximizeConsole()
 {
-    ui->minmaxButton->setText(QString::fromUtf8("▲"));
+    ui->buttonMinMax->setText(QString::fromUtf8("▲"));
     maximizedFlag = true;
     ui->consoleInput->show();
     ui->consoleDisplay->show();
     resize(800, 600);
+    ui->frameDialog->resize(800, 600);
     setConsoleInputFocus();
 }
 
 void TextConsoleWindow::minimizeConsole()
 {
-    ui->minmaxButton->setText(QString::fromUtf8("▼"));
+    ui->buttonMinMax->setText(QString::fromUtf8("▼"));
     maximizedFlag = false;
     ui->consoleInput->hide();
     ui->consoleDisplay->hide();
-    resize(800, 32);
+    resize(800, 30);
+    ui->frameDialog->resize(800, 30);
 }
 
 bool TextConsoleWindow::isMaximized()
@@ -85,7 +87,7 @@ bool TextConsoleWindow::isMouseOnTitleBar(QPoint mousePosition)
     if((mousePosition.x() >= topLeftInGlobal.x())
             && (mousePosition.x() <= topRightInGlobal.x())
             && (mousePosition.y() >= topLeftInGlobal.y())
-            && (mousePosition.y() <= (topLeftInGlobal.y() + 32)))
+            && (mousePosition.y() <= (topLeftInGlobal.y() + 30)))
     {
         return true;
     }
@@ -113,12 +115,12 @@ void TextConsoleWindow::on_consoleInput_returnPressed()
     }
 }
 
-void TextConsoleWindow::on_closeButton_clicked()
+void TextConsoleWindow::on_buttonClose_clicked()
 {
     close();
 }
 
-void TextConsoleWindow::on_minmaxButton_clicked()
+void TextConsoleWindow::on_buttonMinMax_clicked()
 {
     if(maximizedFlag)
     {
@@ -130,22 +132,22 @@ void TextConsoleWindow::on_minmaxButton_clicked()
     }
 }
 
-void TextConsoleWindow::on_closeButton_pressed()
+void TextConsoleWindow::on_buttonClose_pressed()
 {
     flagStdButtonPressed = true;
 }
 
-void TextConsoleWindow::on_minmaxButton_pressed()
+void TextConsoleWindow::on_buttonMinMax_pressed()
 {
     flagStdButtonPressed = true;
 }
 
-void TextConsoleWindow::on_closeButton_released()
+void TextConsoleWindow::on_buttonClose_released()
 {
     flagStdButtonPressed = false;
 }
 
-void TextConsoleWindow::on_minmaxButton_released()
+void TextConsoleWindow::on_buttonMinMax_released()
 {
     flagStdButtonPressed = false;
 }
@@ -231,7 +233,6 @@ void TextConsoleWindow::getMouseEventPosition()
 void TextConsoleWindow::mousePressEvent(QMouseEvent *event)
 {
     getMouseEventPosition();
-
     if(isMouseOnTitleBar(mouseEventPosition))
     {
         flagClickedOnTitleBar = true;
@@ -271,15 +272,21 @@ void TextConsoleWindow::mouseReleaseEvent(QMouseEvent *event)
 
 void TextConsoleWindow::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    if(maximizedFlag)
+    getMouseEventPosition();
+    if(isMouseOnTitleBar(mouseEventPosition))
     {
-        minimizeConsole();
+        if(maximizedFlag)
+        {
+            minimizeConsole();
+        }
+        else
+        {
+            maximizeConsole();
+        }
+        event->accept();
     }
     else
-    {
-        maximizeConsole();
-    }
-    event->accept();
+        event->ignore();
 }
 
 

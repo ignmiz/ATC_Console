@@ -15,11 +15,14 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     textconsolewindow.cpp \
-    consolecommands.cpp
+    consolecommands.cpp \
+    mainmenu.cpp
 
 HEADERS  += mainwindow.h \
     textconsolewindow.h \
-    consolecommands.h
+    consolecommands.h \
+    mainmenu.h
 
 FORMS    += mainwindow.ui \
-    textconsolewindow.ui
+    textconsolewindow.ui \
+    mainmenu.ui

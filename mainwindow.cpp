@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "textconsolewindow.h"
+#include "mainmenu.h"
 
 #include <QDesktopWidget>
 #include <QDebug>
@@ -18,6 +19,12 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::on_buttonMainMenu_clicked()
+{
+    MainMenu *mainMenu = new MainMenu(this);
+    mainMenu->show();
 }
 
 void MainWindow::on_buttonShowConsole_clicked()
@@ -57,3 +64,5 @@ void MainWindow::mainWindowSetup()
     ui->mainToolBar->hide();
     ui->statusBar->hide();
 }
+
+

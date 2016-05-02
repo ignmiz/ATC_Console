@@ -20,6 +20,8 @@ private slots:
     void on_buttonShowConsole_clicked();
     void on_buttonClose_clicked();
 
+    void on_buttonMainMenu_clicked();
+
 private:
     Ui::MainWindow *ui;
     TextConsoleWindow *txtConsole;
