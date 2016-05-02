@@ -20,8 +20,8 @@ public:
 
     void setConsoleInputFocus();
 
-    void maximizeConsole();
-    void minimizeConsole();
+    void maximizeWindow();
+    void minimizeWindow();
     bool isMaximized();
     bool isMouseOnTitleBar(QPoint mousePosition);
 

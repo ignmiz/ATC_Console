@@ -33,7 +33,7 @@ void MainWindow::on_buttonShowConsole_clicked()
     {
         if(!(txtConsole->isMaximized()))
         {
-            txtConsole->maximizeConsole();
+            txtConsole->maximizeWindow();
         }
         txtConsole->setWindowFlags(Qt::FramelessWindowHint);
         txtConsole->show();

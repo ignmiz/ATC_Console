@@ -45,7 +45,7 @@ void TextConsoleWindow::setConsoleInputFocus()
     QTimer::singleShot(0, ui->consoleInput, SLOT(setFocus()));
 }
 
-void TextConsoleWindow::maximizeConsole()
+void TextConsoleWindow::maximizeWindow()
 {
     ui->buttonMinMax->setText(QString::fromUtf8("▲"));
     maximizedFlag = true;
@@ -56,7 +56,7 @@ void TextConsoleWindow::maximizeConsole()
     setConsoleInputFocus();
 }
 
-void TextConsoleWindow::minimizeConsole()
+void TextConsoleWindow::minimizeWindow()
 {
     ui->buttonMinMax->setText(QString::fromUtf8("▼"));
     maximizedFlag = false;
@@ -124,11 +124,11 @@ void TextConsoleWindow::on_buttonMinMax_clicked()
 {
     if(maximizedFlag)
     {
-        minimizeConsole();
+        minimizeWindow();
     }
     else
     {
-        maximizeConsole();
+        maximizeWindow();
     }
 }
 
@@ -277,11 +277,11 @@ void TextConsoleWindow::mouseDoubleClickEvent(QMouseEvent *event)
     {
         if(maximizedFlag)
         {
-            minimizeConsole();
+            minimizeWindow();
         }
         else
         {
-            maximizeConsole();
+            maximizeWindow();
         }
         event->accept();
     }
