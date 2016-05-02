@@ -37,20 +37,6 @@ QFrame#frameDialog
 
 }
 
-QTextEdit
-{
-	color: #ffffff;
-	background-color: #1e1e1e;
-	border-style: none;
-}
-
-QLineEdit
-{
-	color: #ffffff;
-	background-color: #1e1e1e;
-	border-style: none;
-}
-
 QPushButton#buttonClose
 {
 	color: #828282;
@@ -83,10 +69,24 @@ QPushButton#buttonMinMax::hover
 	font: bold;
 }
 
-QLabel#title
+QLabel#labelTitle
 {
 	color: #828282;
 	font: bold;
+}
+
+QTextEdit
+{
+	color: #ffffff;
+	background-color: #1e1e1e;
+	border-style: none;
+}
+
+QLineEdit
+{
+	color: #ffffff;
+	background-color: #1e1e1e;
+	border-style: none;
 }</string>
   </property>
   <widget class="QFrame" name="frameDialog">
@@ -139,12 +139,12 @@ QLabel#title
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QLabel" name="title">
+    <widget class="QLabel" name="labelTitle">
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>0</y>
-       <width>82</width>
+       <width>100</width>
        <height>30</height>
       </rect>
      </property>

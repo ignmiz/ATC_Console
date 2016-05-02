@@ -15,7 +15,6 @@ MainMenu::MainMenu(QWidget *parent) :
 
 MainMenu::~MainMenu()
 {
-    qDebug() << "Destructor called...";
     delete ui;
 }
 

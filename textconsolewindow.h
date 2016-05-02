@@ -38,7 +38,6 @@ private slots:
 
 private:
     Ui::TextConsoleWindow *ui;
-    bool maximizedFlag = true;
 
 //    void consoleInputSetup();
     void consoleDisplaySetup();
@@ -48,6 +47,7 @@ private:
 
     unsigned int countElements(QStringList list);
 
+    bool maximizedFlag = true;
     bool flagStdButtonPressed = false;
     bool flagClickedOnTitleBar = false;
     QPoint mouseEventPosition;
