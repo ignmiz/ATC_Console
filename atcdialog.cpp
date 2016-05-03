@@ -1,40 +1,45 @@
-#include "mainmenu.h"
-#include "ui_mainmenu.h"
+#include "atcdialog.h"
+#include "ui_atcdialog.h"
 
 #include <QMouseEvent>
 #include <QCursor>
 #include <QDebug>
 
-MainMenu::MainMenu(QWidget *parent) :
+ATCDialog::ATCDialog(QWidget *parent, QString title, unsigned int width,
+                     unsigned int height, bool deleteOnClose) :
     QDialog(parent),
-    ui(new Ui::MainMenu)
+    ui(new Ui::ATCDialog),
+    windowTitle(title),
+    windowWidth(width),
+    windowHeight(height),
+    flagDeleteOnClose(deleteOnClose)
 {
     ui->setupUi(this);
-    mainMenuSetup();
+    windowSetup();
 }
 
-MainMenu::~MainMenu()
+ATCDialog::~ATCDialog()
 {
     delete ui;
 }
 
-void MainMenu::maximizeWindow()
+void ATCDialog::maximizeWindow()
 {
     ui->buttonMinMax->setText(QString::fromUtf8("▲"));
     maximizedFlag = true;
-    resize(640, 480);
-    ui->frameDialog->resize(640, 480);
+    resize(windowWidth, windowHeight);
+    ui->frameDialog->resize(windowWidth, windowHeight);
 }
 
-void MainMenu::minimizeWindow()
+void ATCDialog::minimizeWindow()
 {
     ui->buttonMinMax->setText(QString::fromUtf8("▼"));
     maximizedFlag = false;
-    resize(640, 30);
-    ui->frameDialog->resize(640, 30);
+    resize(windowWidth, 30);
+    ui->frameDialog->resize(windowWidth, 30);
 }
 
-bool MainMenu::isMaximized()
+bool ATCDialog::isMaximized()
 {
     if(maximizedFlag)
     {
@@ -46,8 +51,7 @@ bool MainMenu::isMaximized()
     }
 }
 
-
-bool MainMenu::isMouseOnTitleBar(QPoint mousePosition)
+bool ATCDialog::isMouseOnTitleBar(QPoint mousePosition)
 {
     QPoint topLeftInGlobal = QWidget::mapToGlobal(this->rect().topLeft());
     QPoint topRightInGlobal = QWidget::mapToGlobal(this->rect().topRight());
@@ -63,22 +67,12 @@ bool MainMenu::isMouseOnTitleBar(QPoint mousePosition)
         return false;
 }
 
-void MainMenu::on_buttonOK_clicked()
-{
-    this->close();
-}
-
-void MainMenu::on_buttonCancel_clicked()
-{
-    this->close();
-}
-
-void MainMenu::on_buttonClose_clicked()
+void ATCDialog::on_buttonClose_clicked()
 {
     close();
 }
 
-void MainMenu::on_buttonMinMax_clicked()
+void ATCDialog::on_buttonMinMax_clicked()
 {
     if(maximizedFlag)
     {
@@ -90,38 +84,32 @@ void MainMenu::on_buttonMinMax_clicked()
     }
 }
 
-void MainMenu::on_buttonClose_pressed()
+void ATCDialog::on_buttonClose_pressed()
 {
     flagStdButtonPressed = true;
 }
 
-void MainMenu::on_buttonMinMax_pressed()
+void ATCDialog::on_buttonMinMax_pressed()
 {
     flagStdButtonPressed = true;
 }
 
-void MainMenu::on_buttonClose_released()
+void ATCDialog::on_buttonClose_released()
 {
     flagStdButtonPressed = false;
 }
 
-void MainMenu::on_buttonMinMax_released()
+void ATCDialog::on_buttonMinMax_released()
 {
     flagStdButtonPressed = false;
 }
 
-void MainMenu::mainMenuSetup()
-{
-    this->setAttribute(Qt::WA_DeleteOnClose);
-    this->setWindowFlags(Qt::FramelessWindowHint);
-}
-
-void MainMenu::getMouseEventPosition()
+void ATCDialog::getMouseEventPosition()
 {
     mouseEventPosition = QCursor::pos();
 }
 
-void MainMenu::mousePressEvent(QMouseEvent *event)
+void ATCDialog::mousePressEvent(QMouseEvent *event)
 {
     getMouseEventPosition();
     if(isMouseOnTitleBar(mouseEventPosition))
@@ -136,7 +124,7 @@ void MainMenu::mousePressEvent(QMouseEvent *event)
     }
 }
 
-void MainMenu::mouseMoveEvent(QMouseEvent *event)
+void ATCDialog::mouseMoveEvent(QMouseEvent *event)
 {
     if(flagStdButtonPressed || !flagClickedOnTitleBar)
     {
@@ -154,14 +142,14 @@ void MainMenu::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-void MainMenu::mouseReleaseEvent(QMouseEvent *event)
+void ATCDialog::mouseReleaseEvent(QMouseEvent *event)
 {
     flagStdButtonPressed = false;
     flagClickedOnTitleBar = false;
     event->accept();
 }
 
-void MainMenu::mouseDoubleClickEvent(QMouseEvent *event)
+void ATCDialog::mouseDoubleClickEvent(QMouseEvent *event)
 {
     getMouseEventPosition();
     if(isMouseOnTitleBar(mouseEventPosition))
@@ -180,4 +168,20 @@ void MainMenu::mouseDoubleClickEvent(QMouseEvent *event)
         event->ignore();
 }
 
+void ATCDialog::windowSetup()
+{
+    if(flagDeleteOnClose)
+        this->setAttribute(Qt::WA_DeleteOnClose);
 
+    this->setWindowFlags(Qt::FramelessWindowHint);
+
+    this->resize(windowWidth, windowHeight);
+    ui->frameDialog->resize(windowWidth, windowHeight);
+    ui->frameTitleBar->resize(windowWidth, 30);
+
+    ui->labelTitle->setGeometry(10, 0, windowWidth/2, 30);
+    ui->labelTitle->setText(windowTitle);
+
+    ui->buttonMinMax->move(windowWidth - 50, 5);
+    ui->buttonClose->move(windowWidth - 30, 5);
+}

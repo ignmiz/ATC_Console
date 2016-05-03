@@ -15,7 +15,6 @@ MainMenu::MainMenu(QWidget *parent) :
 
 MainMenu::~MainMenu()
 {
-    qDebug() << "Destructor called...";
     delete ui;
 }
 
@@ -62,16 +61,6 @@ bool MainMenu::isMouseOnTitleBar(QPoint mousePosition)
     }
     else
         return false;
-}
-
-void MainMenu::on_buttonOK_clicked()
-{
-    this->close();
-}
-
-void MainMenu::on_buttonCancel_clicked()
-{
-    this->close();
 }
 
 void MainMenu::on_buttonClose_clicked()

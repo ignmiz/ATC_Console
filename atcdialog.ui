@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainMenu</class>
- <widget class="QDialog" name="MainMenu">
+ <class>ATCDialog</class>
+ <widget class="QDialog" name="ATCDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>480</height>
+    <width>400</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,7 +25,6 @@ QFrame#frameDialog
 	border-style: outset;
 	border-width: 1px;
 	border-color: #3e3e3e;
-
 }
 
 QPushButton#buttonClose
@@ -67,16 +66,13 @@ QLabel#labelTitle
 }
 </string>
   </property>
-  <property name="modal">
-   <bool>true</bool>
-  </property>
   <widget class="QFrame" name="frameDialog">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>640</width>
-     <height>480</height>
+     <width>400</width>
+     <height>300</height>
     </rect>
    </property>
    <property name="frameShape">
@@ -85,12 +81,12 @@ QLabel#labelTitle
    <property name="frameShadow">
     <enum>QFrame::Raised</enum>
    </property>
-   <widget class="QFrame" name="frame">
+   <widget class="QFrame" name="frameTitleBar">
     <property name="geometry">
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>640</width>
+      <width>400</width>
       <height>30</height>
      </rect>
     </property>
@@ -100,23 +96,10 @@ QLabel#labelTitle
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QLabel" name="labelTitle">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>0</y>
-       <width>80</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Main menu</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="buttonMinMax">
      <property name="geometry">
       <rect>
-       <x>590</x>
+       <x>350</x>
        <y>5</y>
        <width>20</width>
        <height>20</height>
@@ -150,7 +133,7 @@ QLabel#labelTitle
     <widget class="QPushButton" name="buttonClose">
      <property name="geometry">
       <rect>
-       <x>610</x>
+       <x>370</x>
        <y>5</y>
        <width>20</width>
        <height>20</height>
@@ -179,6 +162,19 @@ QLabel#labelTitle
      </property>
      <property name="text">
       <string>X</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="labelTitle">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>0</y>
+       <width>200</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
      </property>
     </widget>
    </widget>

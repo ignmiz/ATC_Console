@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui sql
+QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,13 +16,16 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     textconsolewindow.cpp \
     consolecommands.cpp \
-    mainmenu.cpp
+    mainmenu.cpp \
+    atcdialog.cpp
 
 HEADERS  += mainwindow.h \
     textconsolewindow.h \
     consolecommands.h \
-    mainmenu.h
+    mainmenu.h \
+    atcdialog.h
 
 FORMS    += mainwindow.ui \
     textconsolewindow.ui \
-    mainmenu.ui
+    mainmenu.ui \
+    atcdialog.ui
