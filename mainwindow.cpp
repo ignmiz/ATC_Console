@@ -2,7 +2,8 @@
 #include "ui_mainwindow.h"
 #include "textconsolewindow.h"
 #include "mainmenu.h"
-#include "atcdialog.h"
+//#include "atcdialog.h"
+#include "sectorsetup.h"
 
 #include <QDesktopWidget>
 #include <QDebug>
@@ -24,11 +25,17 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_buttonMainMenu_clicked()
 {
-//    MainMenu *mainMenu = new MainMenu(this);
-//    mainMenu->show();
+    MainMenu *mainMenu = new MainMenu(this);
+    mainMenu->show();
 
-    ATCDialog *dialog = new ATCDialog(this, "Label", 800, 200);
-    dialog->show();
+//    ATCDialog *dialog = new ATCDialog(this, "Label", 800, 200);
+//    dialog->show();
+}
+
+void MainWindow::on_buttonSctSetup_clicked()
+{
+    SectorSetup *sctSetup = new SectorSetup(this);
+    sctSetup->show();
 }
 
 void MainWindow::on_buttonShowConsole_clicked()
@@ -68,5 +75,3 @@ void MainWindow::mainWindowSetup()
     ui->mainToolBar->hide();
     ui->statusBar->hide();
 }
-
-

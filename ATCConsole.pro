@@ -17,15 +17,18 @@ SOURCES += main.cpp\
     textconsolewindow.cpp \
     consolecommands.cpp \
     mainmenu.cpp \
-    atcdialog.cpp
+    atcdialog.cpp \
+    sectorsetup.cpp
 
 HEADERS  += mainwindow.h \
     textconsolewindow.h \
     consolecommands.h \
     mainmenu.h \
-    atcdialog.h
+    atcdialog.h \
+    sectorsetup.h
 
 FORMS    += mainwindow.ui \
     textconsolewindow.ui \
     mainmenu.ui \
-    atcdialog.ui
+    atcdialog.ui \
+    sectorsetup.ui

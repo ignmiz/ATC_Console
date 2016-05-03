@@ -47,6 +47,7 @@ private:
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
 
+protected:
     void windowSetup();
 };
 

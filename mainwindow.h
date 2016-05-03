@@ -19,8 +19,8 @@ public:
 private slots:
     void on_buttonShowConsole_clicked();
     void on_buttonClose_clicked();
-
     void on_buttonMainMenu_clicked();
+    void on_buttonSctSetup_clicked();
 
 private:
     Ui::MainWindow *ui;
