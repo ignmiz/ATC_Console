@@ -20,6 +20,7 @@ ATCDialog::ATCDialog(QWidget *parent, QString title, unsigned int width,
 
 ATCDialog::~ATCDialog()
 {
+    qDebug() << "Destructor called...";
     delete ui;
 }
 
@@ -69,13 +70,11 @@ bool ATCDialog::isMouseOnTitleBar(QPoint mousePosition)
 
 void ATCDialog::on_buttonClose_clicked()
 {
-    qDebug() << "buttonClose clicked...";
     close();
 }
 
 void ATCDialog::on_buttonMinMax_clicked()
 {
-    qDebug() << "buttonMinMax clicked...";
     if(isMaximized())
     {
         minimizeWindow();
@@ -93,7 +92,6 @@ void ATCDialog::on_buttonClose_pressed()
 
 void ATCDialog::on_buttonMinMax_pressed()
 {
-    qDebug() << "buttonMinMax pressed...";
     flagStdButtonPressed = true;
 }
 
@@ -154,7 +152,6 @@ void ATCDialog::mouseReleaseEvent(QMouseEvent *event)
 
 void ATCDialog::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    qDebug() << "double clicked...";
     getMouseEventPosition();
     if(isMouseOnTitleBar(mouseEventPosition))
     {
