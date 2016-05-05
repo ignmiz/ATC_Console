@@ -14,7 +14,7 @@ ATCDialog::ATCDialog(QWidget *parent, QString title, unsigned int width,
     flagDeleteOnClose(deleteOnClose)
 {
     ui->setupUi(this);
-    windowSetup();
+//    windowSetup();
 }
 
 ATCDialog::~ATCDialog()
