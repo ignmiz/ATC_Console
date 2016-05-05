@@ -3,12 +3,13 @@
 
 SectorSetup::SectorSetup(QWidget *parent) :
     ATCDialog(parent, "Sector Setup", 600, 800),
-    ui(new Ui::SectorSetup)
+    uiInner(new Ui::SectorSetup)
 {
+    uiInner->setupUi(this);
     windowSetup();
 }
 
 SectorSetup::~SectorSetup()
 {
-    delete ui;
+    delete uiInner;
 }

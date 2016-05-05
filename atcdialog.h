@@ -1,6 +1,7 @@
 #ifndef ATCDIALOG_H
 #define ATCDIALOG_H
 
+#include "atcmousehandler.h"
 #include <QDialog>
 
 namespace Ui {
@@ -21,14 +22,6 @@ public:
     bool isMaximized();
     bool isMouseOnTitleBar(QPoint mousePosition);
 
-private slots:
-    void on_buttonClose_clicked();
-    void on_buttonMinMax_clicked();
-    void on_buttonClose_pressed();
-    void on_buttonMinMax_pressed();
-    void on_buttonClose_released();
-    void on_buttonMinMax_released();
-
 private:
     Ui::ATCDialog *ui;
     unsigned int windowWidth;
@@ -37,7 +30,6 @@ private:
     bool flagDeleteOnClose;
 
     bool maximizedFlag = true;
-    bool flagStdButtonPressed = false;
     bool flagClickedOnTitleBar = false;
     QPoint mouseEventPosition;
     QPoint mouseDragPosition;
@@ -48,6 +40,7 @@ private:
     void mouseDoubleClickEvent(QMouseEvent *event);
 
 protected:
+    bool flagStdButtonPressed = false;
     void windowSetup();
 };
 

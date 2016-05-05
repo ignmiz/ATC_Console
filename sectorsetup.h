@@ -15,8 +15,12 @@ public:
     explicit SectorSetup(QWidget *parent = 0);
     ~SectorSetup();
 
+private slots:
+    ATC_MOUSE_HANDLER
+
 private:
-    Ui::SectorSetup *ui;
+    Ui::SectorSetup *uiInner;
+
 };
 
 #endif // SECTORSETUP_H

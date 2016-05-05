@@ -3,7 +3,6 @@
 
 #include <QMouseEvent>
 #include <QCursor>
-#include <QDebug>
 
 ATCDialog::ATCDialog(QWidget *parent, QString title, unsigned int width,
                      unsigned int height, bool deleteOnClose) :
@@ -20,7 +19,6 @@ ATCDialog::ATCDialog(QWidget *parent, QString title, unsigned int width,
 
 ATCDialog::~ATCDialog()
 {
-    qDebug() << "Destructor called...";
     delete ui;
 }
 
@@ -66,43 +64,6 @@ bool ATCDialog::isMouseOnTitleBar(QPoint mousePosition)
     }
     else
         return false;
-}
-
-void ATCDialog::on_buttonClose_clicked()
-{
-    close();
-}
-
-void ATCDialog::on_buttonMinMax_clicked()
-{
-    if(isMaximized())
-    {
-        minimizeWindow();
-    }
-    else
-    {
-        maximizeWindow();
-    }
-}
-
-void ATCDialog::on_buttonClose_pressed()
-{
-    flagStdButtonPressed = true;
-}
-
-void ATCDialog::on_buttonMinMax_pressed()
-{
-    flagStdButtonPressed = true;
-}
-
-void ATCDialog::on_buttonClose_released()
-{
-    flagStdButtonPressed = false;
-}
-
-void ATCDialog::on_buttonMinMax_released()
-{
-    flagStdButtonPressed = false;
 }
 
 void ATCDialog::getMouseEventPosition()

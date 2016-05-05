@@ -25,7 +25,8 @@ HEADERS  += mainwindow.h \
     consolecommands.h \
     mainmenu.h \
     atcdialog.h \
-    sectorsetup.h
+    sectorsetup.h \
+    atcmousehandler.h
 
 FORMS    += mainwindow.ui \
     textconsolewindow.ui \
