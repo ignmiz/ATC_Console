@@ -14,7 +14,6 @@ ATCDialog::ATCDialog(QWidget *parent, QString title, unsigned int width,
     flagDeleteOnClose(deleteOnClose)
 {
     ui->setupUi(this);
-//    windowSetup();
 }
 
 ATCDialog::~ATCDialog()
@@ -73,6 +72,8 @@ void ATCDialog::getMouseEventPosition()
 
 void ATCDialog::mousePressEvent(QMouseEvent *event)
 {
+    this->raise();
+
     getMouseEventPosition();
     if(isMouseOnTitleBar(mouseEventPosition))
     {

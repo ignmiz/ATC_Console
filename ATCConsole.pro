@@ -14,22 +14,22 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    textconsolewindow.cpp \
     consolecommands.cpp \
     atcdialog.cpp \
     dialogmainmenu.cpp \
-    dialogsectorsetup.cpp
+    dialogsectorsetup.cpp \
+    dialogtextconsole.cpp
 
 HEADERS  += mainwindow.h \
-    textconsolewindow.h \
     consolecommands.h \
     atcdialog.h \
     atcmousehandler.h \
     dialogmainmenu.h \
-    dialogsectorsetup.h
+    dialogsectorsetup.h \
+    dialogtextconsole.h
 
 FORMS    += mainwindow.ui \
-    textconsolewindow.ui \
     atcdialog.ui \
     dialogmainmenu.ui \
-    dialogsectorsetup.ui
+    dialogsectorsetup.ui \
+    dialogtextconsole.ui

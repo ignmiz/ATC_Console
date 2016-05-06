@@ -2,7 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "textconsolewindow.h"
+//#include "textconsolewindow.h"
+#include "dialogtextconsole.h"
 
 namespace Ui {
 class MainWindow;
@@ -24,7 +25,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    TextConsoleWindow *txtConsole;
+    DialogTextConsole *dialogTextConsole;
     void mainWindowSetup();
 };
 

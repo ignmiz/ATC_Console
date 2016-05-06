@@ -1,8 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "textconsolewindow.h"
+//#include "textconsolewindow.h"
 #include "dialogmainmenu.h"
 #include "dialogsectorsetup.h"
+#include "dialogtextconsole.h"
 
 #include <QDesktopWidget>
 #include <QDebug>
@@ -12,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    txtConsole = new TextConsoleWindow(this);
+    dialogTextConsole = new DialogTextConsole(this);
 
     mainWindowSetup();
 }
@@ -36,19 +37,19 @@ void MainWindow::on_buttonSctSetup_clicked()
 
 void MainWindow::on_buttonShowConsole_clicked()
 {
-    if(txtConsole->isHidden())
+    if(dialogTextConsole->isHidden())
     {
-        if(!(txtConsole->isMaximized()))
-        {
-            txtConsole->maximizeWindow();
-        }
-        txtConsole->setWindowFlags(Qt::FramelessWindowHint);
-        txtConsole->show();
-        txtConsole->setConsoleInputFocus();
+        if(!(dialogTextConsole->isMaximized()))
+            dialogTextConsole->maximizeWindow();
+
+//        txtConsole->setWindowFlags(Qt::FramelessWindowHint);
+        dialogTextConsole->show();
+        dialogTextConsole->raise();
+        dialogTextConsole->setConsoleInputFocus();
     }
     else
     {
-        txtConsole->hide();
+        dialogTextConsole->hide();
     }
 }
 
