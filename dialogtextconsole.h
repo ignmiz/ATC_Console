@@ -21,13 +21,14 @@ public:
 
 private slots:
     ATC_MOUSE_HANDLER
+
     void on_consoleInput_returnPressed();
+    void onConsoleElementPressed();
 
 private:
     Ui::DialogTextConsole *uiInner;
 
-//    void consoleInputSetup();
-    void consoleDisplaySetup();
+    void consoleSetup();
     QString getConsoleInputText();
     void clearConsoleInput();
     QString parseQuery(QString query);

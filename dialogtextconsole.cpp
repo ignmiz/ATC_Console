@@ -12,7 +12,7 @@ DialogTextConsole::DialogTextConsole(QWidget *parent) :
 {
     uiInner->setupUi(this);
     windowSetup();
-    consoleDisplaySetup();
+    consoleSetup();
 
     this->hide();
 }
@@ -61,10 +61,15 @@ void DialogTextConsole::on_consoleInput_returnPressed()
     }
 }
 
-void DialogTextConsole::consoleDisplaySetup()
+void DialogTextConsole::onConsoleElementPressed()
 {
-    uiInner->consoleDisplay->setReadOnly(true);
-    uiInner->consoleDisplay->setFocusPolicy(Qt::NoFocus);
+
+}
+
+void DialogTextConsole::consoleSetup()
+{
+    uiInner->consoleDisplay->setFocusPolicy(Qt::ClickFocus);
+    uiInner->consoleDisplay->setDisabled(true);
 }
 
 QString DialogTextConsole::getConsoleInputText()

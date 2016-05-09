@@ -25,9 +25,11 @@
    <property name="styleSheet">
     <string notr="true">QLineEdit#consoleInput
 {
-	color: #ffffff;
+	color: #c8c8c8;
 	background-color: #1e1e1e;
-	border-style: none;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
 }</string>
    </property>
   </widget>
@@ -43,9 +45,11 @@
    <property name="styleSheet">
     <string notr="true">QTextEdit#consoleDisplay
 {
-	color: #ffffff;
+	color: #c8c8c8;
 	background-color: #1e1e1e;
-	border-style: none;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
 }</string>
    </property>
   </widget>

@@ -23,7 +23,7 @@ QFrame#frameDialog
 {
 	background-color: #000000;
 	border-style: outset;
-	border-width: 1px;
+	border-width: 2px;
 	border-color: #3e3e3e;
 }
 
@@ -63,6 +63,26 @@ QLabel#labelTitle
 {
 	color: #828282;
 	font: bold;
+}
+
+QPushButton
+{
+	color: #c8c8c8;
+	font: 12px;
+	background-color: #000000;
+	border-style: outset;
+	border-width: 2px;
+	border-color: #3e3e3e;
+}
+
+QPushButton::hover
+{
+	background-color: #2d2d2d;
+}
+
+QPushButton::pressed
+{
+	background-color: #3c3c3c;
 }
 </string>
   </property>
