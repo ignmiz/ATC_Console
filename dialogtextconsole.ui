@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QLineEdit" name="consoleInput">
+  <widget class="ATCLineEdit" name="consoleInput">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -54,6 +54,13 @@
    </property>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ATCLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>atclineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

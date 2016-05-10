@@ -5,6 +5,7 @@
 #include <QDateTime>
 #include <QTimer>
 #include <QHash>
+#include <QMouseEvent>
 
 DialogTextConsole::DialogTextConsole(QWidget *parent) :
     ATCDialog(parent, "Text Console", 800, 600, false),
@@ -61,15 +62,12 @@ void DialogTextConsole::on_consoleInput_returnPressed()
     }
 }
 
-void DialogTextConsole::onConsoleElementPressed()
-{
-
-}
-
 void DialogTextConsole::consoleSetup()
 {
     uiInner->consoleDisplay->setFocusPolicy(Qt::ClickFocus);
     uiInner->consoleDisplay->setDisabled(true);
+
+    connect(uiInner->consoleInput, SIGNAL(focussed(bool)), this, SLOT(raise()));
 }
 
 QString DialogTextConsole::getConsoleInputText()
@@ -126,9 +124,16 @@ unsigned int DialogTextConsole::countElements(QStringList list)
 {
     unsigned int elementCount = 0;
 
-    foreach (QString element, list) {
+    foreach (QString element, list)
+    {
         elementCount++;
     }
 
     return elementCount;
+}
+
+void DialogTextConsole::mousePressEvent(QMouseEvent *event)
+{
+    ATCDialog::mousePressEvent(event);
+    setConsoleInputFocus();
 }

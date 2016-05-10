@@ -23,7 +23,6 @@ private slots:
     ATC_MOUSE_HANDLER
 
     void on_consoleInput_returnPressed();
-    void onConsoleElementPressed();
 
 private:
     Ui::DialogTextConsole *uiInner;
@@ -34,6 +33,8 @@ private:
     QString parseQuery(QString query);
 
     unsigned int countElements(QStringList list);
+
+    void mousePressEvent(QMouseEvent *event);
 };
 
 #endif // DIALOGTEXTCONSOLE_H

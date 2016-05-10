@@ -24,7 +24,7 @@ ATCDialog::~ATCDialog()
 void ATCDialog::maximizeWindow()
 {
     ui->buttonMinMax->setText(QString::fromUtf8("▲"));
-    maximizedFlag = true;
+    flagMaximized = true;
     resize(windowWidth, windowHeight);
     ui->frameDialog->resize(windowWidth, windowHeight);
 }
@@ -32,14 +32,14 @@ void ATCDialog::maximizeWindow()
 void ATCDialog::minimizeWindow()
 {
     ui->buttonMinMax->setText(QString::fromUtf8("▼"));
-    maximizedFlag = false;
+    flagMaximized = false;
     resize(windowWidth, 30);
     ui->frameDialog->resize(windowWidth, 30);
 }
 
 bool ATCDialog::isMaximized()
 {
-    if(maximizedFlag)
+    if(flagMaximized)
     {
         return true;
     }
@@ -65,31 +65,31 @@ bool ATCDialog::isMouseOnTitleBar(QPoint mousePosition)
         return false;
 }
 
-void ATCDialog::getMouseEventPosition()
+QPoint ATCDialog::getMouseEventPosition()
 {
-    mouseEventPosition = QCursor::pos();
+    return QCursor::pos();
 }
 
 void ATCDialog::mousePressEvent(QMouseEvent *event)
 {
+    this->setFocus();
     this->raise();
 
-    getMouseEventPosition();
-    if(isMouseOnTitleBar(mouseEventPosition))
+    if(isMouseOnTitleBar(getMouseEventPosition()))
     {
-        flagClickedOnTitleBar = true;
+        setFlagClickedOnTitleBar(true);
     }
 
     if(event->button() == Qt::LeftButton)
     {
-        mouseDragPosition = event->globalPos() - frameGeometry().topLeft();
+        setMouseDragPosition(event);
         event->accept();
     }
 }
 
 void ATCDialog::mouseMoveEvent(QMouseEvent *event)
 {
-    if(flagStdButtonPressed || !flagClickedOnTitleBar)
+    if(getFlagStdButtonPressed() || !getFlagClickedOnTitleBar())
     {
         event->ignore();
     }
@@ -97,7 +97,7 @@ void ATCDialog::mouseMoveEvent(QMouseEvent *event)
     {
         if(event->buttons() & Qt::LeftButton)
         {
-            move(event->globalPos() - mouseDragPosition);
+            move(event->globalPos() - getMouseDragPosition());
             event->accept();
         }
         else
@@ -107,17 +107,16 @@ void ATCDialog::mouseMoveEvent(QMouseEvent *event)
 
 void ATCDialog::mouseReleaseEvent(QMouseEvent *event)
 {
-    flagStdButtonPressed = false;
-    flagClickedOnTitleBar = false;
+    setFlagStdButtonPressed(false);
+    setFlagClickedOnTitleBar(false);
     event->accept();
 }
 
 void ATCDialog::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    getMouseEventPosition();
-    if(isMouseOnTitleBar(mouseEventPosition))
+    if(isMouseOnTitleBar(getMouseEventPosition()))
     {
-        if(maximizedFlag)
+        if(isMaximized())
         {
             minimizeWindow();
         }
@@ -147,4 +146,39 @@ void ATCDialog::windowSetup()
 
     ui->buttonMinMax->move(windowWidth - 50, 5);
     ui->buttonClose->move(windowWidth - 30, 5);
+}
+
+void ATCDialog::setMouseDragPosition(QMouseEvent *event)
+{
+    mouseDragPosition = event->globalPos() - frameGeometry().topLeft();
+}
+
+void ATCDialog::setFlagMaximized(bool flagBool)
+{
+    flagMaximized = flagBool;
+}
+
+void ATCDialog::setFlagClickedOnTitleBar(bool flagBool)
+{
+    flagClickedOnTitleBar = flagBool;
+}
+
+void ATCDialog::setFlagStdButtonPressed(bool flagBool)
+{
+    flagStdButtonPressed = flagBool;
+}
+
+bool ATCDialog::getFlagStdButtonPressed()
+{
+    return flagStdButtonPressed;
+}
+
+bool ATCDialog::getFlagClickedOnTitleBar()
+{
+    return flagClickedOnTitleBar;
+}
+
+QPoint ATCDialog::getMouseDragPosition()
+{
+    return mouseDragPosition;
 }

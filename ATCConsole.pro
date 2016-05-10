@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     atcdialog.cpp \
     dialogmainmenu.cpp \
     dialogsectorsetup.cpp \
-    dialogtextconsole.cpp
+    dialogtextconsole.cpp \
+    atclineedit.cpp
 
 HEADERS  += mainwindow.h \
     consolecommands.h \
@@ -26,7 +27,8 @@ HEADERS  += mainwindow.h \
     atcmousehandler.h \
     dialogmainmenu.h \
     dialogsectorsetup.h \
-    dialogtextconsole.h
+    dialogtextconsole.h \
+    atclineedit.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \

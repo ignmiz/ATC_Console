@@ -21,22 +21,22 @@
                                                         \
     void on_buttonClose_pressed()                       \
     {                                                   \
-        flagStdButtonPressed = true;                    \
+        setFlagStdButtonPressed(true);                  \
     }                                                   \
                                                         \
     void on_buttonMinMax_pressed()                      \
     {                                                   \
-        flagStdButtonPressed = true;                    \
+        setFlagStdButtonPressed(true);                  \
     }                                                   \
                                                         \
     void on_buttonClose_released()                      \
     {                                                   \
-        flagStdButtonPressed = false;                   \
+        setFlagStdButtonPressed(false);                 \
     }                                                   \
                                                         \
     void on_buttonMinMax_released()                     \
     {                                                   \
-        flagStdButtonPressed = false;                   \
+        setFlagStdButtonPressed(false);                 \
     }
 
 #endif // ATCMOUSEHANDLER_H

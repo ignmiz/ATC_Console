@@ -19,8 +19,19 @@ public:
 
     void maximizeWindow();
     void minimizeWindow();
+
     bool isMaximized();
     bool isMouseOnTitleBar(QPoint mousePosition);
+
+    bool getFlagStdButtonPressed();
+    bool getFlagClickedOnTitleBar();
+    QPoint getMouseEventPosition();
+    QPoint getMouseDragPosition();
+
+    void setFlagMaximized(bool flagBool);
+    void setFlagClickedOnTitleBar(bool flagBool);
+    void setFlagStdButtonPressed(bool flagBool);
+    void setMouseDragPosition(QMouseEvent *event);
 
 private:
     Ui::ATCDialog *ui;
@@ -29,19 +40,19 @@ private:
     QString windowTitle;
     bool flagDeleteOnClose;
 
-    bool maximizedFlag = true;
+    bool flagMaximized = true;
     bool flagClickedOnTitleBar = false;
-    QPoint mouseEventPosition;
+    bool flagStdButtonPressed = false;
     QPoint mouseDragPosition;
-    void getMouseEventPosition();
+
+protected:
+
+    void windowSetup();
+
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
-
-protected:
-    bool flagStdButtonPressed = false;
-    void windowSetup();
 };
 
 #endif // ATCDIALOG_H
