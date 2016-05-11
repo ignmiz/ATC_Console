@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-//#include "textconsolewindow.h"
 #include "dialogmainmenu.h"
 #include "dialogsectorsetup.h"
 #include "dialogtextconsole.h"
@@ -42,9 +41,9 @@ void MainWindow::on_buttonShowConsole_clicked()
         if(!(dialogTextConsole->isMaximized()))
             dialogTextConsole->maximizeWindow();
 
-//        txtConsole->setWindowFlags(Qt::FramelessWindowHint);
         dialogTextConsole->show();
         dialogTextConsole->raise();
+        dialogTextConsole->setConsoleDisplayBottom();
         dialogTextConsole->setConsoleInputFocus();
     }
     else
