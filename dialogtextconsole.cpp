@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <QHash>
 #include <QMouseEvent>
+#include <QScrollBar>
 
 DialogTextConsole::DialogTextConsole(QWidget *parent) :
     ATCDialog(parent, "Text Console", 800, 600, false),
@@ -65,7 +66,7 @@ void DialogTextConsole::on_consoleInput_returnPressed()
 void DialogTextConsole::consoleSetup()
 {
     uiInner->consoleDisplay->setFocusPolicy(Qt::ClickFocus);
-    uiInner->consoleDisplay->setDisabled(true);
+    uiInner->consoleDisplay->setTextInteractionFlags(Qt::NoTextInteraction);
 
     connect(uiInner->consoleInput, SIGNAL(focussed(bool)), this, SLOT(raise()));
 }
@@ -136,4 +137,9 @@ void DialogTextConsole::mousePressEvent(QMouseEvent *event)
 {
     ATCDialog::mousePressEvent(event);
     setConsoleInputFocus();
+}
+
+void DialogTextConsole::setConsoleDisplayBottom()
+{
+    uiInner->consoleDisplay->verticalScrollBar()->setValue(uiInner->consoleDisplay->verticalScrollBar()->maximum());
 }

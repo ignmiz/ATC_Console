@@ -50,6 +50,30 @@
 	border-style: inset;
 	border-width: 2px;
 	border-color: #141414;
+}
+
+QScrollBar:vertical
+{
+	background: #000000;
+	width: 5px;
+	border: none;
+	margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: #323232;
+}
+
+QScrollBar::add-page:vertical
+{
+	background: #000000;
+	border: none;
+}
+
+QScrollBar::sub-page:vertical
+{
+	background: #000000;
+	border: none;
 }</string>
    </property>
   </widget>

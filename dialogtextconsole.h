@@ -18,6 +18,7 @@ public:
     void printToConsole(QString command);
     void printToConsole(QStringList compoundCommand);   //DEBUG FCN
     void setConsoleInputFocus();
+    void setConsoleDisplayBottom();
 
 private slots:
     ATC_MOUSE_HANDLER
