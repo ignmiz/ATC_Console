@@ -84,7 +84,11 @@ QPushButton::pressed
 {
 	background-color: #3c3c3c;
 }
-</string>
+
+QLabel
+{
+	color: #c8c8c8;
+}</string>
   </property>
   <widget class="QFrame" name="frameDialog">
    <property name="geometry">
