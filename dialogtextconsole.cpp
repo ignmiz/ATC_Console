@@ -1,6 +1,6 @@
 #include "dialogtextconsole.h"
 #include "ui_dialogtextconsole.h"
-#include "consolecommands.h"
+#include "atcconsolecommands.h"
 
 #include <QDateTime>
 #include <QTimer>
@@ -104,19 +104,19 @@ QString DialogTextConsole::parseQuery(QString query)
 
     switch (switchController) {
         case help:
-            return ConsoleCommands::helpCommand();
+            return ATCConsoleCommands::helpCommand();
             break;
 
         case text:
-            return ConsoleCommands::textCommand();
+            return ATCConsoleCommands::textCommand();
             break;
 
         case cmpd:
-            return ConsoleCommands::compoundCommand(argumentCount, queryList);
+            return ATCConsoleCommands::compoundCommand(argumentCount, queryList);
             break;
 
         default:
-            return ConsoleCommands::defaultCommand();
+            return ATCConsoleCommands::defaultCommand();
             break;
     }
 }
