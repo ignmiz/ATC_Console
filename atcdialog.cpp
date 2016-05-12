@@ -11,7 +11,8 @@ ATCDialog::ATCDialog(QWidget *parent, QString title, unsigned int width,
     windowTitle(title),
     windowWidth(width),
     windowHeight(height),
-    flagDeleteOnClose(deleteOnClose)
+    flagDeleteOnClose(deleteOnClose),
+    parentWindow(parent)
 {
     ui->setupUi(this);
 }
@@ -37,7 +38,7 @@ void ATCDialog::minimizeWindow()
     ui->frameDialog->resize(windowWidth, 30);
 }
 
-bool ATCDialog::isMaximized()
+bool ATCDialog::isMaximized() const
 {
     if(flagMaximized)
     {
@@ -49,7 +50,7 @@ bool ATCDialog::isMaximized()
     }
 }
 
-bool ATCDialog::isMouseOnTitleBar(QPoint mousePosition)
+bool ATCDialog::isMouseOnTitleBar(QPoint mousePosition) const
 {
     QPoint topLeftInGlobal = QWidget::mapToGlobal(this->rect().topLeft());
     QPoint topRightInGlobal = QWidget::mapToGlobal(this->rect().topRight());
@@ -65,7 +66,7 @@ bool ATCDialog::isMouseOnTitleBar(QPoint mousePosition)
         return false;
 }
 
-QPoint ATCDialog::getMouseEventPosition()
+QPoint ATCDialog::getMouseEventPosition() const
 {
     return QCursor::pos();
 }
@@ -168,17 +169,22 @@ void ATCDialog::setFlagStdButtonPressed(bool flagBool)
     flagStdButtonPressed = flagBool;
 }
 
-bool ATCDialog::getFlagStdButtonPressed()
+bool ATCDialog::getFlagStdButtonPressed() const
 {
     return flagStdButtonPressed;
 }
 
-bool ATCDialog::getFlagClickedOnTitleBar()
+bool ATCDialog::getFlagClickedOnTitleBar() const
 {
     return flagClickedOnTitleBar;
 }
 
-QPoint ATCDialog::getMouseDragPosition()
+QPoint ATCDialog::getMouseDragPosition() const
 {
     return mouseDragPosition;
+}
+
+QWidget* ATCDialog::getParentWindowAdress() const
+{
+    return parentWindow;
 }

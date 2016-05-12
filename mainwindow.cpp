@@ -24,14 +24,22 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_buttonMainMenu_clicked()
 {
-    DialogMainMenu *dialogMainMenu = new DialogMainMenu(this);
-    dialogMainMenu->show();
+    if(!getFlagDialogMainMenuExists())
+    {
+        DialogMainMenu *dialogMainMenu = new DialogMainMenu(this);
+        dialogMainMenu->show();
+        setFlagDialogMainMenuExists(true);
+    }
 }
 
 void MainWindow::on_buttonSctSetup_clicked()
 {
-    DialogSectorSetup *dialogSectorSetup = new DialogSectorSetup(this);
-    dialogSectorSetup->show();
+    if(!getFlagDialogSectorSetupExists())
+    {
+        DialogSectorSetup *dialogSectorSetup = new DialogSectorSetup(this);
+        dialogSectorSetup->show();
+        setFlagDialogSectorSetupExists(true);
+    }
 }
 
 void MainWindow::on_buttonShowConsole_clicked()
@@ -70,4 +78,24 @@ void MainWindow::mainWindowSetup()
 
     ui->mainToolBar->hide();
     ui->statusBar->hide();
+}
+
+bool MainWindow::getFlagDialogMainMenuExists() const
+{
+    return flagDialogMainMenuExists;
+}
+
+bool MainWindow::getFlagDialogSectorSetupExists() const
+{
+    return flagDialogSectorSetupExists;
+}
+
+void MainWindow::setFlagDialogMainMenuExists(bool flagBool)
+{
+    flagDialogMainMenuExists = flagBool;
+}
+
+void MainWindow::setFlagDialogSectorSetupExists(bool flagBool)
+{
+    flagDialogSectorSetupExists = flagBool;
 }

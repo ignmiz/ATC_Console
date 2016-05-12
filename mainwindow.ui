@@ -17,48 +17,10 @@
    <string notr="true">QMainWindow
 {
 	background-color: #1e1e1e;
-}
-
-QPushButton
-{
-	color: #c8c8c8;
-	font: 15px;
-	background-color: #000000;
-	border-style: outset;
-	border-width: 2px;
-	border-color: #3e3e3e;
-}
-
-QPushButton::hover
-{
-	background-color: #2d2d2d;
-}
-
-QPushButton::pressed
-{
-	background-color: #3c3c3c;
-}
-
-QPushButton::hover#buttonSpacerBottom
-{
-	color: #ffffff;
-	background-color: #000000;
-	border-style: outset;
-	border-width: 2px;
-	border-color: #3e3e3e;
-}
-
-QPushButton::hover#buttonSpacerTop
-{
-	color: #ffffff;
-	background-color: #000000;
-	border-style: outset;
-	border-width: 2px;
-	border-color: #3e3e3e;
 }</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="buttonShowConsole">
+   <widget class="ATCButtonMainWindow" name="buttonShowConsole">
     <property name="geometry">
      <rect>
       <x>1880</x>
@@ -83,7 +45,7 @@ QPushButton::hover#buttonSpacerTop
      <string>CSL</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="buttonClose">
+   <widget class="ATCButtonMainWindow" name="buttonClose">
     <property name="enabled">
      <bool>true</bool>
     </property>
@@ -111,7 +73,7 @@ QPushButton::hover#buttonSpacerTop
      <string>X</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="buttonMainMenu">
+   <widget class="ATCButtonMainWindow" name="buttonMainMenu">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -130,7 +92,7 @@ QPushButton::hover#buttonSpacerTop
      <string>MENU</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="buttonSctSetup">
+   <widget class="ATCButtonMainWindow" name="buttonSctSetup">
     <property name="geometry">
      <rect>
       <x>80</x>
@@ -149,7 +111,7 @@ QPushButton::hover#buttonSpacerTop
      <string>SCT_NAME</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="buttonFrequency">
+   <widget class="ATCButtonMainWindow" name="buttonFrequency">
     <property name="geometry">
      <rect>
       <x>240</x>
@@ -168,7 +130,7 @@ QPushButton::hover#buttonSpacerTop
      <string>121.088</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="buttonTime">
+   <widget class="ATCButtonMainWindow" name="buttonTime">
     <property name="geometry">
      <rect>
       <x>340</x>
@@ -187,7 +149,7 @@ QPushButton::hover#buttonSpacerTop
      <string>23:22:18</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="buttonInboundList">
+   <widget class="ATCButtonMainWindow" name="buttonInboundList">
     <property name="geometry">
      <rect>
       <x>680</x>
@@ -206,7 +168,7 @@ QPushButton::hover#buttonSpacerTop
      <string>I</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="buttonOutboundList">
+   <widget class="ATCButtonMainWindow" name="buttonOutboundList">
     <property name="geometry">
      <rect>
       <x>720</x>
@@ -225,7 +187,7 @@ QPushButton::hover#buttonSpacerTop
      <string>O</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="buttonRunway">
+   <widget class="ATCButtonMainWindow" name="buttonRunway">
     <property name="geometry">
      <rect>
       <x>520</x>
@@ -244,7 +206,7 @@ QPushButton::hover#buttonSpacerTop
      <string>RWY</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="buttonLeaderLine">
+   <widget class="ATCButtonMainWindow" name="buttonLeaderLine">
     <property name="geometry">
      <rect>
       <x>760</x>
@@ -263,7 +225,7 @@ QPushButton::hover#buttonSpacerTop
      <string>LDR</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="buttonTrailingDots">
+   <widget class="ATCButtonMainWindow" name="buttonTrailingDots">
     <property name="geometry">
      <rect>
       <x>800</x>
@@ -282,7 +244,7 @@ QPushButton::hover#buttonSpacerTop
      <string>TRD</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="buttonTransitionLevel">
+   <widget class="ATCButtonMainWindow" name="buttonTransitionLevel">
     <property name="geometry">
      <rect>
       <x>440</x>
@@ -301,7 +263,7 @@ QPushButton::hover#buttonSpacerTop
      <string>TL080</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="buttonSettings">
+   <widget class="ATCButtonMainWindow" name="buttonSettings">
     <property name="geometry">
      <rect>
       <x>840</x>
@@ -320,7 +282,7 @@ QPushButton::hover#buttonSpacerTop
      <string>SET</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="buttonDistanceTool">
+   <widget class="ATCButtonMainWindow" name="buttonDistanceTool">
     <property name="geometry">
      <rect>
       <x>600</x>
@@ -339,7 +301,7 @@ QPushButton::hover#buttonSpacerTop
      <string>DST</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="buttonSeparationTool">
+   <widget class="ATCButtonMainWindow" name="buttonSeparationTool">
     <property name="geometry">
      <rect>
       <x>640</x>
@@ -358,7 +320,7 @@ QPushButton::hover#buttonSpacerTop
      <string>SEP</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="buttonSpacerTop">
+   <widget class="ATCButtonMainWindow" name="buttonSpacerTop">
     <property name="geometry">
      <rect>
       <x>920</x>
@@ -377,7 +339,7 @@ QPushButton::hover#buttonSpacerTop
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="buttonSpacerBottom">
+   <widget class="ATCButtonMainWindow" name="buttonSpacerBottom">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -418,6 +380,13 @@ QPushButton::hover#buttonSpacerTop
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>ATCButtonMainWindow</class>
+   <extends>QPushButton</extends>
+   <header>atcbuttons.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

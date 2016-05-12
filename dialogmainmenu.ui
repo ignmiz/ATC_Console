@@ -137,7 +137,7 @@
     <string>HH:mm</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="buttonRandomize">
+  <widget class="ATCButtonDialog" name="buttonRandomize">
    <property name="geometry">
     <rect>
      <x>230</x>
@@ -220,6 +220,13 @@
    </property>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ATCButtonDialog</class>
+   <extends>QPushButton</extends>
+   <header>atcbuttons.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

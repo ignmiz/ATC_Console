@@ -2,6 +2,7 @@
 #define ATCDIALOG_H
 
 #include "atcmousehandler.h"
+
 #include <QDialog>
 
 namespace Ui {
@@ -20,13 +21,14 @@ public:
     void maximizeWindow();
     void minimizeWindow();
 
-    bool isMaximized();
-    bool isMouseOnTitleBar(QPoint mousePosition);
+    bool isMaximized() const;
+    bool isMouseOnTitleBar(QPoint mousePosition) const;
 
-    bool getFlagStdButtonPressed();
-    bool getFlagClickedOnTitleBar();
-    QPoint getMouseEventPosition();
-    QPoint getMouseDragPosition();
+    bool getFlagStdButtonPressed() const;
+    bool getFlagClickedOnTitleBar() const;
+    QPoint getMouseEventPosition() const;
+    QPoint getMouseDragPosition() const;
+    QWidget* getParentWindowAdress() const;
 
     void setFlagMaximized(bool flagBool);
     void setFlagClickedOnTitleBar(bool flagBool);
@@ -35,6 +37,8 @@ public:
 
 private:
     Ui::ATCDialog *ui;
+    QWidget *parentWindow;
+
     unsigned int windowWidth;
     unsigned int windowHeight;
     QString windowTitle;
@@ -46,7 +50,6 @@ private:
     QPoint mouseDragPosition;
 
 protected:
-
     void windowSetup();
 
     void mousePressEvent(QMouseEvent *event);
