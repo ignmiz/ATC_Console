@@ -66,13 +66,13 @@ QScrollBar::handle:vertical {
 
 QScrollBar::add-page:vertical
 {
-	background: #000000;
+	background: #1e1e1e;
 	border: none;
 }
 
 QScrollBar::sub-page:vertical
 {
-	background: #000000;
+	background: #1e1e1e;
 	border: none;
 }</string>
    </property>

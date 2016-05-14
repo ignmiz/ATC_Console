@@ -5,6 +5,7 @@
 #include "dialogtextconsole.h"
 
 #include <QDesktopWidget>
+#include <QGraphicsRectItem>
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -15,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     dialogTextConsole = new DialogTextConsole(this);
 
     mainWindowSetup();
+    situationalDisplaySetup();
 }
 
 MainWindow::~MainWindow()
@@ -78,6 +80,25 @@ void MainWindow::mainWindowSetup()
 
     ui->mainToolBar->hide();
     ui->statusBar->hide();
+}
+
+void MainWindow::situationalDisplaySetup()
+{
+//    ui->situationalDisplay->setDragMode(QGraphicsView::ScrollHandDrag);
+
+    scene = new QGraphicsScene(this);
+    ui->situationalDisplay->setScene(scene);
+
+    QBrush brush(Qt::gray);
+    QPen pen(Qt::green);
+    pen.setWidth(3);
+
+    rect1 = scene->addRect(-250, -250, 100, 100, pen, brush);
+    rect2 = scene->addRect(-250, 250, 100, 100, pen, brush);
+    rect3 = scene->addRect(250, 250, 100, 100, pen, brush);
+    rect4 = scene->addRect(250, -250, 100, 100, pen, brush);
+
+//    rect->setFlag(QGraphicsItem::ItemIsMovable);
 }
 
 bool MainWindow::getFlagDialogMainMenuExists() const

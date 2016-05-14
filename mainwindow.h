@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QGraphicsScene>
+
 #include "dialogtextconsole.h"
 
 namespace Ui {
@@ -31,11 +33,14 @@ private slots:
 private:
     Ui::MainWindow *ui;
     DialogTextConsole *dialogTextConsole;
+    QGraphicsScene *scene;
+    QGraphicsRectItem *rect1, *rect2, *rect3, *rect4;
 
     bool flagDialogMainMenuExists = false;
     bool flagDialogSectorSetupExists = false;
 
     void mainWindowSetup();
+    void situationalDisplaySetup();
 };
 
 #endif // MAINWINDOW_H

@@ -358,6 +358,23 @@
      <string/>
     </property>
    </widget>
+   <widget class="ATCSituationalDisplay" name="situationalDisplay">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>30</y>
+      <width>1920</width>
+      <height>1020</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QGraphicsView
+{
+	background-color: #000000;
+	border-style: none;
+}</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -385,6 +402,11 @@
    <class>ATCButtonMainWindow</class>
    <extends>QPushButton</extends>
    <header>atcbuttons.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ATCSituationalDisplay</class>
+   <extends>QGraphicsView</extends>
+   <header>atcsituationaldisplay.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
