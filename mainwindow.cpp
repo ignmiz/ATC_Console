@@ -6,6 +6,7 @@
 
 #include <QDesktopWidget>
 #include <QGraphicsRectItem>
+#include <QTimer>
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -90,13 +91,20 @@ void MainWindow::situationalDisplaySetup()
     ui->situationalDisplay->setScene(scene);
 
     QBrush brush(Qt::gray);
+
     QPen pen(Qt::green);
     pen.setWidth(3);
 
+    QPen penLine(Qt::white);
+    penLine.setWidth(5);
+
     rect1 = scene->addRect(-250, -250, 100, 100, pen, brush);
-    rect2 = scene->addRect(-250, 250, 100, 100, pen, brush);
-    rect3 = scene->addRect(250, 250, 100, 100, pen, brush);
-    rect4 = scene->addRect(250, -250, 100, 100, pen, brush);
+    rect2 = scene->addRect(-250, 150, 100, 100, pen, brush);
+    rect3 = scene->addRect(150, 150, 100, 100, pen, brush);
+    rect4 = scene->addRect(150, -250, 100, 100, pen, brush);
+
+    lineH = scene->addLine(-25, 0, 25, 0, penLine);
+    lineV = scene->addLine(0, -25, 0, 25, penLine);
 
 //    rect->setFlag(QGraphicsItem::ItemIsMovable);
 }
@@ -119,4 +127,9 @@ void MainWindow::setFlagDialogMainMenuExists(bool flagBool)
 void MainWindow::setFlagDialogSectorSetupExists(bool flagBool)
 {
     flagDialogSectorSetupExists = flagBool;
+}
+
+void MainWindow::setSituationalDisplayFocus()
+{
+    QTimer::singleShot(0, ui->situationalDisplay, SLOT(setFocus()));
 }

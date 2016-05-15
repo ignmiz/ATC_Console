@@ -12,6 +12,6 @@ DialogMainMenu::DialogMainMenu(QWidget *parent) :
 
 DialogMainMenu::~DialogMainMenu()
 {
-    delete uiInner;
     static_cast<MainWindow*>(getParentWindowAdress())->setFlagDialogMainMenuExists(false);
+    delete uiInner;
 }

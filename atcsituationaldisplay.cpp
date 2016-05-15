@@ -60,46 +60,30 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
 
 void ATCSituationalDisplay::mousePressEvent(QMouseEvent *event)
 {
-//    if(event->button() == Qt::LeftButton)
-//    {
-//        setMouseDragPosition(event);
-//        event->accept();
-//    }
-
     QGraphicsView::mousePressEvent(event);
-//    viewport()->setCursor(Qt::CrossCursor);
-
 }
 
 void ATCSituationalDisplay::mouseMoveEvent(QMouseEvent *event)
 {
-//    if(event->buttons() & Qt::LeftButton)
-//    {
-//        this->translate(transformDx, transformDy);
-//        event->accept();
-//    }
-//    else
-//        event->ignore();
     if(QGuiApplication::queryKeyboardModifiers().testFlag(Qt::ControlModifier))
     {
         QGraphicsView::mouseMoveEvent(event);
-//        viewport()->setCursor(Qt::CrossCursor);
     }
+    event->accept();
 }
 
 void ATCSituationalDisplay::mouseReleaseEvent(QMouseEvent *event)
 {
     QGraphicsView::mouseReleaseEvent(event);
-    viewport()->setCursor(Qt::CrossCursor);
 }
 
 void ATCSituationalDisplay::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Control)
     {
-        this->setDragMode(QGraphicsView::ScrollHandDrag);
-        event->accept();
+        this->setDragMode(QGraphicsView::ScrollHandDrag);        
     }
+    event->accept();
 }
 
 void ATCSituationalDisplay::keyReleaseEvent(QKeyEvent *event)
@@ -107,7 +91,7 @@ void ATCSituationalDisplay::keyReleaseEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_Control)
     {
         this->setDragMode(QGraphicsView::NoDrag);
-        viewport()->setCursor(Qt::CrossCursor);
-        event->accept();
+        viewport()->setCursor(Qt::CrossCursor);        
     }
+    event->accept();
 }

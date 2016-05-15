@@ -23,6 +23,7 @@ public:
 
     void setFlagDialogMainMenuExists(bool flagBool);
     void setFlagDialogSectorSetupExists(bool flagBool);
+    void setSituationalDisplayFocus();
 
 private slots:
     void on_buttonMainMenu_clicked();
@@ -35,6 +36,7 @@ private:
     DialogTextConsole *dialogTextConsole;
     QGraphicsScene *scene;
     QGraphicsRectItem *rect1, *rect2, *rect3, *rect4;
+    QGraphicsLineItem *lineH, *lineV;
 
     bool flagDialogMainMenuExists = false;
     bool flagDialogSectorSetupExists = false;
