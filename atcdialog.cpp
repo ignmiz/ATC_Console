@@ -1,17 +1,19 @@
 #include "atcdialog.h"
 #include "ui_atcdialog.h"
+#include "mainwindow.h"
 
 #include <QMouseEvent>
 #include <QCursor>
 
 ATCDialog::ATCDialog(QWidget *parent, QString title, unsigned int width,
-                     unsigned int height, bool deleteOnClose) :
+                     unsigned int height, bool deleteOnClose, ATC::ATCDialogType dialogtype) :
     QDialog(parent),
     ui(new Ui::ATCDialog),
     windowTitle(title),
     windowWidth(width),
     windowHeight(height),
     flagDeleteOnClose(deleteOnClose),
+    dialogType(dialogtype),
     parentWindow(parent)
 {
     ui->setupUi(this);
@@ -28,6 +30,15 @@ void ATCDialog::maximizeWindow()
     flagMaximized = true;
     resize(windowWidth, windowHeight);
     ui->frameDialog->resize(windowWidth, windowHeight);
+
+    switch (dialogType) {
+    case ATC::TextConsole:
+        break;
+
+    case ATC::Default:
+        static_cast<MainWindow*>(getParentWindowAdress())->setSituationalDisplayFocus();
+        break;
+    }
 }
 
 void ATCDialog::minimizeWindow()
@@ -36,6 +47,7 @@ void ATCDialog::minimizeWindow()
     flagMaximized = false;
     resize(windowWidth, 30);
     ui->frameDialog->resize(windowWidth, 30);
+    static_cast<MainWindow*>(getParentWindowAdress())->setSituationalDisplayFocus();
 }
 
 bool ATCDialog::isMaximized() const
@@ -92,7 +104,7 @@ void ATCDialog::mouseMoveEvent(QMouseEvent *event)
 {
     if(getFlagStdButtonPressed() || !getFlagClickedOnTitleBar())
     {
-        event->ignore();
+        event->accept();
     }
     else
     {
@@ -102,7 +114,7 @@ void ATCDialog::mouseMoveEvent(QMouseEvent *event)
             event->accept();
         }
         else
-            event->ignore();
+            event->accept();
     }
 }
 
@@ -110,6 +122,16 @@ void ATCDialog::mouseReleaseEvent(QMouseEvent *event)
 {
     setFlagStdButtonPressed(false);
     setFlagClickedOnTitleBar(false);
+
+    switch (dialogType) {
+    case ATC::TextConsole:
+        break;
+
+    case ATC::Default:
+        static_cast<MainWindow*>(getParentWindowAdress())->setSituationalDisplayFocus();
+        break;
+    }
+
     event->accept();
 }
 
@@ -128,7 +150,7 @@ void ATCDialog::mouseDoubleClickEvent(QMouseEvent *event)
         event->accept();
     }
     else
-        event->ignore();
+        event->accept();
 }
 
 void ATCDialog::windowSetup()

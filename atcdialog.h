@@ -2,6 +2,7 @@
 #define ATCDIALOG_H
 
 #include "atcmousehandler.h"
+#include "atcflags.h"
 
 #include <QDialog>
 
@@ -15,7 +16,7 @@ class ATCDialog : public QDialog
 
 public:
     explicit ATCDialog(QWidget *parent = 0, QString title = "Title", unsigned int width = 400,
-                       unsigned int height = 300, bool deleteOnClose = true);
+                       unsigned int height = 300, bool deleteOnClose = true, ATC::ATCDialogType dialogtype = ATC::Default);
     ~ATCDialog();
 
     void maximizeWindow();
@@ -38,6 +39,7 @@ public:
 private:
     Ui::ATCDialog *ui;
     QWidget *parentWindow;
+    ATC::ATCDialogType dialogType;
 
     unsigned int windowWidth;
     unsigned int windowHeight;

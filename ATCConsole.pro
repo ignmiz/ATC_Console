@@ -32,7 +32,8 @@ HEADERS  += mainwindow.h \
     atclineedit.h \
     atcbuttons.h \
     atcconsolecommands.h \
-    atcsituationaldisplay.h
+    atcsituationaldisplay.h \
+    atcflags.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \

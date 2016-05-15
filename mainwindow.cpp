@@ -29,9 +29,10 @@ void MainWindow::on_buttonMainMenu_clicked()
 {
     if(!getFlagDialogMainMenuExists())
     {
-        DialogMainMenu *dialogMainMenu = new DialogMainMenu(this);
+        dialogMainMenu = new DialogMainMenu(this);
         dialogMainMenu->show();
         setFlagDialogMainMenuExists(true);
+        setSituationalDisplayFocus();
     }
 }
 
@@ -39,9 +40,10 @@ void MainWindow::on_buttonSctSetup_clicked()
 {
     if(!getFlagDialogSectorSetupExists())
     {
-        DialogSectorSetup *dialogSectorSetup = new DialogSectorSetup(this);
+        dialogSectorSetup = new DialogSectorSetup(this);
         dialogSectorSetup->show();
         setFlagDialogSectorSetupExists(true);
+        setSituationalDisplayFocus();
     }
 }
 
@@ -106,6 +108,8 @@ void MainWindow::situationalDisplaySetup()
     lineH = scene->addLine(-25, 0, 25, 0, penLine);
     lineV = scene->addLine(0, -25, 0, 25, penLine);
 
+    setSituationalDisplayFocus();
+
 //    rect->setFlag(QGraphicsItem::ItemIsMovable);
 }
 
@@ -131,5 +135,6 @@ void MainWindow::setFlagDialogSectorSetupExists(bool flagBool)
 
 void MainWindow::setSituationalDisplayFocus()
 {
-    QTimer::singleShot(0, ui->situationalDisplay, SLOT(setFocus()));
+//    QTimer::singleShot(0, ui->situationalDisplay, SLOT(setFocus()));
+    ui->situationalDisplay->setFocus();
 }

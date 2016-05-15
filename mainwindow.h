@@ -5,6 +5,8 @@
 #include <QGraphicsScene>
 
 #include "dialogtextconsole.h"
+#include "dialogmainmenu.h"
+#include "dialogsectorsetup.h"
 
 namespace Ui {
 class MainWindow;
@@ -34,6 +36,9 @@ private slots:
 private:
     Ui::MainWindow *ui;
     DialogTextConsole *dialogTextConsole;
+    DialogMainMenu *dialogMainMenu;
+    DialogSectorSetup *dialogSectorSetup;
+
     QGraphicsScene *scene;
     QGraphicsRectItem *rect1, *rect2, *rect3, *rect4;
     QGraphicsLineItem *lineH, *lineV;

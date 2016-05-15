@@ -51,6 +51,16 @@ ATCButtonMainWindow::ATCButtonMainWindow(QWidget *parent) : QPushButton(parent)
                 "{"
                 "   background-color: #3c3c3c;"
                 "}"
+
+                "ATCButtonMainWindow#buttonSpacerTop"
+                "{"
+                "   background-color: #000000;"
+                "}"
+
+                "ATCButtonMainWindow#buttonSpacerBottom"
+                "{"
+                "   background-color: #000000;"
+                "}"
                 );
 }
 

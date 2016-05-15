@@ -9,7 +9,7 @@
 #include <QScrollBar>
 
 DialogTextConsole::DialogTextConsole(QWidget *parent) :
-    ATCDialog(parent, "Text Console", 800, 600, false),
+    ATCDialog(parent, "Text Console", 800, 600, false, ATC::TextConsole),
     uiInner(new Ui::DialogTextConsole)
 {
     uiInner->setupUi(this);
