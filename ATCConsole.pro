@@ -6,11 +6,20 @@
 
 QT       += core gui
 
+VPATH += ./atc \
+    ./dialog \
+    ./ui
+
+INCLUDEPATH += ./atc \
+    ./dialog \
+    ./ui
+
+#DEPENDPATH += E:\Qt\ATC_Console\ATC_Console\atc
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = ATCConsole
 TEMPLATE = app
-
 
 SOURCES += main.cpp\
         mainwindow.cpp \
