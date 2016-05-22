@@ -36,6 +36,12 @@ public:
     void setFlagStdButtonPressed(bool flagBool);
     void setMouseDragPosition(QMouseEvent *event);
 
+signals:
+    void closed();
+
+private slots:
+    void setSituationDisplayFocus();
+
 private:
     Ui::ATCDialog *ui;
     QWidget *parentWindow;

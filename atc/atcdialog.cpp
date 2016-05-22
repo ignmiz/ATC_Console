@@ -36,7 +36,7 @@ void ATCDialog::maximizeWindow()
         break;
 
     case ATC::Default:
-        static_cast<MainWindow*>(getParentWindowAdress())->setSituationalDisplayFocus();
+        dynamic_cast<MainWindow*>(getParentWindowAdress())->setSituationalDisplayFocus();
         break;
     }
 }
@@ -47,7 +47,7 @@ void ATCDialog::minimizeWindow()
     flagMaximized = false;
     resize(windowWidth, 30);
     ui->frameDialog->resize(windowWidth, 30);
-    static_cast<MainWindow*>(getParentWindowAdress())->setSituationalDisplayFocus();
+    dynamic_cast<MainWindow*>(getParentWindowAdress())->setSituationalDisplayFocus();
 }
 
 bool ATCDialog::isMaximized() const
@@ -128,7 +128,7 @@ void ATCDialog::mouseReleaseEvent(QMouseEvent *event)
         break;
 
     case ATC::Default:
-        static_cast<MainWindow*>(getParentWindowAdress())->setSituationalDisplayFocus();
+        dynamic_cast<MainWindow*>(getParentWindowAdress())->setSituationalDisplayFocus();
         break;
     }
 
@@ -169,11 +169,18 @@ void ATCDialog::windowSetup()
 
     ui->buttonMinMax->move(windowWidth - 50, 5);
     ui->buttonClose->move(windowWidth - 30, 5);
+
+    connect(this, SIGNAL(closed()), this, SLOT(setSituationDisplayFocus()));
 }
 
 void ATCDialog::setMouseDragPosition(QMouseEvent *event)
 {
     mouseDragPosition = event->globalPos() - frameGeometry().topLeft();
+}
+
+void ATCDialog::setSituationDisplayFocus()
+{
+    dynamic_cast<MainWindow*>(getParentWindowAdress())->setSituationalDisplayFocus();
 }
 
 void ATCDialog::setFlagMaximized(bool flagBool)

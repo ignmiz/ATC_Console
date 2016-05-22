@@ -12,6 +12,6 @@ DialogSectorSetup::DialogSectorSetup(QWidget *parent) :
 
 DialogSectorSetup::~DialogSectorSetup()
 {
-    static_cast<MainWindow*>(getParentWindowAdress())->setFlagDialogSectorSetupExists(false);
+    dynamic_cast<MainWindow*>(getParentWindowAdress())->setFlagDialogSectorSetupExists(false);
     delete uiInner;
 }

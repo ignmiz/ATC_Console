@@ -17,12 +17,17 @@ MainWindow::MainWindow(QWidget *parent) :
     dialogTextConsole = new DialogTextConsole(this);
 
     mainWindowSetup();
-    situationalDisplaySetup();
+    setSituationalDisplayFocus();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+bool MainWindow::isDialogTextConsoleVisible() const
+{
+    return dialogTextConsole->isVisible();
 }
 
 void MainWindow::on_buttonMainMenu_clicked()
@@ -83,34 +88,6 @@ void MainWindow::mainWindowSetup()
 
     ui->mainToolBar->hide();
     ui->statusBar->hide();
-}
-
-void MainWindow::situationalDisplaySetup()
-{
-//    ui->situationalDisplay->setDragMode(QGraphicsView::ScrollHandDrag);
-
-    scene = new QGraphicsScene(this);
-    ui->situationalDisplay->setScene(scene);
-
-    QBrush brush(Qt::gray);
-
-    QPen pen(Qt::green);
-    pen.setWidth(3);
-
-    QPen penLine(Qt::white);
-    penLine.setWidth(5);
-
-    rect1 = scene->addRect(-250, -250, 100, 100, pen, brush);
-    rect2 = scene->addRect(-250, 150, 100, 100, pen, brush);
-    rect3 = scene->addRect(150, 150, 100, 100, pen, brush);
-    rect4 = scene->addRect(150, -250, 100, 100, pen, brush);
-
-    lineH = scene->addLine(-25, 0, 25, 0, penLine);
-    lineV = scene->addLine(0, -25, 0, 25, penLine);
-
-    setSituationalDisplayFocus();
-
-//    rect->setFlag(QGraphicsItem::ItemIsMovable);
 }
 
 bool MainWindow::getFlagDialogMainMenuExists() const

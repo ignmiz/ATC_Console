@@ -4,6 +4,7 @@
 #define ATC_MOUSE_HANDLER                               \
     void on_buttonClose_clicked()                       \
     {                                                   \
+        emit(closed());                                 \
         close();                                        \
     }                                                   \
                                                         \

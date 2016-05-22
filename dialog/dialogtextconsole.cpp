@@ -1,6 +1,7 @@
 #include "dialogtextconsole.h"
 #include "ui_dialogtextconsole.h"
 #include "atcconsolecommands.h"
+#include "mainwindow.h"
 
 #include <QDateTime>
 #include <QTimer>
@@ -69,6 +70,7 @@ void DialogTextConsole::consoleSetup()
     uiInner->consoleDisplay->setTextInteractionFlags(Qt::NoTextInteraction);
 
     connect(uiInner->consoleInput, SIGNAL(focussed(bool)), this, SLOT(raise()));
+    connect(this, SIGNAL(closed()), this, SLOT(setSituationDisplayFocus()));
 }
 
 QString DialogTextConsole::getConsoleInputText()

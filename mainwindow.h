@@ -20,6 +20,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    bool isDialogTextConsoleVisible() const;
+
     bool getFlagDialogMainMenuExists() const;
     bool getFlagDialogSectorSetupExists() const;
 
@@ -39,15 +41,10 @@ private:
     DialogMainMenu *dialogMainMenu;
     DialogSectorSetup *dialogSectorSetup;
 
-    QGraphicsScene *scene;
-    QGraphicsRectItem *rect1, *rect2, *rect3, *rect4;
-    QGraphicsLineItem *lineH, *lineV;
-
     bool flagDialogMainMenuExists = false;
     bool flagDialogSectorSetupExists = false;
 
     void mainWindowSetup();
-    void situationalDisplaySetup();
 };
 
 #endif // MAINWINDOW_H

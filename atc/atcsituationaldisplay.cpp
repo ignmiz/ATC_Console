@@ -1,4 +1,5 @@
 #include "atcsituationaldisplay.h"
+#include "mainwindow.h"
 
 #include <QWheelEvent>
 #include <QCursor>
@@ -7,20 +8,11 @@
 
 ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(parent)
 {
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-//    setResizeAnchor(QGraphicsView::AnchorUnderMouse);
-//    setTransformationAnchor(QGraphicsView::NoAnchor);
-    this->setDragMode(QGraphicsView::NoDrag);
-//    this->setAlignment();
-    this->setSceneRect(-50000, -50000, 100000, 100000);
-
-    viewport()->setCursor(Qt::CrossCursor);
+    situationalDisplaySetup();
 }
 
 ATCSituationalDisplay::~ATCSituationalDisplay()
 {
-
 }
 
 qreal ATCSituationalDisplay::getBaseScale() const
@@ -28,32 +20,50 @@ qreal ATCSituationalDisplay::getBaseScale() const
     return baseScale;
 }
 
-//QPoint ATCSituationalDisplay::getMouseDragPosition() const
-//{
-//    return mouseDragPosition;
-//}
-
 void ATCSituationalDisplay::setBaseScale(qreal scale)
 {
     baseScale = scale;
 }
 
-//void ATCSituationalDisplay::setMouseDragPosition(QMouseEvent *event)
-//{
-//    mouseDragPosition = mapToScene(event->globalPos() - frameGeometry().topLeft());
-//    qDebug() << mouseDragPosition;
-//}
+void ATCSituationalDisplay::situationalDisplaySetup()
+{
+    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setDragMode(QGraphicsView::NoDrag);
+    setSceneRect(-50000, -50000, 100000, 100000);
 
-//void ATCSituationalDisplay::scrollContentsBy(int dx, int dy)
-//{
-//}
+    viewport()->setCursor(Qt::CrossCursor);
+
+    scene = new QGraphicsScene(this);
+    setScene(scene);
+
+    QBrush brush(Qt::gray);
+
+    QPen pen(Qt::green);
+    pen.setWidth(3);
+
+    QPen penLine(Qt::white);
+    penLine.setWidth(5);
+
+    rect1 = scene->addRect(-250, -250, 100, 100, pen, brush);
+    rect2 = scene->addRect(-250, 150, 100, 100, pen, brush);
+    rect3 = scene->addRect(150, 150, 100, 100, pen, brush);
+    rect4 = scene->addRect(150, -250, 100, 100, pen, brush);
+
+    lineH = scene->addLine(-25, 0, 25, 0, penLine);
+    lineV = scene->addLine(0, -25, 0, 25, penLine);
+}
 
 void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
 {
-    QPoint numDegrees = event->angleDelta();
+    if(QGuiApplication::queryKeyboardModifiers().testFlag(Qt::ControlModifier))
+    {
+        QPoint numDegrees = event->angleDelta();
+        qreal newScale = baseScale + (numDegrees.y() / 120) * scaleResolution;
 
-    qreal newScale = baseScale + (numDegrees.y() / 120) * scaleResolution;
-    this->scale(newScale, newScale);
+        scale(newScale, newScale);
+    }
 
     event->accept();
 }
@@ -81,7 +91,7 @@ void ATCSituationalDisplay::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Control)
     {
-        this->setDragMode(QGraphicsView::ScrollHandDrag);        
+        this->setDragMode(QGraphicsView::ScrollHandDrag);
     }
     event->accept();
 }

@@ -12,18 +12,21 @@ public:
     ~ATCSituationalDisplay();
 
     qreal getBaseScale() const;
-//    QPointF getMouseDragPosition() const;
-
     void setBaseScale(qreal scale);
-//    void setMouseDragPosition(QMouseEvent *event);
 
 private:
+    QWidget *parentWindow;
+
     qreal baseScale = 1;
     qreal scaleResolution = 0.1;
-//    QPointF mouseDragPosition;
+
+    QGraphicsScene *scene;
+    QGraphicsRectItem *rect1, *rect2, *rect3, *rect4;
+    QGraphicsLineItem *lineH, *lineV;
+
+    void situationalDisplaySetup();
 
 protected:
-//    void scrollContentsBy(int dx, int dy);
     void wheelEvent(QWheelEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
