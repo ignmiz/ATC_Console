@@ -25,6 +25,7 @@ private:
     QGraphicsLineItem *lineH, *lineV;
 
     void situationalDisplaySetup();
+    void loadData(); //Temp - to be moved to Settings Dialog
 
 protected:
     void wheelEvent(QWheelEvent *event);

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui positioning
 
 VPATH += ./atc \
     ./dialog \
@@ -13,8 +13,6 @@ VPATH += ./atc \
 INCLUDEPATH += ./atc \
     ./dialog \
     ./ui
-
-#DEPENDPATH += E:\Qt\ATC_Console\ATC_Console\atc
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -30,7 +28,8 @@ SOURCES += main.cpp\
     atclineedit.cpp \
     atcbuttons.cpp \
     atcconsolecommands.cpp \
-    atcsituationaldisplay.cpp
+    atcsituationaldisplay.cpp \
+    atcairspacefix.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -42,7 +41,8 @@ HEADERS  += mainwindow.h \
     atcbuttons.h \
     atcconsolecommands.h \
     atcsituationaldisplay.h \
-    atcflags.h
+    atcflags.h \
+    atcairspacefix.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \

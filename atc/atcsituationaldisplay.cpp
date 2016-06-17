@@ -4,11 +4,14 @@
 #include <QWheelEvent>
 #include <QCursor>
 #include <QGuiApplication>
+#include <QFile>
+#include <QTextStream>
 #include <QDebug>
 
 ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(parent)
 {
     situationalDisplaySetup();
+    loadData();
 }
 
 ATCSituationalDisplay::~ATCSituationalDisplay()
@@ -53,6 +56,27 @@ void ATCSituationalDisplay::situationalDisplaySetup()
 
     lineH = scene->addLine(-25, 0, 25, 0, penLine);
     lineV = scene->addLine(0, -25, 0, 25, penLine);
+}
+
+void ATCSituationalDisplay::loadData()
+{
+    QFile file("E:/Qt/ATC_Console/ATC_Console/EPWA_TMA.txt");
+
+    if(!file.open(QFile::ReadOnly | QFile::Text))
+    {
+        qDebug() << "Error while opening data file...";
+        return;
+    }
+
+    QTextStream inStream(&file);
+    while(!inStream.atEnd())
+    {
+        QString line = inStream.readLine();
+        qDebug() << line;
+    }
+
+    file.close();
+
 }
 
 void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
