@@ -1,4 +1,5 @@
 #include "atcairspacefix.h"
+#include <QDebug>
 
 ATCAirspaceFix::ATCAirspaceFix(double latitude, double longitude) : QGeoCoordinate(latitude, longitude)
 {
@@ -7,5 +8,5 @@ ATCAirspaceFix::ATCAirspaceFix(double latitude, double longitude) : QGeoCoordina
 
 ATCAirspaceFix::~ATCAirspaceFix()
 {
-
+    qDebug() << toString(QGeoCoordinate::DegreesMinutesSecondsWithHemisphere) + " deleted...";
 }

@@ -8,7 +8,7 @@
 #include <QTextStream>
 #include <QDebug>
 
-ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(parent)
+ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(parent), airspaceData(new ATCAirspace)
 {
     situationalDisplaySetup();
     loadData();
@@ -16,6 +16,7 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
 
 ATCSituationalDisplay::~ATCSituationalDisplay()
 {
+    delete airspaceData;
 }
 
 qreal ATCSituationalDisplay::getBaseScale() const
@@ -59,24 +60,43 @@ void ATCSituationalDisplay::situationalDisplaySetup()
 }
 
 void ATCSituationalDisplay::loadData()
-{
-    QFile file("E:/Qt/ATC_Console/ATC_Console/EPWA_TMA.txt");
+{    
+    QFile sectorFile("E:/Qt/ATC_Console/ATC_Console/EPWA_TMA.txt");
 
-    if(!file.open(QFile::ReadOnly | QFile::Text))
+    if(!sectorFile.open(QFile::ReadOnly | QFile::Text))
     {
         qDebug() << "Error while opening data file...";
         return;
     }
 
-    QTextStream inStream(&file);
+    QTextStream inStream(&sectorFile);
     while(!inStream.atEnd())
     {
-        QString line = inStream.readLine();
-        qDebug() << line;
+        QString textLine = inStream.readLine();
+        textLine = textLine.trimmed();
+
+        if(textLine.contains("SECTORLINE", Qt::CaseInsensitive))
+        {
+            QStringList stringList = textLine.split(":", QString::SkipEmptyParts);
+            QString sectorName = stringList[1];
+
+            airspaceData->appendSector(new ATCAirspaceSector(sectorName));
+            qDebug() << "Sector " + sectorName + " appended...";
+        }
+        else if(textLine.contains("COORD", Qt::CaseInsensitive))
+        {
+            QStringList stringList = textLine.split(":", QString::SkipEmptyParts);
+            QString latitudeString = stringList[1];
+            QString longitudeString = stringList[2];
+
+            double latitudeDouble = airspaceData->coordsStringToDouble(latitudeString);
+            double longitudeDouble = airspaceData->coordsStringToDouble(longitudeString);
+
+            airspaceData->getLastSector()->appendAirspaceFix(new ATCAirspaceFix(latitudeDouble, longitudeDouble));
+        }
     }
 
-    file.close();
-
+    sectorFile.close();
 }
 
 void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)

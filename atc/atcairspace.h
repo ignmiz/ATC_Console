@@ -11,14 +11,20 @@ class ATCAirspace
 
 public:
     explicit ATCAirspace();
-    explicit ATCAirspace(QString name);
+//    explicit ATCAirspace(QString name);
     ~ATCAirspace();
 
-    QString getAirspaceName();
-    void setAirspaceName(QString name);
+//    QString getAirspaceName();
+//    void setAirspaceName(QString name);
+    double coordsStringToDouble(QString coords);
+    void appendSector(ATCAirspaceSector *sector);
+    void deleteAllSectors();
+
+    ATCAirspaceSector* getSector(int iterator);
+    ATCAirspaceSector* getLastSector();
 
 private:
-    QString airspaceName;
+//    QString airspaceName;
     QVector<ATCAirspaceSector*> sectors;
 };
 

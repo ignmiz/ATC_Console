@@ -1,6 +1,7 @@
 #ifndef ATCSITUATIONALDISPLAY_H
 #define ATCSITUATIONALDISPLAY_H
 
+#include "atcairspace.h"
 #include <QGraphicsView>
 
 class ATCSituationalDisplay : public QGraphicsView
@@ -16,6 +17,8 @@ public:
 
 private:
     QWidget *parentWindow;
+
+    ATCAirspace *airspaceData;
 
     qreal baseScale = 1;
     qreal scaleResolution = 0.1;

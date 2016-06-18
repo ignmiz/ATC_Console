@@ -15,8 +15,10 @@ public:
     ~ATCAirspaceSector();
 
     QString getSectorName();
-
     void setSectorName(QString name);
+
+    void appendAirspaceFix(ATCAirspaceFix *airspaceFix);
+    void deleteAllAirspaceFixes();
 
 private:
     QString sectorName;

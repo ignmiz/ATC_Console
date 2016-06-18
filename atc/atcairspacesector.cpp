@@ -1,4 +1,5 @@
 #include "atcairspacesector.h"
+#include <QDebug>
 
 ATCAirspaceSector::ATCAirspaceSector()
 {
@@ -12,7 +13,16 @@ ATCAirspaceSector::ATCAirspaceSector(QString name)
 
 ATCAirspaceSector::~ATCAirspaceSector()
 {
+    if(!sectorName.isEmpty())
+    {
+        qDebug() << "Sector " + sectorName + " deleted...";
+    }
+    else
+    {
+        qDebug() << "Sector with no name deleted...";
+    }
 
+    deleteAllAirspaceFixes();
 }
 
 QString ATCAirspaceSector::getSectorName()
@@ -23,6 +33,26 @@ QString ATCAirspaceSector::getSectorName()
 void ATCAirspaceSector::setSectorName(QString name)
 {
     sectorName = name;
+}
+
+void ATCAirspaceSector::appendAirspaceFix(ATCAirspaceFix *airspaceFix)
+{
+    coordinates.append(airspaceFix);
+}
+
+void ATCAirspaceSector::deleteAllAirspaceFixes()
+{
+    if(!coordinates.empty())
+    {
+        for(int i = 0; i < coordinates.size(); i++)
+        {
+            delete coordinates[i];
+        }
+    }
+    else
+    {
+        qDebug() << "Empty vector of coordinates...";
+    }
 }
 
 
