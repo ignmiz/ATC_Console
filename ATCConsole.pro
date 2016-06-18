@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     atcbuttons.cpp \
     atcconsolecommands.cpp \
     atcsituationaldisplay.cpp \
-    atcairspacefix.cpp
+    atcairspacefix.cpp \
+    atcairspacesector.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -42,7 +43,8 @@ HEADERS  += mainwindow.h \
     atcconsolecommands.h \
     atcsituationaldisplay.h \
     atcflags.h \
-    atcairspacefix.h
+    atcairspacefix.h \
+    atcairspacesector.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \

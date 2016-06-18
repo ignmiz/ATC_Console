@@ -8,7 +8,7 @@ class ATCAirspaceFix : public QGeoCoordinate
 
 public:
     explicit ATCAirspaceFix(double latitude, double longitude);
-    ~ATCAirspaceFix();
+    ~ATCAirspaceFix();    
 };
 
 #endif // ATCAIRSPACEFIX_H
