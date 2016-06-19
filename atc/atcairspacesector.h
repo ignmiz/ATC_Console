@@ -15,6 +15,9 @@ public:
     ~ATCAirspaceSector();
 
     QString getSectorName();
+    ATCAirspaceFix* getCoordinates(int iterator);
+    int getCoordinatesVectorSize();
+
     void setSectorName(QString name);
 
     void appendAirspaceFix(ATCAirspaceFix *airspaceFix);

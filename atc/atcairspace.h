@@ -22,6 +22,7 @@ public:
 
     ATCAirspaceSector* getSector(int iterator);
     ATCAirspaceSector* getLastSector();
+    int getSectorVectorSize();
 
 private:
 //    QString airspaceName;

@@ -54,6 +54,11 @@ ATCAirspaceSector* ATCAirspace::getLastSector()
     return sectors[sectors.size() - 1];
 }
 
+int ATCAirspace::getSectorVectorSize()
+{
+    return sectors.size();
+}
+
 void ATCAirspace::deleteAllSectors()
 {
     if(!sectors.empty())

@@ -12,6 +12,7 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
 {
     situationalDisplaySetup();
     loadData();
+    displayData();
 }
 
 ATCSituationalDisplay::~ATCSituationalDisplay()
@@ -97,6 +98,73 @@ void ATCSituationalDisplay::loadData()
     }
 
     sectorFile.close();
+}
+
+void ATCSituationalDisplay::displayData()
+{
+    double latitudeMin = airspaceData->getSector(0)->getCoordinates(0)->latitude();
+    double latitudeMax = airspaceData->getSector(0)->getCoordinates(0)->latitude();
+    double longitudeMin = airspaceData->getSector(0)->getCoordinates(0)->longitude();
+    double longitudeMax = airspaceData->getSector(0)->getCoordinates(0)->longitude();
+
+    for(int i = 0; i < airspaceData->getSectorVectorSize(); i++)
+    {
+        for(int j = 0; j < airspaceData->getSector(i)->getCoordinatesVectorSize(); j++)
+        {
+            double latitudeCurrent = airspaceData->getSector(i)->getCoordinates(j)->latitude();
+            double longitudeCurrent = airspaceData->getSector(i)->getCoordinates(j)->longitude();
+
+            if(latitudeCurrent < latitudeMin)
+                latitudeMin = latitudeCurrent;
+            else if(latitudeCurrent > latitudeMax)
+                latitudeMax = latitudeCurrent;
+
+            if(longitudeCurrent < longitudeMin)
+                longitudeMin = longitudeCurrent;
+            else if(longitudeCurrent > longitudeMax)
+                longitudeMax = longitudeCurrent;
+        }
+    }
+
+    qDebug() << "Lat min: " << latitudeMin;
+    qDebug() << "Lat max: " << latitudeMax;
+    qDebug() << "Long min: " << longitudeMin;
+    qDebug() << "Long max: " << longitudeMax;
+
+    double sectorCentreLatitude = (latitudeMin + latitudeMax) / 2;
+    double sectorCentreLongitude = (longitudeMin + longitudeMax) / 2;
+
+    qDebug() << "Centre lat: " << sectorCentreLatitude;
+    qDebug() << "Centre long: " << sectorCentreLongitude;
+
+    for(int i = 0; i < airspaceData->getSectorVectorSize(); i++)
+    {
+        qDebug() << airspaceData->getSector(i)->getSectorName();
+
+        for(int j = 0; j < airspaceData->getSector(i)->getCoordinatesVectorSize(); j++)
+        {
+            ATCAirspaceFix* currentAirspaceFix = airspaceData->getSector(i)->getCoordinates(j);
+
+            currentAirspaceFix->transformToLocal(sectorCentreLatitude, sectorCentreLongitude);
+            if(currentAirspaceFix->getFlagLocalCoordsInitialized())
+                qDebug() << currentAirspaceFix->getLocalLatitude() << "   " << currentAirspaceFix->getLocalLongitude();
+        }
+    }
+
+    double latitudeSpan = latitudeMax - latitudeMin;
+    double longitudeSpan = longitudeMax - longitudeMin;
+
+    qDebug() << "Lat span: " << latitudeSpan;
+    qDebug() << "Long span: " << longitudeSpan;
+
+    double latitudeSpanPerPixel = latitudeSpan / 1020;
+    double longitudeSpanPerPixel = longitudeSpan / 1920;
+
+    qDebug() << "Lat span per pixel: " << latitudeSpanPerPixel;
+    qDebug() << "Long span per pixel: " << longitudeSpanPerPixel;
+
+
+
 }
 
 void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)

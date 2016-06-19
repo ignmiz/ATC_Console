@@ -30,6 +30,16 @@ QString ATCAirspaceSector::getSectorName()
     return sectorName;
 }
 
+ATCAirspaceFix* ATCAirspaceSector::getCoordinates(int iterator)
+{
+    return coordinates[iterator];
+}
+
+int ATCAirspaceSector::getCoordinatesVectorSize()
+{
+    return coordinates.size();
+}
+
 void ATCAirspaceSector::setSectorName(QString name)
 {
     sectorName = name;
