@@ -17,6 +17,7 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
 
 ATCSituationalDisplay::~ATCSituationalDisplay()
 {
+    scene->clear();
     delete airspaceData;
 }
 
@@ -102,6 +103,7 @@ void ATCSituationalDisplay::loadData()
 
 void ATCSituationalDisplay::displayData()
 {
+//Part calculating global lat & lon extrema
     double latitudeMin = airspaceData->getSector(0)->getCoordinates(0)->latitude();
     double latitudeMax = airspaceData->getSector(0)->getCoordinates(0)->latitude();
     double longitudeMin = airspaceData->getSector(0)->getCoordinates(0)->longitude();
@@ -131,12 +133,14 @@ void ATCSituationalDisplay::displayData()
     qDebug() << "Long min: " << longitudeMin;
     qDebug() << "Long max: " << longitudeMax;
 
+//Part calculating loaded sector centre
     double sectorCentreLatitude = (latitudeMin + latitudeMax) / 2;
     double sectorCentreLongitude = (longitudeMin + longitudeMax) / 2;
 
     qDebug() << "Centre lat: " << sectorCentreLatitude;
     qDebug() << "Centre long: " << sectorCentreLongitude;
 
+//Part calculating local lat & lon by transforming from global to sector centre
     for(int i = 0; i < airspaceData->getSectorVectorSize(); i++)
     {
         qDebug() << airspaceData->getSector(i)->getSectorName();
@@ -151,6 +155,7 @@ void ATCSituationalDisplay::displayData()
         }
     }
 
+//Part calculating scale factor
     double latitudeSpan = latitudeMax - latitudeMin;
     double longitudeSpan = longitudeMax - longitudeMin;
 
@@ -163,7 +168,50 @@ void ATCSituationalDisplay::displayData()
     qDebug() << "Lat span per pixel: " << latitudeSpanPerPixel;
     qDebug() << "Long span per pixel: " << longitudeSpanPerPixel;
 
+    double scaleFactor = 0;
+    if(latitudeSpanPerPixel >= longitudeSpanPerPixel)
+    {
+        scaleFactor = 1020 / latitudeSpan;
+    }
+    else
+    {
+        scaleFactor = 1920 / longitudeSpan;
+    }
 
+    qDebug() << "Scale factor: " << scaleFactor;
+
+//Part translating from local lat & lon to scene QPointF coordinates and add them to scene
+    for(int i = 0; i < airspaceData->getSectorVectorSize(); i++)
+    {
+        qDebug() << airspaceData->getSector(i)->getSectorName();
+
+        QVector<QPointF> polygonVertex(airspaceData->getSector(i)->getCoordinatesVectorSize());
+
+        for(int j = 0; j < airspaceData->getSector(i)->getCoordinatesVectorSize(); j++)
+        {
+            ATCAirspaceFix* currentAirspaceFix = airspaceData->getSector(i)->getCoordinates(j);
+
+            double currentLocalLatitude = currentAirspaceFix->getLocalLatitude();
+            double currentLocalLongitude = currentAirspaceFix->getLocalLongitude();
+
+            qreal sceneCoordX = static_cast<qreal>(currentLocalLongitude * scaleFactor);
+            qreal sceneCoordY = static_cast<qreal>(-1 * currentLocalLatitude * scaleFactor);
+
+            qDebug() << "( " << sceneCoordX << " , " << sceneCoordY << ")";
+
+            QPointF vertex(sceneCoordX, sceneCoordY);
+
+            polygonVertex[j] = vertex;
+        }
+
+        polygonVertex.append(polygonVertex[0]);
+
+        QPolygonF sectorPolygon(polygonVertex);
+        QPen pen(Qt::blue);
+        pen.setWidth(3);
+
+        scene->addPolygon(sectorPolygon, pen);
+    }
 
 }
 
