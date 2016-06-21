@@ -34,6 +34,16 @@ double ATCAirspaceFix::getLocalLongitude()
     return localLongitude;
 }
 
+double ATCAirspaceFix::getMercatorX()
+{
+    return mercatorX;
+}
+
+double ATCAirspaceFix::getMercatorY()
+{
+    return mercatorY;
+}
+
 void ATCAirspaceFix::setFlagLocalCoordsInitialized(bool flag)
 {
     flagLocalCoordsInitialized = flag;
@@ -47,4 +57,14 @@ void ATCAirspaceFix::setLocalLatitude(double localLat)
 void ATCAirspaceFix::setLocalLongitude(double localLon)
 {
     localLongitude = localLon;
+}
+
+void ATCAirspaceFix::setMercatorX(double mercX)
+{
+    mercatorX = mercX;
+}
+
+void ATCAirspaceFix::setMercatorY(double mercY)
+{
+    mercatorY = mercY;
 }

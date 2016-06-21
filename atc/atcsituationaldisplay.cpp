@@ -1,6 +1,8 @@
 #include "atcsituationaldisplay.h"
 #include "mainwindow.h"
+#include "atcconst.h"
 
+#include <QtMath>
 #include <QWheelEvent>
 #include <QCursor>
 #include <QGuiApplication>
@@ -103,6 +105,24 @@ void ATCSituationalDisplay::loadData()
 
 void ATCSituationalDisplay::displayData()
 {
+//Part calculating Mercator projection
+//    for(int i = 0; i < airspaceData->getSectorVectorSize(); i++)
+//    {
+//        for(int j = 0; j < airspaceData->getSector(i)->getCoordinatesVectorSize(); j++)
+//        {
+//            ATCAirspaceFix* currentAirspaceFix = airspaceData->getSector(i)->getCoordinates(j);
+
+//            double mercatorX = currentAirspaceFix->longitude();
+//            double mercatorY = qLn(qTan(ATCConst::PI / 4 + currentAirspaceFix->latitude() * ATCConst::DEG_2_RAD / 2)
+//                               * qPow((1 - ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(currentAirspaceFix->latitude() * ATCConst::DEG_2_RAD)) /
+//                               (1 + ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(currentAirspaceFix->latitude() * ATCConst::DEG_2_RAD)) ,
+//                               ATCConst::WGS84_FIRST_ECCENTRICITY / 2)) * ATCConst::RAD_2_DEG;
+
+//            currentAirspaceFix->setMercatorX(mercatorX);
+//            currentAirspaceFix->setMercatorY(mercatorY);
+//        }
+//    }
+
 //Part calculating global lat & lon extrema
     double latitudeMin = airspaceData->getSector(0)->getCoordinates(0)->latitude();
     double latitudeMax = airspaceData->getSector(0)->getCoordinates(0)->latitude();
