@@ -10,7 +10,7 @@ public:
     explicit ATCAirspaceFix(double latitude, double longitude);
     ~ATCAirspaceFix();
 
-    void transformToLocal(double centreLat, double centreLong);
+    void transformToLocal(double centreX, double centreY);
 
     bool getFlagLocalCoordsInitialized();
     double getLocalLatitude();

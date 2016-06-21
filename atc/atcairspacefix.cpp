@@ -11,10 +11,10 @@ ATCAirspaceFix::~ATCAirspaceFix()
     qDebug() << toString(QGeoCoordinate::DegreesMinutesSecondsWithHemisphere) + " deleted...";
 }
 
-void ATCAirspaceFix::transformToLocal(double centreLat, double centreLong)
+void ATCAirspaceFix::transformToLocal(double centreX, double centreY)
 {
-    localLatitude = latitude() - centreLat;
-    localLongitude = longitude() - centreLong;
+    localLongitude = mercatorX - centreX;
+    localLatitude = mercatorY - centreY;
 
     flagLocalCoordsInitialized = true;
 }
