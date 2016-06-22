@@ -105,36 +105,51 @@ void ATCSituationalDisplay::loadData()
 
 void ATCSituationalDisplay::displayData()
 {
+    struct coord
+    {
+        double x;
+        double y;
+    };
+
+    struct sector
+    {
+        QVector<coord> coords;
+    };
+
+    QVector<sector> tempSectors(airspaceData->getSectorVectorSize());
+
+
 //Part calculating Mercator projection
     for(int i = 0; i < airspaceData->getSectorVectorSize(); i++)
     {
         for(int j = 0; j < airspaceData->getSector(i)->getCoordinatesVectorSize(); j++)
         {
             ATCAirspaceFix* currentAirspaceFix = airspaceData->getSector(i)->getCoordinates(j);
+            coord tempCoords;
 
-            double mercatorX = currentAirspaceFix->longitude();
-            double mercatorY = qLn(qTan(ATCConst::PI / 4 + currentAirspaceFix->latitude() * ATCConst::DEG_2_RAD / 2)
-                               * qPow((1 - ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(currentAirspaceFix->latitude() * ATCConst::DEG_2_RAD)) /
-                               (1 + ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(currentAirspaceFix->latitude() * ATCConst::DEG_2_RAD)) ,
-                               ATCConst::WGS84_FIRST_ECCENTRICITY / 2)) * ATCConst::RAD_2_DEG;
+            tempCoords.x = currentAirspaceFix->longitude();
+            tempCoords.y = qLn(qTan(ATCConst::PI / 4 + currentAirspaceFix->latitude() * ATCConst::DEG_2_RAD / 2)
+                              * qPow((1 - ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(currentAirspaceFix->latitude() * ATCConst::DEG_2_RAD)) /
+                              (1 + ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(currentAirspaceFix->latitude() * ATCConst::DEG_2_RAD)) ,
+                              ATCConst::WGS84_FIRST_ECCENTRICITY / 2)) * ATCConst::RAD_2_DEG;
 
-            currentAirspaceFix->setMercatorX(mercatorX);
-            currentAirspaceFix->setMercatorY(mercatorY);
+            tempSectors[i].coords.append(tempCoords);
+
         }
     }
 
 //Part calculating global lat & lon extrema
-    double mercatorXmin = airspaceData->getSector(0)->getCoordinates(0)->getMercatorX();
-    double mercatorXmax = airspaceData->getSector(0)->getCoordinates(0)->getMercatorX();
-    double mercatorYmin = airspaceData->getSector(0)->getCoordinates(0)->getMercatorY();
-    double mercatorYmax = airspaceData->getSector(0)->getCoordinates(0)->getMercatorY();
+    double mercatorXmin = tempSectors[0].coords[0].x;
+    double mercatorXmax = tempSectors[0].coords[0].x;
+    double mercatorYmin = tempSectors[0].coords[0].y;
+    double mercatorYmax = tempSectors[0].coords[0].y;
 
     for(int i = 0; i < airspaceData->getSectorVectorSize(); i++)
     {
         for(int j = 0; j < airspaceData->getSector(i)->getCoordinatesVectorSize(); j++)
         {
-            double currentX = airspaceData->getSector(i)->getCoordinates(j)->getMercatorX();
-            double currentY = airspaceData->getSector(i)->getCoordinates(j)->getMercatorY();
+            double currentX = tempSectors[i].coords[j].x;
+            double currentY = tempSectors[i].coords[j].y;
 
             if(currentX < mercatorXmin)
                 mercatorXmin = currentX;
@@ -167,12 +182,10 @@ void ATCSituationalDisplay::displayData()
 
         for(int j = 0; j < airspaceData->getSector(i)->getCoordinatesVectorSize(); j++)
         {
-            ATCAirspaceFix* currentAirspaceFix = airspaceData->getSector(i)->getCoordinates(j);
+            tempSectors[i].coords[j].x -= sectorCentreX;
+            tempSectors[i].coords[j].y -= sectorCentreY;
 
-            currentAirspaceFix->transformToLocal(sectorCentreX, sectorCentreY);
-
-            if(currentAirspaceFix->getFlagLocalCoordsInitialized())
-                qDebug() << currentAirspaceFix->getLocalLatitude() << "   " << currentAirspaceFix->getLocalLongitude();
+            qDebug() << tempSectors[i].coords[j].x << "   " << tempSectors[i].coords[j].y;
         }
     }
 
@@ -210,13 +223,8 @@ void ATCSituationalDisplay::displayData()
 
         for(int j = 0; j < airspaceData->getSector(i)->getCoordinatesVectorSize(); j++)
         {
-            ATCAirspaceFix* currentAirspaceFix = airspaceData->getSector(i)->getCoordinates(j);
-
-            double currentLocalLongitude = currentAirspaceFix->getLocalLongitude();
-            double currentLocalLatitude = currentAirspaceFix->getLocalLatitude();
-
-            qreal sceneCoordX = static_cast<qreal>(currentLocalLongitude * scaleFactor);
-            qreal sceneCoordY = static_cast<qreal>(-1 * currentLocalLatitude * scaleFactor);
+            qreal sceneCoordX = static_cast<qreal>(tempSectors[i].coords[j].x * scaleFactor);
+            qreal sceneCoordY = static_cast<qreal>(-1 * tempSectors[i].coords[j].y * scaleFactor);
 
             qDebug() << "( " << sceneCoordX << " , " << sceneCoordY << ")";
 
