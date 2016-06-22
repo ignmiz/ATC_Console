@@ -4,6 +4,17 @@
 #include "atcairspace.h"
 #include <QGraphicsView>
 
+struct coord
+{
+    double x;
+    double y;
+};
+
+struct sector
+{
+    QVector<coord> coords;
+};
+
 class ATCSituationalDisplay : public QGraphicsView
 {
     Q_OBJECT
@@ -29,7 +40,13 @@ private:
 
     void situationalDisplaySetup();
     void loadData(); //Temp - to be moved
+
     void displayData();
+    double mercatorProjectionLong(double longitude, double referenceLongitude = 0, double scale = 1);
+    double mercatorProjectionLat(double latitude, double scale = 1);
+    void projectSectors(QVector<sector> &targetVector, ATCAirspace *airspace);
+    double calculateScaleFactor(double mercatorXmin, double mercatorXmax, double mercatorYmin, double mercatorYmax);
+    void displaySectors(QVector<sector> &sectorVector, ATCAirspace *airspace, double centreX, double centreY, double scaleFactor);
 
 protected:
     void wheelEvent(QWheelEvent *event);

@@ -105,40 +105,10 @@ void ATCSituationalDisplay::loadData()
 
 void ATCSituationalDisplay::displayData()
 {
-    struct coord
-    {
-        double x;
-        double y;
-    };
+    QVector<sector> tempSectors;
 
-    struct sector
-    {
-        QVector<coord> coords;
-    };
+    projectSectors(tempSectors, airspaceData);
 
-    QVector<sector> tempSectors(airspaceData->getSectorVectorSize());
-
-
-//Part calculating Mercator projection
-    for(int i = 0; i < airspaceData->getSectorVectorSize(); i++)
-    {
-        for(int j = 0; j < airspaceData->getSector(i)->getCoordinatesVectorSize(); j++)
-        {
-            ATCAirspaceFix* currentAirspaceFix = airspaceData->getSector(i)->getCoordinates(j);
-            coord tempCoords;
-
-            tempCoords.x = currentAirspaceFix->longitude();
-            tempCoords.y = qLn(qTan(ATCConst::PI / 4 + currentAirspaceFix->latitude() * ATCConst::DEG_2_RAD / 2)
-                              * qPow((1 - ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(currentAirspaceFix->latitude() * ATCConst::DEG_2_RAD)) /
-                              (1 + ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(currentAirspaceFix->latitude() * ATCConst::DEG_2_RAD)) ,
-                              ATCConst::WGS84_FIRST_ECCENTRICITY / 2)) * ATCConst::RAD_2_DEG;
-
-            tempSectors[i].coords.append(tempCoords);
-
-        }
-    }
-
-//Part calculating global lat & lon extrema
     double mercatorXmin = tempSectors[0].coords[0].x;
     double mercatorXmax = tempSectors[0].coords[0].x;
     double mercatorYmin = tempSectors[0].coords[0].y;
@@ -163,44 +133,55 @@ void ATCSituationalDisplay::displayData()
         }
     }
 
-    qDebug() << "Mercator X min: " << mercatorXmin;
-    qDebug() << "Mercator X max: " << mercatorXmax;
-    qDebug() << "Mercator Y min: " << mercatorYmin;
-    qDebug() << "Mercator Y max: " << mercatorYmax;
-
-//Part calculating loaded sector centre
     double sectorCentreX = (mercatorXmin + mercatorXmax) / 2;
     double sectorCentreY = (mercatorYmin + mercatorYmax) / 2;
 
-    qDebug() << "Centre X: " << sectorCentreX;
-    qDebug() << "Centre Y: " << sectorCentreY;
+    double scaleFactor = calculateScaleFactor(mercatorXmin, mercatorXmax, mercatorYmin, mercatorYmax);
 
-//Part calculating local lat & lon by transforming from global to sector centre
-    for(int i = 0; i < airspaceData->getSectorVectorSize(); i++)
+    displaySectors(tempSectors, airspaceData, sectorCentreX, sectorCentreY, scaleFactor);
+}
+
+double ATCSituationalDisplay::mercatorProjectionLong(double longitudeDeg, double referenceLongitudeDeg, double scale)
+{
+    return scale * (longitudeDeg - referenceLongitudeDeg);
+}
+
+double ATCSituationalDisplay::mercatorProjectionLat(double latitudeDeg, double scale)
+{
+    return scale * qLn(qTan(ATCConst::PI / 4 + latitudeDeg * ATCConst::DEG_2_RAD / 2)
+               * qPow((1 - ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(latitudeDeg * ATCConst::DEG_2_RAD)) /
+               (1 + ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(latitudeDeg * ATCConst::DEG_2_RAD)) ,
+                      ATCConst::WGS84_FIRST_ECCENTRICITY / 2)) * ATCConst::RAD_2_DEG;
+}
+
+void ATCSituationalDisplay::projectSectors(QVector<sector> &targetVector, ATCAirspace *airspace)
+{
+    for(int i = 0; i < airspace->getSectorVectorSize(); i++)
     {
-        qDebug() << airspaceData->getSector(i)->getSectorName();
+        sector tempSector;
 
-        for(int j = 0; j < airspaceData->getSector(i)->getCoordinatesVectorSize(); j++)
+        for(int j = 0; j < airspace->getSector(i)->getCoordinatesVectorSize(); j++)
         {
-            tempSectors[i].coords[j].x -= sectorCentreX;
-            tempSectors[i].coords[j].y -= sectorCentreY;
+            ATCAirspaceFix* currentAirspaceFix = airspace->getSector(i)->getCoordinates(j);
 
-            qDebug() << tempSectors[i].coords[j].x << "   " << tempSectors[i].coords[j].y;
+            coord tempCoord;
+            tempCoord.x = mercatorProjectionLong(currentAirspaceFix->longitude());
+            tempCoord.y = mercatorProjectionLat(currentAirspaceFix->latitude());
+
+            tempSector.coords.append(tempCoord);
         }
-    }
 
-//Part calculating scale factor
+        targetVector.append(tempSector);
+    }
+}
+
+double ATCSituationalDisplay::calculateScaleFactor(double mercatorXmin, double mercatorXmax, double mercatorYmin, double mercatorYmax)
+{
     double spanX = mercatorXmax - mercatorXmin;
     double spanY = mercatorYmax - mercatorYmin;
 
-    qDebug() << "X span: " << spanX;
-    qDebug() << "Y span: " << spanY;
-
     double spanXperPixel = spanX / 1920;
     double spanYperPixel = spanY / 1020;
-
-    qDebug() << "Span X per pixel: " << spanXperPixel;
-    qDebug() << "Span Y per pixel: " << spanYperPixel;
 
     double scaleFactor = 0;
     if(spanYperPixel >= spanXperPixel)
@@ -212,24 +193,21 @@ void ATCSituationalDisplay::displayData()
         scaleFactor = 1920 / spanX;
     }
 
-    qDebug() << "Scale factor: " << scaleFactor;
+    return scaleFactor;
+}
 
-//Part translating from local lat & lon to scene QPointF coordinates and add them to scene
-    for(int i = 0; i < airspaceData->getSectorVectorSize(); i++)
+void ATCSituationalDisplay::displaySectors(QVector<sector> &sectorVector, ATCAirspace *airspace, double centreX, double centreY, double scaleFactor)
+{
+    for(int i = 0; i < airspace->getSectorVectorSize(); i++)
     {
-        qDebug() << airspaceData->getSector(i)->getSectorName();
+        QVector<QPointF> polygonVertex(airspace->getSector(i)->getCoordinatesVectorSize());
 
-        QVector<QPointF> polygonVertex(airspaceData->getSector(i)->getCoordinatesVectorSize());
-
-        for(int j = 0; j < airspaceData->getSector(i)->getCoordinatesVectorSize(); j++)
+        for(int j = 0; j < airspace->getSector(i)->getCoordinatesVectorSize(); j++)
         {
-            qreal sceneCoordX = static_cast<qreal>(tempSectors[i].coords[j].x * scaleFactor);
-            qreal sceneCoordY = static_cast<qreal>(-1 * tempSectors[i].coords[j].y * scaleFactor);
-
-            qDebug() << "( " << sceneCoordX << " , " << sceneCoordY << ")";
+            qreal sceneCoordX = static_cast<qreal>((sectorVector[i].coords[j].x - centreX) * scaleFactor);
+            qreal sceneCoordY = static_cast<qreal>(-1 * (sectorVector[i].coords[j].y - centreY) * scaleFactor);
 
             QPointF vertex(sceneCoordX, sceneCoordY);
-
             polygonVertex[j] = vertex;
         }
 
@@ -241,7 +219,6 @@ void ATCSituationalDisplay::displayData()
 
         scene->addPolygon(sectorPolygon, pen);
     }
-
 }
 
 void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
