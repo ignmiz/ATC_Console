@@ -46,7 +46,8 @@ private:
     double mercatorProjectionLat(double latitude, double scale = 1);
     void projectSectors(QVector<sector> &targetVector, ATCAirspace *airspace);
     double calculateScaleFactor(double mercatorXmin, double mercatorXmax, double mercatorYmin, double mercatorYmax);
-    void displaySectors(QVector<sector> &sectorVector, ATCAirspace *airspace, double centreX, double centreY, double scaleFactor);
+    void calculateSectorPolygons(QVector<sector> &sectorVector, ATCAirspace *airspace, double centreX, double centreY, double scaleFactor);
+    void displayOnScene(ATCAirspace *airspace);
 
 protected:
     void wheelEvent(QWheelEvent *event);

@@ -19,8 +19,8 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
 
 ATCSituationalDisplay::~ATCSituationalDisplay()
 {
-    scene->clear();
     delete airspaceData;
+    scene->clear();
 }
 
 qreal ATCSituationalDisplay::getBaseScale() const
@@ -65,7 +65,7 @@ void ATCSituationalDisplay::situationalDisplaySetup()
 
 void ATCSituationalDisplay::loadData()
 {    
-    QFile sectorFile("E:/Qt/ATC_Console/ATC_Console/EPWA_TMA.txt");
+    QFile sectorFile("E:/Qt/ATC_Console/ATC_Console/EPWW_175_20160428.ese");
 
     if(!sectorFile.open(QFile::ReadOnly | QFile::Text))
     {
@@ -138,7 +138,9 @@ void ATCSituationalDisplay::displayData()
 
     double scaleFactor = calculateScaleFactor(mercatorXmin, mercatorXmax, mercatorYmin, mercatorYmax);
 
-    displaySectors(tempSectors, airspaceData, sectorCentreX, sectorCentreY, scaleFactor);
+    calculateSectorPolygons(tempSectors, airspaceData, sectorCentreX, sectorCentreY, scaleFactor);
+
+    displayOnScene(airspaceData);
 }
 
 double ATCSituationalDisplay::mercatorProjectionLong(double longitudeDeg, double referenceLongitudeDeg, double scale)
@@ -196,7 +198,7 @@ double ATCSituationalDisplay::calculateScaleFactor(double mercatorXmin, double m
     return scaleFactor;
 }
 
-void ATCSituationalDisplay::displaySectors(QVector<sector> &sectorVector, ATCAirspace *airspace, double centreX, double centreY, double scaleFactor)
+void ATCSituationalDisplay::calculateSectorPolygons(QVector<sector> &sectorVector, ATCAirspace *airspace, double centreX, double centreY, double scaleFactor)
 {
     for(int i = 0; i < airspace->getSectorVectorSize(); i++)
     {
@@ -214,10 +216,24 @@ void ATCSituationalDisplay::displaySectors(QVector<sector> &sectorVector, ATCAir
         polygonVertex.append(polygonVertex[0]);
 
         QPolygonF sectorPolygon(polygonVertex);
-        QPen pen(Qt::blue);
-        pen.setWidth(3);
+        airspace->getSector(i)->setPolygon(new QGraphicsPolygonItem(sectorPolygon));
+    }
+}
 
-        scene->addPolygon(sectorPolygon, pen);
+void ATCSituationalDisplay::displayOnScene(ATCAirspace *airspace)
+{
+    for(int i = 0; i < airspace->getSectorVectorSize(); i++)
+    {
+        for(int j = 0; j < airspace->getSector(i)->getCoordinatesVectorSize(); j++)
+        {
+            QGraphicsPolygonItem *currentPolygon(airspace->getSector(i)->getPolygon());
+
+            QPen pen(Qt::gray);
+            pen.setWidthF(0.25);
+
+            currentPolygon->setPen(pen);
+            scene->addItem(currentPolygon);
+        }
     }
 }
 

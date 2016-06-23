@@ -40,9 +40,19 @@ int ATCAirspaceSector::getCoordinatesVectorSize()
     return coordinates.size();
 }
 
+QGraphicsPolygonItem* ATCAirspaceSector::getPolygon()
+{
+    return polygon;
+}
+
 void ATCAirspaceSector::setSectorName(QString name)
 {
     sectorName = name;
+}
+
+void ATCAirspaceSector::setPolygon(QGraphicsPolygonItem *sectorPolygon)
+{
+    polygon = sectorPolygon;
 }
 
 void ATCAirspaceSector::appendAirspaceFix(ATCAirspaceFix *airspaceFix)
