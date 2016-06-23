@@ -32,10 +32,9 @@ private:
     ATCAirspace *airspaceData;
 
     qreal baseScale = 1;
-    qreal scaleResolution = 0.1;
+    qreal scaleResolution = 0.05;
 
     QGraphicsScene *scene;
-    QGraphicsRectItem *rect1, *rect2, *rect3, *rect4;
     QGraphicsLineItem *lineH, *lineV;
 
     void situationalDisplaySetup();

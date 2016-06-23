@@ -23,6 +23,7 @@ ATCAirspaceSector::~ATCAirspaceSector()
     }
 
     deleteAllAirspaceFixes();
+    delete polygon;
 }
 
 QString ATCAirspaceSector::getSectorName()

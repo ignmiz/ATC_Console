@@ -39,6 +39,8 @@ void ATCSituationalDisplay::situationalDisplaySetup()
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setDragMode(QGraphicsView::NoDrag);
+    setRenderHint(QPainter::Antialiasing);
+
     setSceneRect(-50000, -50000, 100000, 100000);
 
     viewport()->setCursor(Qt::CrossCursor);
@@ -46,18 +48,8 @@ void ATCSituationalDisplay::situationalDisplaySetup()
     scene = new QGraphicsScene(this);
     setScene(scene);
 
-    QBrush brush(Qt::gray);
-
-    QPen pen(Qt::green);
-    pen.setWidth(3);
-
     QPen penLine(Qt::white);
     penLine.setWidth(5);
-
-    rect1 = scene->addRect(-250, -250, 100, 100, pen, brush);
-    rect2 = scene->addRect(-250, 150, 100, 100, pen, brush);
-    rect3 = scene->addRect(150, 150, 100, 100, pen, brush);
-    rect4 = scene->addRect(150, -250, 100, 100, pen, brush);
 
     lineH = scene->addLine(-25, 0, 25, 0, penLine);
     lineV = scene->addLine(0, -25, 0, 25, penLine);
@@ -65,15 +57,15 @@ void ATCSituationalDisplay::situationalDisplaySetup()
 
 void ATCSituationalDisplay::loadData()
 {    
-    QFile sectorFile("E:/Qt/ATC_Console/ATC_Console/EPWW_175_20160428.ese");
+    QFile eseFile("E:/Qt/ATC_Console/ATC_Console/EPWW_175_20160428.ese");
 
-    if(!sectorFile.open(QFile::ReadOnly | QFile::Text))
+    if(!eseFile.open(QFile::ReadOnly | QFile::Text))
     {
         qDebug() << "Error while opening data file...";
         return;
     }
 
-    QTextStream inStream(&sectorFile);
+    QTextStream inStream(&eseFile);
     while(!inStream.atEnd())
     {
         QString textLine = inStream.readLine();
@@ -100,7 +92,7 @@ void ATCSituationalDisplay::loadData()
         }
     }
 
-    sectorFile.close();
+    eseFile.close();
 }
 
 void ATCSituationalDisplay::displayData()
@@ -224,16 +216,13 @@ void ATCSituationalDisplay::displayOnScene(ATCAirspace *airspace)
 {
     for(int i = 0; i < airspace->getSectorVectorSize(); i++)
     {
-        for(int j = 0; j < airspace->getSector(i)->getCoordinatesVectorSize(); j++)
-        {
             QGraphicsPolygonItem *currentPolygon(airspace->getSector(i)->getPolygon());
 
             QPen pen(Qt::gray);
-            pen.setWidthF(0.25);
+            pen.setWidthF(0.5);
 
             currentPolygon->setPen(pen);
             scene->addItem(currentPolygon);
-        }
     }
 }
 

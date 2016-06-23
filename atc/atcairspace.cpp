@@ -6,14 +6,10 @@ ATCAirspace::ATCAirspace()
 
 }
 
-//ATCAirspace::ATCAirspace(QString name) : airspaceName(name)
-//{
-
-//}
-
 ATCAirspace::~ATCAirspace()
 {
     deleteAllSectors();
+    deleteAllFixes();
 }
 
 double ATCAirspace::coordsStringToDouble(QString coords)
@@ -74,12 +70,17 @@ void ATCAirspace::deleteAllSectors()
     }
 }
 
-//QString ATCAirspace::getAirspaceName()
-//{
-//    return airspaceName;
-//}
-
-//void ATCAirspace::setAirspaceName(QString name)
-//{
-//    airspaceName = name;
-//}
+void ATCAirspace::deleteAllFixes()
+{
+    if(!fixes.empty())
+    {
+        for(int i = 0; i < fixes.size(); i++)
+        {
+            delete fixes[i];
+        }
+    }
+    else
+    {
+        qDebug() << "Empty vector of fixes...";
+    }
+}

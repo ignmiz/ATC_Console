@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     atcairspacefix.cpp \
     atcairspacesector.cpp \
     atcairspace.cpp \
-    atcconst.cpp
+    atcconst.cpp \
+    atcnavfix.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -48,7 +49,8 @@ HEADERS  += mainwindow.h \
     atcairspacefix.h \
     atcairspacesector.h \
     atcairspace.h \
-    atcconst.h
+    atcconst.h \
+    atcnavfix.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
