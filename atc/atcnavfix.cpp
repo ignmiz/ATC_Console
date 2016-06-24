@@ -7,7 +7,7 @@ ATCNavFix::ATCNavFix(QString fixName, double latitude, double longitude) : QGeoC
 
 ATCNavFix::~ATCNavFix()
 {
-    qDebug() << name << ": " << toString(QGeoCoordinate::DegreesMinutesSecondsWithHemisphere);
+    qDebug() << name << ": " << toString(QGeoCoordinate::DegreesMinutesSecondsWithHemisphere) << " deleted...";
 }
 
 QString ATCNavFix::getName()

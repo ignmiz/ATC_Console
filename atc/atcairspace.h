@@ -3,6 +3,7 @@
 
 #include "atcairspacesector.h"
 #include "atcnavfix.h"
+#include "atcbeaconvor.h"
 
 #include <QString>
 #include <QVector>
@@ -17,9 +18,11 @@ public:
     double coordsStringToDouble(QString coords);
     void appendSector(ATCAirspaceSector *sector);
     void appendFix(ATCNavFix *fix);
+    void appendVOR(ATCBeaconVOR* VOR);
 
     void deleteAllSectors();
     void deleteAllFixes();
+    void deleteAllVORs();
 
     ATCAirspaceSector* getSector(int iterator);
     ATCAirspaceSector* getLastSector();
@@ -29,6 +32,7 @@ public:
 private:
     QVector<ATCAirspaceSector*> sectors;
     QVector<ATCNavFix*> fixes;
+    QVector<ATCBeaconVOR*> vors;
 };
 
 #endif // ATCAIRSPACE_H

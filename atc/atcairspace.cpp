@@ -10,6 +10,7 @@ ATCAirspace::~ATCAirspace()
 {
     deleteAllSectors();
     deleteAllFixes();
+    deleteAllVORs();
 }
 
 double ATCAirspace::coordsStringToDouble(QString coords)
@@ -43,6 +44,11 @@ void ATCAirspace::appendSector(ATCAirspaceSector *sector)
 void ATCAirspace::appendFix(ATCNavFix *fix)
 {
     fixes.append(fix);
+}
+
+void ATCAirspace::appendVOR(ATCBeaconVOR *vor)
+{
+    vors.append(vor);
 }
 
 ATCAirspaceSector* ATCAirspace::getSector(int iterator)
@@ -92,5 +98,20 @@ void ATCAirspace::deleteAllFixes()
     else
     {
         qDebug() << "Empty vector of fixes...";
+    }
+}
+
+void ATCAirspace::deleteAllVORs()
+{
+    if(!vors.empty())
+    {
+        for(int i = 0; i < vors.size(); i++)
+        {
+            delete vors[i];
+        }
+    }
+    else
+    {
+        qDebug() << "Empty vector of VORs...";
     }
 }

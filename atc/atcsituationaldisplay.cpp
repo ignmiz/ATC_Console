@@ -88,7 +88,7 @@ void ATCSituationalDisplay::loadData()
             {
                 QStringList stringList = textLine.split(":", QString::SkipEmptyParts);
                 QString latitudeString = stringList[1];
-                QString longitudeString = stringList[2];
+                QString longitudeString = stringList[2].left(14);
 
                 double latitudeDouble = airspaceData->coordsStringToDouble(latitudeString);
                 double longitudeDouble = airspaceData->coordsStringToDouble(longitudeString);
@@ -128,18 +128,24 @@ void ATCSituationalDisplay::loadData()
                 flagVOR = true;
                 flagNDB = false;
                 flagFixes = false;
+
+                qDebug() << "VORs:";
             }
             else if(textLine.contains("[NDB]", Qt::CaseInsensitive))
             {
                 flagVOR = false;
                 flagNDB = true;
                 flagFixes = false;
+
+                qDebug() << "NDBs:";
             }
             else if(textLine.contains("[FIXES]", Qt::CaseInsensitive))
             {
                 flagVOR = false;
                 flagNDB = false;
                 flagFixes = true;
+
+                qDebug() << "Fixes:";
             }
             else if(flagFixes)
             {
@@ -154,6 +160,21 @@ void ATCSituationalDisplay::loadData()
                 airspaceData->appendFix(new ATCNavFix(fixName, latitudeDouble, longitudeDouble));
 
                 qDebug() << fixName + " appended...";
+            }
+            else if(flagVOR)
+            {
+                QStringList stringList = textLine.split(" ", QString::SkipEmptyParts);
+                QString vorName = stringList[0];
+                float frequency = stringList[1].toFloat();
+                QString latitudeString = stringList[2];
+                QString longitudeString = stringList[3].left(14);
+
+                double latitudeDouble = airspaceData->coordsStringToDouble(latitudeString);
+                double longitudeDouble = airspaceData->coordsStringToDouble(longitudeString);
+
+                airspaceData->appendVOR(new ATCBeaconVOR(vorName, frequency, latitudeDouble, longitudeDouble));
+
+                qDebug() << vorName + " appended...";
             }
         }
     }
