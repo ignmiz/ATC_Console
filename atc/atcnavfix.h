@@ -6,7 +6,7 @@
 class ATCNavFix : public QGeoCoordinate
 {
 public:
-    explicit ATCNavFix(double latitude, double longitude);
+    explicit ATCNavFix(QString fixName, double latitude, double longitude);
     ~ATCNavFix();
 
     QString getName();

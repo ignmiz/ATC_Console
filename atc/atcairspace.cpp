@@ -40,6 +40,11 @@ void ATCAirspace::appendSector(ATCAirspaceSector *sector)
     sectors.append(sector);
 }
 
+void ATCAirspace::appendFix(ATCNavFix *fix)
+{
+    fixes.append(fix);
+}
+
 ATCAirspaceSector* ATCAirspace::getSector(int iterator)
 {
     return sectors[iterator];
@@ -53,6 +58,11 @@ ATCAirspaceSector* ATCAirspace::getLastSector()
 int ATCAirspace::getSectorVectorSize()
 {
     return sectors.size();
+}
+
+ATCNavFix* ATCAirspace::getFix(int iterator)
+{
+    return fixes[iterator];
 }
 
 void ATCAirspace::deleteAllSectors()

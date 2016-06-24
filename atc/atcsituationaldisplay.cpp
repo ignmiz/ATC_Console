@@ -61,38 +61,104 @@ void ATCSituationalDisplay::loadData()
 
     if(!eseFile.open(QFile::ReadOnly | QFile::Text))
     {
-        qDebug() << "Error while opening data file...";
+        qDebug() << "Error while opening ese file...";
         return;
     }
 
-    QTextStream inStream(&eseFile);
-    while(!inStream.atEnd())
+    QTextStream eseStream(&eseFile);
+    while(!eseStream.atEnd())
     {
-        QString textLine = inStream.readLine();
+        QString textLine = eseStream.readLine();
         textLine = textLine.trimmed();
 
-        if(textLine.contains("SECTORLINE", Qt::CaseInsensitive))
+        if(textLine.isEmpty() || (textLine.at(0) == ';'))
         {
-            QStringList stringList = textLine.split(":", QString::SkipEmptyParts);
-            QString sectorName = stringList[1];
-
-            airspaceData->appendSector(new ATCAirspaceSector(sectorName));
-            qDebug() << "Sector " + sectorName + " appended...";
         }
-        else if(textLine.contains("COORD", Qt::CaseInsensitive))
+        else
         {
-            QStringList stringList = textLine.split(":", QString::SkipEmptyParts);
-            QString latitudeString = stringList[1];
-            QString longitudeString = stringList[2];
+            if(textLine.contains("SECTORLINE", Qt::CaseInsensitive))
+            {
+                QStringList stringList = textLine.split(":", QString::SkipEmptyParts);
+                QString sectorName = stringList[1];
 
-            double latitudeDouble = airspaceData->coordsStringToDouble(latitudeString);
-            double longitudeDouble = airspaceData->coordsStringToDouble(longitudeString);
+                airspaceData->appendSector(new ATCAirspaceSector(sectorName));
+                qDebug() << "Sector " + sectorName + " appended...";
+            }
+            else if(textLine.contains("COORD", Qt::CaseInsensitive))
+            {
+                QStringList stringList = textLine.split(":", QString::SkipEmptyParts);
+                QString latitudeString = stringList[1];
+                QString longitudeString = stringList[2];
 
-            airspaceData->getLastSector()->appendAirspaceFix(new ATCAirspaceFix(latitudeDouble, longitudeDouble));
+                double latitudeDouble = airspaceData->coordsStringToDouble(latitudeString);
+                double longitudeDouble = airspaceData->coordsStringToDouble(longitudeString);
+
+                airspaceData->getLastSector()->appendAirspaceFix(new ATCAirspaceFix(latitudeDouble, longitudeDouble));
+            }
         }
     }
 
     eseFile.close();
+
+    QFile sctFile("E:/Qt/ATC_Console/ATC_Console/EPWW_175_20160428.sct");
+
+    if(!sctFile.open(QFile::ReadOnly | QFile::Text))
+    {
+        qDebug() << "Error opening sct file...";
+        return;
+    }
+
+    bool flagVOR = false;
+    bool flagNDB = false;
+    bool flagFixes = false;
+
+    QTextStream sctStream(&sctFile);
+    while(!sctStream.atEnd())
+    {
+        QString textLine = sctStream.readLine();
+        textLine = textLine.trimmed();
+
+        if(textLine.isEmpty() || (textLine.at(0) == ';'))
+        {
+        }
+        else
+        {
+            if(textLine.contains("[VOR]", Qt::CaseInsensitive))
+            {
+                flagVOR = true;
+                flagNDB = false;
+                flagFixes = false;
+            }
+            else if(textLine.contains("[NDB]", Qt::CaseInsensitive))
+            {
+                flagVOR = false;
+                flagNDB = true;
+                flagFixes = false;
+            }
+            else if(textLine.contains("[FIXES]", Qt::CaseInsensitive))
+            {
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = true;
+            }
+            else if(flagFixes)
+            {
+                QStringList stringList = textLine.split(" ", QString::SkipEmptyParts);
+                QString fixName = stringList[0];
+                QString latitudeString = stringList[1];
+                QString longitudeString = stringList[2].left(14);
+
+                double latitudeDouble = airspaceData->coordsStringToDouble(latitudeString);
+                double longitudeDouble = airspaceData->coordsStringToDouble(longitudeString);
+
+                airspaceData->appendFix(new ATCNavFix(fixName, latitudeDouble, longitudeDouble));
+
+                qDebug() << fixName + " appended...";
+            }
+        }
+    }
+
+    sctFile.close();
 }
 
 void ATCSituationalDisplay::displayData()

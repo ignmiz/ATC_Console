@@ -1,13 +1,13 @@
 #include "atcnavfix.h"
+#include <QDebug>
 
-ATCNavFix::ATCNavFix(double latitude, double longitude)
+ATCNavFix::ATCNavFix(QString fixName, double latitude, double longitude) : QGeoCoordinate(latitude, longitude), name(fixName)
 {
-
 }
 
 ATCNavFix::~ATCNavFix()
 {
-
+    qDebug() << name << ": " << toString(QGeoCoordinate::DegreesMinutesSecondsWithHemisphere);
 }
 
 QString ATCNavFix::getName()

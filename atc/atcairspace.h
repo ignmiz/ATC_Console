@@ -16,12 +16,15 @@ public:
 
     double coordsStringToDouble(QString coords);
     void appendSector(ATCAirspaceSector *sector);
+    void appendFix(ATCNavFix *fix);
+
     void deleteAllSectors();
     void deleteAllFixes();
 
     ATCAirspaceSector* getSector(int iterator);
     ATCAirspaceSector* getLastSector();
     int getSectorVectorSize();
+    ATCNavFix* getFix(int iterator);
 
 private:
     QVector<ATCAirspaceSector*> sectors;
