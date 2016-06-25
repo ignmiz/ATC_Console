@@ -11,6 +11,7 @@ ATCAirspace::~ATCAirspace()
     deleteAllSectors();
     deleteAllFixes();
     deleteAllVORs();
+    deleteAllNDBs();
 }
 
 double ATCAirspace::coordsStringToDouble(QString coords)
@@ -51,6 +52,11 @@ void ATCAirspace::appendVOR(ATCBeaconVOR *vor)
     vors.append(vor);
 }
 
+void ATCAirspace::appendNDB(ATCBeaconNDB *ndb)
+{
+    ndbs.append(ndb);
+}
+
 ATCAirspaceSector* ATCAirspace::getSector(int iterator)
 {
     return sectors[iterator];
@@ -69,6 +75,16 @@ int ATCAirspace::getSectorVectorSize()
 ATCNavFix* ATCAirspace::getFix(int iterator)
 {
     return fixes[iterator];
+}
+
+ATCBeaconVOR *ATCAirspace::getVOR(int iterator)
+{
+    return vors[iterator];
+}
+
+ATCBeaconNDB *ATCAirspace::getNDB(int iterator)
+{
+    return ndbs[iterator];
 }
 
 void ATCAirspace::deleteAllSectors()
@@ -113,5 +129,20 @@ void ATCAirspace::deleteAllVORs()
     else
     {
         qDebug() << "Empty vector of VORs...";
+    }
+}
+
+void ATCAirspace::deleteAllNDBs()
+{
+    if(!ndbs.empty())
+    {
+        for(int i = 0; i < ndbs.size(); i++)
+        {
+            delete ndbs[i];
+        }
+    }
+    else
+    {
+        qDebug() << "Empty vector of NDBs...";
     }
 }

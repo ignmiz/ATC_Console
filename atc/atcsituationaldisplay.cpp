@@ -149,7 +149,9 @@ void ATCSituationalDisplay::loadData()
             }
             else if(flagFixes)
             {
-                QStringList stringList = textLine.split(" ", QString::SkipEmptyParts);
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+
                 QString fixName = stringList[0];
                 QString latitudeString = stringList[1];
                 QString longitudeString = stringList[2].left(14);
@@ -163,7 +165,9 @@ void ATCSituationalDisplay::loadData()
             }
             else if(flagVOR)
             {
-                QStringList stringList = textLine.split(" ", QString::SkipEmptyParts);
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+
                 QString vorName = stringList[0];
                 float frequency = stringList[1].toFloat();
                 QString latitudeString = stringList[2];
@@ -175,6 +179,23 @@ void ATCSituationalDisplay::loadData()
                 airspaceData->appendVOR(new ATCBeaconVOR(vorName, frequency, latitudeDouble, longitudeDouble));
 
                 qDebug() << vorName + " appended...";
+            }
+            else if(flagNDB)
+            {
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+
+                QString ndbName = stringList[0];
+                float frequency = stringList[1].toFloat();
+                QString latitudeString = stringList[2];
+                QString longitudeString = stringList[3].left(14);
+
+                double latitudeDouble = airspaceData->coordsStringToDouble(latitudeString);
+                double longitudeDouble = airspaceData->coordsStringToDouble(longitudeString);
+
+                airspaceData->appendNDB(new ATCBeaconNDB(ndbName, frequency, latitudeDouble, longitudeDouble));
+
+                qDebug() << ndbName + " appended...";
             }
         }
     }
