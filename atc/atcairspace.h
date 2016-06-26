@@ -5,6 +5,7 @@
 #include "atcnavfix.h"
 #include "atcbeaconvor.h"
 #include "atcbeaconndb.h"
+#include "atcairport.h"
 
 #include <QString>
 #include <QVector>
@@ -22,11 +23,13 @@ public:
     void appendFix(ATCNavFix *fix);
     void appendVOR(ATCBeaconVOR *vor);
     void appendNDB(ATCBeaconNDB *ndb);
+    void appendAirport(ATCAirport *airport);
 
     void deleteAllSectors();
     void deleteAllFixes();
     void deleteAllVORs();
     void deleteAllNDBs();
+    void deleteAllAirports();
 
     ATCAirspaceSector* getSector(int iterator);
     ATCAirspaceSector* getLastSector();
@@ -34,12 +37,16 @@ public:
     ATCNavFix* getFix(int iterator);
     ATCBeaconVOR* getVOR(int iterator);
     ATCBeaconNDB* getNDB(int iterator);
+    ATCAirport* getAirport(int iterator);
+
+    ATCAirport* findAirport(QString ICAOname);
 
 private:
     QVector<ATCAirspaceSector*> sectors;
     QVector<ATCNavFix*> fixes;
     QVector<ATCBeaconVOR*> vors;
     QVector<ATCBeaconNDB*> ndbs;
+    QVector<ATCAirport*> airports;
 };
 
 #endif // ATCAIRSPACE_H

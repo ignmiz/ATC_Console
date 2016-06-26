@@ -12,6 +12,7 @@ ATCAirspace::~ATCAirspace()
     deleteAllFixes();
     deleteAllVORs();
     deleteAllNDBs();
+    deleteAllAirports();
 }
 
 double ATCAirspace::coordsStringToDouble(QString coords)
@@ -57,6 +58,11 @@ void ATCAirspace::appendNDB(ATCBeaconNDB *ndb)
     ndbs.append(ndb);
 }
 
+void ATCAirspace::appendAirport(ATCAirport *airport)
+{
+    airports.append(airport);
+}
+
 ATCAirspaceSector* ATCAirspace::getSector(int iterator)
 {
     return sectors[iterator];
@@ -85,6 +91,24 @@ ATCBeaconVOR *ATCAirspace::getVOR(int iterator)
 ATCBeaconNDB *ATCAirspace::getNDB(int iterator)
 {
     return ndbs[iterator];
+}
+
+ATCAirport *ATCAirspace::getAirport(int iterator)
+{
+    return airports[iterator];
+}
+
+ATCAirport* ATCAirspace::findAirport(QString ICAOname)
+{
+    for(int i = 0; i < airports.size(); i++)
+    {
+        if(airports[i]->getName() == ICAOname)
+        {
+            return airports[i];
+        }
+    }
+
+    return nullptr;
 }
 
 void ATCAirspace::deleteAllSectors()
@@ -144,5 +168,20 @@ void ATCAirspace::deleteAllNDBs()
     else
     {
         qDebug() << "Empty vector of NDBs...";
+    }
+}
+
+void ATCAirspace::deleteAllAirports()
+{
+    if(!airports.empty())
+    {
+        for(int i = 0; i < airports.size(); i++)
+        {
+            delete airports[i];
+        }
+    }
+    else
+    {
+        qDebug() << "Empty vector of airports...";
     }
 }

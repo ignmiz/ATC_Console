@@ -111,6 +111,8 @@ void ATCSituationalDisplay::loadData()
     bool flagVOR = false;
     bool flagNDB = false;
     bool flagFixes = false;
+    bool flagAirport = false;
+    bool flagRunway = false;
 
     QTextStream sctStream(&sctFile);
     while(!sctStream.atEnd())
@@ -128,6 +130,8 @@ void ATCSituationalDisplay::loadData()
                 flagVOR = true;
                 flagNDB = false;
                 flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
 
                 qDebug() << "VORs:";
             }
@@ -136,6 +140,8 @@ void ATCSituationalDisplay::loadData()
                 flagVOR = false;
                 flagNDB = true;
                 flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
 
                 qDebug() << "NDBs:";
             }
@@ -144,8 +150,30 @@ void ATCSituationalDisplay::loadData()
                 flagVOR = false;
                 flagNDB = false;
                 flagFixes = true;
+                flagAirport = false;
+                flagRunway = false;
 
                 qDebug() << "Fixes:";
+            }
+            else if(textLine.contains("[AIRPORT]", Qt::CaseInsensitive))
+            {
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = true;
+                flagRunway = false;
+
+                qDebug() << "Airports:";
+            }
+            else if(textLine.contains("[RUNWAY]", Qt::CaseInsensitive))
+            {
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = true;
+
+                qDebug() << "Runways:";
             }
             else if(flagFixes)
             {
@@ -196,6 +224,43 @@ void ATCSituationalDisplay::loadData()
                 airspaceData->appendNDB(new ATCBeaconNDB(ndbName, frequency, latitudeDouble, longitudeDouble));
 
                 qDebug() << ndbName + " appended...";
+            }
+            else if(flagAirport)
+            {
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+
+                QString airportName = stringList[0];
+                QString latitudeString = stringList[2];
+                QString longitudeString = stringList[3].left(14);
+
+                double latitudeDouble = airspaceData->coordsStringToDouble(latitudeString);
+                double longitudeDouble = airspaceData->coordsStringToDouble(longitudeString);
+
+                airspaceData->appendAirport(new ATCAirport(airportName, latitudeDouble, longitudeDouble));
+
+                qDebug() << airportName + " appended...";
+            }
+            else if(flagRunway)
+            {
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+
+                QString rwyID1 = stringList[0];
+                QString rwyID2 = stringList[1];
+                unsigned int magneticHDG1 = stringList[2].toUInt();
+                unsigned int magneticHDG2 = stringList[3].toUInt();
+                double startLat = airspaceData->coordsStringToDouble(stringList[4]);
+                double startLon = airspaceData->coordsStringToDouble(stringList[5]);
+                double endLat = airspaceData->coordsStringToDouble(stringList[6]);
+                double endLon = airspaceData->coordsStringToDouble(stringList[7].left(14));
+                QString airportName = stringList[8].left(4);
+
+                ATCAirport *desiredAirport = airspaceData->findAirport(airportName);
+
+                desiredAirport->appendRunway(new ATCRunway(rwyID1, rwyID2, magneticHDG1, magneticHDG2, startLat, startLon, endLat, endLon));
+
+                qDebug() << airportName << " rwy: " << rwyID1 << rwyID2 << " appended...";
             }
         }
     }

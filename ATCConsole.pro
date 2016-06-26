@@ -35,7 +35,9 @@ SOURCES += main.cpp\
     atcconst.cpp \
     atcnavfix.cpp \
     atcbeaconvor.cpp \
-    atcbeaconndb.cpp
+    atcbeaconndb.cpp \
+    atcairport.cpp \
+    atcrunway.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -54,7 +56,9 @@ HEADERS  += mainwindow.h \
     atcconst.h \
     atcnavfix.h \
     atcbeaconvor.h \
-    atcbeaconndb.h
+    atcbeaconndb.h \
+    atcairport.h \
+    atcrunway.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
