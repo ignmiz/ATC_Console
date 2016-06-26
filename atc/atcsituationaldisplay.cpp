@@ -258,9 +258,11 @@ void ATCSituationalDisplay::loadData()
 
                 ATCAirport *desiredAirport = airspaceData->findAirport(airportName);
 
-                desiredAirport->appendRunway(new ATCRunway(rwyID1, rwyID2, magneticHDG1, magneticHDG2, startLat, startLon, endLat, endLon));
-
-                qDebug() << airportName << " rwy: " << rwyID1 << rwyID2 << " appended...";
+                if(desiredAirport != nullptr)
+                {
+                    desiredAirport->appendRunway(new ATCRunway(rwyID1, rwyID2, magneticHDG1, magneticHDG2, startLat, startLon, endLat, endLon));
+                    qDebug() << airportName << " rwy: " << rwyID1 << rwyID2 << " appended...";
+                }
             }
         }
     }
