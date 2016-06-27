@@ -33,6 +33,10 @@ private:
 
     qreal baseScale = 1;
     qreal scaleResolution = 0.05;
+    double scaleFactor;
+
+    double sectorCentreX;
+    double sectorCentreY;
 
     QGraphicsScene *scene;
     QGraphicsLineItem *lineH, *lineV;
@@ -40,8 +44,10 @@ private:
     void situationalDisplaySetup();
     void loadData(); //Temp - to be moved
 
-    void displayData();
-    double mercatorProjectionLong(double longitude, double referenceLongitude = 0, double scale = 1);
+    void displaySectors();
+    void displayFixes();
+
+    double mercatorProjectionLon(double longitude, double referenceLongitude = 0, double scale = 1);
     double mercatorProjectionLat(double latitude, double scale = 1);
     void projectSectors(QVector<sector> &targetVector, ATCAirspace *airspace);
     double calculateScaleFactor(double mercatorXmin, double mercatorXmax, double mercatorYmin, double mercatorYmax);

@@ -14,7 +14,8 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
 {
     situationalDisplaySetup();
     loadData();
-    displayData();
+    displaySectors();
+    displayFixes();
 }
 
 ATCSituationalDisplay::~ATCSituationalDisplay()
@@ -270,7 +271,7 @@ void ATCSituationalDisplay::loadData()
     sctFile.close();
 }
 
-void ATCSituationalDisplay::displayData()
+void ATCSituationalDisplay::displaySectors()
 {
     QVector<sector> tempSectors;
 
@@ -300,17 +301,75 @@ void ATCSituationalDisplay::displayData()
         }
     }
 
-    double sectorCentreX = (mercatorXmin + mercatorXmax) / 2;
-    double sectorCentreY = (mercatorYmin + mercatorYmax) / 2;
+    sectorCentreX = (mercatorXmin + mercatorXmax) / 2;
+    sectorCentreY = (mercatorYmin + mercatorYmax) / 2;
 
-    double scaleFactor = calculateScaleFactor(mercatorXmin, mercatorXmax, mercatorYmin, mercatorYmax);
+    scaleFactor = calculateScaleFactor(mercatorXmin, mercatorXmax, mercatorYmin, mercatorYmax);
 
     calculateSectorPolygons(tempSectors, airspaceData, sectorCentreX, sectorCentreY, scaleFactor);
 
     displayOnScene(airspaceData);
 }
 
-double ATCSituationalDisplay::mercatorProjectionLong(double longitudeDeg, double referenceLongitudeDeg, double scale)
+void ATCSituationalDisplay::displayFixes()
+{
+    QVector<coord> tempFixes;
+
+//Mercator projection of fixes
+    for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
+    {
+        coord currentFix;
+
+        currentFix.x = mercatorProjectionLon(airspaceData->getFix(i)->longitude());
+        currentFix.y = mercatorProjectionLat(airspaceData->getFix(i)->latitude());
+
+        tempFixes.append(currentFix);
+    }
+
+//Translate to local & scene coords
+    for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
+    {
+        tempFixes[i].x = (tempFixes[i].x - sectorCentreX) * scaleFactor;
+        tempFixes[i].y = -1 * (tempFixes[i].y - sectorCentreY) * scaleFactor;
+
+        qDebug() << "Fix: " << tempFixes[i].x << " : " << tempFixes[i].y;
+    }
+
+//Build and position symbol polygons
+    int vertexNumber = 3;
+    qreal sideLength = 1;
+
+    for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
+    {
+        QVector<QPointF> polygonVertex(vertexNumber + 1);
+
+        QPointF upperVertex(tempFixes[i].x, tempFixes[i].y - sideLength * qSqrt(3) / 3);
+        QPointF lowerLeftVertex(tempFixes[i].x - sideLength / 2, tempFixes[i].y + sideLength * qSqrt(3) / 6);
+        QPointF lowerRightVertex(tempFixes[i].x + sideLength / 2, tempFixes[i].y + sideLength * qSqrt(3) / 6);
+
+        polygonVertex[0] = upperVertex;
+        polygonVertex[1] = lowerLeftVertex;
+        polygonVertex[2] = lowerRightVertex;
+        polygonVertex[3] = upperVertex;
+
+        QPolygonF symbolPolygon(polygonVertex);
+        airspaceData->getFix(i)->setSymbol(new QGraphicsPolygonItem(symbolPolygon));
+    }
+
+//Display fix symbols on scene
+    for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
+    {
+        QGraphicsPolygonItem *currentPolygon(airspaceData->getFix(i)->getSymbol());
+
+        QPen pen(Qt::green);
+        pen.setWidthF(0.15);
+
+        currentPolygon->setPen(pen);
+        scene->addItem(currentPolygon);
+    }
+}
+
+double ATCSituationalDisplay::mercatorProjectionLon(double longitudeDeg, double referenceLongitudeDeg, double scale)
 {
     return scale * (longitudeDeg - referenceLongitudeDeg);
 }
@@ -334,7 +393,7 @@ void ATCSituationalDisplay::projectSectors(QVector<sector> &targetVector, ATCAir
             ATCAirspaceFix* currentAirspaceFix = airspace->getSector(i)->getCoordinates(j);
 
             coord tempCoord;
-            tempCoord.x = mercatorProjectionLong(currentAirspaceFix->longitude());
+            tempCoord.x = mercatorProjectionLon(currentAirspaceFix->longitude());
             tempCoord.y = mercatorProjectionLat(currentAirspaceFix->latitude());
 
             tempSector.coords.append(tempCoord);
@@ -394,7 +453,7 @@ void ATCSituationalDisplay::displayOnScene(ATCAirspace *airspace)
             QGraphicsPolygonItem *currentPolygon(airspace->getSector(i)->getPolygon());
 
             QPen pen(Qt::gray);
-            pen.setWidthF(0.5);
+            pen.setWidthF(0.2);
 
             currentPolygon->setPen(pen);
             scene->addItem(currentPolygon);
