@@ -34,6 +34,7 @@ private:
     qreal baseScale = 1;
     qreal scaleResolution = 0.05;
     double scaleFactor;
+    double currentScale;
 
     double sectorCentreX;
     double sectorCentreY;
@@ -43,6 +44,11 @@ private:
 
     void situationalDisplaySetup();
     void loadData(); //Temp - to be moved
+
+    void rescaleScene();
+    void rescaleSectors();
+    void rescaleFixes();
+
 
     void displaySectors();
     void displayFixes();

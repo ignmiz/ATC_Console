@@ -7,6 +7,7 @@ ATCNavFix::ATCNavFix(QString fixName, double latitude, double longitude) : QGeoC
 
 ATCNavFix::~ATCNavFix()
 {
+    delete scenePosition;
     delete symbol;
     qDebug() << name << ": " << toString(QGeoCoordinate::DegreesMinutesSecondsWithHemisphere) << " deleted...";
 }
@@ -21,6 +22,11 @@ QGraphicsPolygonItem* ATCNavFix::getSymbol()
     return symbol;
 }
 
+QPointF* ATCNavFix::getScenePosiiton()
+{
+    return scenePosition;
+}
+
 void ATCNavFix::setName(QString fixName)
 {
     name = fixName;
@@ -29,4 +35,9 @@ void ATCNavFix::setName(QString fixName)
 void ATCNavFix::setSymbol(QGraphicsPolygonItem *fixSymbol)
 {
     symbol = fixSymbol;
+}
+
+void ATCNavFix::setScenePosition(QPointF *position)
+{
+    scenePosition = position;
 }

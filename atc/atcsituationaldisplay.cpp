@@ -14,6 +14,9 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
 {
     situationalDisplaySetup();
     loadData();
+
+    rescaleScene();
+
     displaySectors();
     displayFixes();
 }
@@ -42,7 +45,8 @@ void ATCSituationalDisplay::situationalDisplaySetup()
     setDragMode(QGraphicsView::NoDrag);
     setRenderHint(QPainter::Antialiasing);
 
-    setSceneRect(-50000, -50000, 100000, 100000);
+//    setSceneRect(-50000, -50000, 100000, 100000);
+    setSceneRect(-0.5 * ATCConst::SCENE_WIDTH, -0.5 * ATCConst::SCENE_HEIGHT, ATCConst::SCENE_WIDTH, ATCConst::SCENE_HEIGHT);
 
     viewport()->setCursor(Qt::CrossCursor);
 
@@ -50,10 +54,12 @@ void ATCSituationalDisplay::situationalDisplaySetup()
     setScene(scene);
 
     QPen penLine(Qt::white);
-    penLine.setWidth(5);
+    penLine.setWidth(20);
 
     lineH = scene->addLine(-25, 0, 25, 0, penLine);
     lineV = scene->addLine(0, -25, 0, 25, penLine);
+
+    scene->addRect(sceneRect(), penLine);
 }
 
 void ATCSituationalDisplay::loadData()
@@ -271,6 +277,57 @@ void ATCSituationalDisplay::loadData()
     sctFile.close();
 }
 
+void ATCSituationalDisplay::rescaleScene()
+{
+    qreal scaleX = static_cast<qreal>(ATCConst::SECTOR_SHRINK_FACTOR / ATCConst::SCENE_FACTOR);
+    qreal scaleY = static_cast<qreal>(ATCConst::SECTOR_SHRINK_FACTOR / ATCConst::SCENE_FACTOR);
+
+    scale(scaleX, scaleY);
+    currentScale = scaleX;
+}
+
+void ATCSituationalDisplay::rescaleSectors()
+{
+    for(int i = 0; i < airspaceData->getSectorVectorSize(); i++)
+    {
+        QGraphicsPolygonItem *currentPolygonItem = airspaceData->getSector(i)->getPolygon();
+        QPen currentPen(currentPolygonItem->pen());
+
+        currentPen.setWidthF(ATCConst::SECTORLINE_WIDTH / currentScale);
+        currentPolygonItem->setPen(currentPen);
+    }
+}
+
+void ATCSituationalDisplay::rescaleFixes()
+{
+    qreal sideLength = ATCConst::FIX_SIDE_LENGTH / currentScale;
+
+    QPen currentPen(airspaceData->getFix(0)->getSymbol()->pen());
+    currentPen.setWidthF(ATCConst::FIX_LINE_WIDTH / currentScale);
+
+    for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
+    {
+        QGraphicsPolygonItem *currentPolygonItem = airspaceData->getFix(i)->getSymbol();
+        QPointF *currentPosition = airspaceData->getFix(i)->getScenePosiiton();
+
+        QVector<QPointF> polygonVertex(4);
+
+        QPointF upperVertex(currentPosition->x(), currentPosition->y() - sideLength * qSqrt(3) / 3);
+        QPointF lowerLeftVertex(currentPosition->x() - sideLength / 2, currentPosition->y() + sideLength * qSqrt(3) / 6);
+        QPointF lowerRightVertex(currentPosition->x() + sideLength / 2, currentPosition->y() + sideLength * qSqrt(3) / 6);
+
+        polygonVertex[0] = upperVertex;
+        polygonVertex[1] = lowerLeftVertex;
+        polygonVertex[2] = lowerRightVertex;
+        polygonVertex[3] = upperVertex;
+
+        QPolygonF symbolPolygon(polygonVertex);
+
+        currentPolygonItem->setPolygon(symbolPolygon);
+        currentPolygonItem->setPen(currentPen);
+    }
+}
+
 void ATCSituationalDisplay::displaySectors()
 {
     QVector<sector> tempSectors;
@@ -331,13 +388,16 @@ void ATCSituationalDisplay::displayFixes()
     {
         tempFixes[i].x = (tempFixes[i].x - sectorCentreX) * scaleFactor;
         tempFixes[i].y = -1 * (tempFixes[i].y - sectorCentreY) * scaleFactor;
+//        tempFixes[i].x = (tempFixes[i].x - sectorCentreX) * 1000;
+//        tempFixes[i].y = -1 * (tempFixes[i].y - sectorCentreY) * 1000;
 
+        airspaceData->getFix(i)->setScenePosition(new QPointF(tempFixes[i].x, tempFixes[i].y));
         qDebug() << "Fix: " << tempFixes[i].x << " : " << tempFixes[i].y;
     }
 
 //Build and position symbol polygons
     int vertexNumber = 3;
-    qreal sideLength = 1;
+    qreal sideLength = ATCConst::FIX_SIDE_LENGTH / currentScale;
 
     for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
     {
@@ -362,11 +422,26 @@ void ATCSituationalDisplay::displayFixes()
         QGraphicsPolygonItem *currentPolygon(airspaceData->getFix(i)->getSymbol());
 
         QPen pen(Qt::green);
-        pen.setWidthF(0.15);
+        pen.setWidthF(ATCConst::FIX_LINE_WIDTH / currentScale);
 
         currentPolygon->setPen(pen);
         scene->addItem(currentPolygon);
     }
+
+//Calculate labels - IN PROGRESS
+    QGraphicsSimpleTextItem *simpleText = new QGraphicsSimpleTextItem("ABAKU");
+
+    QBrush textBrush(Qt::red);
+    simpleText->setBrush(textBrush);
+
+    QFont textFont("Arial");
+    textFont.setPointSizeF(3);
+    simpleText->setFont(textFont);
+
+    QRectF boundingRect(simpleText->boundingRect());
+
+    scene->addItem(simpleText);
+    simpleText->setPos(tempFixes[0].x, tempFixes[0].y - boundingRect.height() / 2);
 }
 
 double ATCSituationalDisplay::mercatorProjectionLon(double longitudeDeg, double referenceLongitudeDeg, double scale)
@@ -408,17 +483,19 @@ double ATCSituationalDisplay::calculateScaleFactor(double mercatorXmin, double m
     double spanX = mercatorXmax - mercatorXmin;
     double spanY = mercatorYmax - mercatorYmin;
 
-    double spanXperPixel = spanX / 1920;
-    double spanYperPixel = spanY / 1020;
+    double spanXperPixel = spanX / ATCConst::SCENE_WIDTH;
+    double spanYperPixel = spanY / ATCConst::SCENE_HEIGHT;
 
     double scaleFactor = 0;
     if(spanYperPixel >= spanXperPixel)
     {
-        scaleFactor = 1020 / spanY;
+        scaleFactor = ATCConst::SCENE_HEIGHT / ATCConst::SECTOR_SHRINK_FACTOR / spanY;
+//        baseScale = ATCConst::DISPLAY_HEIGHT * scaleFactor / spanY;
     }
     else
     {
-        scaleFactor = 1920 / spanX;
+        scaleFactor = ATCConst::SCENE_WIDTH / ATCConst::SECTOR_SHRINK_FACTOR / spanX;
+//        baseScale = ATCConst::DISPLAY_WIDTH * scaleFactor / spanX;
     }
 
     return scaleFactor;
@@ -434,6 +511,8 @@ void ATCSituationalDisplay::calculateSectorPolygons(QVector<sector> &sectorVecto
         {
             qreal sceneCoordX = static_cast<qreal>((sectorVector[i].coords[j].x - centreX) * scaleFactor);
             qreal sceneCoordY = static_cast<qreal>(-1 * (sectorVector[i].coords[j].y - centreY) * scaleFactor);
+//            qreal sceneCoordX = static_cast<qreal>((sectorVector[i].coords[j].x - centreX) * 1000);
+//            qreal sceneCoordY = static_cast<qreal>(-1 * (sectorVector[i].coords[j].y - centreY) * 1000);
 
             QPointF vertex(sceneCoordX, sceneCoordY);
             polygonVertex[j] = vertex;
@@ -453,7 +532,7 @@ void ATCSituationalDisplay::displayOnScene(ATCAirspace *airspace)
             QGraphicsPolygonItem *currentPolygon(airspace->getSector(i)->getPolygon());
 
             QPen pen(Qt::gray);
-            pen.setWidthF(0.2);
+            pen.setWidthF(ATCConst::SECTORLINE_WIDTH / currentScale);
 
             currentPolygon->setPen(pen);
             scene->addItem(currentPolygon);
@@ -465,9 +544,14 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
     if(QGuiApplication::queryKeyboardModifiers().testFlag(Qt::ControlModifier))
     {
         QPoint numDegrees = event->angleDelta();
-        qreal newScale = baseScale + (numDegrees.y() / 120) * scaleResolution;
+        qreal increment = (numDegrees.y() / 120) * scaleResolution;
+
+        qreal newScale = baseScale + increment;
+        currentScale = currentScale * newScale;
 
         scale(newScale, newScale);
+        rescaleSectors();
+        rescaleFixes();
     }
 
     event->accept();
