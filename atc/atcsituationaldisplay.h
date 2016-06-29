@@ -40,7 +40,7 @@ private:
     double sectorCentreY;
 
     QGraphicsScene *scene;
-    QGraphicsLineItem *lineH, *lineV;
+//    QGraphicsLineItem *lineH, *lineV;
 
     void situationalDisplaySetup();
     void loadData(); //Temp - to be moved
@@ -48,7 +48,7 @@ private:
     void rescaleScene();
     void rescaleSectors();
     void rescaleFixes();
-
+    void rescaleLabels();
 
     void displaySectors();
     void displayFixes();

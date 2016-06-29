@@ -23,8 +23,12 @@ public:
     static const double SECTOR_SHRINK_FACTOR;
 
     static const double SECTORLINE_WIDTH;
+
     static const double FIX_LINE_WIDTH;
     static const double FIX_SIDE_LENGTH;
+    static const double FIX_LABEL_HEIGHT;
+    static const double FIX_LABEL_DX;
+    static const double FIX_LABEL_DY;
 
 };
 

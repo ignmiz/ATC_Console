@@ -13,15 +13,18 @@ public:
     QString getName();
     QGraphicsPolygonItem* getSymbol();
     QPointF* getScenePosiiton();
+    QGraphicsSimpleTextItem* getLabel();
 
     void setName(QString fixName);
     void setSymbol(QGraphicsPolygonItem *fixSymbol);
     void setScenePosition(QPointF *position);
+    void setLabel(QGraphicsSimpleTextItem *textLabel);
 
 private:
     QString name;
     QPointF *scenePosition;
     QGraphicsPolygonItem *symbol;
+    QGraphicsSimpleTextItem *label;
 };
 
 #endif // ATCNAVFIX_H

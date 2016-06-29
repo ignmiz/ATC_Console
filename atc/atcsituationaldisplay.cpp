@@ -43,9 +43,8 @@ void ATCSituationalDisplay::situationalDisplaySetup()
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setDragMode(QGraphicsView::NoDrag);
-    setRenderHint(QPainter::Antialiasing);
+//    setRenderHint(QPainter::Antialiasing);
 
-//    setSceneRect(-50000, -50000, 100000, 100000);
     setSceneRect(-0.5 * ATCConst::SCENE_WIDTH, -0.5 * ATCConst::SCENE_HEIGHT, ATCConst::SCENE_WIDTH, ATCConst::SCENE_HEIGHT);
 
     viewport()->setCursor(Qt::CrossCursor);
@@ -53,13 +52,13 @@ void ATCSituationalDisplay::situationalDisplaySetup()
     scene = new QGraphicsScene(this);
     setScene(scene);
 
-    QPen penLine(Qt::white);
-    penLine.setWidth(20);
+//    QPen penLine(Qt::white);
+//    penLine.setWidth(20);
 
-    lineH = scene->addLine(-25, 0, 25, 0, penLine);
-    lineV = scene->addLine(0, -25, 0, 25, penLine);
+//    lineH = scene->addLine(-25, 0, 25, 0, penLine);
+//    lineV = scene->addLine(0, -25, 0, 25, penLine);
 
-    scene->addRect(sceneRect(), penLine);
+//    scene->addRect(sceneRect(), penLine);
 }
 
 void ATCSituationalDisplay::loadData()
@@ -328,6 +327,28 @@ void ATCSituationalDisplay::rescaleFixes()
     }
 }
 
+void ATCSituationalDisplay::rescaleLabels()
+{
+    QFont textFont(airspaceData->getFix(0)->getLabel()->font());
+    textFont.setPointSizeF(ATCConst::FIX_LABEL_HEIGHT / currentScale);
+
+    for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
+    {
+        ATCNavFix *currentFix = airspaceData->getFix(i);
+        QGraphicsSimpleTextItem *currentLabel = airspaceData->getFix(i)->getLabel();
+
+        currentLabel->setFont(textFont);
+
+        QRectF boundingRect(currentLabel->boundingRect());
+
+        double positionX = currentFix->getScenePosiiton()->x();
+        double positionY = currentFix->getScenePosiiton()->y();
+
+        currentLabel->setPos(positionX + ATCConst::FIX_LABEL_DX / currentScale,
+                             positionY - boundingRect.height() / 2 + ATCConst::FIX_LABEL_DY / currentScale);;
+    }
+}
+
 void ATCSituationalDisplay::displaySectors()
 {
     QVector<sector> tempSectors;
@@ -428,20 +449,29 @@ void ATCSituationalDisplay::displayFixes()
         scene->addItem(currentPolygon);
     }
 
-//Calculate labels - IN PROGRESS
-    QGraphicsSimpleTextItem *simpleText = new QGraphicsSimpleTextItem("ABAKU");
+//Calculate labels
+    for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
+    {
+        ATCNavFix *currentFix = airspaceData->getFix(i);
+        QGraphicsSimpleTextItem *currentLabel = new QGraphicsSimpleTextItem(currentFix->getName());
+        currentFix->setLabel(currentLabel);
 
-    QBrush textBrush(Qt::red);
-    simpleText->setBrush(textBrush);
+        QBrush textBrush(Qt::white);
+        currentLabel->setBrush(textBrush);
 
-    QFont textFont("Arial");
-    textFont.setPointSizeF(3);
-    simpleText->setFont(textFont);
+        QFont textFont("Arial");
+        textFont.setPointSizeF(ATCConst::FIX_LABEL_HEIGHT / currentScale);
+        currentLabel->setFont(textFont);
 
-    QRectF boundingRect(simpleText->boundingRect());
+        QRectF boundingRect(currentLabel->boundingRect());
 
-    scene->addItem(simpleText);
-    simpleText->setPos(tempFixes[0].x, tempFixes[0].y - boundingRect.height() / 2);
+        double positionX = currentFix->getScenePosiiton()->x();
+        double positionY = currentFix->getScenePosiiton()->y();
+
+        currentLabel->setPos(positionX + ATCConst::FIX_LABEL_DX / currentScale,
+                             positionY - boundingRect.height() / 2 + ATCConst::FIX_LABEL_DY / currentScale);
+        scene->addItem(currentLabel);
+    }
 }
 
 double ATCSituationalDisplay::mercatorProjectionLon(double longitudeDeg, double referenceLongitudeDeg, double scale)
@@ -552,6 +582,7 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
         scale(newScale, newScale);
         rescaleSectors();
         rescaleFixes();
+        rescaleLabels();
     }
 
     event->accept();
