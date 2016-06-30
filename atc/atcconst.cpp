@@ -19,6 +19,6 @@ const double ATCConst::SECTORLINE_WIDTH = 0.75;
 
 const double ATCConst::FIX_LINE_WIDTH = 0.5;
 const double ATCConst::FIX_SIDE_LENGTH = 8;
-const double ATCConst::FIX_LABEL_HEIGHT = 5;
+const double ATCConst::FIX_LABEL_HEIGHT = 6;
 const double ATCConst::FIX_LABEL_DX = 4;
-const double ATCConst::FIX_LABEL_DY = -4;
+const double ATCConst::FIX_LABEL_DY = -10;

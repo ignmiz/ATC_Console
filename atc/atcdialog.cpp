@@ -13,8 +13,7 @@ ATCDialog::ATCDialog(QWidget *parent, QString title, unsigned int width,
     windowWidth(width),
     windowHeight(height),
     flagDeleteOnClose(deleteOnClose),
-    dialogType(dialogtype),
-    parentWindow(parent)
+    dialogType(dialogtype)
 {
     ui->setupUi(this);
 }
@@ -36,7 +35,7 @@ void ATCDialog::maximizeWindow()
         break;
 
     case ATC::Default:
-        dynamic_cast<MainWindow*>(getParentWindowAdress())->setSituationalDisplayFocus();
+        emit changeFocusToDisplay();
         break;
     }
 }
@@ -47,7 +46,7 @@ void ATCDialog::minimizeWindow()
     flagMaximized = false;
     resize(windowWidth, 30);
     ui->frameDialog->resize(windowWidth, 30);
-    dynamic_cast<MainWindow*>(getParentWindowAdress())->setSituationalDisplayFocus();
+    emit changeFocusToDisplay();
 }
 
 bool ATCDialog::isMaximized() const
@@ -128,7 +127,7 @@ void ATCDialog::mouseReleaseEvent(QMouseEvent *event)
         break;
 
     case ATC::Default:
-        dynamic_cast<MainWindow*>(getParentWindowAdress())->setSituationalDisplayFocus();
+        emit changeFocusToDisplay();
         break;
     }
 
@@ -180,7 +179,7 @@ void ATCDialog::setMouseDragPosition(QMouseEvent *event)
 
 void ATCDialog::setSituationDisplayFocus()
 {
-    dynamic_cast<MainWindow*>(getParentWindowAdress())->setSituationalDisplayFocus();
+    emit changeFocusToDisplay();
 }
 
 void ATCDialog::setFlagMaximized(bool flagBool)
@@ -211,9 +210,4 @@ bool ATCDialog::getFlagClickedOnTitleBar() const
 QPoint ATCDialog::getMouseDragPosition() const
 {
     return mouseDragPosition;
-}
-
-QWidget* ATCDialog::getParentWindowAdress() const
-{
-    return parentWindow;
 }

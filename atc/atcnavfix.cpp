@@ -7,9 +7,9 @@ ATCNavFix::ATCNavFix(QString fixName, double latitude, double longitude) : QGeoC
 
 ATCNavFix::~ATCNavFix()
 {
-    delete scenePosition;
-    delete symbol;
-    delete label;
+    if(scenePosition != nullptr) delete scenePosition;
+    if(symbol != nullptr) delete symbol;
+    if(label != nullptr) delete label;
     qDebug() << name << ": " << toString(QGeoCoordinate::DegreesMinutesSecondsWithHemisphere) << " deleted...";
 }
 

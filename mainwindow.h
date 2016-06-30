@@ -35,6 +35,11 @@ private slots:
     void on_buttonClose_clicked();
     void on_buttonShowConsole_clicked();
 
+    void dialogMainMenuClosed();
+    void dialogSectorSetupClosed();
+
+    void changeFocusToDisplay();
+
 private:
     Ui::MainWindow *ui;
     DialogTextConsole *dialogTextConsole;

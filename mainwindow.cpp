@@ -36,6 +36,10 @@ void MainWindow::on_buttonMainMenu_clicked()
     {
         dialogMainMenu = new DialogMainMenu(this);
         dialogMainMenu->show();
+
+        connect(dialogMainMenu, SIGNAL(closed()), this, SLOT(dialogMainMenuClosed()));
+        connect(dialogMainMenu, SIGNAL(changeFocusToDisplay()), this, SLOT(changeFocusToDisplay()));
+
         setFlagDialogMainMenuExists(true);
         setSituationalDisplayFocus();
     }
@@ -47,6 +51,10 @@ void MainWindow::on_buttonSctSetup_clicked()
     {
         dialogSectorSetup = new DialogSectorSetup(this);
         dialogSectorSetup->show();
+
+        connect(dialogSectorSetup, SIGNAL(closed()), this, SLOT(dialogSectorSetupClosed()));
+        connect(dialogSectorSetup, SIGNAL(changeFocusToDisplay()), this, SLOT(changeFocusToDisplay()));
+
         setFlagDialogSectorSetupExists(true);
         setSituationalDisplayFocus();
     }
@@ -68,6 +76,25 @@ void MainWindow::on_buttonShowConsole_clicked()
     {
         dialogTextConsole->hide();
     }
+}
+
+void MainWindow::dialogMainMenuClosed()
+{
+    setFlagDialogMainMenuExists(false);
+    disconnect(dialogMainMenu, SIGNAL(closed()), this, SLOT(dialogMainMenuClosed()));
+    disconnect(dialogMainMenu, SIGNAL(changeFocusToDisplay()), this, SLOT(changeFocusToDisplay()));
+}
+
+void MainWindow::dialogSectorSetupClosed()
+{
+    setFlagDialogSectorSetupExists(false);
+    disconnect(dialogSectorSetup, SIGNAL(closed()), this, SLOT(dialogSectorSetupClosed()));
+    disconnect(dialogSectorSetup, SIGNAL(changeFocusToDisplay()), this, SLOT(changeFocusToDisplay()));
+}
+
+void MainWindow::changeFocusToDisplay()
+{
+    setSituationalDisplayFocus();
 }
 
 void MainWindow::on_buttonClose_clicked()
@@ -112,6 +139,5 @@ void MainWindow::setFlagDialogSectorSetupExists(bool flagBool)
 
 void MainWindow::setSituationalDisplayFocus()
 {
-//    QTimer::singleShot(0, ui->situationalDisplay, SLOT(setFocus()));
     ui->situationalDisplay->setFocus();
 }

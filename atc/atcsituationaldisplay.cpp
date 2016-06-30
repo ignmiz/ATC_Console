@@ -330,7 +330,7 @@ void ATCSituationalDisplay::rescaleFixes()
 void ATCSituationalDisplay::rescaleLabels()
 {
     QFont textFont(airspaceData->getFix(0)->getLabel()->font());
-    textFont.setPointSizeF(ATCConst::FIX_LABEL_HEIGHT / currentScale);
+    textFont.setPointSize(ATCConst::FIX_LABEL_HEIGHT / currentScale);
 
     for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
     {
@@ -339,13 +339,11 @@ void ATCSituationalDisplay::rescaleLabels()
 
         currentLabel->setFont(textFont);
 
-        QRectF boundingRect(currentLabel->boundingRect());
-
         double positionX = currentFix->getScenePosiiton()->x();
         double positionY = currentFix->getScenePosiiton()->y();
 
         currentLabel->setPos(positionX + ATCConst::FIX_LABEL_DX / currentScale,
-                             positionY - boundingRect.height() / 2 + ATCConst::FIX_LABEL_DY / currentScale);;
+                             positionY + ATCConst::FIX_LABEL_DY / currentScale);
     }
 }
 
@@ -409,8 +407,6 @@ void ATCSituationalDisplay::displayFixes()
     {
         tempFixes[i].x = (tempFixes[i].x - sectorCentreX) * scaleFactor;
         tempFixes[i].y = -1 * (tempFixes[i].y - sectorCentreY) * scaleFactor;
-//        tempFixes[i].x = (tempFixes[i].x - sectorCentreX) * 1000;
-//        tempFixes[i].y = -1 * (tempFixes[i].y - sectorCentreY) * 1000;
 
         airspaceData->getFix(i)->setScenePosition(new QPointF(tempFixes[i].x, tempFixes[i].y));
         qDebug() << "Fix: " << tempFixes[i].x << " : " << tempFixes[i].y;
@@ -463,14 +459,13 @@ void ATCSituationalDisplay::displayFixes()
         textFont.setPointSizeF(ATCConst::FIX_LABEL_HEIGHT / currentScale);
         currentLabel->setFont(textFont);
 
-        QRectF boundingRect(currentLabel->boundingRect());
-
         double positionX = currentFix->getScenePosiiton()->x();
         double positionY = currentFix->getScenePosiiton()->y();
 
         currentLabel->setPos(positionX + ATCConst::FIX_LABEL_DX / currentScale,
-                             positionY - boundingRect.height() / 2 + ATCConst::FIX_LABEL_DY / currentScale);
-        scene->addItem(currentLabel);
+                             positionY + ATCConst::FIX_LABEL_DY / currentScale);
+
+//        scene->addItem(currentLabel);
     }
 }
 
@@ -541,8 +536,6 @@ void ATCSituationalDisplay::calculateSectorPolygons(QVector<sector> &sectorVecto
         {
             qreal sceneCoordX = static_cast<qreal>((sectorVector[i].coords[j].x - centreX) * scaleFactor);
             qreal sceneCoordY = static_cast<qreal>(-1 * (sectorVector[i].coords[j].y - centreY) * scaleFactor);
-//            qreal sceneCoordX = static_cast<qreal>((sectorVector[i].coords[j].x - centreX) * 1000);
-//            qreal sceneCoordY = static_cast<qreal>(-1 * (sectorVector[i].coords[j].y - centreY) * 1000);
 
             QPointF vertex(sceneCoordX, sceneCoordY);
             polygonVertex[j] = vertex;
@@ -582,7 +575,7 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
         scale(newScale, newScale);
         rescaleSectors();
         rescaleFixes();
-        rescaleLabels();
+//        rescaleLabels();
     }
 
     event->accept();

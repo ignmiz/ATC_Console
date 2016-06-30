@@ -22,9 +22,9 @@ public:
 
 private:
     QString name;
-    QPointF *scenePosition;
-    QGraphicsPolygonItem *symbol;
-    QGraphicsSimpleTextItem *label;
+    QPointF *scenePosition = nullptr;
+    QGraphicsPolygonItem *symbol = nullptr;
+    QGraphicsSimpleTextItem *label = nullptr;
 };
 
 #endif // ATCNAVFIX_H

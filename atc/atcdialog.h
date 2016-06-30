@@ -29,7 +29,6 @@ public:
     bool getFlagClickedOnTitleBar() const;
     QPoint getMouseEventPosition() const;
     QPoint getMouseDragPosition() const;
-    QWidget* getParentWindowAdress() const;
 
     void setFlagMaximized(bool flagBool);
     void setFlagClickedOnTitleBar(bool flagBool);
@@ -38,13 +37,13 @@ public:
 
 signals:
     void closed();
+    void changeFocusToDisplay();
 
 private slots:
     void setSituationDisplayFocus();
 
 private:
     Ui::ATCDialog *ui;
-    QWidget *parentWindow;
     ATC::ATCDialogType dialogType;
 
     unsigned int windowWidth;
