@@ -23,7 +23,7 @@ QGraphicsPolygonItem* ATCNavFix::getSymbol()
     return symbol;
 }
 
-QPointF* ATCNavFix::getScenePosiiton()
+QPointF* ATCNavFix::getScenePosition()
 {
     return scenePosition;
 }

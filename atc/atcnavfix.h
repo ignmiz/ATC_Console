@@ -12,7 +12,7 @@ public:
 
     QString getName();
     QGraphicsPolygonItem* getSymbol();
-    QPointF* getScenePosiiton();
+    QPointF* getScenePosition();
     QGraphicsSimpleTextItem* getLabel();
 
     void setName(QString fixName);

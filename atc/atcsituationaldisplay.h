@@ -48,10 +48,13 @@ private:
     void rescaleScene();
     void rescaleSectors();
     void rescaleFixes();
-    void rescaleLabels();
+    void rescaleFixesLabels();
+    void rescaleAirports();
+    void rescaleAirportLabels();
 
     void displaySectors();
     void displayFixes();
+    void displayAirports();
 
     double mercatorProjectionLon(double longitude, double referenceLongitude = 0, double scale = 1);
     double mercatorProjectionLat(double latitude, double scale = 1);

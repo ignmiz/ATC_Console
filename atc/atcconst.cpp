@@ -22,3 +22,9 @@ const double ATCConst::FIX_SIDE_LENGTH = 8;
 const double ATCConst::FIX_LABEL_HEIGHT = 6;
 const double ATCConst::FIX_LABEL_DX = 4;
 const double ATCConst::FIX_LABEL_DY = -10;
+
+const double ATCConst::AIRPORT_SYMBOL_DIA = 8;
+const double ATCConst::AIRPORT_SYMBOL_WIDTH = 0.75;
+const double ATCConst::AIRPORT_LABEL_HEIGHT = 6;
+const double ATCConst::AIRPORT_LABEL_DX = 6;
+const double ATCConst::AIRPORT_LABEL_DY = -12;

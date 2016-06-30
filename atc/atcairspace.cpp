@@ -83,6 +83,11 @@ int ATCAirspace::getFixesVectorSize()
     return fixes.size();
 }
 
+int ATCAirspace::getAirportsVectorSize()
+{
+    return airports.size();
+}
+
 ATCNavFix* ATCAirspace::getFix(int iterator)
 {
     return fixes[iterator];

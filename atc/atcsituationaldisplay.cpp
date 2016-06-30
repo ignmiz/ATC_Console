@@ -19,6 +19,7 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
 
     displaySectors();
     displayFixes();
+    displayAirports();
 }
 
 ATCSituationalDisplay::~ATCSituationalDisplay()
@@ -307,7 +308,7 @@ void ATCSituationalDisplay::rescaleFixes()
     for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
     {
         QGraphicsPolygonItem *currentPolygonItem = airspaceData->getFix(i)->getSymbol();
-        QPointF *currentPosition = airspaceData->getFix(i)->getScenePosiiton();
+        QPointF *currentPosition = airspaceData->getFix(i)->getScenePosition();
 
         QVector<QPointF> polygonVertex(4);
 
@@ -327,10 +328,10 @@ void ATCSituationalDisplay::rescaleFixes()
     }
 }
 
-void ATCSituationalDisplay::rescaleLabels()
+void ATCSituationalDisplay::rescaleFixesLabels()
 {
     QFont textFont(airspaceData->getFix(0)->getLabel()->font());
-    textFont.setPointSize(ATCConst::FIX_LABEL_HEIGHT / currentScale);
+    textFont.setPointSizeF(ATCConst::FIX_LABEL_HEIGHT / currentScale);
 
     for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
     {
@@ -339,11 +340,49 @@ void ATCSituationalDisplay::rescaleLabels()
 
         currentLabel->setFont(textFont);
 
-        double positionX = currentFix->getScenePosiiton()->x();
-        double positionY = currentFix->getScenePosiiton()->y();
+        double positionX = currentFix->getScenePosition()->x();
+        double positionY = currentFix->getScenePosition()->y();
 
         currentLabel->setPos(positionX + ATCConst::FIX_LABEL_DX / currentScale,
                              positionY + ATCConst::FIX_LABEL_DY / currentScale);
+    }
+}
+
+void ATCSituationalDisplay::rescaleAirports()
+{
+    QPen currentPen(airspaceData->getAirport(0)->getSymbol()->pen());
+    currentPen.setWidthF(ATCConst::AIRPORT_SYMBOL_WIDTH / currentScale);
+
+    for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
+    {
+        QGraphicsEllipseItem *currentSymbol = airspaceData->getAirport(i)->getSymbol();
+        QPointF *currentPosition = airspaceData->getAirport(i)->getScenePosition();
+
+        currentSymbol->setRect(currentPosition->x() - ATCConst::AIRPORT_SYMBOL_DIA / 2 / currentScale,
+                               currentPosition->y() - ATCConst::AIRPORT_SYMBOL_DIA / 2 / currentScale,
+                               ATCConst::AIRPORT_SYMBOL_DIA / currentScale,
+                               ATCConst::AIRPORT_SYMBOL_DIA / currentScale);
+        currentSymbol->setPen(currentPen);
+    }
+}
+
+void ATCSituationalDisplay::rescaleAirportLabels()
+{
+    QFont textFont(airspaceData->getAirport(0)->getLabel()->font());
+    textFont.setPointSizeF(ATCConst::AIRPORT_LABEL_HEIGHT / currentScale);
+
+    for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
+    {
+        ATCAirport *currentAirport = airspaceData->getAirport(i);
+        QGraphicsSimpleTextItem *currentLabel = airspaceData->getAirport(i)->getLabel();
+
+        currentLabel->setFont(textFont);
+
+        double positionX = currentAirport->getScenePosition()->x();
+        double positionY = currentAirport->getScenePosition()->y();
+
+        currentLabel->setPos(positionX + ATCConst::AIRPORT_LABEL_DX / currentScale,
+                             positionY + ATCConst::AIRPORT_LABEL_DY / currentScale);
     }
 }
 
@@ -392,7 +431,7 @@ void ATCSituationalDisplay::displayFixes()
     QVector<coord> tempFixes;
     double rotationDeg = 5;
 
-//Mercator projection of fixes
+//Mercator projection of fixes + rotation
     for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
     {
         coord currentFix;
@@ -416,7 +455,6 @@ void ATCSituationalDisplay::displayFixes()
         tempFixes[i].y = -1 * (tempFixes[i].y - sectorCentreY) * scaleFactor;
 
         airspaceData->getFix(i)->setScenePosition(new QPointF(tempFixes[i].x, tempFixes[i].y));
-        qDebug() << "Fix: " << tempFixes[i].x << " : " << tempFixes[i].y;
     }
 
 //Build and position symbol polygons
@@ -466,14 +504,90 @@ void ATCSituationalDisplay::displayFixes()
         textFont.setPointSizeF(ATCConst::FIX_LABEL_HEIGHT / currentScale);
         currentLabel->setFont(textFont);
 
-        double positionX = currentFix->getScenePosiiton()->x();
-        double positionY = currentFix->getScenePosiiton()->y();
+        double positionX = currentFix->getScenePosition()->x();
+        double positionY = currentFix->getScenePosition()->y();
 
         currentLabel->setPos(positionX + ATCConst::FIX_LABEL_DX / currentScale,
                              positionY + ATCConst::FIX_LABEL_DY / currentScale);
 
 //        scene->addItem(currentLabel);
     }
+}
+
+void ATCSituationalDisplay::displayAirports()
+{
+    QVector<coord> tempAirports;
+    double rotationDeg = 5;
+
+//Mercator projection of airports + rotation
+    for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
+    {
+        coord currentAirport;
+
+        currentAirport.x = mercatorProjectionLon(airspaceData->getAirport(i)->longitude());
+        currentAirport.y = mercatorProjectionLat(airspaceData->getAirport(i)->latitude());
+
+        double xRotated = currentAirport.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentAirport.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
+        double yRotated = currentAirport.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentAirport.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+
+        currentAirport.x = xRotated;
+        currentAirport.y = yRotated;
+
+        tempAirports.append(currentAirport);
+    }
+
+//Translate to local & scene coords
+    for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
+    {
+        tempAirports[i].x = (tempAirports[i].x - sectorCentreX) * scaleFactor;
+        tempAirports[i].y = -1 * (tempAirports[i].y - sectorCentreY) * scaleFactor;
+
+        airspaceData->getAirport(i)->setScenePosition(new QPointF(tempAirports[i].x, tempAirports[i].y));
+    }
+
+//Build and position symbol polygons
+    for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
+    {
+        airspaceData->getAirport(i)->setSymbol(new QGraphicsEllipseItem(tempAirports[i].x - ATCConst::AIRPORT_SYMBOL_DIA / 2 / currentScale,
+                                                                        tempAirports[i].y - ATCConst::AIRPORT_SYMBOL_DIA / 2 / currentScale,
+                                                                        ATCConst::AIRPORT_SYMBOL_DIA / currentScale,
+                                                                        ATCConst::AIRPORT_SYMBOL_DIA / currentScale));
+    }
+
+//Display fix symbols on scene
+    for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
+    {
+        QGraphicsEllipseItem *currentSymbol(airspaceData->getAirport(i)->getSymbol());
+
+        QPen pen(Qt::yellow);
+        pen.setWidthF(ATCConst::AIRPORT_SYMBOL_WIDTH / currentScale);
+
+        currentSymbol->setPen(pen);
+        scene->addItem(currentSymbol);
+    }
+
+//Calculate labels
+        for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
+        {
+            ATCAirport *currentAirport = airspaceData->getAirport(i);
+            QGraphicsSimpleTextItem *currentLabel = new QGraphicsSimpleTextItem(currentAirport->getName());
+            currentAirport->setLabel(currentLabel);
+
+            QBrush textBrush(Qt::white);
+            currentLabel->setBrush(textBrush);
+
+            QFont textFont("Arial");
+            textFont.setPointSizeF(ATCConst::AIRPORT_LABEL_HEIGHT / currentScale);
+            currentLabel->setFont(textFont);
+
+            double positionX = currentAirport->getScenePosition()->x();
+            double positionY = currentAirport->getScenePosition()->y();
+
+            currentLabel->setPos(positionX + ATCConst::AIRPORT_LABEL_DX / currentScale,
+                                 positionY + ATCConst::AIRPORT_LABEL_DY / currentScale);
+
+            scene->addItem(currentLabel);
+        }
 }
 
 double ATCSituationalDisplay::mercatorProjectionLon(double longitudeDeg, double referenceLongitudeDeg, double scale)
@@ -586,7 +700,9 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
         scale(newScale, newScale);
         rescaleSectors();
         rescaleFixes();
-//        rescaleLabels();
+//        rescaleFixesLabels();
+        rescaleAirports();
+        rescaleAirportLabels();
     }
 
     event->accept();

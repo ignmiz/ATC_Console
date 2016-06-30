@@ -30,6 +30,12 @@ public:
     static const double FIX_LABEL_DX;
     static const double FIX_LABEL_DY;
 
+    static const double AIRPORT_SYMBOL_DIA;
+    static const double AIRPORT_SYMBOL_WIDTH;
+    static const double AIRPORT_LABEL_HEIGHT;
+    static const double AIRPORT_LABEL_DX;
+    static const double AIRPORT_LABEL_DY;
+
 };
 
 #endif // ATCCONST_H
