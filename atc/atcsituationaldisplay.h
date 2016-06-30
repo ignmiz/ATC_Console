@@ -55,7 +55,7 @@ private:
 
     double mercatorProjectionLon(double longitude, double referenceLongitude = 0, double scale = 1);
     double mercatorProjectionLat(double latitude, double scale = 1);
-    void projectSectors(QVector<sector> &targetVector, ATCAirspace *airspace);
+    void projectSectors(QVector<sector> &targetVector, ATCAirspace *airspace, double rotationDeg);
     double calculateScaleFactor(double mercatorXmin, double mercatorXmax, double mercatorYmin, double mercatorYmax);
     void calculateSectorPolygons(QVector<sector> &sectorVector, ATCAirspace *airspace, double centreX, double centreY, double scaleFactor);
     void displayOnScene(ATCAirspace *airspace);

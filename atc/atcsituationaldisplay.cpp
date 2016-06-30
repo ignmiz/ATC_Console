@@ -351,7 +351,7 @@ void ATCSituationalDisplay::displaySectors()
 {
     QVector<sector> tempSectors;
 
-    projectSectors(tempSectors, airspaceData);
+    projectSectors(tempSectors, airspaceData, 5);
 
     double mercatorXmin = tempSectors[0].coords[0].x;
     double mercatorXmax = tempSectors[0].coords[0].x;
@@ -390,6 +390,7 @@ void ATCSituationalDisplay::displaySectors()
 void ATCSituationalDisplay::displayFixes()
 {
     QVector<coord> tempFixes;
+    double rotationDeg = 5;
 
 //Mercator projection of fixes
     for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
@@ -398,6 +399,12 @@ void ATCSituationalDisplay::displayFixes()
 
         currentFix.x = mercatorProjectionLon(airspaceData->getFix(i)->longitude());
         currentFix.y = mercatorProjectionLat(airspaceData->getFix(i)->latitude());
+
+        double xRotated = currentFix.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentFix.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
+        double yRotated = currentFix.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentFix.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+
+        currentFix.x = xRotated;
+        currentFix.y = yRotated;
 
         tempFixes.append(currentFix);
     }
@@ -482,7 +489,7 @@ double ATCSituationalDisplay::mercatorProjectionLat(double latitudeDeg, double s
                       ATCConst::WGS84_FIRST_ECCENTRICITY / 2)) * ATCConst::RAD_2_DEG;
 }
 
-void ATCSituationalDisplay::projectSectors(QVector<sector> &targetVector, ATCAirspace *airspace)
+void ATCSituationalDisplay::projectSectors(QVector<sector> &targetVector, ATCAirspace *airspace, double rotationDeg)
 {
     for(int i = 0; i < airspace->getSectorVectorSize(); i++)
     {
@@ -495,6 +502,12 @@ void ATCSituationalDisplay::projectSectors(QVector<sector> &targetVector, ATCAir
             coord tempCoord;
             tempCoord.x = mercatorProjectionLon(currentAirspaceFix->longitude());
             tempCoord.y = mercatorProjectionLat(currentAirspaceFix->latitude());
+
+            double xRotated = tempCoord.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - tempCoord.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
+            double yRotated = tempCoord.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + tempCoord.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+
+            tempCoord.x = xRotated;
+            tempCoord.y = yRotated;
 
             tempSector.coords.append(tempCoord);
         }
@@ -515,12 +528,10 @@ double ATCSituationalDisplay::calculateScaleFactor(double mercatorXmin, double m
     if(spanYperPixel >= spanXperPixel)
     {
         scaleFactor = ATCConst::SCENE_HEIGHT / ATCConst::SECTOR_SHRINK_FACTOR / spanY;
-//        baseScale = ATCConst::DISPLAY_HEIGHT * scaleFactor / spanY;
     }
     else
     {
         scaleFactor = ATCConst::SCENE_WIDTH / ATCConst::SECTOR_SHRINK_FACTOR / spanX;
-//        baseScale = ATCConst::DISPLAY_WIDTH * scaleFactor / spanX;
     }
 
     return scaleFactor;
