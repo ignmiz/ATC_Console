@@ -328,7 +328,7 @@ void ATCSituationalDisplay::rescaleFixes()
     }
 }
 
-void ATCSituationalDisplay::rescaleFixesLabels()
+void ATCSituationalDisplay::rescaleFixLabels()
 {
     QFont textFont(airspaceData->getFix(0)->getLabel()->font());
     textFont.setPointSizeF(ATCConst::FIX_LABEL_HEIGHT / currentScale);
@@ -700,7 +700,7 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
         scale(newScale, newScale);
         rescaleSectors();
         rescaleFixes();
-//        rescaleFixesLabels();
+//        rescaleFixLabels();
         rescaleAirports();
         rescaleAirportLabels();
     }

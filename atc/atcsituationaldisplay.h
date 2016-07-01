@@ -48,7 +48,7 @@ private:
     void rescaleScene();
     void rescaleSectors();
     void rescaleFixes();
-    void rescaleFixesLabels();
+    void rescaleFixLabels();
     void rescaleAirports();
     void rescaleAirportLabels();
 
