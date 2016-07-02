@@ -11,6 +11,8 @@ public:
     static const double DEG_2_RAD;
     static const double RAD_2_DEG;
 
+    static const double AVG_DECLINATION;
+
     static const double WGS84_RADIUS;
     static const double WGS84_FIRST_ECCENTRICITY;
 

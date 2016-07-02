@@ -22,9 +22,9 @@ double ATCAirspace::coordsStringToDouble(QString coords)
     coords = coords.remove(0, 1);
     QStringList stringList = coords.split(".", QString::SkipEmptyParts);
 
-    double degrees = stringList[0].toDouble();
-    double minutes = stringList[1].toDouble();
-    double seconds = stringList[2].toDouble() + stringList[3].toDouble() / 1000;
+    double degrees = stringList.at(0).toDouble();
+    double minutes = stringList.at(1).toDouble();
+    double seconds = stringList.at(2).toDouble() + stringList.at(3).toDouble() / 1000;
 
     double coordsDouble = degrees + minutes / 60 + seconds / 3600;
 
@@ -65,7 +65,7 @@ void ATCAirspace::appendAirport(ATCAirport *airport)
 
 ATCAirspaceSector* ATCAirspace::getSector(int iterator)
 {
-    return sectors[iterator];
+    return sectors.at(iterator);
 }
 
 ATCAirspaceSector* ATCAirspace::getLastSector()
@@ -90,31 +90,31 @@ int ATCAirspace::getAirportsVectorSize()
 
 ATCNavFix* ATCAirspace::getFix(int iterator)
 {
-    return fixes[iterator];
+    return fixes.at(iterator);
 }
 
 ATCBeaconVOR *ATCAirspace::getVOR(int iterator)
 {
-    return vors[iterator];
+    return vors.at(iterator);
 }
 
 ATCBeaconNDB *ATCAirspace::getNDB(int iterator)
 {
-    return ndbs[iterator];
+    return ndbs.at(iterator);
 }
 
 ATCAirport *ATCAirspace::getAirport(int iterator)
 {
-    return airports[iterator];
+    return airports.at(iterator);
 }
 
 ATCAirport* ATCAirspace::findAirport(QString ICAOname)
 {
     for(int i = 0; i < airports.size(); i++)
     {
-        if(airports[i]->getName() == ICAOname)
+        if(airports.at(i)->getName() == ICAOname)
         {
-            return airports[i];
+            return airports.at(i);
         }
     }
 
@@ -127,7 +127,7 @@ void ATCAirspace::deleteAllSectors()
     {
         for(int i = 0; i < sectors.size(); i++)
         {
-            delete sectors[i];
+            delete sectors.at(i);
         }
     }
     else
@@ -142,7 +142,7 @@ void ATCAirspace::deleteAllFixes()
     {
         for(int i = 0; i < fixes.size(); i++)
         {
-            delete fixes[i];
+            delete fixes.at(i);
         }
     }
     else
@@ -157,7 +157,7 @@ void ATCAirspace::deleteAllVORs()
     {
         for(int i = 0; i < vors.size(); i++)
         {
-            delete vors[i];
+            delete vors.at(i);
         }
     }
     else
@@ -172,7 +172,7 @@ void ATCAirspace::deleteAllNDBs()
     {
         for(int i = 0; i < ndbs.size(); i++)
         {
-            delete ndbs[i];
+            delete ndbs.at(i);
         }
     }
     else
@@ -187,7 +187,7 @@ void ATCAirspace::deleteAllAirports()
     {
         for(int i = 0; i < airports.size(); i++)
         {
-            delete airports[i];
+            delete airports.at(i);
         }
     }
     else

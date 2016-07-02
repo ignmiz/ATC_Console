@@ -24,7 +24,7 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
 
 ATCSituationalDisplay::~ATCSituationalDisplay()
 {
-    delete airspaceData;
+    if(airspaceData != nullptr) delete airspaceData;
     scene->clear();
 }
 
@@ -52,14 +52,6 @@ void ATCSituationalDisplay::situationalDisplaySetup()
 
     scene = new QGraphicsScene(this);
     setScene(scene);
-
-//    QPen penLine(Qt::white);
-//    penLine.setWidth(20);
-
-//    lineH = scene->addLine(-25, 0, 25, 0, penLine);
-//    lineV = scene->addLine(0, -25, 0, 25, penLine);
-
-//    scene->addRect(sceneRect(), penLine);
 }
 
 void ATCSituationalDisplay::loadData()
@@ -86,7 +78,7 @@ void ATCSituationalDisplay::loadData()
             if(textLine.contains("SECTORLINE", Qt::CaseInsensitive))
             {
                 QStringList stringList = textLine.split(":", QString::SkipEmptyParts);
-                QString sectorName = stringList[1];
+                QString sectorName = stringList.at(1);
 
                 airspaceData->appendSector(new ATCAirspaceSector(sectorName));
                 qDebug() << "Sector " + sectorName + " appended...";
@@ -94,8 +86,8 @@ void ATCSituationalDisplay::loadData()
             else if(textLine.contains("COORD", Qt::CaseInsensitive))
             {
                 QStringList stringList = textLine.split(":", QString::SkipEmptyParts);
-                QString latitudeString = stringList[1];
-                QString longitudeString = stringList[2].left(14);
+                QString latitudeString = stringList.at(1);
+                QString longitudeString = stringList.at(2).left(14);
 
                 double latitudeDouble = airspaceData->coordsStringToDouble(latitudeString);
                 double longitudeDouble = airspaceData->coordsStringToDouble(longitudeString);
@@ -187,9 +179,9 @@ void ATCSituationalDisplay::loadData()
                 QRegExp expression("(\\s|\\t)");
                 QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
 
-                QString fixName = stringList[0];
-                QString latitudeString = stringList[1];
-                QString longitudeString = stringList[2].left(14);
+                QString fixName = stringList.at(0);
+                QString latitudeString = stringList.at(1);
+                QString longitudeString = stringList.at(2).left(14);
 
                 double latitudeDouble = airspaceData->coordsStringToDouble(latitudeString);
                 double longitudeDouble = airspaceData->coordsStringToDouble(longitudeString);
@@ -203,10 +195,10 @@ void ATCSituationalDisplay::loadData()
                 QRegExp expression("(\\s|\\t)");
                 QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
 
-                QString vorName = stringList[0];
-                float frequency = stringList[1].toFloat();
-                QString latitudeString = stringList[2];
-                QString longitudeString = stringList[3].left(14);
+                QString vorName = stringList.at(0);
+                float frequency = stringList.at(1).toFloat();
+                QString latitudeString = stringList.at(2);
+                QString longitudeString = stringList.at(3).left(14);
 
                 double latitudeDouble = airspaceData->coordsStringToDouble(latitudeString);
                 double longitudeDouble = airspaceData->coordsStringToDouble(longitudeString);
@@ -220,10 +212,10 @@ void ATCSituationalDisplay::loadData()
                 QRegExp expression("(\\s|\\t)");
                 QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
 
-                QString ndbName = stringList[0];
-                float frequency = stringList[1].toFloat();
-                QString latitudeString = stringList[2];
-                QString longitudeString = stringList[3].left(14);
+                QString ndbName = stringList.at(0);
+                float frequency = stringList.at(1).toFloat();
+                QString latitudeString = stringList.at(2);
+                QString longitudeString = stringList.at(3).left(14);
 
                 double latitudeDouble = airspaceData->coordsStringToDouble(latitudeString);
                 double longitudeDouble = airspaceData->coordsStringToDouble(longitudeString);
@@ -237,9 +229,9 @@ void ATCSituationalDisplay::loadData()
                 QRegExp expression("(\\s|\\t)");
                 QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
 
-                QString airportName = stringList[0];
-                QString latitudeString = stringList[2];
-                QString longitudeString = stringList[3].left(14);
+                QString airportName = stringList.at(0);
+                QString latitudeString = stringList.at(2);
+                QString longitudeString = stringList.at(3).left(14);
 
                 double latitudeDouble = airspaceData->coordsStringToDouble(latitudeString);
                 double longitudeDouble = airspaceData->coordsStringToDouble(longitudeString);
@@ -253,15 +245,15 @@ void ATCSituationalDisplay::loadData()
                 QRegExp expression("(\\s|\\t)");
                 QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
 
-                QString rwyID1 = stringList[0];
-                QString rwyID2 = stringList[1];
-                unsigned int magneticHDG1 = stringList[2].toUInt();
-                unsigned int magneticHDG2 = stringList[3].toUInt();
-                double startLat = airspaceData->coordsStringToDouble(stringList[4]);
-                double startLon = airspaceData->coordsStringToDouble(stringList[5]);
-                double endLat = airspaceData->coordsStringToDouble(stringList[6]);
-                double endLon = airspaceData->coordsStringToDouble(stringList[7].left(14));
-                QString airportName = stringList[8].left(4);
+                QString rwyID1 = stringList.at(0);
+                QString rwyID2 = stringList.at(1);
+                unsigned int magneticHDG1 = stringList.at(2).toUInt();
+                unsigned int magneticHDG2 = stringList.at(3).toUInt();
+                double startLat = airspaceData->coordsStringToDouble(stringList.at(4));
+                double startLon = airspaceData->coordsStringToDouble(stringList.at(5));
+                double endLat = airspaceData->coordsStringToDouble(stringList.at(6));
+                double endLon = airspaceData->coordsStringToDouble(stringList.at(7).left(14));
+                QString airportName = stringList.at(8).left(4);
 
                 ATCAirport *desiredAirport = airspaceData->findAirport(airportName);
 
@@ -392,17 +384,17 @@ void ATCSituationalDisplay::displaySectors()
 
     projectSectors(tempSectors, airspaceData, 5);
 
-    double mercatorXmin = tempSectors[0].coords[0].x;
-    double mercatorXmax = tempSectors[0].coords[0].x;
-    double mercatorYmin = tempSectors[0].coords[0].y;
-    double mercatorYmax = tempSectors[0].coords[0].y;
+    double mercatorXmin = tempSectors.at(0).coords.at(0).x;
+    double mercatorXmax = tempSectors.at(0).coords.at(0).x;
+    double mercatorYmin = tempSectors.at(0).coords.at(0).y;
+    double mercatorYmax = tempSectors.at(0).coords.at(0).y;
 
     for(int i = 0; i < airspaceData->getSectorVectorSize(); i++)
     {
         for(int j = 0; j < airspaceData->getSector(i)->getCoordinatesVectorSize(); j++)
         {
-            double currentX = tempSectors[i].coords[j].x;
-            double currentY = tempSectors[i].coords[j].y;
+            double currentX = tempSectors.at(i).coords.at(j).x;
+            double currentY = tempSectors.at(i).coords.at(j).y;
 
             if(currentX < mercatorXmin)
                 mercatorXmin = currentX;
@@ -451,10 +443,10 @@ void ATCSituationalDisplay::displayFixes()
 //Translate to local & scene coords
     for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
     {
-        tempFixes[i].x = (tempFixes[i].x - sectorCentreX) * scaleFactor;
-        tempFixes[i].y = -1 * (tempFixes[i].y - sectorCentreY) * scaleFactor;
+        tempFixes[i].x = (tempFixes.at(i).x - sectorCentreX) * scaleFactor;
+        tempFixes[i].y = -1 * (tempFixes.at(i).y - sectorCentreY) * scaleFactor;
 
-        airspaceData->getFix(i)->setScenePosition(new QPointF(tempFixes[i].x, tempFixes[i].y));
+        airspaceData->getFix(i)->setScenePosition(new QPointF(tempFixes.at(i).x, tempFixes.at(i).y));
     }
 
 //Build and position symbol polygons
@@ -465,9 +457,9 @@ void ATCSituationalDisplay::displayFixes()
     {
         QVector<QPointF> polygonVertex(vertexNumber + 1);
 
-        QPointF upperVertex(tempFixes[i].x, tempFixes[i].y - sideLength * qSqrt(3) / 3);
-        QPointF lowerLeftVertex(tempFixes[i].x - sideLength / 2, tempFixes[i].y + sideLength * qSqrt(3) / 6);
-        QPointF lowerRightVertex(tempFixes[i].x + sideLength / 2, tempFixes[i].y + sideLength * qSqrt(3) / 6);
+        QPointF upperVertex(tempFixes.at(i).x, tempFixes.at(i).y - sideLength * qSqrt(3) / 3);
+        QPointF lowerLeftVertex(tempFixes.at(i).x - sideLength / 2, tempFixes.at(i).y + sideLength * qSqrt(3) / 6);
+        QPointF lowerRightVertex(tempFixes.at(i).x + sideLength / 2, tempFixes.at(i).y + sideLength * qSqrt(3) / 6);
 
         polygonVertex[0] = upperVertex;
         polygonVertex[1] = lowerLeftVertex;
@@ -510,7 +502,7 @@ void ATCSituationalDisplay::displayFixes()
         currentLabel->setPos(positionX + ATCConst::FIX_LABEL_DX / currentScale,
                              positionY + ATCConst::FIX_LABEL_DY / currentScale);
 
-//        scene->addItem(currentLabel);
+        scene->addItem(currentLabel);
     }
 }
 
@@ -539,17 +531,17 @@ void ATCSituationalDisplay::displayAirports()
 //Translate to local & scene coords
     for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
     {
-        tempAirports[i].x = (tempAirports[i].x - sectorCentreX) * scaleFactor;
-        tempAirports[i].y = -1 * (tempAirports[i].y - sectorCentreY) * scaleFactor;
+        tempAirports[i].x = (tempAirports.at(i).x - sectorCentreX) * scaleFactor;
+        tempAirports[i].y = -1 * (tempAirports.at(i).y - sectorCentreY) * scaleFactor;
 
-        airspaceData->getAirport(i)->setScenePosition(new QPointF(tempAirports[i].x, tempAirports[i].y));
+        airspaceData->getAirport(i)->setScenePosition(new QPointF(tempAirports.at(i).x, tempAirports.at(i).y));
     }
 
 //Build and position symbol polygons
     for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
     {
-        airspaceData->getAirport(i)->setSymbol(new QGraphicsEllipseItem(tempAirports[i].x - ATCConst::AIRPORT_SYMBOL_DIA / 2 / currentScale,
-                                                                        tempAirports[i].y - ATCConst::AIRPORT_SYMBOL_DIA / 2 / currentScale,
+        airspaceData->getAirport(i)->setSymbol(new QGraphicsEllipseItem(tempAirports.at(i).x - ATCConst::AIRPORT_SYMBOL_DIA / 2 / currentScale,
+                                                                        tempAirports.at(i).y - ATCConst::AIRPORT_SYMBOL_DIA / 2 / currentScale,
                                                                         ATCConst::AIRPORT_SYMBOL_DIA / currentScale,
                                                                         ATCConst::AIRPORT_SYMBOL_DIA / currentScale));
     }
@@ -588,6 +580,11 @@ void ATCSituationalDisplay::displayAirports()
 
             scene->addItem(currentLabel);
         }
+}
+
+void ATCSituationalDisplay::displayRunwayCentrelines()
+{
+
 }
 
 double ATCSituationalDisplay::mercatorProjectionLon(double longitudeDeg, double referenceLongitudeDeg, double scale)
@@ -659,8 +656,8 @@ void ATCSituationalDisplay::calculateSectorPolygons(QVector<sector> &sectorVecto
 
         for(int j = 0; j < airspace->getSector(i)->getCoordinatesVectorSize(); j++)
         {
-            qreal sceneCoordX = static_cast<qreal>((sectorVector[i].coords[j].x - centreX) * scaleFactor);
-            qreal sceneCoordY = static_cast<qreal>(-1 * (sectorVector[i].coords[j].y - centreY) * scaleFactor);
+            qreal sceneCoordX = static_cast<qreal>((sectorVector.at(i).coords.at(j).x - centreX) * scaleFactor);
+            qreal sceneCoordY = static_cast<qreal>(-1 * (sectorVector.at(i).coords.at(j).y - centreY) * scaleFactor);
 
             QPointF vertex(sceneCoordX, sceneCoordY);
             polygonVertex[j] = vertex;
@@ -700,7 +697,7 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
         scale(newScale, newScale);
         rescaleSectors();
         rescaleFixes();
-//        rescaleFixLabels();
+        rescaleFixLabels();
         rescaleAirports();
         rescaleAirportLabels();
     }

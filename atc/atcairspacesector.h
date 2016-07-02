@@ -29,7 +29,7 @@ public:
 private:
     QString sectorName;
     QVector<ATCAirspaceFix*> coordinates;
-    QGraphicsPolygonItem *polygon;
+    QGraphicsPolygonItem *polygon = nullptr;
 
 };
 

@@ -21,7 +21,7 @@ void ATCAirport::deleteAllRunways()
     {
         for(int i = 0; i < runways.size(); i++)
         {
-            delete runways[i];
+            delete runways.at(i);
         }
     }
     else
@@ -52,7 +52,7 @@ QGraphicsSimpleTextItem *ATCAirport::getLabel()
 
 ATCRunway *ATCAirport::getRunway(int iterator)
 {
-    return runways[iterator];
+    return runways.at(iterator);
 }
 
 void ATCAirport::setName(QString airportName)

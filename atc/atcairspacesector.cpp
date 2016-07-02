@@ -23,7 +23,7 @@ ATCAirspaceSector::~ATCAirspaceSector()
     }
 
     deleteAllAirspaceFixes();
-    delete polygon;
+    if(polygon != nullptr) delete polygon;
 }
 
 QString ATCAirspaceSector::getSectorName()
@@ -33,7 +33,7 @@ QString ATCAirspaceSector::getSectorName()
 
 ATCAirspaceFix* ATCAirspaceSector::getCoordinates(int iterator)
 {
-    return coordinates[iterator];
+    return coordinates.at(iterator);
 }
 
 int ATCAirspaceSector::getCoordinatesVectorSize()
@@ -67,7 +67,7 @@ void ATCAirspaceSector::deleteAllAirspaceFixes()
     {
         for(int i = 0; i < coordinates.size(); i++)
         {
-            delete coordinates[i];
+            delete coordinates.at(i);
         }
     }
     else

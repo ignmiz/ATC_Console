@@ -27,9 +27,7 @@ public:
     void setBaseScale(qreal scale);
 
 private:
-    QWidget *parentWindow;
-
-    ATCAirspace *airspaceData;
+    ATCAirspace *airspaceData = nullptr;
 
     qreal baseScale = 1;
     qreal scaleResolution = 0.05;
@@ -39,8 +37,7 @@ private:
     double sectorCentreX;
     double sectorCentreY;
 
-    QGraphicsScene *scene;
-//    QGraphicsLineItem *lineH, *lineV;
+    QGraphicsScene *scene = nullptr;
 
     void situationalDisplaySetup();
     void loadData(); //Temp - to be moved
@@ -55,6 +52,7 @@ private:
     void displaySectors();
     void displayFixes();
     void displayAirports();
+    void displayRunwayCentrelines();
 
     double mercatorProjectionLon(double longitude, double referenceLongitude = 0, double scale = 1);
     double mercatorProjectionLat(double latitude, double scale = 1);
