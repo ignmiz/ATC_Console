@@ -30,3 +30,6 @@ const double ATCConst::AIRPORT_SYMBOL_WIDTH = 0.75;
 const double ATCConst::AIRPORT_LABEL_HEIGHT = 6;
 const double ATCConst::AIRPORT_LABEL_DX = 6;
 const double ATCConst::AIRPORT_LABEL_DY = -12;
+
+const double ATCConst::RWY_CENTRELINE_LENGTH = 20;
+const double ATCConst::RWY_CENTRELINE_WIDTH = 1;

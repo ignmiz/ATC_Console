@@ -55,6 +55,11 @@ ATCRunway *ATCAirport::getRunway(int iterator)
     return runways.at(iterator);
 }
 
+int ATCAirport::getRunwayVectorSize()
+{
+    return runways.size();
+}
+
 void ATCAirport::setName(QString airportName)
 {
     name = airportName;
@@ -78,4 +83,12 @@ void ATCAirport::setLabel(QGraphicsSimpleTextItem *text)
 void ATCAirport::appendRunway(ATCRunway *runway)
 {
     runways.append(runway);
+}
+
+bool ATCAirport::isRunwayVectorEmpty()
+{
+    if(runways.isEmpty())
+        return true;
+    else
+        return false;
 }

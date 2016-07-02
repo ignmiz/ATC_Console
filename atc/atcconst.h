@@ -38,6 +38,9 @@ public:
     static const double AIRPORT_LABEL_DX;
     static const double AIRPORT_LABEL_DY;
 
+    static const double RWY_CENTRELINE_LENGTH;
+    static const double RWY_CENTRELINE_WIDTH;
+
 };
 
 #endif // ATCCONST_H

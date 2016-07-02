@@ -18,8 +18,10 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
     rescaleScene();
 
     displaySectors();
+    displayRunwayCentrelines();
     displayFixes();
     displayAirports();
+
 }
 
 ATCSituationalDisplay::~ATCSituationalDisplay()
@@ -382,7 +384,7 @@ void ATCSituationalDisplay::displaySectors()
 {
     QVector<sector> tempSectors;
 
-    projectSectors(tempSectors, airspaceData, 5);
+    projectSectors(tempSectors, airspaceData, ATCConst::AVG_DECLINATION);
 
     double mercatorXmin = tempSectors.at(0).coords.at(0).x;
     double mercatorXmax = tempSectors.at(0).coords.at(0).x;
@@ -421,7 +423,7 @@ void ATCSituationalDisplay::displaySectors()
 void ATCSituationalDisplay::displayFixes()
 {
     QVector<coord> tempFixes;
-    double rotationDeg = 5;
+    double rotationDeg = ATCConst::AVG_DECLINATION;
 
 //Mercator projection of fixes + rotation
     for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
@@ -584,7 +586,115 @@ void ATCSituationalDisplay::displayAirports()
 
 void ATCSituationalDisplay::displayRunwayCentrelines()
 {
+    double rotationDeg = ATCConst::AVG_DECLINATION;
 
+    QVector<coord> rwyCoords1;
+    QVector<coord> rwyCoords2;
+    QVector<coord> centrelineEnd1;
+    QVector<coord> centrelineEnd2;
+
+//calculate lat and lon of extended centreline ends
+    for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
+    {
+        if(!airspaceData->getAirport(i)->isRunwayVectorEmpty())
+        {
+            for(int j = 0; j < airspaceData->getAirport(i)->getRunwayVectorSize(); j++)
+            {
+                ATCRunway *currentRunway = airspaceData->getAirport(i)->getRunway(j);
+
+                unsigned int hdg1 = currentRunway->getMagneticHDG1();
+                unsigned int hdg2 = currentRunway->getMagneticHDG2();
+
+                coord rwy1;
+                coord rwy2;
+
+                rwy1.x = currentRunway->getStartPoint().longitude();
+                rwy1.y = currentRunway->getStartPoint().latitude();
+                rwy2.x = currentRunway->getEndPoit().longitude();
+                rwy2.y = currentRunway->getEndPoit().latitude();
+
+                coord centreEnd1;
+                coord centreEnd2;
+
+                centreEnd1.x = rwy1.x +
+                        ATCConst::RWY_CENTRELINE_LENGTH / 60 * qSin((hdg1 - 180 + ATCConst::AVG_DECLINATION) * ATCConst::DEG_2_RAD);
+                centreEnd1.y = rwy1.y +
+                        ATCConst::RWY_CENTRELINE_LENGTH / 60 * qCos((hdg1 - 180 + ATCConst::AVG_DECLINATION) * ATCConst::DEG_2_RAD);
+                centreEnd2.x = rwy2.x +
+                        ATCConst::RWY_CENTRELINE_LENGTH / 60 * qSin((hdg2 - 180 + ATCConst::AVG_DECLINATION) * ATCConst::DEG_2_RAD);
+                centreEnd2.y = rwy2.y +
+                        ATCConst::RWY_CENTRELINE_LENGTH / 60 * qCos((hdg2 - 180 + ATCConst::AVG_DECLINATION) * ATCConst::DEG_2_RAD);
+
+                rwyCoords1.append(rwy1);
+                rwyCoords2.append(rwy2);
+                centrelineEnd1.append(centreEnd1);
+                centrelineEnd2.append(centreEnd2);
+            }
+        }
+    }
+
+//calculate Mercator projection and rotation of points
+    for(int i = 0; i < rwyCoords1.size(); i++)
+    {
+        rwyCoords1[i].x = mercatorProjectionLon(rwyCoords1.at(i).x);
+        rwyCoords1[i].y = mercatorProjectionLat(rwyCoords1.at(i).y);
+
+        rwyCoords2[i].x = mercatorProjectionLon(rwyCoords2.at(i).x);
+        rwyCoords2[i].y = mercatorProjectionLat(rwyCoords2.at(i).y);
+
+        centrelineEnd1[i].x = mercatorProjectionLon(centrelineEnd1.at(i).x);
+        centrelineEnd1[i].y = mercatorProjectionLat(centrelineEnd1.at(i).y);
+
+        centrelineEnd2[i].x = mercatorProjectionLon(centrelineEnd2.at(i).x);
+        centrelineEnd2[i].y = mercatorProjectionLat(centrelineEnd2.at(i).y);
+
+        double rwyCoords1xRot = rwyCoords1.at(i).x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - rwyCoords1.at(i).y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
+        double rwyCoords1yRot = rwyCoords1.at(i).x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + rwyCoords1.at(i).y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+
+        double rwyCoords2xRot = rwyCoords2.at(i).x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - rwyCoords2.at(i).y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
+        double rwyCoords2yRot = rwyCoords2.at(i).x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + rwyCoords2.at(i).y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+
+        double centrelineEnd1xRot = centrelineEnd1.at(i).x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - centrelineEnd1.at(i).y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
+        double centrelineEnd1yRot = centrelineEnd1.at(i).x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + centrelineEnd1.at(i).y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+
+        double centrelineEnd2xRot = centrelineEnd2.at(i).x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - centrelineEnd2.at(i).y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
+        double centrelineEnd2yRot = centrelineEnd2.at(i).x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + centrelineEnd2.at(i).y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+
+        rwyCoords1[i].x = rwyCoords1xRot;
+        rwyCoords1[i].y = rwyCoords1yRot;
+
+        rwyCoords2[i].x = rwyCoords2xRot;
+        rwyCoords2[i].y = rwyCoords2yRot;
+
+        centrelineEnd1[i].x = centrelineEnd1xRot;
+        centrelineEnd1[i].y = centrelineEnd1yRot;
+
+        centrelineEnd2[i].x = centrelineEnd2xRot;
+        centrelineEnd2[i].y = centrelineEnd2yRot;
+    }
+
+//Translate to local & scene coords
+    for(int i = 0; i < rwyCoords1.size(); i++)
+    {
+        rwyCoords1[i].x = (rwyCoords1.at(i).x - sectorCentreX) * scaleFactor;
+        rwyCoords1[i].y = -1 * (rwyCoords1.at(i).y - sectorCentreY) * scaleFactor;
+
+        rwyCoords2[i].x = (rwyCoords2.at(i).x - sectorCentreX) * scaleFactor;
+        rwyCoords2[i].y = -1 * (rwyCoords2.at(i).y - sectorCentreY) * scaleFactor;
+
+        centrelineEnd1[i].x = (centrelineEnd1.at(i).x - sectorCentreX) * scaleFactor;
+        centrelineEnd1[i].y = -1 * (centrelineEnd1.at(i).y - sectorCentreY) * scaleFactor;
+
+        centrelineEnd2[i].x = (centrelineEnd2.at(i).x - sectorCentreX) * scaleFactor;
+        centrelineEnd2[i].y = -1 * (centrelineEnd2.at(i).y - sectorCentreY) * scaleFactor;
+
+        QPen pen(Qt::red);
+        pen.setWidthF(ATCConst::RWY_CENTRELINE_WIDTH);
+
+        scene->addLine(rwyCoords1.at(i).x, rwyCoords1.at(i).y, centrelineEnd1.at(i).x, centrelineEnd1.at(i).y, pen);
+        scene->addLine(rwyCoords2.at(i).x, rwyCoords2.at(i).y, centrelineEnd2.at(i).x, centrelineEnd2.at(i).y, pen);
+
+    }
 }
 
 double ATCSituationalDisplay::mercatorProjectionLon(double longitudeDeg, double referenceLongitudeDeg, double scale)

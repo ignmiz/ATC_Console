@@ -21,12 +21,15 @@ public:
    QGraphicsEllipseItem* getSymbol();
    QGraphicsSimpleTextItem* getLabel();
    ATCRunway* getRunway(int iterator);
+   int getRunwayVectorSize();
 
    void setName(QString airportName);
    void setScenePosition(QPointF *position);
    void setSymbol(QGraphicsEllipseItem *ellipse);
    void setLabel(QGraphicsSimpleTextItem *text);
    void appendRunway(ATCRunway *runway);
+
+   bool isRunwayVectorEmpty();
 
 private:
    QString name;
