@@ -1,6 +1,8 @@
 #ifndef ATCRUNWAY_H
 #define ATCRUNWAY_H
 
+#include "atcrunwayextendedcentreline.h"
+
 #include <QGeoCoordinate>
 
 class ATCRunway
@@ -16,6 +18,9 @@ public:
     unsigned int getMagneticHDG2();
     QGeoCoordinate& getStartPoint();
     QGeoCoordinate& getEndPoit();
+    ATCRunwayExtendedCentreline* getExtendedCentreline();
+
+    void setExtendedCentreline(ATCRunwayExtendedCentreline *centreline);
 
 private:
     QString rwyID1;
@@ -26,6 +31,9 @@ private:
 
     QGeoCoordinate startPoint;
     QGeoCoordinate endPoint;
+
+    ATCRunwayExtendedCentreline *extendedCentreline = nullptr;
+
 };
 
 #endif // ATCRUNWAY_H

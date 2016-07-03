@@ -2,6 +2,8 @@
 #define ATCSITUATIONALDISPLAY_H
 
 #include "atcairspace.h"
+#include "atcconst.h"
+
 #include <QGraphicsView>
 
 struct coord
@@ -54,8 +56,8 @@ private:
     void displayAirports();
     void displayRunwayCentrelines();
 
-    double mercatorProjectionLon(double longitude, double referenceLongitude = 0, double scale = 1);
-    double mercatorProjectionLat(double latitude, double scale = 1);
+    double mercatorProjectionLon(double longitude, double referenceLongitude = 0, double scale = ATCConst::WGS84_RADIUS);
+    double mercatorProjectionLat(double latitude, double scale = ATCConst::WGS84_RADIUS);
     void projectSectors(QVector<sector> &targetVector, ATCAirspace *airspace, double rotationDeg);
     double calculateScaleFactor(double mercatorXmin, double mercatorXmax, double mercatorYmin, double mercatorYmax);
     void calculateSectorPolygons(QVector<sector> &sectorVector, ATCAirspace *airspace, double centreX, double centreY, double scaleFactor);

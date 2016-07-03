@@ -602,9 +602,6 @@ void ATCSituationalDisplay::displayRunwayCentrelines()
             {
                 ATCRunway *currentRunway = airspaceData->getAirport(i)->getRunway(j);
 
-                unsigned int hdg1 = currentRunway->getMagneticHDG1();
-                unsigned int hdg2 = currentRunway->getMagneticHDG2();
-
                 coord rwy1;
                 coord rwy2;
 
@@ -613,17 +610,15 @@ void ATCSituationalDisplay::displayRunwayCentrelines()
                 rwy2.x = currentRunway->getEndPoit().longitude();
                 rwy2.y = currentRunway->getEndPoit().latitude();
 
+                double angle = qAcos((rwy2.y - rwy1.y) / qSqrt(qPow(rwy2.x - rwy1.x, 2) + qPow(rwy2.y - rwy1.y, 2)));
+
                 coord centreEnd1;
                 coord centreEnd2;
 
-                centreEnd1.x = rwy1.x +
-                        ATCConst::RWY_CENTRELINE_LENGTH / 60 * qSin((hdg1 - 180 + ATCConst::AVG_DECLINATION) * ATCConst::DEG_2_RAD);
-                centreEnd1.y = rwy1.y +
-                        ATCConst::RWY_CENTRELINE_LENGTH / 60 * qCos((hdg1 - 180 + ATCConst::AVG_DECLINATION) * ATCConst::DEG_2_RAD);
-                centreEnd2.x = rwy2.x +
-                        ATCConst::RWY_CENTRELINE_LENGTH / 60 * qSin((hdg2 - 180 + ATCConst::AVG_DECLINATION) * ATCConst::DEG_2_RAD);
-                centreEnd2.y = rwy2.y +
-                        ATCConst::RWY_CENTRELINE_LENGTH / 60 * qCos((hdg2 - 180 + ATCConst::AVG_DECLINATION) * ATCConst::DEG_2_RAD);
+                centreEnd1.x = rwy1.x + ATCConst::RWY_CENTRELINE_LENGTH / 60 * qSin(angle + ATCConst::PI);
+                centreEnd1.y = rwy1.y + ATCConst::RWY_CENTRELINE_LENGTH / 60 * qCos(angle + ATCConst::PI);
+                centreEnd2.x = rwy2.x + ATCConst::RWY_CENTRELINE_LENGTH / 60 * qSin(angle);
+                centreEnd2.y = rwy2.y + ATCConst::RWY_CENTRELINE_LENGTH / 60 * qCos(angle);
 
                 rwyCoords1.append(rwy1);
                 rwyCoords2.append(rwy2);
