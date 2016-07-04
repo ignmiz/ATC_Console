@@ -47,6 +47,11 @@ public:
     static const double VOR_LABEL_DX;
     static const double VOR_LABEL_DY;
 
+    static const double NDB_SYMBOL_DIA;
+    static const double NDB_SYMBOL_WIDTH;
+    static const double NDB_LABEL_HEIGHT;
+    static const double NDB_LABEL_DX;
+    static const double NDB_LABEL_DY;
 };
 
 #endif // ATCCONST_H

@@ -19,6 +19,7 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
 
     displaySectors();
     displayExtendedCentrelines();
+    displayNDBs();
     displayVORs();
     displayFixes();
     displayAirports();
@@ -399,6 +400,50 @@ void ATCSituationalDisplay::rescaleVORLabels()
 
             currentLabel->setPos(positionX + ATCConst::VOR_LABEL_DX / currentScale,
                                  positionY + ATCConst::VOR_LABEL_DY / currentScale);
+        }
+    }
+}
+
+void ATCSituationalDisplay::rescaleNDBs()
+{
+    if(!visibleNDBs.empty())
+    {
+        QPen currentPen(visibleNDBs.at(0)->getSymbol()->pen());
+        currentPen.setWidthF(ATCConst::NDB_SYMBOL_WIDTH / currentScale);
+
+        for(int i = 0; i < visibleNDBs.size(); i++)
+        {
+            QGraphicsEllipseItem *currentSymbol = visibleNDBs.at(i)->getSymbol();
+            QPointF *currentPosition = visibleNDBs.at(i)->getScenePosition();
+
+            currentSymbol->setRect(currentPosition->x() - ATCConst::NDB_SYMBOL_DIA / 2 / currentScale,
+                                   currentPosition->y() - ATCConst::NDB_SYMBOL_DIA / 2 / currentScale,
+                                   ATCConst::NDB_SYMBOL_DIA / currentScale,
+                                   ATCConst::NDB_SYMBOL_DIA / currentScale);
+            currentSymbol->setPen(currentPen);
+        }
+    }
+}
+
+void ATCSituationalDisplay::rescaleNDBLabels()
+{
+    if(!visibleNDBs.empty())
+    {
+        QFont textFont(visibleNDBs.at(0)->getLabel()->font());
+        textFont.setPointSizeF(ATCConst::NDB_LABEL_HEIGHT / currentScale);
+
+        for(int i = 0; i < visibleNDBs.size(); i++)
+        {
+            ATCBeaconNDB *currentNDB = visibleNDBs.at(i);
+            QGraphicsSimpleTextItem *currentLabel = currentNDB->getLabel();
+
+            currentLabel->setFont(textFont);
+
+            double positionX = currentNDB->getScenePosition()->x();
+            double positionY = currentNDB->getScenePosition()->y();
+
+            currentLabel->setPos(positionX + ATCConst::AIRPORT_LABEL_DX / currentScale,
+                                 positionY + ATCConst::AIRPORT_LABEL_DY / currentScale);
         }
     }
 }
@@ -904,7 +949,81 @@ void ATCSituationalDisplay::displayVORs()
 
 void ATCSituationalDisplay::displayNDBs()
 {
+    QVector<coord> tempNDBs;
+    double rotationDeg = ATCConst::AVG_DECLINATION;
 
+//Mercator projection of NDBs + rotation
+    for(int i = 0; i < airspaceData->getNDBsVectorSize(); i++)
+    {
+        coord currentNDB;
+
+        currentNDB.x = mercatorProjectionLon(airspaceData->getNDB(i)->longitude());
+        currentNDB.y = mercatorProjectionLat(airspaceData->getNDB(i)->latitude());
+
+        double xRotated = currentNDB.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentNDB.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
+        double yRotated = currentNDB.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentNDB.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+
+        currentNDB.x = xRotated;
+        currentNDB.y = yRotated;
+
+        tempNDBs.append(currentNDB);
+    }
+
+//Translate to local & scene coords
+    for(int i = 0; i < airspaceData->getNDBsVectorSize(); i++)
+    {
+        tempNDBs[i].x = (tempNDBs.at(i).x - sectorCentreX) * scaleFactor;
+        tempNDBs[i].y = -1 * (tempNDBs.at(i).y - sectorCentreY) * scaleFactor;
+
+        airspaceData->getNDB(i)->setScenePosition(new QPointF(tempNDBs.at(i).x, tempNDBs.at(i).y));
+    }
+
+//Build and position symbol polygons
+    for(int i = 0; i < airspaceData->getNDBsVectorSize(); i++)
+    {
+        airspaceData->getNDB(i)->setSymbol(new QGraphicsEllipseItem(tempNDBs.at(i).x - ATCConst::NDB_SYMBOL_DIA / 2 / currentScale,
+                                                                    tempNDBs.at(i).y - ATCConst::NDB_SYMBOL_DIA / 2 / currentScale,
+                                                                    ATCConst::NDB_SYMBOL_DIA / currentScale,
+                                                                    ATCConst::NDB_SYMBOL_DIA / currentScale));
+    }
+
+//Display NDB symbols on scene
+    QPen pen(Qt::magenta);
+    pen.setWidthF(ATCConst::NDB_SYMBOL_WIDTH / currentScale);
+
+    for(int i = 0; i < airspaceData->getNDBsVectorSize(); i++)
+    {
+        QGraphicsEllipseItem *currentSymbol(airspaceData->getNDB(i)->getSymbol());
+
+        currentSymbol->setPen(pen);
+        scene->addItem(currentSymbol);
+
+        visibleNDBs.append(airspaceData->getNDB(i));
+    }
+
+//Calculate labels
+    QBrush textBrush(Qt::white);
+
+    QFont textFont("Arial");
+    textFont.setPointSizeF(ATCConst::NDB_LABEL_HEIGHT / currentScale);
+
+    for(int i = 0; i < airspaceData->getNDBsVectorSize(); i++)
+    {
+        ATCBeaconNDB *currentNDB = airspaceData->getNDB(i);
+        QGraphicsSimpleTextItem *currentLabel = new QGraphicsSimpleTextItem(currentNDB->getName());
+        currentNDB->setLabel(currentLabel);
+
+        currentLabel->setBrush(textBrush);
+        currentLabel->setFont(textFont);
+
+        double positionX = currentNDB->getScenePosition()->x();
+        double positionY = currentNDB->getScenePosition()->y();
+
+        currentLabel->setPos(positionX + ATCConst::VOR_LABEL_DX / currentScale,
+                             positionY + ATCConst::VOR_LABEL_DY / currentScale);
+
+        scene->addItem(currentLabel);
+    }
 }
 
 double ATCSituationalDisplay::mercatorProjectionLon(double longitudeDeg, double referenceLongitudeDeg, double scale)
@@ -1026,6 +1145,8 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
         rescaleExtendedCentrelines();
         rescaleVORs();
         rescaleVORLabels();
+        rescaleNDBs();
+        rescaleNDBLabels();
     }
 
     event->accept();

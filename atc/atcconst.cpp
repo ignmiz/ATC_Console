@@ -39,3 +39,9 @@ const double ATCConst::VOR_SIDE_LENGTH = 8;
 const double ATCConst::VOR_LABEL_HEIGHT = 6;
 const double ATCConst::VOR_LABEL_DX = 6;
 const double ATCConst::VOR_LABEL_DY = -12;
+
+const double ATCConst::NDB_SYMBOL_DIA = 6;
+const double ATCConst::NDB_SYMBOL_WIDTH = 0.5;
+const double ATCConst::NDB_LABEL_HEIGHT = 6;
+const double ATCConst::NDB_LABEL_DX = 5;
+const double ATCConst::NDB_LABEL_DY = -12;

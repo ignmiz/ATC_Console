@@ -47,6 +47,7 @@ private:
     QVector<ATCNavFix*> visibleFixes;
     QVector<ATCAirport*> visibleAirports;
     QVector<ATCBeaconVOR*> visibleVORs;
+    QVector<ATCBeaconNDB*> visibleNDBs;
 
     void situationalDisplaySetup();
     void loadData(); //Temp - to be moved
@@ -57,6 +58,8 @@ private:
     void rescaleFixLabels();
     void rescaleVORs();
     void rescaleVORLabels();
+    void rescaleNDBs();
+    void rescaleNDBLabels();
     void rescaleAirports();
     void rescaleAirportLabels();
     void rescaleExtendedCentrelines();
