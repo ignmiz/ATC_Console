@@ -35,6 +35,8 @@ public:
     ATCAirspaceSector* getLastSector();
     int getSectorVectorSize();
     int getFixesVectorSize();
+    int getVORsVectorSize();
+    int getNDBsVectorSize();
     int getAirportsVectorSize();
     ATCNavFix* getFix(int iterator);
     ATCBeaconVOR* getVOR(int iterator);

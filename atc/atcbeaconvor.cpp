@@ -10,6 +10,10 @@ ATCBeaconVOR::ATCBeaconVOR(QString beaconName, float beaconFrequency, double lat
 
 ATCBeaconVOR::~ATCBeaconVOR()
 {
+    if(scenePosition != nullptr) delete scenePosition;
+    if(symbol != nullptr) delete symbol;
+    if(label != nullptr) delete label;
+
     qDebug() << "VOR: " << name << " : " << frequency << " : " << toString(QGeoCoordinate::DegreesMinutesSecondsWithHemisphere) << " deleted...";
 }
 
@@ -23,6 +27,21 @@ float ATCBeaconVOR::getFrequency()
     return frequency;
 }
 
+QGraphicsRectItem* ATCBeaconVOR::getSymbol()
+{
+    return symbol;
+}
+
+QPointF* ATCBeaconVOR::getScenePosition()
+{
+    return scenePosition;
+}
+
+QGraphicsSimpleTextItem* ATCBeaconVOR::getLabel()
+{
+    return label;
+}
+
 void ATCBeaconVOR::setName(QString beaconName)
 {
     name = beaconName;
@@ -31,4 +50,19 @@ void ATCBeaconVOR::setName(QString beaconName)
 void ATCBeaconVOR::setFrequency(float beaconFrequency)
 {
     frequency = beaconFrequency;
+}
+
+void ATCBeaconVOR::setSymbol(QGraphicsRectItem *vorSymbol)
+{
+    symbol = vorSymbol;
+}
+
+void ATCBeaconVOR::setScenePosition(QPointF *position)
+{
+    scenePosition = position;
+}
+
+void ATCBeaconVOR::setLabel(QGraphicsSimpleTextItem *textLabel)
+{
+    label = textLabel;
 }

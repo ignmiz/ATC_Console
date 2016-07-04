@@ -5,6 +5,7 @@
 #include "atcconst.h"
 
 #include <QGraphicsView>
+#include <QVector>
 
 struct coord
 {
@@ -41,6 +42,12 @@ private:
 
     QGraphicsScene *scene = nullptr;
 
+    QVector<ATCAirspaceSector*> visibleSectors;
+    QVector<ATCRunwayExtendedCentreline*> visibleCentrelines;
+    QVector<ATCNavFix*> visibleFixes;
+    QVector<ATCAirport*> visibleAirports;
+    QVector<ATCBeaconVOR*> visibleVORs;
+
     void situationalDisplaySetup();
     void loadData(); //Temp - to be moved
 
@@ -48,13 +55,18 @@ private:
     void rescaleSectors();
     void rescaleFixes();
     void rescaleFixLabels();
+    void rescaleVORs();
+    void rescaleVORLabels();
     void rescaleAirports();
     void rescaleAirportLabels();
+    void rescaleExtendedCentrelines();
 
     void displaySectors();
     void displayFixes();
     void displayAirports();
-    void displayRunwayCentrelines();
+    void displayExtendedCentrelines();
+    void displayVORs();
+    void displayNDBs();
 
     double mercatorProjectionLon(double longitude, double referenceLongitude = 0, double scale = ATCConst::WGS84_RADIUS);
     double mercatorProjectionLat(double latitude, double scale = ATCConst::WGS84_RADIUS);

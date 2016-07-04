@@ -83,6 +83,16 @@ int ATCAirspace::getFixesVectorSize()
     return fixes.size();
 }
 
+int ATCAirspace::getVORsVectorSize()
+{
+    return vors.size();
+}
+
+int ATCAirspace::getNDBsVectorSize()
+{
+    return ndbs.size();
+}
+
 int ATCAirspace::getAirportsVectorSize()
 {
     return airports.size();

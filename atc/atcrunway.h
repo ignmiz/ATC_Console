@@ -18,9 +18,11 @@ public:
     unsigned int getMagneticHDG2();
     QGeoCoordinate& getStartPoint();
     QGeoCoordinate& getEndPoit();
-    ATCRunwayExtendedCentreline* getExtendedCentreline();
+    ATCRunwayExtendedCentreline* getExtendedCentreline1();
+    ATCRunwayExtendedCentreline* getExtendedCentreline2();
 
-    void setExtendedCentreline(ATCRunwayExtendedCentreline *centreline);
+    void setExtendedCentreline1(ATCRunwayExtendedCentreline *centreline);
+    void setExtendedCentreline2(ATCRunwayExtendedCentreline *centreline);
 
 private:
     QString rwyID1;
@@ -32,7 +34,8 @@ private:
     QGeoCoordinate startPoint;
     QGeoCoordinate endPoint;
 
-    ATCRunwayExtendedCentreline *extendedCentreline = nullptr;
+    ATCRunwayExtendedCentreline *extendedCentreline1 = nullptr;
+    ATCRunwayExtendedCentreline *extendedCentreline2 = nullptr;
 
 };
 

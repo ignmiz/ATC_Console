@@ -5,6 +5,11 @@ ATCRunwayExtendedCentreline::ATCRunwayExtendedCentreline()
 
 }
 
+ATCRunwayExtendedCentreline::ATCRunwayExtendedCentreline(QGraphicsLineItem *line) : centreline(line)
+{
+
+}
+
 ATCRunwayExtendedCentreline::~ATCRunwayExtendedCentreline()
 {
     if(centreline != nullptr) delete centreline;

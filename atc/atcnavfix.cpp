@@ -28,7 +28,7 @@ QPointF* ATCNavFix::getScenePosition()
     return scenePosition;
 }
 
-QGraphicsSimpleTextItem *ATCNavFix::getLabel()
+QGraphicsSimpleTextItem* ATCNavFix::getLabel()
 {
     return label;
 }

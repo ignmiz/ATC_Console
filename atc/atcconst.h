@@ -41,6 +41,12 @@ public:
     static const double RWY_CENTRELINE_LENGTH;
     static const double RWY_CENTRELINE_WIDTH;
 
+    static const double VOR_LINE_WIDTH;
+    static const double VOR_SIDE_LENGTH;
+    static const double VOR_LABEL_HEIGHT;
+    static const double VOR_LABEL_DX;
+    static const double VOR_LABEL_DY;
+
 };
 
 #endif // ATCCONST_H

@@ -15,7 +15,9 @@ ATCRunway::ATCRunway(QString id1, QString id2, unsigned int hdg1, unsigned int h
 
 ATCRunway::~ATCRunway()
 {
-    if(extendedCentreline != nullptr) delete extendedCentreline;
+    if(extendedCentreline1 != nullptr) delete extendedCentreline1;
+    if(extendedCentreline2 != nullptr) delete extendedCentreline2;
+
     qDebug() << rwyID1 << " " << rwyID2 << " " << magneticHDG1 << " " << magneticHDG2 << " "
              << startPoint.toString() << " " << endPoint.toString() << " deleted...";
 }
@@ -50,13 +52,23 @@ QGeoCoordinate& ATCRunway::getEndPoit()
     return endPoint;
 }
 
-ATCRunwayExtendedCentreline* ATCRunway::getExtendedCentreline()
+ATCRunwayExtendedCentreline* ATCRunway::getExtendedCentreline1()
 {
-    return extendedCentreline;
+    return extendedCentreline1;
 }
 
-void ATCRunway::setExtendedCentreline(ATCRunwayExtendedCentreline *centreline)
+ATCRunwayExtendedCentreline* ATCRunway::getExtendedCentreline2()
 {
-    extendedCentreline = centreline;
+    return extendedCentreline2;
+}
+
+void ATCRunway::setExtendedCentreline1(ATCRunwayExtendedCentreline *centreline)
+{
+    extendedCentreline1 = centreline;
+}
+
+void ATCRunway::setExtendedCentreline2(ATCRunwayExtendedCentreline *centreline)
+{
+    extendedCentreline2 = centreline;
 }
 

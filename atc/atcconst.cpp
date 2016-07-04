@@ -32,4 +32,10 @@ const double ATCConst::AIRPORT_LABEL_DX = 6;
 const double ATCConst::AIRPORT_LABEL_DY = -12;
 
 const double ATCConst::RWY_CENTRELINE_LENGTH = 20;
-const double ATCConst::RWY_CENTRELINE_WIDTH = 1;
+const double ATCConst::RWY_CENTRELINE_WIDTH = 1.5;
+
+const double ATCConst::VOR_LINE_WIDTH = 0.5;
+const double ATCConst::VOR_SIDE_LENGTH = 8;
+const double ATCConst::VOR_LABEL_HEIGHT = 6;
+const double ATCConst::VOR_LABEL_DX = 6;
+const double ATCConst::VOR_LABEL_DY = -12;
