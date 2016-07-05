@@ -62,7 +62,8 @@ void ATCSituationalDisplay::situationalDisplaySetup()
 }
 
 void ATCSituationalDisplay::loadData()
-{    
+{
+//Load sectorfiles from ESE
     QFile eseFile("E:/Qt/ATC_Console/ATC_Console/EPWW_175_20160428.ese");
 
     if(!eseFile.open(QFile::ReadOnly | QFile::Text))
@@ -106,6 +107,7 @@ void ATCSituationalDisplay::loadData()
 
     eseFile.close();
 
+//Load VORs, NDBs, fixes, airports and runways from SCT
     QFile sctFile("E:/Qt/ATC_Console/ATC_Console/EPWW_175_20160428.sct");
 
     if(!sctFile.open(QFile::ReadOnly | QFile::Text))
@@ -274,6 +276,48 @@ void ATCSituationalDisplay::loadData()
     }
 
     sctFile.close();
+
+//Load SID and STAR procedures from ESE
+    if(!eseFile.open(QFile::ReadOnly | QFile::Text))
+    {
+        qDebug() << "Error while opening ese file...";
+        return;
+    }
+
+    bool flagSidStar = false;
+    bool flagAirspace = false;
+
+    QTextStream eseStream2(&eseFile);
+    while(!eseStream2.atEnd())
+    {
+        QString textLine = eseStream2.readLine();
+        textLine = textLine.trimmed();
+
+        if(textLine.isEmpty() || (textLine.at(0) == ';'))
+        {
+        }
+        else
+        {
+            if(textLine.contains("[SIDSSTARS]", Qt::CaseInsensitive))
+            {
+                flagSidStar = true;
+                flagAirspace = false;
+
+                qDebug() << "SIDs & STARs:";
+            }
+            else if(textLine.contains("[AIRSPACE]", Qt::CaseInsensitive))
+            {
+                flagSidStar = false;
+                flagAirspace = true;
+            }
+            else if(flagSidStar)
+            {
+                qDebug() << textLine;
+            }
+        }
+    }
+
+    eseFile.close();
 }
 
 void ATCSituationalDisplay::rescaleScene()
