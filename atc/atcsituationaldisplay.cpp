@@ -411,7 +411,7 @@ void ATCSituationalDisplay::rescaleVORs()
 
         for(int i = 0; i < visibleVORs.size(); i++)
         {
-            QGraphicsRectItem *currentRectItem = visibleVORs.at(i)->getSymbol();
+            QGraphicsRectItem *currentRectItem = dynamic_cast<QGraphicsRectItem*>(visibleVORs.at(i)->getSymbol());
             QPointF *currentPosition = visibleVORs.at(i)->getScenePosition();
 
             QPointF topLeft(currentPosition->x() - sideLength / 2, currentPosition->y() - sideLength / 2);
@@ -457,7 +457,7 @@ void ATCSituationalDisplay::rescaleNDBs()
 
         for(int i = 0; i < visibleNDBs.size(); i++)
         {
-            QGraphicsEllipseItem *currentSymbol = visibleNDBs.at(i)->getSymbol();
+            QGraphicsEllipseItem *currentSymbol = dynamic_cast<QGraphicsEllipseItem*>(visibleNDBs.at(i)->getSymbol());
             QPointF *currentPosition = visibleNDBs.at(i)->getScenePosition();
 
             currentSymbol->setRect(currentPosition->x() - ATCConst::NDB_SYMBOL_DIA / 2 / currentScale,
@@ -958,7 +958,7 @@ void ATCSituationalDisplay::displayVORs()
 
     for(int i = 0; i < airspaceData->getVORsVectorSize(); i++)
     {
-        QGraphicsRectItem *currentRect(airspaceData->getVOR(i)->getSymbol());
+        QAbstractGraphicsShapeItem *currentRect(airspaceData->getVOR(i)->getSymbol());
 
         currentRect->setPen(pen);
         scene->addItem(currentRect);
@@ -1037,7 +1037,7 @@ void ATCSituationalDisplay::displayNDBs()
 
     for(int i = 0; i < airspaceData->getNDBsVectorSize(); i++)
     {
-        QGraphicsEllipseItem *currentSymbol(airspaceData->getNDB(i)->getSymbol());
+        QAbstractGraphicsShapeItem *currentSymbol(airspaceData->getNDB(i)->getSymbol());
 
         currentSymbol->setPen(pen);
         scene->addItem(currentSymbol);
