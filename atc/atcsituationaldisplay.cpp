@@ -355,7 +355,7 @@ void ATCSituationalDisplay::rescaleFixes()
 
         for(int i = 0; i < visibleFixes.size(); i++)
         {
-            QGraphicsPolygonItem *currentPolygonItem = visibleFixes.at(i)->getSymbol();
+            QGraphicsPolygonItem *currentPolygonItem = dynamic_cast<QGraphicsPolygonItem*>(visibleFixes.at(i)->getSymbol());
             QPointF *currentPosition = visibleFixes.at(i)->getScenePosition();
 
             QVector<QPointF> polygonVertex(4);
@@ -648,10 +648,10 @@ void ATCSituationalDisplay::displayFixes()
 
     for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
     {
-        QGraphicsPolygonItem *currentPolygon(airspaceData->getFix(i)->getSymbol());
+        QAbstractGraphicsShapeItem *currentSymbol = airspaceData->getFix(i)->getSymbol();
 
-        currentPolygon->setPen(pen);
-        scene->addItem(currentPolygon);
+        currentSymbol->setPen(pen);
+        scene->addItem(currentSymbol);
 
         visibleFixes.append(airspaceData->getFix(i));
     }

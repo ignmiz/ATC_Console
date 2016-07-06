@@ -1,7 +1,7 @@
 #include "atcnavfix.h"
 #include <QDebug>
 
-ATCNavFix::ATCNavFix(QString fixName, double latitude, double longitude) : QGeoCoordinate(latitude, longitude), name(fixName)
+ATCNavFix::ATCNavFix(QString fixName, double latitude, double longitude) : ATCAbstractFix(latitude, longitude), name(fixName)
 {
 }
 
@@ -18,7 +18,7 @@ QString ATCNavFix::getName()
     return name;
 }
 
-QGraphicsPolygonItem* ATCNavFix::getSymbol()
+QAbstractGraphicsShapeItem *ATCNavFix::getSymbol()
 {
     return symbol;
 }
@@ -38,7 +38,7 @@ void ATCNavFix::setName(QString fixName)
     name = fixName;
 }
 
-void ATCNavFix::setSymbol(QGraphicsPolygonItem *fixSymbol)
+void ATCNavFix::setSymbol(QAbstractGraphicsShapeItem *fixSymbol)
 {
     symbol = fixSymbol;
 }
