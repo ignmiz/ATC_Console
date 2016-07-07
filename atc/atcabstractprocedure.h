@@ -1,8 +1,6 @@
 #ifndef ATCABSTRACTPROCEDURE_H
 #define ATCABSTRACTPROCEDURE_H
 
-#include "atcnavfix.h"
-
 #include <QString>
 #include <QVector>
 
@@ -15,20 +13,21 @@ public:
     QString getName();
     QString getAirport();
     QString getRunwayID();
-    ATCNavFix* getFix(int iterator);
+    QString getFixName(int iterator);
     int getFixListSize();
 
     void setName(QString procedureName);
     void setAirport(QString airportCode);
     void setRunwayID(QString runway);
+    void setFixList(QStringList &list);
 
-    void appendFix(ATCNavFix* fix);
+    void appendFixName(QString fixName);
 
 private:
     QString name;
     QString airport;
     QString runwayID;
-    QVector<ATCNavFix*> fixList;
+    QStringList fixList;
 };
 
 #endif // ATCABSTRACTPROCEDURE_H

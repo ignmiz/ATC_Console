@@ -26,7 +26,7 @@ QString ATCAbstractProcedure::getRunwayID()
     return runwayID;
 }
 
-ATCNavFix* ATCAbstractProcedure::getFix(int iterator)
+QString ATCAbstractProcedure::getFixName(int iterator)
 {
     return fixList.at(iterator);
 }
@@ -51,7 +51,12 @@ void ATCAbstractProcedure::setRunwayID(QString runway)
     runwayID = runway;
 }
 
-void ATCAbstractProcedure::appendFix(ATCNavFix *fix)
+void ATCAbstractProcedure::setFixList(QStringList &list)
 {
-    fixList.append(fix);
+    fixList = list;
+}
+
+void ATCAbstractProcedure::appendFixName(QString fixName)
+{
+    fixList.append(fixName);
 }

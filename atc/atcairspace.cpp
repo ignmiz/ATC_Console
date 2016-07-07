@@ -13,6 +13,8 @@ ATCAirspace::~ATCAirspace()
     deleteAllVORs();
     deleteAllNDBs();
     deleteAllAirports();
+    deleteAllSIDs();
+    deleteAllSTARs();
 }
 
 double ATCAirspace::coordsStringToDouble(QString coords)
@@ -63,6 +65,16 @@ void ATCAirspace::appendAirport(ATCAirport *airport)
     airports.append(airport);
 }
 
+void ATCAirspace::appendSID(ATCProcedureSID *sid)
+{
+    sids.append(sid);
+}
+
+void ATCAirspace::appendSTAR(ATCProcedureSTAR *star)
+{
+    stars.append(star);
+}
+
 ATCAirspaceSector* ATCAirspace::getSector(int iterator)
 {
     return sectors.at(iterator);
@@ -98,24 +110,44 @@ int ATCAirspace::getAirportsVectorSize()
     return airports.size();
 }
 
+int ATCAirspace::getSIDsVectorSize()
+{
+    return sids.size();
+}
+
+int ATCAirspace::getSTARsVectorSize()
+{
+    return stars.size();
+}
+
 ATCNavFix* ATCAirspace::getFix(int iterator)
 {
     return fixes.at(iterator);
 }
 
-ATCBeaconVOR *ATCAirspace::getVOR(int iterator)
+ATCBeaconVOR* ATCAirspace::getVOR(int iterator)
 {
     return vors.at(iterator);
 }
 
-ATCBeaconNDB *ATCAirspace::getNDB(int iterator)
+ATCBeaconNDB* ATCAirspace::getNDB(int iterator)
 {
     return ndbs.at(iterator);
 }
 
-ATCAirport *ATCAirspace::getAirport(int iterator)
+ATCAirport* ATCAirspace::getAirport(int iterator)
 {
     return airports.at(iterator);
+}
+
+ATCProcedureSID* ATCAirspace::getSID(int iterator)
+{
+    return sids.at(iterator);
+}
+
+ATCProcedureSTAR* ATCAirspace::getSTAR(int iterator)
+{
+    return stars.at(iterator);
 }
 
 ATCAirport* ATCAirspace::findAirport(QString ICAOname)
@@ -125,6 +157,19 @@ ATCAirport* ATCAirspace::findAirport(QString ICAOname)
         if(airports.at(i)->getName() == ICAOname)
         {
             return airports.at(i);
+        }
+    }
+
+    return nullptr;
+}
+
+ATCNavFix *ATCAirspace::findFix(QString fixName)
+{
+    for(int i = 0; i < fixes.size(); i++)
+    {
+        if(fixes.at(i)->getName() == fixName)
+        {
+            return fixes.at(i);
         }
     }
 
@@ -203,5 +248,35 @@ void ATCAirspace::deleteAllAirports()
     else
     {
         qDebug() << "Empty vector of airports...";
+    }
+}
+
+void ATCAirspace::deleteAllSIDs()
+{
+    if(!sids.empty())
+    {
+        for(int i = 0; i < sids.size(); i++)
+        {
+            delete sids.at(i);
+        }
+    }
+    else
+    {
+        qDebug() << "Empty vector of SIDs";
+    }
+}
+
+void ATCAirspace::deleteAllSTARs()
+{
+    if(!stars.empty())
+    {
+        for(int i = 0; i < stars.size(); i++)
+        {
+            delete stars.at(i);
+        }
+    }
+    else
+    {
+        qDebug() << "Empty vector of STARs";
     }
 }

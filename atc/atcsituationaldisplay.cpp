@@ -30,9 +30,6 @@ ATCSituationalDisplay::~ATCSituationalDisplay()
 {
     if(airspaceData != nullptr) delete airspaceData;
     scene->clear();
-
-    visibleSectors.clear();
-    visibleCentrelines.clear();
 }
 
 qreal ATCSituationalDisplay::getBaseScale() const
@@ -312,7 +309,36 @@ void ATCSituationalDisplay::loadData()
             }
             else if(flagSidStar)
             {
-                qDebug() << textLine;
+                QStringList stringList = textLine.split(":", QString::SkipEmptyParts);
+
+                QString procedureType = stringList.at(0);
+                QString airportCode = stringList.at(1);
+                QString runwayID = stringList.at(2);
+                QString procedureName = stringList.at(3);
+                QString fixListString = stringList.at(4);
+
+                QRegExp expression("(\\s|\\t)");
+                QStringList fixList = fixListString.split(expression, QString::SkipEmptyParts);
+
+                if(procedureType == "SID")
+                {
+                    ATCProcedureSID *currentProcedure = new ATCProcedureSID(procedureName, airportCode, runwayID);
+                    currentProcedure->setFixList(fixList);
+
+                    airspaceData->appendSID(currentProcedure);
+
+                    qDebug() << "SID: " << airportCode << ":" << runwayID << ":" << procedureName << " appended...";
+                }
+                else if(procedureType == "STAR")
+                {
+                    ATCProcedureSTAR *currentProcedure = new ATCProcedureSTAR(procedureName, airportCode, runwayID);
+                    currentProcedure->setFixList(fixList);
+
+                    airspaceData->appendSTAR(currentProcedure);
+
+                    qDebug() << "STAR: " << airportCode << ":" << runwayID << ":" << procedureName << " appended...";
+                }
+                qDebug() << fixList;
             }
         }
     }
