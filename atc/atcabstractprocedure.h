@@ -9,7 +9,7 @@
 class ATCAbstractProcedure
 {
 public:
-    explicit ATCAbstractProcedure(QString procedureName);
+    explicit ATCAbstractProcedure(QString procedureName, QString airportCode, QString runway);
     virtual ~ATCAbstractProcedure() = 0;
 
     QString getName();

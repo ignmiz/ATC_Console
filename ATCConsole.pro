@@ -41,7 +41,8 @@ SOURCES += main.cpp\
     atcrunwayextendedcentreline.cpp \
     atcabstractbeacon.cpp \
     atcabstractfix.cpp \
-    atcabstractprocedure.cpp
+    atcabstractprocedure.cpp \
+    atcproceduresid.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -66,7 +67,8 @@ HEADERS  += mainwindow.h \
     atcrunwayextendedcentreline.h \
     atcabstractbeacon.h \
     atcabstractfix.h \
-    atcabstractprocedure.h
+    atcabstractprocedure.h \
+    atcproceduresid.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \

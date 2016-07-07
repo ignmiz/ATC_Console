@@ -1,6 +1,9 @@
 #include "atcabstractprocedure.h"
 
-ATCAbstractProcedure::ATCAbstractProcedure(QString procedureName) : name(procedureName)
+ATCAbstractProcedure::ATCAbstractProcedure(QString procedureName, QString airportCode, QString runway) :
+    name(procedureName),
+    airport(airportCode),
+    runwayID(runway)
 {
 }
 
