@@ -42,7 +42,8 @@ SOURCES += main.cpp\
     atcabstractbeacon.cpp \
     atcabstractfix.cpp \
     atcabstractprocedure.cpp \
-    atcproceduresid.cpp
+    atcproceduresid.cpp \
+    atcprocedurestar.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -68,7 +69,8 @@ HEADERS  += mainwindow.h \
     atcabstractbeacon.h \
     atcabstractfix.h \
     atcabstractprocedure.h \
-    atcproceduresid.h
+    atcproceduresid.h \
+    atcprocedurestar.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
