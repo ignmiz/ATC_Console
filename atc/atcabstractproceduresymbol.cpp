@@ -13,11 +13,37 @@ ATCAbstractProcedureSymbol::~ATCAbstractProcedureSymbol()
             delete lines.at(i);
         }
     }
+
+    if(!coords1.empty())
+    {
+        for(int i = 0; i < coords1.size(); i++)
+        {
+            delete coords1.at(i);
+        }
+    }
+
+    if(!coords2.empty())
+    {
+        for(int i = 0; i < coords2.size(); i++)
+        {
+            delete coords2.at(i);
+        }
+    }
 }
 
 QString ATCAbstractProcedureSymbol::getName()
 {
     return symbolName;
+}
+
+ATCAirspaceFix *ATCAbstractProcedureSymbol::getCoords1(int iterator)
+{
+    return coords1.at(iterator);
+}
+
+ATCAirspaceFix *ATCAbstractProcedureSymbol::getCorods2(int iterator)
+{
+    return coords2.at(iterator);
 }
 
 QGraphicsLineItem *ATCAbstractProcedureSymbol::getLine(int iterator)
@@ -28,6 +54,16 @@ QGraphicsLineItem *ATCAbstractProcedureSymbol::getLine(int iterator)
 void ATCAbstractProcedureSymbol::setName(QString name)
 {
     symbolName = name;
+}
+
+void ATCAbstractProcedureSymbol::appendCoords1(ATCAirspaceFix *coord)
+{
+    coords1.append(coord);
+}
+
+void ATCAbstractProcedureSymbol::appendCoords2(ATCAirspaceFix *coord)
+{
+    coords2.append(coord);
 }
 
 void ATCAbstractProcedureSymbol::appendLine(QGraphicsLineItem *line)

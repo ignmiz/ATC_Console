@@ -1,6 +1,8 @@
 #ifndef ATCABSTRACTPROCEDURESYMBOL_H
 #define ATCABSTRACTPROCEDURESYMBOL_H
 
+#include "atcairspacefix.h"
+
 #include <QString>
 #include <QVector>
 #include <QGraphicsItem>
@@ -12,14 +14,20 @@ public:
     virtual ~ATCAbstractProcedureSymbol() = 0;
 
     QString getName();
+    ATCAirspaceFix* getCoords1(int iterator);
+    ATCAirspaceFix* getCorods2(int iterator);
     QGraphicsLineItem* getLine(int iterator);
 
     void setName(QString name);
 
+    void appendCoords1(ATCAirspaceFix* coord);
+    void appendCoords2(ATCAirspaceFix *coord);
     void appendLine(QGraphicsLineItem *line);
 
 private:
     QString symbolName;
+    QVector<ATCAirspaceFix*> coords1;
+    QVector<ATCAirspaceFix*> coords2;
     QVector<QGraphicsLineItem*> lines;
 };
 
