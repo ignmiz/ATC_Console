@@ -45,7 +45,8 @@ SOURCES += main.cpp\
     atcproceduresid.cpp \
     atcprocedurestar.cpp \
     atcabstractproceduresymbol.cpp \
-    atcproceduresidsymbol.cpp
+    atcproceduresidsymbol.cpp \
+    atcprocedurestarsymbol.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -74,7 +75,8 @@ HEADERS  += mainwindow.h \
     atcproceduresid.h \
     atcprocedurestar.h \
     atcabstractproceduresymbol.h \
-    atcproceduresidsymbol.h
+    atcproceduresidsymbol.h \
+    atcprocedurestarsymbol.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
