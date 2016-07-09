@@ -22,6 +22,15 @@ public:
     ~ATCAirspace();
 
     double coordsStringToDouble(QString coords);
+    bool isValidCoordsFormat(QString coordString);
+
+//modify for binary search.....................
+    bool isValidNavaid(QString name);
+    bool isFix(QString name);
+    bool isVOR(QString name);
+    bool isNDB(QString name);
+    bool isAirport(QString name);
+//..............................................
 
     void appendSector(ATCAirspaceSector *sector);
     void appendFix(ATCNavFix *fix);
@@ -54,8 +63,13 @@ public:
     ATCProcedureSIDSymbol* getSIDSymbol(int iterator);
     ATCProcedureSTARSymbol* getSTARSymbol(int iterator);
 
+    double getNavaidLatitude(QString name);
+    double getNavaidLongitude(QString name);
+
     ATCAirport* findAirport(QString ICAOname);
     ATCNavFix* findFix(QString fixName);
+    ATCBeaconVOR* findVOR(QString name);
+    ATCBeaconNDB* findNDB(QString name);
 
 private:
     QVector<ATCAirspaceSector*> sectors;

@@ -118,6 +118,8 @@ void ATCSituationalDisplay::loadData()
     bool flagFixes = false;
     bool flagAirport = false;
     bool flagRunway = false;
+    bool flagSTAR = false;
+    bool flagSID = false;
 
     QTextStream sctStream(&sctFile);
     while(!sctStream.atEnd())
@@ -137,6 +139,8 @@ void ATCSituationalDisplay::loadData()
                 flagFixes = false;
                 flagAirport = false;
                 flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
 
                 qDebug() << "VORs:";
             }
@@ -147,6 +151,8 @@ void ATCSituationalDisplay::loadData()
                 flagFixes = false;
                 flagAirport = false;
                 flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
 
                 qDebug() << "NDBs:";
             }
@@ -157,6 +163,8 @@ void ATCSituationalDisplay::loadData()
                 flagFixes = true;
                 flagAirport = false;
                 flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
 
                 qDebug() << "Fixes:";
             }
@@ -167,6 +175,8 @@ void ATCSituationalDisplay::loadData()
                 flagFixes = false;
                 flagAirport = true;
                 flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
 
                 qDebug() << "Airports:";
             }
@@ -177,8 +187,34 @@ void ATCSituationalDisplay::loadData()
                 flagFixes = false;
                 flagAirport = false;
                 flagRunway = true;
+                flagSTAR = false;
+                flagSID = false;
 
                 qDebug() << "Runways:";
+            }
+            else if(textLine.contains("[STAR]", Qt::CaseInsensitive))
+            {
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = true;
+                flagSID = false;
+
+                qDebug() << "STAR Symbols:";
+            }
+            else if(textLine.contains("[SID]", Qt::CaseInsensitive))
+            {
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = true;
+
+                qDebug() << "SID Symbols:";
             }
             else if(flagFixes)
             {
@@ -269,6 +305,288 @@ void ATCSituationalDisplay::loadData()
                     qDebug() << airportName << " rwy: " << rwyID1 << rwyID2 << " appended...";
                 }
             }
+            else if(flagSTAR)
+            {
+                textLine = textLine.split(";", QString::SkipEmptyParts).at(0);
+                textLine = textLine.trimmed();
+
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+                int size = stringList.size();
+
+                ATCProcedureSTARSymbol *currentObject = nullptr;
+
+                if(size == 5)
+                {
+                    if((airspaceData->isValidCoordsFormat(stringList.at(1)) || airspaceData->isValidNavaid(stringList.at(1))) &&
+                       (airspaceData->isValidCoordsFormat(stringList.at(2)) || airspaceData->isValidNavaid(stringList.at(2))) &&
+                       (airspaceData->isValidCoordsFormat(stringList.at(3)) || airspaceData->isValidNavaid(stringList.at(3))) &&
+                       (airspaceData->isValidCoordsFormat(stringList.at(4)) || airspaceData->isValidNavaid(stringList.at(4))))
+                    {
+                        QString name = stringList.at(0);
+                        QString lat1String = stringList.at(1);
+                        QString lon1String = stringList.at(2);
+                        QString lat2String = stringList.at(3);
+                        QString lon2String = stringList.at(4);
+
+                        double lat1;
+                        double lon1;
+                        double lat2;
+                        double lon2;
+
+                        if(airspaceData->isValidCoordsFormat(lat1String))
+                        {
+                            lat1 = airspaceData->coordsStringToDouble(lat1String);
+                        }
+                        else
+                        {
+                            lat1 = airspaceData->getNavaidLatitude(lat1String);
+                        }
+
+                        if(airspaceData->isValidCoordsFormat(lon1String))
+                        {
+                            lon1 = airspaceData->coordsStringToDouble(lon1String);
+                        }
+                        else
+                        {
+                            lon1 = airspaceData->getNavaidLatitude(lon1String);
+                        }
+
+                        if(airspaceData->isValidCoordsFormat(lat2String))
+                        {
+                            lat2 = airspaceData->coordsStringToDouble(lat2String);
+                        }
+                        else
+                        {
+                            lat2 = airspaceData->getNavaidLatitude(lat2String);
+                        }
+
+                        if(airspaceData->isValidCoordsFormat(lon2String))
+                        {
+                            lon2 = airspaceData->coordsStringToDouble(lon2String);
+                        }
+                        else
+                        {
+                            lon2 = airspaceData->getNavaidLatitude(lon2String);
+                        }
+
+                        currentObject = new ATCProcedureSTARSymbol(name);
+                        currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                        currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                        airspaceData->appendSTARSymbol(currentObject);
+
+                        qDebug() << "STAR Symbol: " << currentObject->getName();
+                    }
+                    else if((airspaceData->isValidCoordsFormat(stringList.at(0)) || airspaceData->isValidNavaid(stringList.at(0))) &&
+                            (airspaceData->isValidCoordsFormat(stringList.at(1)) || airspaceData->isValidNavaid(stringList.at(1))) &&
+                            (airspaceData->isValidCoordsFormat(stringList.at(2)) || airspaceData->isValidNavaid(stringList.at(2))) &&
+                            (airspaceData->isValidCoordsFormat(stringList.at(3)) || airspaceData->isValidNavaid(stringList.at(3))))
+                    {
+                        QString lat1String = stringList.at(0);
+                        QString lon1String = stringList.at(1);
+                        QString lat2String = stringList.at(2);
+                        QString lon2String = stringList.at(3);
+
+                        double lat1;
+                        double lon1;
+                        double lat2;
+                        double lon2;
+
+                        if(airspaceData->isValidCoordsFormat(lat1String))
+                        {
+                            lat1 = airspaceData->coordsStringToDouble(lat1String);
+                        }
+                        else
+                        {
+                            lat1 = airspaceData->getNavaidLatitude(lat1String);
+                        }
+
+                        if(airspaceData->isValidCoordsFormat(lon1String))
+                        {
+                            lon1 = airspaceData->coordsStringToDouble(lon1String);
+                        }
+                        else
+                        {
+                            lon1 = airspaceData->getNavaidLatitude(lon1String);
+                        }
+
+                        if(airspaceData->isValidCoordsFormat(lat2String))
+                        {
+                            lat2 = airspaceData->coordsStringToDouble(lat2String);
+                        }
+                        else
+                        {
+                            lat2 = airspaceData->getNavaidLatitude(lat2String);
+                        }
+
+                        if(airspaceData->isValidCoordsFormat(lon2String))
+                        {
+                            lon2 = airspaceData->coordsStringToDouble(lon2String);
+                        }
+                        else
+                        {
+                            lon2 = airspaceData->getNavaidLatitude(lon2String);
+                        }
+
+                        if(currentObject != nullptr)
+                        {
+                            currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                            currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                        }
+
+                        if(currentObject != nullptr)
+                            qDebug() << "STAR Symbol: " << currentObject->getName() << " data appended...";
+                    }
+                }
+                else if(size > 5)
+                {
+                    int iterator = size;
+
+                    while (!((airspaceData->isValidCoordsFormat(stringList.at(iterator - 4)) || airspaceData->isValidNavaid(stringList.at(iterator - 4))) &&
+                             (airspaceData->isValidCoordsFormat(stringList.at(iterator - 3)) || airspaceData->isValidNavaid(stringList.at(iterator - 3))) &&
+                             (airspaceData->isValidCoordsFormat(stringList.at(iterator - 2)) || airspaceData->isValidNavaid(stringList.at(iterator - 2))) &&
+                             (airspaceData->isValidCoordsFormat(stringList.at(iterator - 1)) || airspaceData->isValidNavaid(stringList.at(iterator - 1)))))
+                    {
+                        iterator--;
+                    }
+
+                    if((airspaceData->isValidCoordsFormat(stringList.at(iterator - 4)) || airspaceData->isValidNavaid(stringList.at(iterator - 4))) &&
+                       (airspaceData->isValidCoordsFormat(stringList.at(iterator - 3)) || airspaceData->isValidNavaid(stringList.at(iterator - 3))) &&
+                       (airspaceData->isValidCoordsFormat(stringList.at(iterator - 2)) || airspaceData->isValidNavaid(stringList.at(iterator - 2))) &&
+                       (airspaceData->isValidCoordsFormat(stringList.at(iterator - 1)) || airspaceData->isValidNavaid(stringList.at(iterator - 1))))
+                    {
+                        QString name;
+
+                        for(int i = 0; i < (iterator - 5); i++)
+                        {
+                            name = name + stringList.at(i);
+                        }
+
+                        QString lat1String = stringList.at(iterator - 4);
+                        QString lon1String = stringList.at(iterator - 3);
+                        QString lat2String = stringList.at(iterator - 2);
+                        QString lon2String = stringList.at(iterator - 1);
+
+                        double lat1;
+                        double lon1;
+                        double lat2;
+                        double lon2;
+
+                        if(airspaceData->isValidCoordsFormat(lat1String))
+                        {
+                            lat1 = airspaceData->coordsStringToDouble(lat1String);
+                        }
+                        else
+                        {
+                            lat1 = airspaceData->getNavaidLatitude(lat1String);
+                        }
+
+                        if(airspaceData->isValidCoordsFormat(lon1String))
+                        {
+                            lon1 = airspaceData->coordsStringToDouble(lon1String);
+                        }
+                        else
+                        {
+                            lon1 = airspaceData->getNavaidLatitude(lon1String);
+                        }
+
+                        if(airspaceData->isValidCoordsFormat(lat2String))
+                        {
+                            lat2 = airspaceData->coordsStringToDouble(lat2String);
+                        }
+                        else
+                        {
+                            lat2 = airspaceData->getNavaidLatitude(lat2String);
+                        }
+
+                        if(airspaceData->isValidCoordsFormat(lon2String))
+                        {
+                            lon2 = airspaceData->coordsStringToDouble(lon2String);
+                        }
+                        else
+                        {
+                            lon2 = airspaceData->getNavaidLatitude(lon2String);
+                        }
+
+                        currentObject = new ATCProcedureSTARSymbol(name);
+                        currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                        currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                        airspaceData->appendSTARSymbol(currentObject);
+
+                        qDebug() << "STAR Symbol: " << currentObject->getName();
+                    }
+                }
+                else if(size == 4)
+                {
+                    if((airspaceData->isValidCoordsFormat(stringList.at(0)) || airspaceData->isValidNavaid(stringList.at(0))) &&
+                       (airspaceData->isValidCoordsFormat(stringList.at(1)) || airspaceData->isValidNavaid(stringList.at(1))) &&
+                       (airspaceData->isValidCoordsFormat(stringList.at(2)) || airspaceData->isValidNavaid(stringList.at(2))) &&
+                       (airspaceData->isValidCoordsFormat(stringList.at(3)) || airspaceData->isValidNavaid(stringList.at(3))))
+                    {
+                        QString lat1String = stringList.at(0);
+                        QString lon1String = stringList.at(1);
+                        QString lat2String = stringList.at(2);
+                        QString lon2String = stringList.at(3);
+
+                        double lat1;
+                        double lon1;
+                        double lat2;
+                        double lon2;
+
+                        if(airspaceData->isValidCoordsFormat(lat1String))
+                        {
+                            lat1 = airspaceData->coordsStringToDouble(lat1String);
+                        }
+                        else
+                        {
+                            lat1 = airspaceData->getNavaidLatitude(lat1String);
+                        }
+
+                        if(airspaceData->isValidCoordsFormat(lon1String))
+                        {
+                            lon1 = airspaceData->coordsStringToDouble(lon1String);
+                        }
+                        else
+                        {
+                            lon1 = airspaceData->getNavaidLatitude(lon1String);
+                        }
+
+                        if(airspaceData->isValidCoordsFormat(lat2String))
+                        {
+                            lat2 = airspaceData->coordsStringToDouble(lat2String);
+                        }
+                        else
+                        {
+                            lat2 = airspaceData->getNavaidLatitude(lat2String);
+                        }
+
+                        if(airspaceData->isValidCoordsFormat(lon2String))
+                        {
+                            lon2 = airspaceData->coordsStringToDouble(lon2String);
+                        }
+                        else
+                        {
+                            lon2 = airspaceData->getNavaidLatitude(lon2String);
+                        }
+
+                        if(currentObject != nullptr)
+                        {
+                            currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                            currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                        }
+
+                        if(currentObject != nullptr)
+                            qDebug() << "STAR Symbol: " << currentObject->getName() << " data appended...";
+                    }
+                }
+
+            }
+            else if(flagSID)
+            {
+
+            }
         }
     }
 
@@ -338,7 +656,6 @@ void ATCSituationalDisplay::loadData()
 
                     qDebug() << "STAR: " << airportCode << ":" << runwayID << ":" << procedureName << " appended...";
                 }
-                qDebug() << fixList;
             }
         }
     }

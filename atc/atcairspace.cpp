@@ -42,6 +42,80 @@ double ATCAirspace::coordsStringToDouble(QString coords)
     }
 }
 
+bool ATCAirspace::isValidCoordsFormat(QString coordString)
+{
+    if((coordString.size() == 14) && ((coordString.at(0) == "N") || (coordString.at(0) == "n") ||
+                                      (coordString.at(0) == "S") || (coordString.at(0) == "s") ||
+                                      (coordString.at(0) == "E") || (coordString.at(0) == "e") ||
+                                      (coordString.at(0) == "W") || (coordString.at(0) == "w"))
+            && (coordString.at(4) == ".") && (coordString.at(7) == ".") && (coordString.at(10) == "."))
+    {
+        return true;
+    }
+    else return false;
+}
+
+bool ATCAirspace::isValidNavaid(QString name)
+{
+    if(isFix(name))
+    {
+        return true;
+    }
+    else if(isVOR(name))
+    {
+        return true;
+    }
+    else if(isNDB(name))
+    {
+        return true;
+    }
+    else if(isAirport(name))
+    {
+        return true;
+    }
+    else return false;
+}
+
+bool ATCAirspace::isFix(QString name)
+{
+    for(int i = 0; i < fixes.size(); i++)
+    {
+        if(fixes.at(i)->getName() == name) return true;
+    }
+
+    return false;
+}
+
+bool ATCAirspace::isVOR(QString name)
+{
+    for(int i = 0; i < vors.size(); i++)
+    {
+        if(vors.at(i)->getName() == name) return true;
+    }
+
+    return false;
+}
+
+bool ATCAirspace::isNDB(QString name)
+{
+    for(int i = 0; i < ndbs.size(); i++)
+    {
+        if(ndbs.at(i)->getName() == name) return true;
+    }
+
+    return false;
+}
+
+bool ATCAirspace::isAirport(QString name)
+{
+    for(int i = 0; i < airports.size(); i++)
+    {
+        if(airports.at(i)->getName() == name) return true;
+    }
+
+    return false;
+}
+
 void ATCAirspace::appendSector(ATCAirspaceSector *sector)
 {
     sectors.append(sector);
@@ -182,6 +256,50 @@ ATCProcedureSTARSymbol *ATCAirspace::getSTARSymbol(int iterator)
     return starSymbols.at(iterator);
 }
 
+double ATCAirspace::getNavaidLatitude(QString name)
+{
+    if(isFix(name))
+    {
+        return findFix(name)->latitude();
+    }
+    else if(isVOR(name))
+    {
+        return findVOR(name)->latitude();
+    }
+    else if(isNDB(name))
+    {
+        return findNDB(name)->latitude();
+    }
+    else if(isAirport(name))
+    {
+        return findAirport(name)->latitude();
+    }
+
+    return -200;
+}
+
+double ATCAirspace::getNavaidLongitude(QString name)
+{
+    if(isFix(name))
+    {
+        return findFix(name)->longitude();
+    }
+    else if(isVOR(name))
+    {
+        return findVOR(name)->longitude();
+    }
+    else if(isNDB(name))
+    {
+        return findNDB(name)->longitude();
+    }
+    else if(isAirport(name))
+    {
+        return findAirport(name)->longitude();
+    }
+
+    return -200;
+}
+
 ATCAirport* ATCAirspace::findAirport(QString ICAOname)
 {
     for(int i = 0; i < airports.size(); i++)
@@ -202,6 +320,32 @@ ATCNavFix *ATCAirspace::findFix(QString fixName)
         if(fixes.at(i)->getName() == fixName)
         {
             return fixes.at(i);
+        }
+    }
+
+    return nullptr;
+}
+
+ATCBeaconVOR *ATCAirspace::findVOR(QString name)
+{
+    for(int i = 0; i < vors.size(); i++)
+    {
+        if(vors.at(i)->getName() == name)
+        {
+            return vors.at(i);
+        }
+    }
+
+    return nullptr;
+}
+
+ATCBeaconNDB *ATCAirspace::findNDB(QString name)
+{
+    for(int i = 0; i < ndbs.size(); i++)
+    {
+        if(ndbs.at(i)->getName() == name)
+        {
+            return ndbs.at(i);
         }
     }
 
