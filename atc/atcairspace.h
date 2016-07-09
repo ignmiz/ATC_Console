@@ -8,6 +8,8 @@
 #include "atcairport.h"
 #include "atcproceduresid.h"
 #include "atcprocedurestar.h"
+#include "atcproceduresidsymbol.h"
+#include "atcprocedurestarsymbol.h"
 
 #include <QString>
 #include <QVector>
@@ -28,9 +30,9 @@ public:
     void appendAirport(ATCAirport *airport);
     void appendSID(ATCProcedureSID *sid);
     void appendSTAR(ATCProcedureSTAR *star);
+    void appendSIDSymbol(ATCProcedureSIDSymbol *symbol);
+    void appendSTARSymbol(ATCProcedureSTARSymbol *symbol);
 
-    ATCAirspaceSector* getSector(int iterator);
-    ATCAirspaceSector* getLastSector();
     int getSectorVectorSize();
     int getFixesVectorSize();
     int getVORsVectorSize();
@@ -38,12 +40,19 @@ public:
     int getAirportsVectorSize();
     int getSIDsVectorSize();
     int getSTARsVectorSize();
+    int getSIDSymbolsVectorSize();
+    int getSTARSymbolsVectorSize();
+
+    ATCAirspaceSector* getSector(int iterator);
+    ATCAirspaceSector* getLastSector();
     ATCNavFix* getFix(int iterator);
     ATCBeaconVOR* getVOR(int iterator);
     ATCBeaconNDB* getNDB(int iterator);
     ATCAirport* getAirport(int iterator);
     ATCProcedureSID* getSID(int iterator);
     ATCProcedureSTAR* getSTAR(int iterator);
+    ATCProcedureSIDSymbol* getSIDSymbol(int iterator);
+    ATCProcedureSTARSymbol* getSTARSymbol(int iterator);
 
     ATCAirport* findAirport(QString ICAOname);
     ATCNavFix* findFix(QString fixName);
@@ -56,6 +65,8 @@ private:
     QVector<ATCAirport*> airports;
     QVector<ATCProcedureSID*> sids;
     QVector<ATCProcedureSTAR*> stars;
+    QVector<ATCProcedureSIDSymbol*> sidSymbols;
+    QVector<ATCProcedureSTARSymbol*> starSymbols;
 
     void deleteAllSectors();
     void deleteAllFixes();
@@ -64,6 +75,8 @@ private:
     void deleteAllAirports();
     void deleteAllSIDs();
     void deleteAllSTARs();
+    void deleteAllSIDSymbols();
+    void deleteAllSTARSymbols();
 };
 
 #endif // ATCAIRSPACE_H

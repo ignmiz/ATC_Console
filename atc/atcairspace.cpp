@@ -15,6 +15,8 @@ ATCAirspace::~ATCAirspace()
     deleteAllAirports();
     deleteAllSIDs();
     deleteAllSTARs();
+    deleteAllSIDSymbols();
+    deleteAllSTARSymbols();
 }
 
 double ATCAirspace::coordsStringToDouble(QString coords)
@@ -75,6 +77,16 @@ void ATCAirspace::appendSTAR(ATCProcedureSTAR *star)
     stars.append(star);
 }
 
+void ATCAirspace::appendSIDSymbol(ATCProcedureSIDSymbol *symbol)
+{
+    sidSymbols.append(symbol);
+}
+
+void ATCAirspace::appendSTARSymbol(ATCProcedureSTARSymbol *symbol)
+{
+    starSymbols.append(symbol);
+}
+
 ATCAirspaceSector* ATCAirspace::getSector(int iterator)
 {
     return sectors.at(iterator);
@@ -120,6 +132,16 @@ int ATCAirspace::getSTARsVectorSize()
     return stars.size();
 }
 
+int ATCAirspace::getSIDSymbolsVectorSize()
+{
+    return sidSymbols.size();
+}
+
+int ATCAirspace::getSTARSymbolsVectorSize()
+{
+    return starSymbols.size();
+}
+
 ATCNavFix* ATCAirspace::getFix(int iterator)
 {
     return fixes.at(iterator);
@@ -148,6 +170,16 @@ ATCProcedureSID* ATCAirspace::getSID(int iterator)
 ATCProcedureSTAR* ATCAirspace::getSTAR(int iterator)
 {
     return stars.at(iterator);
+}
+
+ATCProcedureSIDSymbol* ATCAirspace::getSIDSymbol(int iterator)
+{
+    return sidSymbols.at(iterator);
+}
+
+ATCProcedureSTARSymbol *ATCAirspace::getSTARSymbol(int iterator)
+{
+    return starSymbols.at(iterator);
 }
 
 ATCAirport* ATCAirspace::findAirport(QString ICAOname)
@@ -278,5 +310,35 @@ void ATCAirspace::deleteAllSTARs()
     else
     {
         qDebug() << "Empty vector of STARs";
+    }
+}
+
+void ATCAirspace::deleteAllSIDSymbols()
+{
+    if(!sidSymbols.empty())
+    {
+        for(int i = 0; i < sidSymbols.size(); i++)
+        {
+            delete sidSymbols.at(i);
+        }
+    }
+    else
+    {
+        qDebug() << "Empty vector of SID symbols...";
+    }
+}
+
+void ATCAirspace::deleteAllSTARSymbols()
+{
+    if(!starSymbols.empty())
+    {
+        for(int i = 0; i < starSymbols.size(); i++)
+        {
+            delete starSymbols.at(i);
+        }
+    }
+    else
+    {
+        qDebug() << "Empty vector of STAR symbols...";
     }
 }
