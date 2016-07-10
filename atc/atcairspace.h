@@ -53,7 +53,6 @@ public:
     int getSTARSymbolsVectorSize();
 
     ATCAirspaceSector* getSector(int iterator);
-    ATCAirspaceSector* getLastSector();
     ATCNavFix* getFix(int iterator);
     ATCBeaconVOR* getVOR(int iterator);
     ATCBeaconNDB* getNDB(int iterator);
@@ -62,6 +61,11 @@ public:
     ATCProcedureSTAR* getSTAR(int iterator);
     ATCProcedureSIDSymbol* getSIDSymbol(int iterator);
     ATCProcedureSTARSymbol* getSTARSymbol(int iterator);
+
+    ATCAirspaceSector* getLastSector();
+    ATCProcedureSIDSymbol* getLastSIDSymbol();
+    ATCProcedureSTARSymbol* getLastSTARSymbol();
+
 
     double getNavaidLatitude(QString name);
     double getNavaidLongitude(QString name);

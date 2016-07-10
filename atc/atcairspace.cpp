@@ -171,6 +171,16 @@ ATCAirspaceSector* ATCAirspace::getLastSector()
     return sectors[sectors.size() - 1];
 }
 
+ATCProcedureSIDSymbol* ATCAirspace::getLastSIDSymbol()
+{
+    return sidSymbols[sidSymbols.size() - 1];
+}
+
+ATCProcedureSTARSymbol *ATCAirspace::getLastSTARSymbol()
+{
+    return starSymbols[starSymbols.size() - 1];
+}
+
 int ATCAirspace::getSectorVectorSize()
 {
     return sectors.size();

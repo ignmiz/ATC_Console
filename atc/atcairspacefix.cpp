@@ -8,5 +8,4 @@ ATCAirspaceFix::ATCAirspaceFix(double latitude, double longitude) : ATCAbstractF
 
 ATCAirspaceFix::~ATCAirspaceFix()
 {
-    qDebug() << toString(QGeoCoordinate::DegreesMinutesSecondsWithHemisphere) + " deleted...";
 }
