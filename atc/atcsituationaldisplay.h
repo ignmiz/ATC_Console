@@ -48,6 +48,8 @@ private:
     QVector<ATCAirport*> visibleAirports;
     QVector<ATCBeaconVOR*> visibleVORs;
     QVector<ATCBeaconNDB*> visibleNDBs;
+    QVector<ATCProcedureSTARSymbol*> visibleSTARs;
+    QVector<ATCProcedureSIDSymbol*> visibleSIDs;
 
     void situationalDisplaySetup();
     void loadData(); //Temp - to be moved
@@ -70,6 +72,7 @@ private:
     void displayExtendedCentrelines();
     void displayVORs();
     void displayNDBs();
+    void displaySTARs();
 
     double mercatorProjectionLon(double longitude, double referenceLongitude = 0, double scale = ATCConst::WGS84_RADIUS);
     double mercatorProjectionLat(double latitude, double scale = ATCConst::WGS84_RADIUS);

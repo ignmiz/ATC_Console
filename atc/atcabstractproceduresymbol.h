@@ -15,8 +15,9 @@ public:
 
     QString getName();
     ATCAirspaceFix* getCoords1(int iterator);
-    ATCAirspaceFix* getCorods2(int iterator);
+    ATCAirspaceFix* getCoords2(int iterator);
     QGraphicsLineItem* getLine(int iterator);
+    int getCoordsVectorSize();
 
     void setName(QString name);
 

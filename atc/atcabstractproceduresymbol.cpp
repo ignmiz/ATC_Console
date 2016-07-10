@@ -41,7 +41,7 @@ ATCAirspaceFix *ATCAbstractProcedureSymbol::getCoords1(int iterator)
     return coords1.at(iterator);
 }
 
-ATCAirspaceFix *ATCAbstractProcedureSymbol::getCorods2(int iterator)
+ATCAirspaceFix *ATCAbstractProcedureSymbol::getCoords2(int iterator)
 {
     return coords2.at(iterator);
 }
@@ -49,6 +49,11 @@ ATCAirspaceFix *ATCAbstractProcedureSymbol::getCorods2(int iterator)
 QGraphicsLineItem *ATCAbstractProcedureSymbol::getLine(int iterator)
 {
     return lines.at(iterator);
+}
+
+int ATCAbstractProcedureSymbol::getCoordsVectorSize()
+{
+    return coords1.size();
 }
 
 void ATCAbstractProcedureSymbol::setName(QString name)

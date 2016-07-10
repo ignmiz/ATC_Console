@@ -1277,6 +1277,51 @@ void ATCSituationalDisplay::displayNDBs()
     }
 }
 
+void ATCSituationalDisplay::displaySTARs()
+{
+    double rotationDeg = ATCConst::AVG_DECLINATION;
+
+    struct lineSegments
+    {
+        QVector<coord> points1;
+        QVector<coord> points2;
+    };
+
+    QVector<lineSegments> lineSegmentsVector;
+
+//Mercator projection of STAR symbols + rotation
+    for(int i = 0; i < airspaceData->getSTARSymbolsVectorSize(); i++)
+    {
+        lineSegments currentSegment;
+
+        for(int j = 0; j < airspaceData->getSTARSymbol(i)->getCoordsVectorSize(); j++)
+        {
+            coord currentCoords1;
+            coord currentCoords2;
+
+            currentCoords1.x = mercatorProjectionLon(airspaceData->getSTARSymbol(i)->getCoords1(j)->longitude());
+            currentCoords1.y = mercatorProjectionLat(airspaceData->getSTARSymbol(i)->getCoords1(j)->latitude());
+            currentCoords2.x = mercatorProjectionLon(airspaceData->getSTARSymbol(i)->getCoords2(j)->longitude());
+            currentCoords2.y = mercatorProjectionLat(airspaceData->getSTARSymbol(i)->getCoords2(j)->latitude());
+
+            double xRotated1 = currentCoords1.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords1.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
+            double yRotated1 = currentCoords1.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords1.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+            double xRotated2 = currentCoords2.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords2.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
+            double yRotated2 = currentCoords2.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords2.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+
+            currentCoords1.x = xRotated1;
+            currentCoords1.y = yRotated1;
+            currentCoords2.x = xRotated2;
+            currentCoords2.y = yRotated2;
+
+            currentSegment.points1.append(currentCoords1);
+            currentSegment.points2.append(currentCoords2);
+        }
+
+        lineSegmentsVector.append(currentSegment);
+    }
+}
+
 double ATCSituationalDisplay::mercatorProjectionLon(double longitudeDeg, double referenceLongitudeDeg, double scale)
 {
     return scale * (longitudeDeg - referenceLongitudeDeg);
