@@ -23,6 +23,7 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
     displayVORs();
     displayFixes();
     displayAirports();
+    displaySTARs();
 
 }
 
@@ -757,6 +758,23 @@ void ATCSituationalDisplay::rescaleExtendedCentrelines()
     }
 }
 
+void ATCSituationalDisplay::rescaleSTARs()
+{
+    if(!visibleSTARs.empty())
+    {
+        QPen currentPen(visibleSTARs.at(0)->getLine(0)->pen());
+        currentPen.setWidthF(ATCConst::STAR_LINE_WIDTH / currentScale);
+
+        for(int i = 0; i < visibleSTARs.size(); i++)
+        {
+            for(int j = 0; j < visibleSTARs.at(i)->getCoordsVectorSize(); j++)
+            {
+                visibleSTARs.at(i)->getLine(j)->setPen(currentPen);
+            }
+        }
+    }
+}
+
 void ATCSituationalDisplay::displaySectors()
 {
     QVector<sector> tempSectors;
@@ -1283,8 +1301,8 @@ void ATCSituationalDisplay::displaySTARs()
 
     struct lineSegments
     {
-        QVector<coord> points1;
-        QVector<coord> points2;
+        QVector<coord> coords1;
+        QVector<coord> coords2;
     };
 
     QVector<lineSegments> lineSegmentsVector;
@@ -1314,12 +1332,49 @@ void ATCSituationalDisplay::displaySTARs()
             currentCoords2.x = xRotated2;
             currentCoords2.y = yRotated2;
 
-            currentSegment.points1.append(currentCoords1);
-            currentSegment.points2.append(currentCoords2);
+            currentSegment.coords1.append(currentCoords1);
+            currentSegment.coords2.append(currentCoords2);
         }
 
         lineSegmentsVector.append(currentSegment);
     }
+
+//Translate to local & scene coords, build lines
+    for(int i = 0; i < airspaceData->getSTARSymbolsVectorSize(); i++)
+    {
+        lineSegments currentSegment = lineSegmentsVector.at(i);
+
+        for(int j = 0; j < airspaceData->getSTARSymbol(i)->getCoordsVectorSize(); j++)
+        {
+            coord currentCoords1 = currentSegment.coords1.at(j);
+            coord currentCoords2 = currentSegment.coords2.at(j);
+
+            currentCoords1.x = (currentCoords1.x - sectorCentreX) * scaleFactor;
+            currentCoords1.y = -1 * (currentCoords1.y - sectorCentreY) * scaleFactor;
+            currentCoords2.x = (currentCoords2.x - sectorCentreX) * scaleFactor;
+            currentCoords2.y = -1 * (currentCoords2.y - sectorCentreY) * scaleFactor;
+
+            airspaceData->getSTARSymbol(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
+                                                                             currentCoords2.x, currentCoords2.y));
+        }
+    }
+
+//Display STAR symbol lines on scene
+        QPen pen(QColor(255, 165, 0));
+        pen.setWidthF(ATCConst::STAR_LINE_WIDTH / currentScale);
+
+        for(int i = 0; i < airspaceData->getSTARSymbolsVectorSize(); i++)
+        {
+            for(int j = 0; j < airspaceData->getSTARSymbol(i)->getCoordsVectorSize(); j++)
+            {
+                QGraphicsLineItem *currentSymbol = airspaceData->getSTARSymbol(i)->getLine(j);
+
+                currentSymbol->setPen(pen);
+                scene->addItem(currentSymbol);
+
+                visibleSTARs.append(airspaceData->getSTARSymbol(i));
+            }
+        }
 }
 
 double ATCSituationalDisplay::mercatorProjectionLon(double longitudeDeg, double referenceLongitudeDeg, double scale)
@@ -1443,6 +1498,7 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
         rescaleVORLabels();
         rescaleNDBs();
         rescaleNDBLabels();
+        rescaleSTARs();
     }
 
     event->accept();

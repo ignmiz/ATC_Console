@@ -65,6 +65,7 @@ private:
     void rescaleAirports();
     void rescaleAirportLabels();
     void rescaleExtendedCentrelines();
+    void rescaleSTARs();
 
     void displaySectors();
     void displayFixes();

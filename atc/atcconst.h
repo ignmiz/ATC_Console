@@ -52,6 +52,8 @@ public:
     static const double NDB_LABEL_HEIGHT;
     static const double NDB_LABEL_DX;
     static const double NDB_LABEL_DY;
+
+    static const double STAR_LINE_WIDTH;
 };
 
 #endif // ATCCONST_H
