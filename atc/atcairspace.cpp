@@ -32,7 +32,7 @@ double ATCAirspace::coordsStringToDouble(QString coords)
 
     double coordsDouble = degrees + minutes / 60 + seconds / 3600;
 
-    if((hemisphereID == "N") || (hemisphereID == "E"))
+    if((hemisphereID == "N") || (hemisphereID == "E") || (hemisphereID == "n") || (hemisphereID == "e"))
     {
         return coordsDouble;
     }

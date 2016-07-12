@@ -18,12 +18,12 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
     rescaleScene();
 
     displaySectors();
-    displayExtendedCentrelines();
+    displaySTARs();
+    displayExtendedCentrelines();    
     displayNDBs();
     displayVORs();
     displayFixes();
     displayAirports();
-    displaySTARs();
 
 }
 
@@ -364,7 +364,7 @@ void ATCSituationalDisplay::loadData()
                     }
                     else
                     {
-                        lon1 = airspaceData->getNavaidLatitude(lon1String);
+                        lon1 = airspaceData->getNavaidLongitude(lon1String);
                     }
 
                     if(airspaceData->isValidCoordsFormat(lat2String))
@@ -382,7 +382,7 @@ void ATCSituationalDisplay::loadData()
                     }
                     else
                     {
-                        lon2 = airspaceData->getNavaidLatitude(lon2String);
+                        lon2 = airspaceData->getNavaidLongitude(lon2String);
                     }
 
                     ATCProcedureSTARSymbol *currentObject = new ATCProcedureSTARSymbol(name);
@@ -392,7 +392,6 @@ void ATCSituationalDisplay::loadData()
                     airspaceData->appendSTARSymbol(currentObject);
 
                     qDebug() << currentObject->getName();
-                    qDebug() << lat1String << lon1String << lat2String << lon2String;
                 }
                 else if((iterator == 0) && coordsFound)
                 {
@@ -421,7 +420,7 @@ void ATCSituationalDisplay::loadData()
                     }
                     else
                     {
-                        lon1 = airspaceData->getNavaidLatitude(lon1String);
+                        lon1 = airspaceData->getNavaidLongitude(lon1String);
                     }
 
                     if(airspaceData->isValidCoordsFormat(lat2String))
@@ -439,10 +438,8 @@ void ATCSituationalDisplay::loadData()
                     }
                     else
                     {
-                        lon2 = airspaceData->getNavaidLatitude(lon2String);
+                        lon2 = airspaceData->getNavaidLongitude(lon2String);
                     }
-
-                    qDebug() << lat1String << lon1String << lat2String << lon2String;
 
                     airspaceData->getLastSTARSymbol()->appendCoords1(new ATCAirspaceFix(lat1, lon1));
                     airspaceData->getLastSTARSymbol()->appendCoords2(new ATCAirspaceFix(lat2, lon2));
@@ -1342,7 +1339,7 @@ void ATCSituationalDisplay::displaySTARs()
 //Translate to local & scene coords, build lines
     for(int i = 0; i < airspaceData->getSTARSymbolsVectorSize(); i++)
     {
-        lineSegments currentSegment = lineSegmentsVector.at(i);
+        lineSegments currentSegment(lineSegmentsVector.at(i));
 
         for(int j = 0; j < airspaceData->getSTARSymbol(i)->getCoordsVectorSize(); j++)
         {
