@@ -19,6 +19,7 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
 
     displaySectors();
     displaySTARs();
+    displaySIDs();
     displayExtendedCentrelines();    
     displayNDBs();
     displayVORs();
@@ -907,6 +908,23 @@ void ATCSituationalDisplay::rescaleSTARs()
     }
 }
 
+void ATCSituationalDisplay::rescaleSIDs()
+{
+    if(!visibleSIDs.empty())
+    {
+        QPen currentPen(visibleSIDs.at(0)->getLine(0)->pen());
+        currentPen.setWidthF(ATCConst::SID_LINE_WIDTH / currentScale);
+
+        for(int i = 0; i < visibleSIDs.size(); i++)
+        {
+            for(int j = 0; j < visibleSIDs.at(i)->getCoordsVectorSize(); j++)
+            {
+                visibleSIDs.at(i)->getLine(j)->setPen(currentPen);
+            }
+        }
+    }
+}
+
 void ATCSituationalDisplay::displaySectors()
 {
     QVector<sector> tempSectors;
@@ -1492,21 +1510,103 @@ void ATCSituationalDisplay::displaySTARs()
     }
 
 //Display STAR symbol lines on scene
-        QPen pen(QColor(255, 165, 0));
-        pen.setWidthF(ATCConst::STAR_LINE_WIDTH / currentScale);
+    QPen pen(QColor(255, 165, 0));
+    pen.setWidthF(ATCConst::STAR_LINE_WIDTH / currentScale);
 
-        for(int i = 0; i < airspaceData->getSTARSymbolsVectorSize(); i++)
+    for(int i = 0; i < airspaceData->getSTARSymbolsVectorSize(); i++)
+    {
+        for(int j = 0; j < airspaceData->getSTARSymbol(i)->getCoordsVectorSize(); j++)
         {
-            for(int j = 0; j < airspaceData->getSTARSymbol(i)->getCoordsVectorSize(); j++)
-            {
-                QGraphicsLineItem *currentSymbol = airspaceData->getSTARSymbol(i)->getLine(j);
+            QGraphicsLineItem *currentSymbol = airspaceData->getSTARSymbol(i)->getLine(j);
 
-                currentSymbol->setPen(pen);
-                scene->addItem(currentSymbol);
+            currentSymbol->setPen(pen);
+            scene->addItem(currentSymbol);
 
-                visibleSTARs.append(airspaceData->getSTARSymbol(i));
-            }
+            visibleSTARs.append(airspaceData->getSTARSymbol(i));
         }
+    }
+}
+
+void ATCSituationalDisplay::displaySIDs()
+{
+    double rotationDeg = ATCConst::AVG_DECLINATION;
+
+    struct lineSegments
+    {
+        QVector<coord> coords1;
+        QVector<coord> coords2;
+    };
+
+    QVector<lineSegments> lineSegmentsVector;
+
+//Mercator projection of SID symbols + rotation
+    for(int i = 0; i < airspaceData->getSIDSymbolsVectorSize(); i++)
+    {
+        lineSegments currentSegment;
+
+        for(int j = 0; j < airspaceData->getSIDSymbol(i)->getCoordsVectorSize(); j++)
+        {
+            coord currentCoords1;
+            coord currentCoords2;
+
+            currentCoords1.x = mercatorProjectionLon(airspaceData->getSIDSymbol(i)->getCoords1(j)->longitude());
+            currentCoords1.y = mercatorProjectionLat(airspaceData->getSIDSymbol(i)->getCoords1(j)->latitude());
+            currentCoords2.x = mercatorProjectionLon(airspaceData->getSIDSymbol(i)->getCoords2(j)->longitude());
+            currentCoords2.y = mercatorProjectionLat(airspaceData->getSIDSymbol(i)->getCoords2(j)->latitude());
+
+            double xRotated1 = currentCoords1.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords1.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
+            double yRotated1 = currentCoords1.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords1.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+            double xRotated2 = currentCoords2.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords2.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
+            double yRotated2 = currentCoords2.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords2.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+
+            currentCoords1.x = xRotated1;
+            currentCoords1.y = yRotated1;
+            currentCoords2.x = xRotated2;
+            currentCoords2.y = yRotated2;
+
+            currentSegment.coords1.append(currentCoords1);
+            currentSegment.coords2.append(currentCoords2);
+        }
+
+        lineSegmentsVector.append(currentSegment);
+    }
+
+//Translate to local & scene coords, build lines
+    for(int i = 0; i < airspaceData->getSIDSymbolsVectorSize(); i++)
+    {
+        lineSegments currentSegment(lineSegmentsVector.at(i));
+
+        for(int j = 0; j < airspaceData->getSIDSymbol(i)->getCoordsVectorSize(); j++)
+        {
+            coord currentCoords1 = currentSegment.coords1.at(j);
+            coord currentCoords2 = currentSegment.coords2.at(j);
+
+            currentCoords1.x = (currentCoords1.x - sectorCentreX) * scaleFactor;
+            currentCoords1.y = -1 * (currentCoords1.y - sectorCentreY) * scaleFactor;
+            currentCoords2.x = (currentCoords2.x - sectorCentreX) * scaleFactor;
+            currentCoords2.y = -1 * (currentCoords2.y - sectorCentreY) * scaleFactor;
+
+            airspaceData->getSIDSymbol(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
+                                                                             currentCoords2.x, currentCoords2.y));
+        }
+    }
+
+//Display STAR symbol lines on scene
+    QPen pen(QColor(0, 255, 255));
+    pen.setWidthF(ATCConst::SID_LINE_WIDTH / currentScale);
+
+    for(int i = 0; i < airspaceData->getSIDSymbolsVectorSize(); i++)
+    {
+        for(int j = 0; j < airspaceData->getSIDSymbol(i)->getCoordsVectorSize(); j++)
+        {
+            QGraphicsLineItem *currentSymbol = airspaceData->getSIDSymbol(i)->getLine(j);
+
+            currentSymbol->setPen(pen);
+            scene->addItem(currentSymbol);
+
+            visibleSIDs.append(airspaceData->getSIDSymbol(i));
+        }
+    }
 }
 
 double ATCSituationalDisplay::mercatorProjectionLon(double longitudeDeg, double referenceLongitudeDeg, double scale)
@@ -1631,6 +1731,7 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
         rescaleNDBs();
         rescaleNDBLabels();
         rescaleSTARs();
+        rescaleSIDs();
     }
 
     event->accept();

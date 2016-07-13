@@ -66,6 +66,7 @@ private:
     void rescaleAirportLabels();
     void rescaleExtendedCentrelines();
     void rescaleSTARs();
+    void rescaleSIDs();
 
     void displaySectors();
     void displayFixes();
@@ -74,6 +75,7 @@ private:
     void displayVORs();
     void displayNDBs();
     void displaySTARs();
+    void displaySIDs();
 
     double mercatorProjectionLon(double longitude, double referenceLongitude = 0, double scale = ATCConst::WGS84_RADIUS);
     double mercatorProjectionLat(double latitude, double scale = ATCConst::WGS84_RADIUS);
