@@ -48,7 +48,8 @@ SOURCES += main.cpp\
     atcproceduresidsymbol.cpp \
     atcprocedurestarsymbol.cpp \
     atcabstractairway.cpp \
-    atcairwaylow.cpp
+    atcairwaylow.cpp \
+    atcairwayhigh.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -80,7 +81,8 @@ HEADERS  += mainwindow.h \
     atcproceduresidsymbol.h \
     atcprocedurestarsymbol.h \
     atcabstractairway.h \
-    atcairwaylow.h
+    atcairwaylow.h \
+    atcairwayhigh.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \

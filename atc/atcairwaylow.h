@@ -5,6 +5,7 @@
 
 class ATCAirwayLow : public ATCAbstractAirway
 {
+public:
     explicit ATCAirwayLow(QString name);
     ~ATCAirwayLow();
 };
