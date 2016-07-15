@@ -10,6 +10,8 @@
 #include "atcprocedurestar.h"
 #include "atcproceduresidsymbol.h"
 #include "atcprocedurestarsymbol.h"
+#include "atcairwaylow.h"
+#include "atcairwayhigh.h"
 
 #include <QString>
 #include <QVector>
@@ -41,6 +43,8 @@ public:
     void appendSTAR(ATCProcedureSTAR *star);
     void appendSIDSymbol(ATCProcedureSIDSymbol *symbol);
     void appendSTARSymbol(ATCProcedureSTARSymbol *symbol);
+    void appendAirwayLow(ATCAirwayLow *airway);
+    void appendAirwayHigh(ATCAirwayHigh *airway);
 
     int getSectorVectorSize();
     int getFixesVectorSize();
@@ -51,6 +55,8 @@ public:
     int getSTARsVectorSize();
     int getSIDSymbolsVectorSize();
     int getSTARSymbolsVectorSize();
+    int getAirwayLowVectorSize();
+    int getAirwayHighVectorSize();
 
     ATCAirspaceSector* getSector(int iterator);
     ATCNavFix* getFix(int iterator);
@@ -61,11 +67,14 @@ public:
     ATCProcedureSTAR* getSTAR(int iterator);
     ATCProcedureSIDSymbol* getSIDSymbol(int iterator);
     ATCProcedureSTARSymbol* getSTARSymbol(int iterator);
+    ATCAirwayLow* getAirwayLow(int iterator);
+    ATCAirwayHigh* getAirwayHigh(int iterator);
 
     ATCAirspaceSector* getLastSector();
     ATCProcedureSIDSymbol* getLastSIDSymbol();
     ATCProcedureSTARSymbol* getLastSTARSymbol();
-
+    ATCAirwayLow* getLastAirwayLow();
+    ATCAirwayHigh* getLastAirwayHigh();
 
     double getNavaidLatitude(QString name);
     double getNavaidLongitude(QString name);
@@ -85,6 +94,8 @@ private:
     QVector<ATCProcedureSTAR*> stars;
     QVector<ATCProcedureSIDSymbol*> sidSymbols;
     QVector<ATCProcedureSTARSymbol*> starSymbols;
+    QVector<ATCAirwayLow*> lowAirways;
+    QVector<ATCAirwayHigh*> highAirways;
 
     void deleteAllSectors();
     void deleteAllFixes();
@@ -95,6 +106,8 @@ private:
     void deleteAllSTARs();
     void deleteAllSIDSymbols();
     void deleteAllSTARSymbols();
+    void deleteAllAirwayLow();
+    void deleteAllAirwayHigh();
 };
 
 #endif // ATCAIRSPACE_H

@@ -17,6 +17,8 @@ ATCAirspace::~ATCAirspace()
     deleteAllSTARs();
     deleteAllSIDSymbols();
     deleteAllSTARSymbols();
+    deleteAllAirwayLow();
+    deleteAllAirwayHigh();
 }
 
 double ATCAirspace::coordsStringToDouble(QString coords)
@@ -161,6 +163,16 @@ void ATCAirspace::appendSTARSymbol(ATCProcedureSTARSymbol *symbol)
     starSymbols.append(symbol);
 }
 
+void ATCAirspace::appendAirwayLow(ATCAirwayLow *airway)
+{
+    lowAirways.append(airway);
+}
+
+void ATCAirspace::appendAirwayHigh(ATCAirwayHigh *airway)
+{
+    highAirways.append(airway);
+}
+
 ATCAirspaceSector* ATCAirspace::getSector(int iterator)
 {
     return sectors.at(iterator);
@@ -176,9 +188,19 @@ ATCProcedureSIDSymbol* ATCAirspace::getLastSIDSymbol()
     return sidSymbols[sidSymbols.size() - 1];
 }
 
-ATCProcedureSTARSymbol *ATCAirspace::getLastSTARSymbol()
+ATCProcedureSTARSymbol* ATCAirspace::getLastSTARSymbol()
 {
     return starSymbols[starSymbols.size() - 1];
+}
+
+ATCAirwayLow* ATCAirspace::getLastAirwayLow()
+{
+    return lowAirways[lowAirways.size() - 1];
+}
+
+ATCAirwayHigh* ATCAirspace::getLastAirwayHigh()
+{
+    return highAirways[highAirways.size() - 1];
 }
 
 int ATCAirspace::getSectorVectorSize()
@@ -226,6 +248,16 @@ int ATCAirspace::getSTARSymbolsVectorSize()
     return starSymbols.size();
 }
 
+int ATCAirspace::getAirwayLowVectorSize()
+{
+    return lowAirways.size();
+}
+
+int ATCAirspace::getAirwayHighVectorSize()
+{
+    return highAirways.size();
+}
+
 ATCNavFix* ATCAirspace::getFix(int iterator)
 {
     return fixes.at(iterator);
@@ -261,9 +293,19 @@ ATCProcedureSIDSymbol* ATCAirspace::getSIDSymbol(int iterator)
     return sidSymbols.at(iterator);
 }
 
-ATCProcedureSTARSymbol *ATCAirspace::getSTARSymbol(int iterator)
+ATCProcedureSTARSymbol* ATCAirspace::getSTARSymbol(int iterator)
 {
     return starSymbols.at(iterator);
+}
+
+ATCAirwayLow* ATCAirspace::getAirwayLow(int iterator)
+{
+    return lowAirways.at(iterator);
+}
+
+ATCAirwayHigh *ATCAirspace::getAirwayHigh(int iterator)
+{
+    return highAirways.at(iterator);
 }
 
 double ATCAirspace::getNavaidLatitude(QString name)
@@ -494,5 +536,35 @@ void ATCAirspace::deleteAllSTARSymbols()
     else
     {
         qDebug() << "Empty vector of STAR symbols...";
+    }
+}
+
+void ATCAirspace::deleteAllAirwayLow()
+{
+    if(!lowAirways.empty())
+    {
+        for(int i = 0; i < lowAirways.size(); i++)
+        {
+            delete lowAirways.at(i);
+        }
+    }
+    else
+    {
+        qDebug() << "Empty vector of low airways...";
+    }
+}
+
+void ATCAirspace::deleteAllAirwayHigh()
+{
+    if(!highAirways.empty())
+    {
+        for(int i = 0; i < highAirways.size(); i++)
+        {
+            delete highAirways.at(i);
+        }
+    }
+    else
+    {
+        qDebug() << "Empty vector of high airways...";
     }
 }
