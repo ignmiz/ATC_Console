@@ -118,6 +118,26 @@ bool ATCAirspace::isAirport(QString name)
     return false;
 }
 
+bool ATCAirspace::isAirwayLow(QString name)
+{
+    for(int i = 0; i < lowAirways.size(); i++)
+    {
+        if(lowAirways.at(i)->getName() == name) return true;
+    }
+
+    return false;
+}
+
+bool ATCAirspace::isAirwayHigh(QString name)
+{
+    for(int i = 0; i < highAirways.size(); i++)
+    {
+        if(highAirways.at(i)->getName() == name) return true;
+    }
+
+    return false;
+}
+
 void ATCAirspace::appendSector(ATCAirspaceSector *sector)
 {
     sectors.append(sector);
@@ -398,6 +418,32 @@ ATCBeaconNDB *ATCAirspace::findNDB(QString name)
         if(ndbs.at(i)->getName() == name)
         {
             return ndbs.at(i);
+        }
+    }
+
+    return nullptr;
+}
+
+ATCAirwayLow *ATCAirspace::findAirwayLow(QString name)
+{
+    for(int i = 0; i < lowAirways.size(); i++)
+    {
+        if(lowAirways.at(i)->getName() == name)
+        {
+            return lowAirways.at(i);
+        }
+    }
+
+    return nullptr;
+}
+
+ATCAirwayHigh *ATCAirspace::findAirwayHigh(QString name)
+{
+    for(int i = 0; i < highAirways.size(); i++)
+    {
+        if(highAirways.at(i)->getName() == name)
+        {
+            return highAirways.at(i);
         }
     }
 

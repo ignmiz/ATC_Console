@@ -32,6 +32,8 @@ public:
     bool isVOR(QString name);
     bool isNDB(QString name);
     bool isAirport(QString name);
+    bool isAirwayLow(QString name);
+    bool isAirwayHigh(QString name);
 //..............................................
 
     void appendSector(ATCAirspaceSector *sector);
@@ -83,6 +85,8 @@ public:
     ATCNavFix* findFix(QString fixName);
     ATCBeaconVOR* findVOR(QString name);
     ATCBeaconNDB* findNDB(QString name);
+    ATCAirwayLow* findAirwayLow(QString name);
+    ATCAirwayHigh* findAirwayHigh(QString name);
 
 private:
     QVector<ATCAirspaceSector*> sectors;
