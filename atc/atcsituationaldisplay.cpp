@@ -19,6 +19,7 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
 
     displaySectors();
     displayAirwayLow();
+    displayAirwayHigh();
     displaySTARs();
     displaySIDs();
     displayExtendedCentrelines();    
@@ -1180,6 +1181,23 @@ void ATCSituationalDisplay::rescaleAirwayLow()
     }
 }
 
+void ATCSituationalDisplay::rescaleAirwayHigh()
+{
+    if(!visibleHighAirways.empty())
+    {
+        QPen currentPen(visibleHighAirways.at(0)->getLine(0)->pen());
+        currentPen.setWidthF(ATCConst::AIRWAY_HIGH_LINE_WIDTH / currentScale);
+
+        for(int i = 0; i < visibleHighAirways.size(); i++)
+        {
+            for(int j = 0; j < visibleHighAirways.at(i)->getCoordsVectorSize(); j++)
+            {
+                visibleHighAirways.at(i)->getLine(j)->setPen(currentPen);
+            }
+        }
+    }
+}
+
 void ATCSituationalDisplay::displaySectors()
 {
     QVector<sector> tempSectors;
@@ -1946,6 +1964,88 @@ void ATCSituationalDisplay::displayAirwayLow()
     }
 }
 
+void ATCSituationalDisplay::displayAirwayHigh()
+{
+    double rotationDeg = ATCConst::AVG_DECLINATION;
+
+    struct lineSegments
+    {
+        QVector<coord> coords1;
+        QVector<coord> coords2;
+    };
+
+    QVector<lineSegments> lineSegmentsVector;
+
+//Mercator projection of High Airways + rotation
+    for(int i = 0; i < airspaceData->getAirwayHighVectorSize(); i++)
+    {
+        lineSegments currentSegment;
+
+        for(int j = 0; j < airspaceData->getAirwayHigh(i)->getCoordsVectorSize(); j++)
+        {
+            coord currentCoords1;
+            coord currentCoords2;
+
+            currentCoords1.x = mercatorProjectionLon(airspaceData->getAirwayLow(i)->getCoords1(j)->longitude());
+            currentCoords1.y = mercatorProjectionLat(airspaceData->getAirwayLow(i)->getCoords1(j)->latitude());
+            currentCoords2.x = mercatorProjectionLon(airspaceData->getAirwayLow(i)->getCoords2(j)->longitude());
+            currentCoords2.y = mercatorProjectionLat(airspaceData->getAirwayLow(i)->getCoords2(j)->latitude());
+
+            double xRotated1 = currentCoords1.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords1.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
+            double yRotated1 = currentCoords1.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords1.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+            double xRotated2 = currentCoords2.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords2.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
+            double yRotated2 = currentCoords2.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords2.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+
+            currentCoords1.x = xRotated1;
+            currentCoords1.y = yRotated1;
+            currentCoords2.x = xRotated2;
+            currentCoords2.y = yRotated2;
+
+            currentSegment.coords1.append(currentCoords1);
+            currentSegment.coords2.append(currentCoords2);
+        }
+
+        lineSegmentsVector.append(currentSegment);
+    }
+
+//Translate to local & scene coords, build lines
+    for(int i = 0; i < airspaceData->getAirwayHighVectorSize(); i++)
+    {
+        lineSegments currentSegment(lineSegmentsVector.at(i));
+
+        for(int j = 0; j < airspaceData->getAirwayHigh(i)->getCoordsVectorSize(); j++)
+        {
+            coord currentCoords1 = currentSegment.coords1.at(j);
+            coord currentCoords2 = currentSegment.coords2.at(j);
+
+            currentCoords1.x = (currentCoords1.x - sectorCentreX) * scaleFactor;
+            currentCoords1.y = -1 * (currentCoords1.y - sectorCentreY) * scaleFactor;
+            currentCoords2.x = (currentCoords2.x - sectorCentreX) * scaleFactor;
+            currentCoords2.y = -1 * (currentCoords2.y - sectorCentreY) * scaleFactor;
+
+            airspaceData->getAirwayHigh(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
+                                                                             currentCoords2.x, currentCoords2.y));
+        }
+    }
+
+//Display High Airway lines on scene
+    QPen pen(QColor(123, 104, 238));
+    pen.setWidthF(ATCConst::AIRWAY_HIGH_LINE_WIDTH / currentScale);
+
+    for(int i = 0; i < airspaceData->getAirwayHighVectorSize(); i++)
+    {
+        for(int j = 0; j < airspaceData->getAirwayHigh(i)->getCoordsVectorSize(); j++)
+        {
+            QGraphicsLineItem *currentSymbol = airspaceData->getAirwayHigh(i)->getLine(j);
+
+            currentSymbol->setPen(pen);
+            scene->addItem(currentSymbol);
+
+            visibleHighAirways.append(airspaceData->getAirwayHigh(i));
+        }
+    }
+}
+
 double ATCSituationalDisplay::mercatorProjectionLon(double longitudeDeg, double referenceLongitudeDeg, double scale)
 {
     return scale * (longitudeDeg - referenceLongitudeDeg);
@@ -2070,6 +2170,7 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
         rescaleSTARs();
         rescaleSIDs();
         rescaleAirwayLow();
+        rescaleAirwayHigh();
     }
 
     event->accept();
