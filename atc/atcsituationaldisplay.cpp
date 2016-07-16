@@ -116,6 +116,9 @@ void ATCSituationalDisplay::loadData()
         return;
     }
 
+    bool flagARTCCLow = false;
+    bool flagARTCCHigh = false;
+    bool flagARTCC = false;
     bool flagVOR = false;
     bool flagNDB = false;
     bool flagFixes = false;
@@ -137,8 +140,62 @@ void ATCSituationalDisplay::loadData()
         }
         else
         {
-            if(textLine.contains("[VOR]", Qt::CaseInsensitive))
+            if(textLine.contains("[ARTCC LOW]", Qt::CaseInsensitive))
             {
+                flagARTCCLow = true;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+
+                qDebug() << "ARTCC LOW:";
+            }
+            if(textLine.contains("[ARTCC HIGH]", Qt::CaseInsensitive))
+            {
+                flagARTCCLow = false;
+                flagARTCCHigh = true;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+
+                qDebug() << "ARTCC HIGH:";
+            }
+            if(textLine.contains("[ARTCC]", Qt::CaseInsensitive))
+            {
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = true;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+
+                qDebug() << "ARTCC:";
+            }
+            else if(textLine.contains("[VOR]", Qt::CaseInsensitive))
+            {
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
                 flagVOR = true;
                 flagNDB = false;
                 flagFixes = false;
@@ -153,6 +210,9 @@ void ATCSituationalDisplay::loadData()
             }
             else if(textLine.contains("[NDB]", Qt::CaseInsensitive))
             {
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
                 flagVOR = false;
                 flagNDB = true;
                 flagFixes = false;
@@ -167,6 +227,9 @@ void ATCSituationalDisplay::loadData()
             }
             else if(textLine.contains("[FIXES]", Qt::CaseInsensitive))
             {
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
                 flagVOR = false;
                 flagNDB = false;
                 flagFixes = true;
@@ -181,6 +244,9 @@ void ATCSituationalDisplay::loadData()
             }
             else if(textLine.contains("[AIRPORT]", Qt::CaseInsensitive))
             {
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
                 flagVOR = false;
                 flagNDB = false;
                 flagFixes = false;
@@ -195,6 +261,9 @@ void ATCSituationalDisplay::loadData()
             }
             else if(textLine.contains("[RUNWAY]", Qt::CaseInsensitive))
             {
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
                 flagVOR = false;
                 flagNDB = false;
                 flagFixes = false;
@@ -209,6 +278,9 @@ void ATCSituationalDisplay::loadData()
             }
             else if(textLine.contains("[STAR]", Qt::CaseInsensitive))
             {
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
                 flagVOR = false;
                 flagNDB = false;
                 flagFixes = false;
@@ -223,6 +295,9 @@ void ATCSituationalDisplay::loadData()
             }
             else if(textLine.contains("[SID]", Qt::CaseInsensitive))
             {
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
                 flagVOR = false;
                 flagNDB = false;
                 flagFixes = false;
@@ -237,6 +312,9 @@ void ATCSituationalDisplay::loadData()
             }
             else if(textLine.contains("[LOW AIRWAY]", Qt::CaseInsensitive))
             {
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
                 flagVOR = false;
                 flagNDB = false;
                 flagFixes = false;
@@ -251,6 +329,9 @@ void ATCSituationalDisplay::loadData()
             }
             else if(textLine.contains("[HIGH AIRWAY]", Qt::CaseInsensitive))
             {
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
                 flagVOR = false;
                 flagNDB = false;
                 flagFixes = false;
@@ -262,6 +343,18 @@ void ATCSituationalDisplay::loadData()
                 flagHighAirway = true;
 
                 qDebug() << "High Airways:";
+            }
+            else if(flagARTCCLow)
+            {
+
+            }
+            else if(flagARTCCHigh)
+            {
+
+            }
+            else if(flagARTCC)
+            {
+
             }
             else if(flagFixes)
             {
