@@ -50,6 +50,7 @@ private:
     QVector<ATCBeaconNDB*> visibleNDBs;
     QVector<ATCProcedureSTARSymbol*> visibleSTARs;
     QVector<ATCProcedureSIDSymbol*> visibleSIDs;
+    QVector<ATCAirwayLow*> visibleLowAirways;
 
     void situationalDisplaySetup();
     void loadData(); //Temp - to be moved
@@ -67,6 +68,7 @@ private:
     void rescaleExtendedCentrelines();
     void rescaleSTARs();
     void rescaleSIDs();
+    void rescaleAirwayLow();
 
     void displaySectors();
     void displayFixes();
@@ -76,9 +78,11 @@ private:
     void displayNDBs();
     void displaySTARs();
     void displaySIDs();
+    void displayAirwayLow();
 
     double mercatorProjectionLon(double longitude, double referenceLongitude = 0, double scale = ATCConst::WGS84_RADIUS);
     double mercatorProjectionLat(double latitude, double scale = ATCConst::WGS84_RADIUS);
+
     void projectSectors(QVector<sector> &targetVector, ATCAirspace *airspace, double rotationDeg);
     double calculateScaleFactor(double mercatorXmin, double mercatorXmax, double mercatorYmin, double mercatorYmax);
     void calculateSectorPolygons(QVector<sector> &sectorVector, ATCAirspace *airspace, double centreX, double centreY, double scaleFactor);

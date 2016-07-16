@@ -49,3 +49,7 @@ const double ATCConst::NDB_LABEL_DY = -12;
 const double ATCConst::STAR_LINE_WIDTH = 0.75;
 
 const double ATCConst::SID_LINE_WIDTH = 0.75;
+
+const double ATCConst::AIRWAY_LOW_LINE_WIDTH = 0.5;
+
+const double ATCConst::AIRWAY_HIGH_LINE_WIDTH = 0.5;

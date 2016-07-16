@@ -56,6 +56,10 @@ public:
     static const double STAR_LINE_WIDTH;
 
     static const double SID_LINE_WIDTH;
+
+    static const double AIRWAY_LOW_LINE_WIDTH;
+
+    static const double AIRWAY_HIGH_LINE_WIDTH;
 };
 
 #endif // ATCCONST_H
