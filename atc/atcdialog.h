@@ -17,7 +17,7 @@ class ATCDialog : public QDialog
 public:
     explicit ATCDialog(QWidget *parent = 0, QString title = "Title", unsigned int width = 400,
                        unsigned int height = 300, bool deleteOnClose = true, ATC::ATCDialogType dialogtype = ATC::Default);
-    ~ATCDialog();
+    ~ATCDialog() = 0;
 
     void maximizeWindow();
     void minimizeWindow();
