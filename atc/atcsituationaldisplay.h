@@ -45,7 +45,7 @@ private:
     QVector<ATCAirspaceSector*> visibleSectors;
     QVector<ATCSectorARTCCLow*> visibleSectorsARTCCLow;
     QVector<ATCSectorARTCCHigh*> visibleSectorsARTCCHigh;
-    QVector<ATCSectorARTCC*> visiblelSectorsARTCC;
+    QVector<ATCSectorARTCC*> visibleSectorsARTCC;
     QVector<ATCRunwayExtendedCentreline*> visibleCentrelines;
     QVector<ATCNavFix*> visibleFixes;
     QVector<ATCAirport*> visibleAirports;
