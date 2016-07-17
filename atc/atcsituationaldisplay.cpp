@@ -349,15 +349,420 @@ void ATCSituationalDisplay::loadData()
             }
             else if(flagARTCCLow)
             {
+                textLine = textLine.split(";", QString::SkipEmptyParts).at(0);
+                textLine = textLine.trimmed();
 
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+                int size = stringList.size();
+
+                int iterator = 0;
+                bool coordsFound = false;
+
+                for(int i = 0; i < size - 3; i++)
+                {
+                    if((airspaceData->isValidCoordsFormat(stringList.at(i)) || airspaceData->isValidNavaid(stringList.at(i))) &&
+                       (airspaceData->isValidCoordsFormat(stringList.at(i + 1)) || airspaceData->isValidNavaid(stringList.at(i + 1))) &&
+                       (airspaceData->isValidCoordsFormat(stringList.at(i + 2)) || airspaceData->isValidNavaid(stringList.at(i + 2))) &&
+                       (airspaceData->isValidCoordsFormat(stringList.at(i + 3)) || airspaceData->isValidNavaid(stringList.at(i + 3))))
+                    {
+                        iterator = i;
+                        coordsFound = true;
+                    }
+                }
+
+                if(iterator != 0 && coordsFound)
+                {
+                    QString name;
+
+                    for(int i = 0; i < iterator; i++)
+                    {
+                        name = name + " " + stringList.at(i);
+                    }
+
+                    QString lat1String = stringList.at(iterator);
+                    QString lon1String = stringList.at(iterator + 1);
+                    QString lat2String = stringList.at(iterator + 2);
+                    QString lon2String = stringList.at(iterator + 3);
+
+                    double lat1;
+                    double lon1;
+                    double lat2;
+                    double lon2;
+
+                    if(airspaceData->isValidCoordsFormat(lat1String))
+                    {
+                        lat1 = airspaceData->coordsStringToDouble(lat1String);
+                    }
+                    else
+                    {
+                        lat1 = airspaceData->getNavaidLatitude(lat1String);
+                    }
+
+                    if(airspaceData->isValidCoordsFormat(lon1String))
+                    {
+                        lon1 = airspaceData->coordsStringToDouble(lon1String);
+                    }
+                    else
+                    {
+                        lon1 = airspaceData->getNavaidLongitude(lon1String);
+                    }
+
+                    if(airspaceData->isValidCoordsFormat(lat2String))
+                    {
+                        lat2 = airspaceData->coordsStringToDouble(lat2String);
+                    }
+                    else
+                    {
+                        lat2 = airspaceData->getNavaidLatitude(lat2String);
+                    }
+
+                    if(airspaceData->isValidCoordsFormat(lon2String))
+                    {
+                        lon2 = airspaceData->coordsStringToDouble(lon2String);
+                    }
+                    else
+                    {
+                        lon2 = airspaceData->getNavaidLongitude(lon2String);
+                    }
+
+                    ATCSectorARTCCLow *currentObject = new ATCSectorARTCCLow(name);
+                    currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                    currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                    airspaceData->appendSectorARTCCLow(currentObject);
+
+                    qDebug() << "Sector ARTCC Low:" << currentObject->getName() << "appended...";
+                }
+                else if((iterator == 0) && coordsFound)
+                {
+                    QString lat1String = stringList.at(0);
+                    QString lon1String = stringList.at(1);
+                    QString lat2String = stringList.at(2);
+                    QString lon2String = stringList.at(3);
+
+                    double lat1;
+                    double lon1;
+                    double lat2;
+                    double lon2;
+
+                    if(airspaceData->isValidCoordsFormat(lat1String))
+                    {
+                        lat1 = airspaceData->coordsStringToDouble(lat1String);
+                    }
+                    else
+                    {
+                        lat1 = airspaceData->getNavaidLatitude(lat1String);
+                    }
+
+                    if(airspaceData->isValidCoordsFormat(lon1String))
+                    {
+                        lon1 = airspaceData->coordsStringToDouble(lon1String);
+                    }
+                    else
+                    {
+                        lon1 = airspaceData->getNavaidLongitude(lon1String);
+                    }
+
+                    if(airspaceData->isValidCoordsFormat(lat2String))
+                    {
+                        lat2 = airspaceData->coordsStringToDouble(lat2String);
+                    }
+                    else
+                    {
+                        lat2 = airspaceData->getNavaidLatitude(lat2String);
+                    }
+
+                    if(airspaceData->isValidCoordsFormat(lon2String))
+                    {
+                        lon2 = airspaceData->coordsStringToDouble(lon2String);
+                    }
+                    else
+                    {
+                        lon2 = airspaceData->getNavaidLongitude(lon2String);
+                    }
+
+                    airspaceData->getLastSectorARTCCLow()->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                    airspaceData->getLastSectorARTCCLow()->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                }
             }
             else if(flagARTCCHigh)
             {
+                textLine = textLine.split(";", QString::SkipEmptyParts).at(0);
+                textLine = textLine.trimmed();
 
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+                int size = stringList.size();
+
+                int iterator = 0;
+                bool coordsFound = false;
+
+                for(int i = 0; i < size - 3; i++)
+                {
+                    if((airspaceData->isValidCoordsFormat(stringList.at(i)) || airspaceData->isValidNavaid(stringList.at(i))) &&
+                       (airspaceData->isValidCoordsFormat(stringList.at(i + 1)) || airspaceData->isValidNavaid(stringList.at(i + 1))) &&
+                       (airspaceData->isValidCoordsFormat(stringList.at(i + 2)) || airspaceData->isValidNavaid(stringList.at(i + 2))) &&
+                       (airspaceData->isValidCoordsFormat(stringList.at(i + 3)) || airspaceData->isValidNavaid(stringList.at(i + 3))))
+                    {
+                        iterator = i;
+                        coordsFound = true;
+                    }
+                }
+
+                if(iterator != 0 && coordsFound)
+                {
+                    QString name;
+
+                    for(int i = 0; i < iterator; i++)
+                    {
+                        name = name + " " + stringList.at(i);
+                    }
+
+                    QString lat1String = stringList.at(iterator);
+                    QString lon1String = stringList.at(iterator + 1);
+                    QString lat2String = stringList.at(iterator + 2);
+                    QString lon2String = stringList.at(iterator + 3);
+
+                    double lat1;
+                    double lon1;
+                    double lat2;
+                    double lon2;
+
+                    if(airspaceData->isValidCoordsFormat(lat1String))
+                    {
+                        lat1 = airspaceData->coordsStringToDouble(lat1String);
+                    }
+                    else
+                    {
+                        lat1 = airspaceData->getNavaidLatitude(lat1String);
+                    }
+
+                    if(airspaceData->isValidCoordsFormat(lon1String))
+                    {
+                        lon1 = airspaceData->coordsStringToDouble(lon1String);
+                    }
+                    else
+                    {
+                        lon1 = airspaceData->getNavaidLongitude(lon1String);
+                    }
+
+                    if(airspaceData->isValidCoordsFormat(lat2String))
+                    {
+                        lat2 = airspaceData->coordsStringToDouble(lat2String);
+                    }
+                    else
+                    {
+                        lat2 = airspaceData->getNavaidLatitude(lat2String);
+                    }
+
+                    if(airspaceData->isValidCoordsFormat(lon2String))
+                    {
+                        lon2 = airspaceData->coordsStringToDouble(lon2String);
+                    }
+                    else
+                    {
+                        lon2 = airspaceData->getNavaidLongitude(lon2String);
+                    }
+
+                    ATCSectorARTCCHigh *currentObject = new ATCSectorARTCCHigh(name);
+                    currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                    currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                    airspaceData->appendSectorARTCCHigh(currentObject);
+
+                    qDebug() << "Sector ARTCC High:" << currentObject->getName() << "appended...";
+                }
+                else if((iterator == 0) && coordsFound)
+                {
+                    QString lat1String = stringList.at(0);
+                    QString lon1String = stringList.at(1);
+                    QString lat2String = stringList.at(2);
+                    QString lon2String = stringList.at(3);
+
+                    double lat1;
+                    double lon1;
+                    double lat2;
+                    double lon2;
+
+                    if(airspaceData->isValidCoordsFormat(lat1String))
+                    {
+                        lat1 = airspaceData->coordsStringToDouble(lat1String);
+                    }
+                    else
+                    {
+                        lat1 = airspaceData->getNavaidLatitude(lat1String);
+                    }
+
+                    if(airspaceData->isValidCoordsFormat(lon1String))
+                    {
+                        lon1 = airspaceData->coordsStringToDouble(lon1String);
+                    }
+                    else
+                    {
+                        lon1 = airspaceData->getNavaidLongitude(lon1String);
+                    }
+
+                    if(airspaceData->isValidCoordsFormat(lat2String))
+                    {
+                        lat2 = airspaceData->coordsStringToDouble(lat2String);
+                    }
+                    else
+                    {
+                        lat2 = airspaceData->getNavaidLatitude(lat2String);
+                    }
+
+                    if(airspaceData->isValidCoordsFormat(lon2String))
+                    {
+                        lon2 = airspaceData->coordsStringToDouble(lon2String);
+                    }
+                    else
+                    {
+                        lon2 = airspaceData->getNavaidLongitude(lon2String);
+                    }
+
+                    airspaceData->getLastSectorARTCCHigh()->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                    airspaceData->getLastSectorARTCCHigh()->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                }
             }
             else if(flagARTCC)
             {
+                textLine = textLine.split(";", QString::SkipEmptyParts).at(0);
+                textLine = textLine.trimmed();
 
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+                int size = stringList.size();
+
+                int iterator = 0;
+                bool coordsFound = false;
+
+                for(int i = 0; i < size - 3; i++)
+                {
+                    if((airspaceData->isValidCoordsFormat(stringList.at(i)) || airspaceData->isValidNavaid(stringList.at(i))) &&
+                       (airspaceData->isValidCoordsFormat(stringList.at(i + 1)) || airspaceData->isValidNavaid(stringList.at(i + 1))) &&
+                       (airspaceData->isValidCoordsFormat(stringList.at(i + 2)) || airspaceData->isValidNavaid(stringList.at(i + 2))) &&
+                       (airspaceData->isValidCoordsFormat(stringList.at(i + 3)) || airspaceData->isValidNavaid(stringList.at(i + 3))))
+                    {
+                        iterator = i;
+                        coordsFound = true;
+                    }
+                }
+
+                if(iterator != 0 && coordsFound)
+                {
+                    QString name;
+
+                    for(int i = 0; i < iterator; i++)
+                    {
+                        name = name + " " + stringList.at(i);
+                    }
+
+                    QString lat1String = stringList.at(iterator);
+                    QString lon1String = stringList.at(iterator + 1);
+                    QString lat2String = stringList.at(iterator + 2);
+                    QString lon2String = stringList.at(iterator + 3);
+
+                    double lat1;
+                    double lon1;
+                    double lat2;
+                    double lon2;
+
+                    if(airspaceData->isValidCoordsFormat(lat1String))
+                    {
+                        lat1 = airspaceData->coordsStringToDouble(lat1String);
+                    }
+                    else
+                    {
+                        lat1 = airspaceData->getNavaidLatitude(lat1String);
+                    }
+
+                    if(airspaceData->isValidCoordsFormat(lon1String))
+                    {
+                        lon1 = airspaceData->coordsStringToDouble(lon1String);
+                    }
+                    else
+                    {
+                        lon1 = airspaceData->getNavaidLongitude(lon1String);
+                    }
+
+                    if(airspaceData->isValidCoordsFormat(lat2String))
+                    {
+                        lat2 = airspaceData->coordsStringToDouble(lat2String);
+                    }
+                    else
+                    {
+                        lat2 = airspaceData->getNavaidLatitude(lat2String);
+                    }
+
+                    if(airspaceData->isValidCoordsFormat(lon2String))
+                    {
+                        lon2 = airspaceData->coordsStringToDouble(lon2String);
+                    }
+                    else
+                    {
+                        lon2 = airspaceData->getNavaidLongitude(lon2String);
+                    }
+
+                    ATCSectorARTCC *currentObject = new ATCSectorARTCC(name);
+                    currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                    currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                    airspaceData->appendSectorARTCC(currentObject);
+
+                    qDebug() << "Sector ARTCC:" << currentObject->getName() << "appended...";
+                }
+                else if((iterator == 0) && coordsFound)
+                {
+                    QString lat1String = stringList.at(0);
+                    QString lon1String = stringList.at(1);
+                    QString lat2String = stringList.at(2);
+                    QString lon2String = stringList.at(3);
+
+                    double lat1;
+                    double lon1;
+                    double lat2;
+                    double lon2;
+
+                    if(airspaceData->isValidCoordsFormat(lat1String))
+                    {
+                        lat1 = airspaceData->coordsStringToDouble(lat1String);
+                    }
+                    else
+                    {
+                        lat1 = airspaceData->getNavaidLatitude(lat1String);
+                    }
+
+                    if(airspaceData->isValidCoordsFormat(lon1String))
+                    {
+                        lon1 = airspaceData->coordsStringToDouble(lon1String);
+                    }
+                    else
+                    {
+                        lon1 = airspaceData->getNavaidLongitude(lon1String);
+                    }
+
+                    if(airspaceData->isValidCoordsFormat(lat2String))
+                    {
+                        lat2 = airspaceData->coordsStringToDouble(lat2String);
+                    }
+                    else
+                    {
+                        lat2 = airspaceData->getNavaidLatitude(lat2String);
+                    }
+
+                    if(airspaceData->isValidCoordsFormat(lon2String))
+                    {
+                        lon2 = airspaceData->coordsStringToDouble(lon2String);
+                    }
+                    else
+                    {
+                        lon2 = airspaceData->getNavaidLongitude(lon2String);
+                    }
+
+                    airspaceData->getLastSectorARTCC()->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                    airspaceData->getLastSectorARTCC()->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                }
             }
             else if(flagFixes)
             {
