@@ -9,6 +9,9 @@ ATCAirspace::ATCAirspace()
 ATCAirspace::~ATCAirspace()
 {
     deleteAllSectors();
+    deleteAllSectorsARTCCLow();
+    deleteAllSectorsARTCCHigh();
+    deleteAllSectorsARTCC();
     deleteAllFixes();
     deleteAllVORs();
     deleteAllNDBs();
@@ -143,6 +146,21 @@ void ATCAirspace::appendSector(ATCAirspaceSector *sector)
     sectors.append(sector);
 }
 
+void ATCAirspace::appendSectorARTCCLow(ATCSectorARTCCLow *sector)
+{
+    sectorsARTCCLow.append(sector);
+}
+
+void ATCAirspace::appendSectorARTCCHigh(ATCSectorARTCCHigh *sector)
+{
+    sectorsARTCCHigh.append(sector);
+}
+
+void ATCAirspace::appendSectorARTCC(ATCSectorARTCC *sector)
+{
+    sectorsARTCC.append(sector);
+}
+
 void ATCAirspace::appendFix(ATCNavFix *fix)
 {
     fixes.append(fix);
@@ -198,34 +216,79 @@ ATCAirspaceSector* ATCAirspace::getSector(int iterator)
     return sectors.at(iterator);
 }
 
+ATCSectorARTCCLow* ATCAirspace::getSectorARTCCLow(int iterator)
+{
+    return sectorsARTCCLow.at(iterator);
+}
+
+ATCSectorARTCCHigh* ATCAirspace::getSectorARTCCHigh(int iterator)
+{
+    return sectorsARTCCHigh.at(iterator);
+}
+
+ATCSectorARTCC* ATCAirspace::getSectorARTCC(int iterator)
+{
+    return sectorsARTCC.at(iterator);
+}
+
 ATCAirspaceSector* ATCAirspace::getLastSector()
 {
-    return sectors[sectors.size() - 1];
+    return sectors.at(sectors.size() - 1);
+}
+
+ATCSectorARTCCLow* ATCAirspace::getLastSectorARTCCLow()
+{
+    return sectorsARTCCLow.at(sectorsARTCCLow.size() - 1);
+}
+
+ATCSectorARTCCHigh* ATCAirspace::getLastSectorARTCCHigh()
+{
+    return sectorsARTCCHigh.at(sectorsARTCCHigh.size() - 1);
+}
+
+ATCSectorARTCC* ATCAirspace::getLastSectorARTCC()
+{
+    return sectorsARTCC.at(sectorsARTCC.size() - 1);
 }
 
 ATCProcedureSIDSymbol* ATCAirspace::getLastSIDSymbol()
 {
-    return sidSymbols[sidSymbols.size() - 1];
+    return sidSymbols.at(sidSymbols.size() - 1);
 }
 
 ATCProcedureSTARSymbol* ATCAirspace::getLastSTARSymbol()
 {
-    return starSymbols[starSymbols.size() - 1];
+    return starSymbols.at(starSymbols.size() - 1);
 }
 
 ATCAirwayLow* ATCAirspace::getLastAirwayLow()
 {
-    return lowAirways[lowAirways.size() - 1];
+    return lowAirways.at(lowAirways.size() - 1);
 }
 
 ATCAirwayHigh* ATCAirspace::getLastAirwayHigh()
 {
-    return highAirways[highAirways.size() - 1];
+    return highAirways.at(highAirways.size() - 1);
 }
 
 int ATCAirspace::getSectorVectorSize()
 {
     return sectors.size();
+}
+
+int ATCAirspace::getSectorARTCCLowVectorSize()
+{
+    return sectorsARTCCLow.size();
+}
+
+int ATCAirspace::getSectorARTCCHighVectorSize()
+{
+    return sectorsARTCCHigh.size();
+}
+
+int ATCAirspace::getSectorARTCCVectorSize()
+{
+    return sectorsARTCC.size();
 }
 
 int ATCAirspace::getFixesVectorSize()
@@ -461,7 +524,52 @@ void ATCAirspace::deleteAllSectors()
     }
     else
     {
-        qDebug() << "Empty vector of sectors...";
+        qDebug() << "Empty vector of Sectors...";
+    }
+}
+
+void ATCAirspace::deleteAllSectorsARTCCLow()
+{
+    if(!sectorsARTCCLow.empty())
+    {
+        for(int i = 0; i < sectorsARTCCLow.size(); i++)
+        {
+            delete sectorsARTCCLow.at(i);
+        }
+    }
+    else
+    {
+        qDebug() << "Empty vector of Sectors ARTCC Low...";
+    }
+}
+
+void ATCAirspace::deleteAllSectorsARTCCHigh()
+{
+    if(!sectorsARTCCHigh.empty())
+    {
+        for(int i = 0; i < sectorsARTCCHigh.size(); i++)
+        {
+            delete sectorsARTCCHigh.at(i);
+        }
+    }
+    else
+    {
+        qDebug() << "Empty vector of Sectors ARTCC High...";
+    }
+}
+
+void ATCAirspace::deleteAllSectorsARTCC()
+{
+    if(!sectorsARTCC.empty())
+    {
+        for(int i = 0; i < sectorsARTCC.size(); i++)
+        {
+            delete sectorsARTCC.at(i);
+        }
+    }
+    else
+    {
+        qDebug() << "Empty vector of Sectors ARTCC...";
     }
 }
 

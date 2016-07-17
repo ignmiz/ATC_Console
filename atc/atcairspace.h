@@ -2,6 +2,9 @@
 #define ATCAIRSPACE_H
 
 #include "atcairspacesector.h"
+#include "atcsectorartcclow.h"
+#include "atcsectorartcchigh.h"
+#include "atcsectorartcc.h"
 #include "atcnavfix.h"
 #include "atcbeaconvor.h"
 #include "atcbeaconndb.h"
@@ -37,6 +40,9 @@ public:
 //..............................................
 
     void appendSector(ATCAirspaceSector *sector);
+    void appendSectorARTCCLow(ATCSectorARTCCLow *sector);
+    void appendSectorARTCCHigh(ATCSectorARTCCHigh *sector);
+    void appendSectorARTCC(ATCSectorARTCC *sector);
     void appendFix(ATCNavFix *fix);
     void appendVOR(ATCBeaconVOR *vor);
     void appendNDB(ATCBeaconNDB *ndb);
@@ -49,6 +55,9 @@ public:
     void appendAirwayHigh(ATCAirwayHigh *airway);
 
     int getSectorVectorSize();
+    int getSectorARTCCLowVectorSize();
+    int getSectorARTCCHighVectorSize();
+    int getSectorARTCCVectorSize();
     int getFixesVectorSize();
     int getVORsVectorSize();
     int getNDBsVectorSize();
@@ -61,6 +70,9 @@ public:
     int getAirwayHighVectorSize();
 
     ATCAirspaceSector* getSector(int iterator);
+    ATCSectorARTCCLow* getSectorARTCCLow(int iterator);
+    ATCSectorARTCCHigh* getSectorARTCCHigh(int iterator);
+    ATCSectorARTCC* getSectorARTCC(int iterator);
     ATCNavFix* getFix(int iterator);
     ATCBeaconVOR* getVOR(int iterator);
     ATCBeaconNDB* getNDB(int iterator);
@@ -73,6 +85,9 @@ public:
     ATCAirwayHigh* getAirwayHigh(int iterator);
 
     ATCAirspaceSector* getLastSector();
+    ATCSectorARTCCLow* getLastSectorARTCCLow();
+    ATCSectorARTCCHigh* getLastSectorARTCCHigh();
+    ATCSectorARTCC* getLastSectorARTCC();
     ATCProcedureSIDSymbol* getLastSIDSymbol();
     ATCProcedureSTARSymbol* getLastSTARSymbol();
     ATCAirwayLow* getLastAirwayLow();
@@ -90,6 +105,9 @@ public:
 
 private:
     QVector<ATCAirspaceSector*> sectors;
+    QVector<ATCSectorARTCCLow*> sectorsARTCCLow;
+    QVector<ATCSectorARTCCHigh*> sectorsARTCCHigh;
+    QVector<ATCSectorARTCC*> sectorsARTCC;
     QVector<ATCNavFix*> fixes;
     QVector<ATCBeaconVOR*> vors;
     QVector<ATCBeaconNDB*> ndbs;
@@ -102,6 +120,9 @@ private:
     QVector<ATCAirwayHigh*> highAirways;
 
     void deleteAllSectors();
+    void deleteAllSectorsARTCCLow();
+    void deleteAllSectorsARTCCHigh();
+    void deleteAllSectorsARTCC();
     void deleteAllFixes();
     void deleteAllVORs();
     void deleteAllNDBs();
