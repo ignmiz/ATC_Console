@@ -43,6 +43,9 @@ private:
     QGraphicsScene *scene = nullptr;
 
     QVector<ATCAirspaceSector*> visibleSectors;
+    QVector<ATCSectorARTCCLow*> visibleSectorsARTCCLow;
+    QVector<ATCSectorARTCCHigh*> visibleSectorsARTCCHigh;
+    QVector<ATCSectorARTCC*> visiblelSectorsARTCC;
     QVector<ATCRunwayExtendedCentreline*> visibleCentrelines;
     QVector<ATCNavFix*> visibleFixes;
     QVector<ATCAirport*> visibleAirports;
@@ -58,6 +61,9 @@ private:
 
     void rescaleScene();
     void rescaleSectors();
+    void rescaleSectorsARTCCLow();
+    void rescaleSectorsARTCCHigh();
+    void rescaleSectorsARTCC();
     void rescaleFixes();
     void rescaleFixLabels();
     void rescaleVORs();
@@ -73,6 +79,9 @@ private:
     void rescaleAirwayHigh();
 
     void displaySectors();
+    void displaySectorsARTCCLow();
+    void displaySectorsARTCCHigh();
+    void displaySectorsARTCC();
     void displayFixes();
     void displayAirports();
     void displayExtendedCentrelines();

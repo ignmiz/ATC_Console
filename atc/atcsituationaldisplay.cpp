@@ -18,6 +18,9 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
     rescaleScene();
 
     displaySectors();
+    displaySectorsARTCCLow();
+    displaySectorsARTCCHigh();
+    displaySectorsARTCC();
     displayAirwayLow();
     displayAirwayHigh();
     displaySTARs();
@@ -1017,6 +1020,21 @@ void ATCSituationalDisplay::rescaleSectors()
     }
 }
 
+void ATCSituationalDisplay::rescaleSectorsARTCCLow()
+{
+
+}
+
+void ATCSituationalDisplay::rescaleSectorsARTCCHigh()
+{
+
+}
+
+void ATCSituationalDisplay::rescaleSectorsARTCC()
+{
+
+}
+
 void ATCSituationalDisplay::rescaleFixes()
 {
     if(!visibleFixes.empty())
@@ -1329,6 +1347,21 @@ void ATCSituationalDisplay::displaySectors()
     calculateSectorPolygons(tempSectors, airspaceData, sectorCentreX, sectorCentreY, scaleFactor);
 
     displayOnScene(airspaceData);
+}
+
+void ATCSituationalDisplay::displaySectorsARTCCLow()
+{
+
+}
+
+void ATCSituationalDisplay::displaySectorsARTCCHigh()
+{
+
+}
+
+void ATCSituationalDisplay::displaySectorsARTCC()
+{
+
 }
 
 void ATCSituationalDisplay::displayFixes()
@@ -2251,6 +2284,9 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
         scale(newScale, newScale);
 
         rescaleSectors();
+        rescaleSectorsARTCCLow();
+        rescaleSectorsARTCCHigh();
+        rescaleSectorsARTCC();
         rescaleFixes();
         rescaleFixLabels();
         rescaleAirports();
