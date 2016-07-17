@@ -50,7 +50,8 @@ SOURCES += main.cpp\
     atcabstractairway.cpp \
     atcairwaylow.cpp \
     atcairwayhigh.cpp \
-    atcabstractsector.cpp
+    atcabstractsector.cpp \
+    atcsectorartcclow.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -84,7 +85,8 @@ HEADERS  += mainwindow.h \
     atcabstractairway.h \
     atcairwaylow.h \
     atcairwayhigh.h \
-    atcabstractsector.h
+    atcabstractsector.h \
+    atcsectorartcclow.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
