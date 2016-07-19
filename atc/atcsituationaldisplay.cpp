@@ -17,7 +17,12 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
 
     rescaleScene();
 
-    displaySectors();
+    projectSectorsARTCCLow();
+    projectSectorsARTCCHigh();
+    projectSectorsARTCC();
+
+    calculateSectorParameters();
+
     displaySectorsARTCCLow();
     displaySectorsARTCCHigh();
     displaySectorsARTCC();
@@ -1410,21 +1415,6 @@ void ATCSituationalDisplay::rescaleScene()
     currentScale = scaleX;
 }
 
-void ATCSituationalDisplay::rescaleSectors()
-{
-    if(!visibleSectors.empty())
-    {
-        QPen currentPen(visibleSectors.at(0)->getPolygon()->pen());
-        currentPen.setWidthF(ATCConst::SECTORLINE_WIDTH / currentScale);
-
-        for(int i = 0; i < visibleSectors.size(); i++)
-        {
-            QGraphicsPolygonItem *currentPolygonItem = visibleSectors.at(i)->getPolygon();
-            currentPolygonItem->setPen(currentPen);
-        }
-    }
-}
-
 void ATCSituationalDisplay::rescaleSectorsARTCCLow()
 {
     if(!visibleSectorsARTCCLow.empty())
@@ -1750,63 +1740,12 @@ void ATCSituationalDisplay::rescaleAirwayHigh()
     }
 }
 
-void ATCSituationalDisplay::displaySectors()
-{
-    QVector<sector> tempSectors;
-
-    projectSectors(tempSectors, airspaceData, ATCConst::AVG_DECLINATION);
-
-    double mercatorXmin = tempSectors.at(0).coords.at(0).x;
-    double mercatorXmax = tempSectors.at(0).coords.at(0).x;
-    double mercatorYmin = tempSectors.at(0).coords.at(0).y;
-    double mercatorYmax = tempSectors.at(0).coords.at(0).y;
-
-    for(int i = 0; i < airspaceData->getSectorVectorSize(); i++)
-    {
-        for(int j = 0; j < airspaceData->getSector(i)->getCoordinatesVectorSize(); j++)
-        {
-            double currentX = tempSectors.at(i).coords.at(j).x;
-            double currentY = tempSectors.at(i).coords.at(j).y;
-
-            if(currentX < mercatorXmin)
-                mercatorXmin = currentX;
-            else if(currentX > mercatorXmax)
-                mercatorXmax = currentX;
-
-            if(currentY < mercatorYmin)
-                mercatorYmin = currentY;
-            else if(currentY > mercatorYmax)
-                mercatorYmax = currentY;
-        }
-    }
-
-    sectorCentreX = (mercatorXmin + mercatorXmax) / 2;
-    sectorCentreY = (mercatorYmin + mercatorYmax) / 2;
-
-    scaleFactor = calculateScaleFactor(mercatorXmin, mercatorXmax, mercatorYmin, mercatorYmax);
-
-    calculateSectorPolygons(tempSectors, airspaceData, sectorCentreX, sectorCentreY, scaleFactor);
-
-    displayOnScene(airspaceData);
-}
-
-void ATCSituationalDisplay::displaySectorsARTCCLow()
+void ATCSituationalDisplay::projectSectorsARTCCLow()
 {
     double rotationDeg = ATCConst::AVG_DECLINATION;
 
-    struct lineSegments
-    {
-        QVector<coord> coords1;
-        QVector<coord> coords2;
-    };
-
-    QVector<lineSegments> lineSegmentsVector;
-
-//Mercator projection ARTCC Low sectors + rotation
     for(int i = 0; i < airspaceData->getSectorARTCCLowVectorSize(); i++)
     {
-        lineSegments currentSegment;
-
         for(int j = 0; j < airspaceData->getSectorARTCCLow(i)->getCoordsVectorSize(); j++)
         {
             coord currentCoords1;
@@ -1817,32 +1756,87 @@ void ATCSituationalDisplay::displaySectorsARTCCLow()
             currentCoords2.x = mercatorProjectionLon(airspaceData->getSectorARTCCLow(i)->getCoords2(j)->longitude());
             currentCoords2.y = mercatorProjectionLat(airspaceData->getSectorARTCCLow(i)->getCoords2(j)->latitude());
 
-            double xRotated1 = currentCoords1.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords1.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            double yRotated1 = currentCoords1.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords1.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
-            double xRotated2 = currentCoords2.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords2.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            double yRotated2 = currentCoords2.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords2.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+            coordsPair projected;
 
-            currentCoords1.x = xRotated1;
-            currentCoords1.y = yRotated1;
-            currentCoords2.x = xRotated2;
-            currentCoords2.y = yRotated2;
+            projected.x1 = currentCoords1.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords1.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
+            projected.y1 = currentCoords1.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords1.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+            projected.x2 = currentCoords2.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords2.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
+            projected.y2 = currentCoords2.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords2.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
 
-            currentSegment.coords1.append(currentCoords1);
-            currentSegment.coords2.append(currentCoords2);
+            airspaceData->getSectorARTCCLow(i)->appendCoordsPair(projected);
         }
-
-        lineSegmentsVector.append(currentSegment);
     }
+}
 
-//Translate to local & scene coords, build lines
+void ATCSituationalDisplay::projectSectorsARTCCHigh()
+{
+    double rotationDeg = ATCConst::AVG_DECLINATION;
+
+    for(int i = 0; i < airspaceData->getSectorARTCCHighVectorSize(); i++)
+    {
+        for(int j = 0; j < airspaceData->getSectorARTCCHigh(i)->getCoordsVectorSize(); j++)
+        {
+            coord currentCoords1;
+            coord currentCoords2;
+
+            currentCoords1.x = mercatorProjectionLon(airspaceData->getSectorARTCCHigh(i)->getCoords1(j)->longitude());
+            currentCoords1.y = mercatorProjectionLat(airspaceData->getSectorARTCCHigh(i)->getCoords1(j)->latitude());
+            currentCoords2.x = mercatorProjectionLon(airspaceData->getSectorARTCCHigh(i)->getCoords2(j)->longitude());
+            currentCoords2.y = mercatorProjectionLat(airspaceData->getSectorARTCCHigh(i)->getCoords2(j)->latitude());
+
+            coordsPair projected;
+
+            projected.x1 = currentCoords1.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords1.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
+            projected.y1 = currentCoords1.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords1.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+            projected.x2 = currentCoords2.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords2.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
+            projected.y2 = currentCoords2.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords2.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+
+            airspaceData->getSectorARTCCHigh(i)->appendCoordsPair(projected);
+        }
+    }
+}
+
+void ATCSituationalDisplay::projectSectorsARTCC()
+{
+    double rotationDeg = ATCConst::AVG_DECLINATION;
+
+    for(int i = 0; i < airspaceData->getSectorARTCCVectorSize(); i++)
+    {
+        for(int j = 0; j < airspaceData->getSectorARTCC(i)->getCoordsVectorSize(); j++)
+        {
+            coord currentCoords1;
+            coord currentCoords2;
+
+            currentCoords1.x = mercatorProjectionLon(airspaceData->getSectorARTCC(i)->getCoords1(j)->longitude());
+            currentCoords1.y = mercatorProjectionLat(airspaceData->getSectorARTCC(i)->getCoords1(j)->latitude());
+            currentCoords2.x = mercatorProjectionLon(airspaceData->getSectorARTCC(i)->getCoords2(j)->longitude());
+            currentCoords2.y = mercatorProjectionLat(airspaceData->getSectorARTCC(i)->getCoords2(j)->latitude());
+
+            coordsPair projected;
+
+            projected.x1 = currentCoords1.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords1.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
+            projected.y1 = currentCoords1.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords1.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+            projected.x2 = currentCoords2.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords2.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
+            projected.y2 = currentCoords2.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords2.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+
+            airspaceData->getSectorARTCC(i)->appendCoordsPair(projected);
+        }
+    }
+}
+
+void ATCSituationalDisplay::displaySectorsARTCCLow()
+{
     for(int i = 0; i < airspaceData->getSectorARTCCLowVectorSize(); i++)
     {
-        lineSegments currentSegment(lineSegmentsVector.at(i));
-
         for(int j = 0; j < airspaceData->getSectorARTCCLow(i)->getCoordsVectorSize(); j++)
         {
-            coord currentCoords1 = currentSegment.coords1.at(j);
-            coord currentCoords2 = currentSegment.coords2.at(j);
+            coord currentCoords1;
+            coord currentCoords2;
+
+            currentCoords1.x = airspaceData->getSectorARTCCLow(i)->getCoordsPair(j).x1;
+            currentCoords1.y = airspaceData->getSectorARTCCLow(i)->getCoordsPair(j).y1;
+            currentCoords2.x = airspaceData->getSectorARTCCLow(i)->getCoordsPair(j).x2;
+            currentCoords2.y = airspaceData->getSectorARTCCLow(i)->getCoordsPair(j).y2;
 
             currentCoords1.x = (currentCoords1.x - sectorCentreX) * scaleFactor;
             currentCoords1.y = -1 * (currentCoords1.y - sectorCentreY) * scaleFactor;
@@ -1874,57 +1868,17 @@ void ATCSituationalDisplay::displaySectorsARTCCLow()
 
 void ATCSituationalDisplay::displaySectorsARTCCHigh()
 {
-    double rotationDeg = ATCConst::AVG_DECLINATION;
-
-    struct lineSegments
-    {
-        QVector<coord> coords1;
-        QVector<coord> coords2;
-    };
-
-    QVector<lineSegments> lineSegmentsVector;
-
-//Mercator projection ARTCC High sectors + rotation
     for(int i = 0; i < airspaceData->getSectorARTCCHighVectorSize(); i++)
     {
-        lineSegments currentSegment;
-
         for(int j = 0; j < airspaceData->getSectorARTCCHigh(i)->getCoordsVectorSize(); j++)
         {
             coord currentCoords1;
             coord currentCoords2;
 
-            currentCoords1.x = mercatorProjectionLon(airspaceData->getSectorARTCCHigh(i)->getCoords1(j)->longitude());
-            currentCoords1.y = mercatorProjectionLat(airspaceData->getSectorARTCCHigh(i)->getCoords1(j)->latitude());
-            currentCoords2.x = mercatorProjectionLon(airspaceData->getSectorARTCCHigh(i)->getCoords2(j)->longitude());
-            currentCoords2.y = mercatorProjectionLat(airspaceData->getSectorARTCCHigh(i)->getCoords2(j)->latitude());
-
-            double xRotated1 = currentCoords1.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords1.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            double yRotated1 = currentCoords1.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords1.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
-            double xRotated2 = currentCoords2.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords2.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            double yRotated2 = currentCoords2.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords2.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
-
-            currentCoords1.x = xRotated1;
-            currentCoords1.y = yRotated1;
-            currentCoords2.x = xRotated2;
-            currentCoords2.y = yRotated2;
-
-            currentSegment.coords1.append(currentCoords1);
-            currentSegment.coords2.append(currentCoords2);
-        }
-
-        lineSegmentsVector.append(currentSegment);
-    }
-
-//Translate to local & scene coords, build lines
-    for(int i = 0; i < airspaceData->getSectorARTCCHighVectorSize(); i++)
-    {
-        lineSegments currentSegment(lineSegmentsVector.at(i));
-
-        for(int j = 0; j < airspaceData->getSectorARTCCHigh(i)->getCoordsVectorSize(); j++)
-        {
-            coord currentCoords1 = currentSegment.coords1.at(j);
-            coord currentCoords2 = currentSegment.coords2.at(j);
+            currentCoords1.x = airspaceData->getSectorARTCCHigh(i)->getCoordsPair(j).x1;
+            currentCoords1.y = airspaceData->getSectorARTCCHigh(i)->getCoordsPair(j).y1;
+            currentCoords2.x = airspaceData->getSectorARTCCHigh(i)->getCoordsPair(j).x2;
+            currentCoords2.y = airspaceData->getSectorARTCCHigh(i)->getCoordsPair(j).y2;
 
             currentCoords1.x = (currentCoords1.x - sectorCentreX) * scaleFactor;
             currentCoords1.y = -1 * (currentCoords1.y - sectorCentreY) * scaleFactor;
@@ -1932,7 +1886,7 @@ void ATCSituationalDisplay::displaySectorsARTCCHigh()
             currentCoords2.y = -1 * (currentCoords2.y - sectorCentreY) * scaleFactor;
 
             airspaceData->getSectorARTCCHigh(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
-                                                                                  currentCoords2.x, currentCoords2.y));
+                                                                                 currentCoords2.x, currentCoords2.y));
         }
     }
 
@@ -1956,57 +1910,17 @@ void ATCSituationalDisplay::displaySectorsARTCCHigh()
 
 void ATCSituationalDisplay::displaySectorsARTCC()
 {
-    double rotationDeg = ATCConst::AVG_DECLINATION;
-
-    struct lineSegments
-    {
-        QVector<coord> coords1;
-        QVector<coord> coords2;
-    };
-
-    QVector<lineSegments> lineSegmentsVector;
-
-//Mercator projection ARTCC sectors + rotation
     for(int i = 0; i < airspaceData->getSectorARTCCVectorSize(); i++)
     {
-        lineSegments currentSegment;
-
         for(int j = 0; j < airspaceData->getSectorARTCC(i)->getCoordsVectorSize(); j++)
         {
             coord currentCoords1;
             coord currentCoords2;
 
-            currentCoords1.x = mercatorProjectionLon(airspaceData->getSectorARTCC(i)->getCoords1(j)->longitude());
-            currentCoords1.y = mercatorProjectionLat(airspaceData->getSectorARTCC(i)->getCoords1(j)->latitude());
-            currentCoords2.x = mercatorProjectionLon(airspaceData->getSectorARTCC(i)->getCoords2(j)->longitude());
-            currentCoords2.y = mercatorProjectionLat(airspaceData->getSectorARTCC(i)->getCoords2(j)->latitude());
-
-            double xRotated1 = currentCoords1.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords1.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            double yRotated1 = currentCoords1.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords1.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
-            double xRotated2 = currentCoords2.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords2.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            double yRotated2 = currentCoords2.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords2.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
-
-            currentCoords1.x = xRotated1;
-            currentCoords1.y = yRotated1;
-            currentCoords2.x = xRotated2;
-            currentCoords2.y = yRotated2;
-
-            currentSegment.coords1.append(currentCoords1);
-            currentSegment.coords2.append(currentCoords2);
-        }
-
-        lineSegmentsVector.append(currentSegment);
-    }
-
-//Translate to local & scene coords, build lines
-    for(int i = 0; i < airspaceData->getSectorARTCCVectorSize(); i++)
-    {
-        lineSegments currentSegment(lineSegmentsVector.at(i));
-
-        for(int j = 0; j < airspaceData->getSectorARTCC(i)->getCoordsVectorSize(); j++)
-        {
-            coord currentCoords1 = currentSegment.coords1.at(j);
-            coord currentCoords2 = currentSegment.coords2.at(j);
+            currentCoords1.x = airspaceData->getSectorARTCC(i)->getCoordsPair(j).x1;
+            currentCoords1.y = airspaceData->getSectorARTCC(i)->getCoordsPair(j).y1;
+            currentCoords2.x = airspaceData->getSectorARTCC(i)->getCoordsPair(j).x2;
+            currentCoords2.y = airspaceData->getSectorARTCC(i)->getCoordsPair(j).y2;
 
             currentCoords1.x = (currentCoords1.x - sectorCentreX) * scaleFactor;
             currentCoords1.y = -1 * (currentCoords1.y - sectorCentreY) * scaleFactor;
@@ -2014,7 +1928,7 @@ void ATCSituationalDisplay::displaySectorsARTCC()
             currentCoords2.y = -1 * (currentCoords2.y - sectorCentreY) * scaleFactor;
 
             airspaceData->getSectorARTCC(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
-                                                                              currentCoords2.x, currentCoords2.y));
+                                                                                 currentCoords2.x, currentCoords2.y));
         }
     }
 
@@ -2857,42 +2771,118 @@ double ATCSituationalDisplay::mercatorProjectionLat(double latitudeDeg, double s
                       ATCConst::WGS84_FIRST_ECCENTRICITY / 2)) * ATCConst::RAD_2_DEG;
 }
 
-void ATCSituationalDisplay::projectSectors(QVector<sector> &targetVector, ATCAirspace *airspace, double rotationDeg)
+void ATCSituationalDisplay::calculateSectorParameters()
 {
-    for(int i = 0; i < airspace->getSectorVectorSize(); i++)
+    double sectorXmin = airspaceData->getSectorARTCCLow(0)->getCoordsPair(0).x1;
+    double sectorXmax = airspaceData->getSectorARTCCLow(0)->getCoordsPair(0).x1;
+    double sectorYmin = airspaceData->getSectorARTCCLow(0)->getCoordsPair(0).y1;
+    double sectorYmax = airspaceData->getSectorARTCCLow(0)->getCoordsPair(0).y1;
+
+    for(int i = 0; i < airspaceData->getSectorARTCCLowVectorSize(); i++)
     {
-        sector tempSector;
-
-        for(int j = 0; j < airspace->getSector(i)->getCoordinatesVectorSize(); j++)
+        for(int j = 0; j < airspaceData->getSectorARTCCLow(i)->getCoordsVectorSize(); j++)
         {
-            ATCAirspaceFix* currentAirspaceFix = airspace->getSector(i)->getCoordinates(j);
+            double currentX = airspaceData->getSectorARTCCLow(i)->getCoordsPair(j).x1;
+            double currentY = airspaceData->getSectorARTCCLow(i)->getCoordsPair(j).y1;
 
-            coord tempCoord;
-            tempCoord.x = mercatorProjectionLon(currentAirspaceFix->longitude());
-            tempCoord.y = mercatorProjectionLat(currentAirspaceFix->latitude());
+            if(currentX < sectorXmin)
+                sectorXmin = currentX;
+            else if(currentX > sectorXmax)
+                sectorXmax = currentX;
 
-            double xRotated = tempCoord.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - tempCoord.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            double yRotated = tempCoord.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + tempCoord.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+            if(currentY < sectorYmin)
+                sectorYmin = currentY;
+            else if(currentY > sectorYmax)
+                sectorYmax = currentY;
 
-            tempCoord.x = xRotated;
-            tempCoord.y = yRotated;
+            currentX = airspaceData->getSectorARTCCLow(i)->getCoordsPair(j).x2;
+            currentY = airspaceData->getSectorARTCCLow(i)->getCoordsPair(j).y2;
 
-            tempSector.coords.append(tempCoord);
+            if(currentX < sectorXmin)
+                sectorXmin = currentX;
+            else if(currentX > sectorXmax)
+                sectorXmax = currentX;
+
+            if(currentY < sectorYmin)
+                sectorYmin = currentY;
+            else if(currentY > sectorYmax)
+                sectorYmax = currentY;
         }
-
-        targetVector.append(tempSector);
     }
-}
 
-double ATCSituationalDisplay::calculateScaleFactor(double mercatorXmin, double mercatorXmax, double mercatorYmin, double mercatorYmax)
-{
-    double spanX = mercatorXmax - mercatorXmin;
-    double spanY = mercatorYmax - mercatorYmin;
+    for(int i = 0; i < airspaceData->getSectorARTCCHighVectorSize(); i++)
+    {
+        for(int j = 0; j < airspaceData->getSectorARTCCHigh(i)->getCoordsVectorSize(); j++)
+        {
+            double currentX = airspaceData->getSectorARTCCHigh(i)->getCoordsPair(j).x1;
+            double currentY = airspaceData->getSectorARTCCHigh(i)->getCoordsPair(j).y1;
+
+            if(currentX < sectorXmin)
+                sectorXmin = currentX;
+            else if(currentX > sectorXmax)
+                sectorXmax = currentX;
+
+            if(currentY < sectorYmin)
+                sectorYmin = currentY;
+            else if(currentY > sectorYmax)
+                sectorYmax = currentY;
+
+            currentX = airspaceData->getSectorARTCCHigh(i)->getCoordsPair(j).x2;
+            currentY = airspaceData->getSectorARTCCHigh(i)->getCoordsPair(j).y2;
+
+            if(currentX < sectorXmin)
+                sectorXmin = currentX;
+            else if(currentX > sectorXmax)
+                sectorXmax = currentX;
+
+            if(currentY < sectorYmin)
+                sectorYmin = currentY;
+            else if(currentY > sectorYmax)
+                sectorYmax = currentY;
+        }
+    }
+
+    for(int i = 0; i < airspaceData->getSectorARTCCVectorSize(); i++)
+    {
+        for(int j = 0; j < airspaceData->getSectorARTCC(i)->getCoordsVectorSize(); j++)
+        {
+            double currentX = airspaceData->getSectorARTCC(i)->getCoordsPair(j).x1;
+            double currentY = airspaceData->getSectorARTCC(i)->getCoordsPair(j).y1;
+
+            if(currentX < sectorXmin)
+                sectorXmin = currentX;
+            else if(currentX > sectorXmax)
+                sectorXmax = currentX;
+
+            if(currentY < sectorYmin)
+                sectorYmin = currentY;
+            else if(currentY > sectorYmax)
+                sectorYmax = currentY;
+
+            currentX = airspaceData->getSectorARTCC(i)->getCoordsPair(j).x2;
+            currentY = airspaceData->getSectorARTCC(i)->getCoordsPair(j).y2;
+
+            if(currentX < sectorXmin)
+                sectorXmin = currentX;
+            else if(currentX > sectorXmax)
+                sectorXmax = currentX;
+
+            if(currentY < sectorYmin)
+                sectorYmin = currentY;
+            else if(currentY > sectorYmax)
+                sectorYmax = currentY;
+        }
+    }
+
+    sectorCentreX = (sectorXmin + sectorXmax) / 2;
+    sectorCentreY = (sectorYmin + sectorYmax) / 2;
+
+    double spanX = sectorXmax - sectorXmin;
+    double spanY = sectorYmax - sectorYmin;
 
     double spanXperPixel = spanX / ATCConst::SCENE_WIDTH;
     double spanYperPixel = spanY / ATCConst::SCENE_HEIGHT;
 
-    double scaleFactor = 0;
     if(spanYperPixel >= spanXperPixel)
     {
         scaleFactor = ATCConst::SCENE_HEIGHT / ATCConst::SECTOR_SHRINK_FACTOR / spanY;
@@ -2900,46 +2890,6 @@ double ATCSituationalDisplay::calculateScaleFactor(double mercatorXmin, double m
     else
     {
         scaleFactor = ATCConst::SCENE_WIDTH / ATCConst::SECTOR_SHRINK_FACTOR / spanX;
-    }
-
-    return scaleFactor;
-}
-
-void ATCSituationalDisplay::calculateSectorPolygons(QVector<sector> &sectorVector, ATCAirspace *airspace, double centreX, double centreY, double scaleFactor)
-{
-    for(int i = 0; i < airspace->getSectorVectorSize(); i++)
-    {
-        QVector<QPointF> polygonVertex(airspace->getSector(i)->getCoordinatesVectorSize());
-
-        for(int j = 0; j < airspace->getSector(i)->getCoordinatesVectorSize(); j++)
-        {
-            qreal sceneCoordX = static_cast<qreal>((sectorVector.at(i).coords.at(j).x - centreX) * scaleFactor);
-            qreal sceneCoordY = static_cast<qreal>(-1 * (sectorVector.at(i).coords.at(j).y - centreY) * scaleFactor);
-
-            QPointF vertex(sceneCoordX, sceneCoordY);
-            polygonVertex[j] = vertex;
-        }
-
-        polygonVertex.append(polygonVertex[0]);
-
-        QPolygonF sectorPolygon(polygonVertex);
-        airspace->getSector(i)->setPolygon(new QGraphicsPolygonItem(sectorPolygon));
-    }
-}
-
-void ATCSituationalDisplay::displayOnScene(ATCAirspace *airspace)
-{
-    QPen pen(Qt::gray);
-    pen.setWidthF(ATCConst::SECTORLINE_WIDTH / currentScale);
-
-    for(int i = 0; i < airspace->getSectorVectorSize(); i++)
-    {
-            QGraphicsPolygonItem *currentPolygon(airspace->getSector(i)->getPolygon());
-
-            currentPolygon->setPen(pen);
-            scene->addItem(currentPolygon);
-
-            visibleSectors.append(airspace->getSector(i));
     }
 }
 
@@ -2955,7 +2905,6 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
 
         scale(newScale, newScale);
 
-        rescaleSectors();
         rescaleSectorsARTCCLow();
         rescaleSectorsARTCCHigh();
         rescaleSectorsARTCC();

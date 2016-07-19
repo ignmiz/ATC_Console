@@ -4,6 +4,13 @@
 #include "atcairspacefix.h"
 #include <QGraphicsItem>
 
+struct coordsPair{
+    double x1;
+    double y1;
+    double x2;
+    double y2;
+};
+
 class ATCAbstractSector
 {
 public:
@@ -13,6 +20,7 @@ public:
     QString getName();
     ATCAirspaceFix* getCoords1(int iterator);
     ATCAirspaceFix* getCoords2(int iterator);
+    coordsPair& getCoordsPair(int iterator);
     QGraphicsLineItem* getLine(int iterator);
     int getCoordsVectorSize();
 
@@ -20,6 +28,7 @@ public:
 
     void appendCoords1(ATCAirspaceFix* coord);
     void appendCoords2(ATCAirspaceFix *coord);
+    void appendCoordsPair(coordsPair &pair);
     void appendLine(QGraphicsLineItem *line);
 
 private:
@@ -27,6 +36,7 @@ private:
     QVector<ATCAirspaceFix*> coords1;
     QVector<ATCAirspaceFix*> coords2;
     QVector<QGraphicsLineItem*> lines;
+    QVector<coordsPair> projectedCoords;
 };
 
 #endif // ATCABSTRACTSECTOR_H

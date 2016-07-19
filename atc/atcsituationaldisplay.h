@@ -33,7 +33,7 @@ private:
     ATCAirspace *airspaceData = nullptr;
 
     qreal baseScale = 1;
-    qreal scaleResolution = 0.05;
+    qreal scaleResolution = 0.15;
     double scaleFactor;
     double currentScale;
 
@@ -60,7 +60,6 @@ private:
     void loadData(); //Temp - to be moved
 
     void rescaleScene();
-    void rescaleSectors();
     void rescaleSectorsARTCCLow();
     void rescaleSectorsARTCCHigh();
     void rescaleSectorsARTCC();
@@ -78,7 +77,10 @@ private:
     void rescaleAirwayLow();
     void rescaleAirwayHigh();
 
-    void displaySectors();
+    void projectSectorsARTCCLow();
+    void projectSectorsARTCCHigh();
+    void projectSectorsARTCC();
+
     void displaySectorsARTCCLow();
     void displaySectorsARTCCHigh();
     void displaySectorsARTCC();
@@ -95,10 +97,7 @@ private:
     double mercatorProjectionLon(double longitude, double referenceLongitude = 0, double scale = ATCConst::WGS84_RADIUS);
     double mercatorProjectionLat(double latitude, double scale = ATCConst::WGS84_RADIUS);
 
-    void projectSectors(QVector<sector> &targetVector, ATCAirspace *airspace, double rotationDeg);
-    double calculateScaleFactor(double mercatorXmin, double mercatorXmax, double mercatorYmin, double mercatorYmax);
-    void calculateSectorPolygons(QVector<sector> &sectorVector, ATCAirspace *airspace, double centreX, double centreY, double scaleFactor);
-    void displayOnScene(ATCAirspace *airspace);
+    void calculateSectorParameters();
 
 protected:
     void wheelEvent(QWheelEvent *event);

@@ -46,6 +46,11 @@ ATCAirspaceFix *ATCAbstractSector::getCoords2(int iterator)
     return coords2.at(iterator);
 }
 
+coordsPair& ATCAbstractSector::getCoordsPair(int iterator)
+{
+    return projectedCoords[iterator];
+}
+
 QGraphicsLineItem *ATCAbstractSector::getLine(int iterator)
 {
     return lines.at(iterator);
@@ -69,6 +74,11 @@ void ATCAbstractSector::appendCoords1(ATCAirspaceFix *coord)
 void ATCAbstractSector::appendCoords2(ATCAirspaceFix *coord)
 {
     coords2.append(coord);
+}
+
+void ATCAbstractSector::appendCoordsPair(coordsPair &pair)
+{
+    projectedCoords.append(pair);
 }
 
 void ATCAbstractSector::appendLine(QGraphicsLineItem *line)
