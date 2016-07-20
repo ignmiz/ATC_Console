@@ -22,7 +22,10 @@ public:
     ATCAirspaceFix* getCoords2(int iterator);
     coordsPair& getCoordsPair(int iterator);
     QGraphicsLineItem* getLine(int iterator);
+    QGraphicsPolygonItem* getPolygon(int iterator);
+
     int getCoordsVectorSize();
+    int getPolygonsVectorSize();
 
     void setName(QString name);
 
@@ -30,6 +33,7 @@ public:
     void appendCoords2(ATCAirspaceFix *coord);
     void appendCoordsPair(coordsPair &pair);
     void appendLine(QGraphicsLineItem *line);
+    void appendPolygon(QGraphicsPolygonItem *polygon);
 
 private:
     QString sectorName;
@@ -37,6 +41,7 @@ private:
     QVector<ATCAirspaceFix*> coords2;
     QVector<QGraphicsLineItem*> lines;
     QVector<coordsPair> projectedCoords;
+    QVector<QGraphicsPolygonItem*> polygons;
 };
 
 #endif // ATCABSTRACTSECTOR_H

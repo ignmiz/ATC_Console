@@ -29,6 +29,14 @@ ATCAbstractSector::~ATCAbstractSector()
             delete coords2.at(i);
         }
     }
+
+    if(!polygons.empty())
+    {
+        for(int i = 0; i < polygons.size(); i++)
+        {
+            delete polygons.at(i);
+        }
+    }
 }
 
 QString ATCAbstractSector::getName()
@@ -56,9 +64,19 @@ QGraphicsLineItem *ATCAbstractSector::getLine(int iterator)
     return lines.at(iterator);
 }
 
+QGraphicsPolygonItem *ATCAbstractSector::getPolygon(int iterator)
+{
+    return polygons.at(iterator);
+}
+
 int ATCAbstractSector::getCoordsVectorSize()
 {
     return coords1.size();
+}
+
+int ATCAbstractSector::getPolygonsVectorSize()
+{
+    return polygons.size();
 }
 
 void ATCAbstractSector::setName(QString name)
@@ -84,4 +102,9 @@ void ATCAbstractSector::appendCoordsPair(coordsPair &pair)
 void ATCAbstractSector::appendLine(QGraphicsLineItem *line)
 {
     lines.append(line);
+}
+
+void ATCAbstractSector::appendPolygon(QGraphicsPolygonItem *polygon)
+{
+    polygons.append(polygon);
 }

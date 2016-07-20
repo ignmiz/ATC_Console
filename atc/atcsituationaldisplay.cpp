@@ -26,15 +26,15 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
     displaySectorsARTCCLow();
     displaySectorsARTCCHigh();
     displaySectorsARTCC();
-    displayAirwayLow();
-    displayAirwayHigh();
-    displaySTARs();
-    displaySIDs();
-    displayExtendedCentrelines();    
-    displayNDBs();
-    displayVORs();
-    displayFixes();
-    displayAirports();
+//    displayAirwayLow();
+//    displayAirwayHigh();
+//    displaySTARs();
+//    displaySIDs();
+//    displayExtendedCentrelines();
+//    displayNDBs();
+//    displayVORs();
+//    displayFixes();
+//    displayAirports();
 }
 
 ATCSituationalDisplay::~ATCSituationalDisplay()
@@ -1417,16 +1417,31 @@ void ATCSituationalDisplay::rescaleScene()
 
 void ATCSituationalDisplay::rescaleSectorsARTCCLow()
 {
+//    if(!visibleSectorsARTCCLow.empty())
+//    {
+//        QPen currentPen(visibleSectorsARTCCLow.at(0)->getLine(0)->pen());
+//        currentPen.setWidthF(ATCConst::ARTCC_LOW_LINE_WIDTH / currentScale);
+
+//        for(int i = 0; i < visibleSectorsARTCCLow.size(); i++)
+//        {
+//            for(int j = 0; j < visibleSectorsARTCCLow.at(i)->getCoordsVectorSize(); j++)
+//            {
+//                visibleSectorsARTCCLow.at(i)->getLine(j)->setPen(currentPen);
+//            }
+//        }
+//    }
+
+//REARRANGED FOR POLYGONS DATA
     if(!visibleSectorsARTCCLow.empty())
     {
-        QPen currentPen(visibleSectorsARTCCLow.at(0)->getLine(0)->pen());
+        QPen currentPen(visibleSectorsARTCCLow.at(0)->getPolygon(0)->pen());
         currentPen.setWidthF(ATCConst::ARTCC_LOW_LINE_WIDTH / currentScale);
 
         for(int i = 0; i < visibleSectorsARTCCLow.size(); i++)
         {
-            for(int j = 0; j < visibleSectorsARTCCLow.at(i)->getCoordsVectorSize(); j++)
+            for(int j = 0; j < visibleSectorsARTCCLow.at(i)->getPolygonsVectorSize(); j++)
             {
-                visibleSectorsARTCCLow.at(i)->getLine(j)->setPen(currentPen);
+                visibleSectorsARTCCLow.at(i)->getPolygon(j)->setPen(currentPen);
             }
         }
     }
@@ -1434,16 +1449,31 @@ void ATCSituationalDisplay::rescaleSectorsARTCCLow()
 
 void ATCSituationalDisplay::rescaleSectorsARTCCHigh()
 {
+//    if(!visibleSectorsARTCCHigh.empty())
+//    {
+//        QPen currentPen(visibleSectorsARTCCHigh.at(0)->getLine(0)->pen());
+//        currentPen.setWidthF(ATCConst::ARTCC_HIGH_LINE_WIDTH / currentScale);
+
+//        for(int i = 0; i < visibleSectorsARTCCHigh.size(); i++)
+//        {
+//            for(int j = 0; j < visibleSectorsARTCCHigh.at(i)->getCoordsVectorSize(); j++)
+//            {
+//                visibleSectorsARTCCHigh.at(i)->getLine(j)->setPen(currentPen);
+//            }
+//        }
+//    }
+
+//REARRANGED FOR POLYGONS DATA
     if(!visibleSectorsARTCCHigh.empty())
     {
-        QPen currentPen(visibleSectorsARTCCHigh.at(0)->getLine(0)->pen());
+        QPen currentPen(visibleSectorsARTCCHigh.at(0)->getPolygon(0)->pen());
         currentPen.setWidthF(ATCConst::ARTCC_HIGH_LINE_WIDTH / currentScale);
 
         for(int i = 0; i < visibleSectorsARTCCHigh.size(); i++)
         {
-            for(int j = 0; j < visibleSectorsARTCCHigh.at(i)->getCoordsVectorSize(); j++)
+            for(int j = 0; j < visibleSectorsARTCCHigh.at(i)->getPolygonsVectorSize(); j++)
             {
-                visibleSectorsARTCCHigh.at(i)->getLine(j)->setPen(currentPen);
+                visibleSectorsARTCCHigh.at(i)->getPolygon(j)->setPen(currentPen);
             }
         }
     }
@@ -1451,16 +1481,31 @@ void ATCSituationalDisplay::rescaleSectorsARTCCHigh()
 
 void ATCSituationalDisplay::rescaleSectorsARTCC()
 {
+//    if(!visibleSectorsARTCC.empty())
+//    {
+//        QPen currentPen(visibleSectorsARTCC.at(0)->getLine(0)->pen());
+//        currentPen.setWidthF(ATCConst::ARTCC_LINE_WIDTH / currentScale);
+
+//        for(int i = 0; i < visibleSectorsARTCC.size(); i++)
+//        {
+//            for(int j = 0; j < visibleSectorsARTCC.at(i)->getCoordsVectorSize(); j++)
+//            {
+//                visibleSectorsARTCC.at(i)->getLine(j)->setPen(currentPen);
+//            }
+//        }
+//    }
+
+//REARRANGED FOR POLYGONS DATA
     if(!visibleSectorsARTCC.empty())
     {
-        QPen currentPen(visibleSectorsARTCC.at(0)->getLine(0)->pen());
+        QPen currentPen(visibleSectorsARTCC.at(0)->getPolygon(0)->pen());
         currentPen.setWidthF(ATCConst::ARTCC_LINE_WIDTH / currentScale);
 
         for(int i = 0; i < visibleSectorsARTCC.size(); i++)
         {
-            for(int j = 0; j < visibleSectorsARTCC.at(i)->getCoordsVectorSize(); j++)
+            for(int j = 0; j < visibleSectorsARTCC.at(i)->getPolygonsVectorSize(); j++)
             {
-                visibleSectorsARTCC.at(i)->getLine(j)->setPen(currentPen);
+                visibleSectorsARTCC.at(i)->getPolygon(j)->setPen(currentPen);
             }
         }
     }
@@ -1828,8 +1873,22 @@ void ATCSituationalDisplay::displaySectorsARTCCLow()
 {
     for(int i = 0; i < airspaceData->getSectorARTCCLowVectorSize(); i++)
     {
+        QVector<QPointF> vertexVector;
+        bool flagCreateNewPolygon = true;
+
         for(int j = 0; j < airspaceData->getSectorARTCCLow(i)->getCoordsVectorSize(); j++)
         {
+            bool flagLastLineOfCoords;
+
+            if(j == (airspaceData->getSectorARTCCLow(i)->getCoordsVectorSize() - 1))
+            {
+                flagLastLineOfCoords = true;
+            }
+            else
+            {
+                flagLastLineOfCoords = false;
+            }
+
             coord currentCoords1;
             coord currentCoords2;
 
@@ -1843,26 +1902,77 @@ void ATCSituationalDisplay::displaySectorsARTCCLow()
             currentCoords2.x = (currentCoords2.x - sectorCentreX) * scaleFactor;
             currentCoords2.y = -1 * (currentCoords2.y - sectorCentreY) * scaleFactor;
 
-            airspaceData->getSectorARTCCLow(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
-                                                                                 currentCoords2.x, currentCoords2.y));
-        }
+//            airspaceData->getSectorARTCCLow(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
+//                                                                                 currentCoords2.x, currentCoords2.y));
+
+
+//TEST FOR POLYGON DATA ARRANGEMENT
+            if(flagCreateNewPolygon)
+            {
+                vertexVector.clear();
+
+                QPointF point(currentCoords1.x, currentCoords1.y);
+                vertexVector.append(point);
+
+                flagCreateNewPolygon = false;
+            }
+
+            QPointF point(currentCoords2.x, currentCoords2.y);
+            vertexVector.append(point);
+
+            if(!flagLastLineOfCoords)
+            {
+                coord nextCoords;
+
+                nextCoords.x = airspaceData->getSectorARTCCLow(i)->getCoordsPair(j + 1).x1;
+                nextCoords.y = airspaceData->getSectorARTCCLow(i)->getCoordsPair(j + 1).y1;
+
+                if((currentCoords2.x != nextCoords.x) || (currentCoords2.y != nextCoords.y))
+                {
+                    QPolygonF polygon(vertexVector);
+                    airspaceData->getSectorARTCCLow(i)->appendPolygon(new QGraphicsPolygonItem(polygon));
+
+                    flagCreateNewPolygon = true;
+                }
+            }
+            else
+            {
+                QPolygonF polygon(vertexVector);
+                airspaceData->getSectorARTCCLow(i)->appendPolygon(new QGraphicsPolygonItem(polygon));
+            }
+       }
+
     }
 
 //Display ARTCC Low lines on scene
     QPen pen(QColor(255, 247, 0));
     pen.setWidthF(ATCConst::ARTCC_LOW_LINE_WIDTH / currentScale);
 
+//    for(int i = 0; i < airspaceData->getSectorARTCCLowVectorSize(); i++)
+//    {
+//        for(int j = 0; j < airspaceData->getSectorARTCCLow(i)->getCoordsVectorSize(); j++)
+//        {
+//            QGraphicsLineItem *currentSymbol = airspaceData->getSectorARTCCLow(i)->getLine(j);
+
+//            currentSymbol->setPen(pen);
+//            scene->addItem(currentSymbol);
+//        }
+
+//        visibleSectorsARTCCLow.append(airspaceData->getSectorARTCCLow(i));
+//    }
+
+//TEST FOR POLYGON DATA ARRANGEMENT
     for(int i = 0; i < airspaceData->getSectorARTCCLowVectorSize(); i++)
     {
-        for(int j = 0; j < airspaceData->getSectorARTCCLow(i)->getCoordsVectorSize(); j++)
+        for(int j = 0; j < airspaceData->getSectorARTCCLow(i)->getPolygonsVectorSize(); j++)
         {
-            QGraphicsLineItem *currentSymbol = airspaceData->getSectorARTCCLow(i)->getLine(j);
+            QGraphicsPolygonItem *currentSymbol = airspaceData->getSectorARTCCLow(i)->getPolygon(j);
 
             currentSymbol->setPen(pen);
             scene->addItem(currentSymbol);
-
-            visibleSectorsARTCCLow.append(airspaceData->getSectorARTCCLow(i));
         }
+
+        visibleSectorsARTCCLow.append(airspaceData->getSectorARTCCLow(i));
     }
 }
 
@@ -1870,8 +1980,22 @@ void ATCSituationalDisplay::displaySectorsARTCCHigh()
 {
     for(int i = 0; i < airspaceData->getSectorARTCCHighVectorSize(); i++)
     {
+        QVector<QPointF> vertexVector;
+        bool flagCreateNewPolygon = true;
+
         for(int j = 0; j < airspaceData->getSectorARTCCHigh(i)->getCoordsVectorSize(); j++)
         {
+            bool flagLastLineOfCoords;
+
+            if(j == (airspaceData->getSectorARTCCHigh(i)->getCoordsVectorSize() - 1))
+            {
+                flagLastLineOfCoords = true;
+            }
+            else
+            {
+                flagLastLineOfCoords = false;
+            }
+
             coord currentCoords1;
             coord currentCoords2;
 
@@ -1885,26 +2009,75 @@ void ATCSituationalDisplay::displaySectorsARTCCHigh()
             currentCoords2.x = (currentCoords2.x - sectorCentreX) * scaleFactor;
             currentCoords2.y = -1 * (currentCoords2.y - sectorCentreY) * scaleFactor;
 
-            airspaceData->getSectorARTCCHigh(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
-                                                                                 currentCoords2.x, currentCoords2.y));
+//            airspaceData->getSectorARTCCHigh(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
+//                                                                                 currentCoords2.x, currentCoords2.y));
+
+//TEST FOR POLYGON DATA ARRANGEMENT
+            if(flagCreateNewPolygon)
+            {
+                vertexVector.clear();
+
+                QPointF point(currentCoords1.x, currentCoords1.y);
+                vertexVector.append(point);
+
+                flagCreateNewPolygon = false;
+            }
+
+            QPointF point(currentCoords2.x, currentCoords2.y);
+            vertexVector.append(point);
+
+            if(!flagLastLineOfCoords)
+            {
+                coord nextCoords;
+
+                nextCoords.x = airspaceData->getSectorARTCCHigh(i)->getCoordsPair(j + 1).x1;
+                nextCoords.y = airspaceData->getSectorARTCCHigh(i)->getCoordsPair(j + 1).y1;
+
+                if((currentCoords2.x != nextCoords.x) || (currentCoords2.y != nextCoords.y))
+                {
+                    QPolygonF polygon(vertexVector);
+                    airspaceData->getSectorARTCCHigh(i)->appendPolygon(new QGraphicsPolygonItem(polygon));
+
+                    flagCreateNewPolygon = true;
+                }
+            }
+            else
+            {
+                QPolygonF polygon(vertexVector);
+                airspaceData->getSectorARTCCHigh(i)->appendPolygon(new QGraphicsPolygonItem(polygon));
+            }
         }
     }
 
 //Display ARTCC High lines on scene
     QPen pen(QColor(0, 255, 128));
-    pen.setWidthF(ATCConst::ARTCC_LOW_LINE_WIDTH / currentScale);
+    pen.setWidthF(ATCConst::ARTCC_HIGH_LINE_WIDTH / currentScale);
 
+//    for(int i = 0; i < airspaceData->getSectorARTCCHighVectorSize(); i++)
+//    {
+//        for(int j = 0; j < airspaceData->getSectorARTCCHigh(i)->getCoordsVectorSize(); j++)
+//        {
+//            QGraphicsLineItem *currentSymbol = airspaceData->getSectorARTCCHigh(i)->getLine(j);
+
+//            currentSymbol->setPen(pen);
+//            scene->addItem(currentSymbol);
+//        }
+
+//        visibleSectorsARTCCHigh.append(airspaceData->getSectorARTCCHigh(i));
+//    }
+
+//TEST FOR POLYGON DATA ARRANGEMENT
     for(int i = 0; i < airspaceData->getSectorARTCCHighVectorSize(); i++)
     {
-        for(int j = 0; j < airspaceData->getSectorARTCCHigh(i)->getCoordsVectorSize(); j++)
+        for(int j = 0; j < airspaceData->getSectorARTCCHigh(i)->getPolygonsVectorSize(); j++)
         {
-            QGraphicsLineItem *currentSymbol = airspaceData->getSectorARTCCHigh(i)->getLine(j);
+            QGraphicsPolygonItem *currentSymbol = airspaceData->getSectorARTCCHigh(i)->getPolygon(j);
 
             currentSymbol->setPen(pen);
             scene->addItem(currentSymbol);
-
-            visibleSectorsARTCCHigh.append(airspaceData->getSectorARTCCHigh(i));
         }
+
+        visibleSectorsARTCCHigh.append(airspaceData->getSectorARTCCHigh(i));
     }
 }
 
@@ -1912,8 +2085,22 @@ void ATCSituationalDisplay::displaySectorsARTCC()
 {
     for(int i = 0; i < airspaceData->getSectorARTCCVectorSize(); i++)
     {
+        QVector<QPointF> vertexVector;
+        bool flagCreateNewPolygon = true;
+
         for(int j = 0; j < airspaceData->getSectorARTCC(i)->getCoordsVectorSize(); j++)
         {
+            bool flagLastLineOfCoords;
+
+            if(j == (airspaceData->getSectorARTCC(i)->getCoordsVectorSize() - 1))
+            {
+                flagLastLineOfCoords = true;
+            }
+            else
+            {
+                flagLastLineOfCoords = false;
+            }
+
             coord currentCoords1;
             coord currentCoords2;
 
@@ -1927,8 +2114,43 @@ void ATCSituationalDisplay::displaySectorsARTCC()
             currentCoords2.x = (currentCoords2.x - sectorCentreX) * scaleFactor;
             currentCoords2.y = -1 * (currentCoords2.y - sectorCentreY) * scaleFactor;
 
-            airspaceData->getSectorARTCC(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
-                                                                                 currentCoords2.x, currentCoords2.y));
+//            airspaceData->getSectorARTCC(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
+//                                                                                 currentCoords2.x, currentCoords2.y));
+
+//TEST FOR POLYGON DATA ARRANGEMENT
+            if(flagCreateNewPolygon)
+            {
+                vertexVector.clear();
+
+                QPointF point(currentCoords1.x, currentCoords1.y);
+                vertexVector.append(point);
+
+                flagCreateNewPolygon = false;
+            }
+
+            QPointF point(currentCoords2.x, currentCoords2.y);
+            vertexVector.append(point);
+
+            if(!flagLastLineOfCoords)
+            {
+                coord nextCoords;
+
+                nextCoords.x = airspaceData->getSectorARTCC(i)->getCoordsPair(j + 1).x1;
+                nextCoords.y = airspaceData->getSectorARTCC(i)->getCoordsPair(j + 1).y1;
+
+                if((currentCoords2.x != nextCoords.x) || (currentCoords2.y != nextCoords.y))
+                {
+                    QPolygonF polygon(vertexVector);
+                    airspaceData->getSectorARTCC(i)->appendPolygon(new QGraphicsPolygonItem(polygon));
+
+                    flagCreateNewPolygon = true;
+                }
+            }
+            else
+            {
+                QPolygonF polygon(vertexVector);
+                airspaceData->getSectorARTCC(i)->appendPolygon(new QGraphicsPolygonItem(polygon));
+            }
         }
     }
 
@@ -1936,17 +2158,31 @@ void ATCSituationalDisplay::displaySectorsARTCC()
     QPen pen(QColor(255, 102, 178));
     pen.setWidthF(ATCConst::ARTCC_LINE_WIDTH / currentScale);
 
+//    for(int i = 0; i < airspaceData->getSectorARTCCVectorSize(); i++)
+//    {
+//        for(int j = 0; j < airspaceData->getSectorARTCC(i)->getCoordsVectorSize(); j++)
+//        {
+//            QGraphicsLineItem *currentSymbol = airspaceData->getSectorARTCC(i)->getLine(j);
+
+//            currentSymbol->setPen(pen);
+//            scene->addItem(currentSymbol);
+//        }
+
+//        visibleSectorsARTCC.append(airspaceData->getSectorARTCC(i));
+//    }
+
+//TEST FOR POLYGON DATA ARRANGEMENT
     for(int i = 0; i < airspaceData->getSectorARTCCVectorSize(); i++)
     {
-        for(int j = 0; j < airspaceData->getSectorARTCC(i)->getCoordsVectorSize(); j++)
+        for(int j = 0; j < airspaceData->getSectorARTCC(i)->getPolygonsVectorSize(); j++)
         {
-            QGraphicsLineItem *currentSymbol = airspaceData->getSectorARTCC(i)->getLine(j);
+            QGraphicsPolygonItem *currentSymbol = airspaceData->getSectorARTCC(i)->getPolygon(j);
 
             currentSymbol->setPen(pen);
             scene->addItem(currentSymbol);
-
-            visibleSectorsARTCC.append(airspaceData->getSectorARTCC(i));
         }
+
+        visibleSectorsARTCC.append(airspaceData->getSectorARTCC(i));
     }
 }
 
@@ -2505,10 +2741,10 @@ void ATCSituationalDisplay::displaySTARs()
             QGraphicsLineItem *currentSymbol = airspaceData->getSTARSymbol(i)->getLine(j);
 
             currentSymbol->setPen(pen);
-            scene->addItem(currentSymbol);
-
-            visibleSTARs.append(airspaceData->getSTARSymbol(i));
+            scene->addItem(currentSymbol);            
         }
+
+        visibleSTARs.append(airspaceData->getSTARSymbol(i));
     }
 }
 
@@ -2576,7 +2812,7 @@ void ATCSituationalDisplay::displaySIDs()
         }
     }
 
-//Display STAR symbol lines on scene
+//Display SID symbol lines on scene
     QPen pen(QColor(0, 255, 255));
     pen.setWidthF(ATCConst::SID_LINE_WIDTH / currentScale);
 
@@ -2588,9 +2824,9 @@ void ATCSituationalDisplay::displaySIDs()
 
             currentSymbol->setPen(pen);
             scene->addItem(currentSymbol);
-
-            visibleSIDs.append(airspaceData->getSIDSymbol(i));
         }
+
+        visibleSIDs.append(airspaceData->getSIDSymbol(i));
     }
 }
 
@@ -2669,10 +2905,10 @@ void ATCSituationalDisplay::displayAirwayLow()
             QGraphicsLineItem *currentSymbol = airspaceData->getAirwayLow(i)->getLine(j);
 
             currentSymbol->setPen(pen);
-            scene->addItem(currentSymbol);
-
-            visibleLowAirways.append(airspaceData->getAirwayLow(i));
+            scene->addItem(currentSymbol);            
         }
+
+        visibleLowAirways.append(airspaceData->getAirwayLow(i));
     }
 }
 
@@ -2751,10 +2987,10 @@ void ATCSituationalDisplay::displayAirwayHigh()
             QGraphicsLineItem *currentSymbol = airspaceData->getAirwayHigh(i)->getLine(j);
 
             currentSymbol->setPen(pen);
-            scene->addItem(currentSymbol);
-
-            visibleHighAirways.append(airspaceData->getAirwayHigh(i));
+            scene->addItem(currentSymbol);            
         }
+
+        visibleHighAirways.append(airspaceData->getAirwayHigh(i));
     }
 }
 
