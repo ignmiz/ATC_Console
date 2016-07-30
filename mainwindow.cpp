@@ -60,6 +60,21 @@ void MainWindow::on_buttonSctSetup_clicked()
     }
 }
 
+void MainWindow::on_buttonSettings_clicked()
+{
+    if(!getFlagDialogSettingsExists())
+    {
+        dialogSettings = new DialogSettings(this);
+        dialogSettings->show();
+
+        connect(dialogSettings, SIGNAL(closed()), this, SLOT(dialogSettingsClosed()));
+        connect(dialogSettings, SIGNAL(changeFocusToDisplay()), this, SLOT(changeFocusToDisplay()));
+
+        setFlagDialogSettingExists(true);
+        setSituationalDisplayFocus();
+    }
+}
+
 void MainWindow::on_buttonShowConsole_clicked()
 {
     if(dialogTextConsole->isHidden())
@@ -90,6 +105,13 @@ void MainWindow::dialogSectorSetupClosed()
     setFlagDialogSectorSetupExists(false);
     disconnect(dialogSectorSetup, SIGNAL(closed()), this, SLOT(dialogSectorSetupClosed()));
     disconnect(dialogSectorSetup, SIGNAL(changeFocusToDisplay()), this, SLOT(changeFocusToDisplay()));
+}
+
+void MainWindow::dialogSettingsClosed()
+{
+    setFlagDialogSettingExists(false);
+    disconnect(dialogSettings, SIGNAL(closed()), this, SLOT(dialogSectorSetupClosed()));
+    disconnect(dialogSettings, SIGNAL(changeFocusToDisplay()), this, SLOT(changeFocusToDisplay()));
 }
 
 void MainWindow::changeFocusToDisplay()
@@ -127,6 +149,11 @@ bool MainWindow::getFlagDialogSectorSetupExists() const
     return flagDialogSectorSetupExists;
 }
 
+bool MainWindow::getFlagDialogSettingsExists() const
+{
+    return flagDialogSettingsExists;
+}
+
 void MainWindow::setFlagDialogMainMenuExists(bool flagBool)
 {
     flagDialogMainMenuExists = flagBool;
@@ -135,6 +162,11 @@ void MainWindow::setFlagDialogMainMenuExists(bool flagBool)
 void MainWindow::setFlagDialogSectorSetupExists(bool flagBool)
 {
     flagDialogSectorSetupExists = flagBool;
+}
+
+void MainWindow::setFlagDialogSettingExists(bool flagBool)
+{
+    flagDialogSettingsExists = flagBool;
 }
 
 void MainWindow::setSituationalDisplayFocus()
