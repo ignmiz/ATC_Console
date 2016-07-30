@@ -1,6 +1,5 @@
 #include "dialogmainmenu.h"
 #include "ui_dialogmainmenu.h"
-#include "mainwindow.h"
 
 DialogMainMenu::DialogMainMenu(QWidget *parent) :
     ATCDialog(parent, "Main Menu", 640, 480),

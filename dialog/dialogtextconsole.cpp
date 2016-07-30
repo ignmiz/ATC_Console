@@ -1,7 +1,6 @@
 #include "dialogtextconsole.h"
 #include "ui_dialogtextconsole.h"
 #include "atcconsolecommands.h"
-#include "mainwindow.h"
 
 #include <QDateTime>
 #include <QTimer>

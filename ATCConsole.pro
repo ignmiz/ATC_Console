@@ -53,7 +53,8 @@ SOURCES += main.cpp\
     atcabstractsector.cpp \
     atcsectorartcclow.cpp \
     atcsectorartcchigh.cpp \
-    atcsectorartcc.cpp
+    atcsectorartcc.cpp \
+    dialogsettings.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -90,10 +91,12 @@ HEADERS  += mainwindow.h \
     atcabstractsector.h \
     atcsectorartcclow.h \
     atcsectorartcchigh.h \
-    atcsectorartcc.h
+    atcsectorartcc.h \
+    dialogsettings.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
     dialogmainmenu.ui \
     dialogsectorsetup.ui \
-    dialogtextconsole.ui
+    dialogtextconsole.ui \
+    dialogsettings.ui

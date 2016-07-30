@@ -1,6 +1,5 @@
 #include "dialogsectorsetup.h"
 #include "ui_dialogsectorsetup.h"
-#include "mainwindow.h"
 
 DialogSectorSetup::DialogSectorSetup(QWidget *parent) :
     ATCDialog(parent, "Sector Setup", 600, 800),
