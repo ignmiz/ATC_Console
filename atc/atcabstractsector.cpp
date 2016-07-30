@@ -69,6 +69,11 @@ QGraphicsPolygonItem *ATCAbstractSector::getPolygon(int iterator)
     return polygons.at(iterator);
 }
 
+QColor ATCAbstractSector::getColor()
+{
+    return polygons.at(0)->pen().color();
+}
+
 int ATCAbstractSector::getCoordsVectorSize()
 {
     return coords1.size();
@@ -82,6 +87,17 @@ int ATCAbstractSector::getPolygonsVectorSize()
 void ATCAbstractSector::setName(QString name)
 {
     sectorName = name;
+}
+
+void ATCAbstractSector::setColor(QColor &color)
+{
+    for(int i = 0; i < polygons.size(); i++)
+    {
+        QPen newPen(polygons.at(i)->pen());
+        newPen.setColor(color);
+
+        polygons.at(i)->setPen(newPen);
+    }
 }
 
 void ATCAbstractSector::appendCoords1(ATCAirspaceFix *coord)

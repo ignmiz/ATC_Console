@@ -10,7 +10,7 @@
 #include <QTextStream>
 #include <QDebug>
 
-ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(parent), airspaceData(new ATCAirspace)
+ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(parent), airspaceData(new ATCAirspace), settings(new ATCSettings)
 {
     situationalDisplaySetup();
     loadData();
@@ -40,6 +40,7 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
 ATCSituationalDisplay::~ATCSituationalDisplay()
 {
     if(airspaceData != nullptr) delete airspaceData;
+    if(settings != nullptr) delete settings;
     scene->clear();
 }
 
@@ -51,6 +52,27 @@ qreal ATCSituationalDisplay::getBaseScale() const
 void ATCSituationalDisplay::setBaseScale(qreal scale)
 {
     baseScale = scale;
+}
+
+ATCSettings* ATCSituationalDisplay::getSettings()
+{
+    return settings;
+}
+
+void ATCSituationalDisplay::slotSetColorSectorARTCCLow(QColor color)
+{
+    if(flagARTCCLow)
+    {
+        for(int i = 0; i < visibleSectorsARTCCLow.size(); i++)
+        {
+            visibleSectorsARTCCLow.at(i)->setColor(color);
+        }
+    }
+}
+
+void ATCSituationalDisplay::slotFlagARTCCLow(bool)
+{
+    flagARTCCLow = true;
 }
 
 void ATCSituationalDisplay::situationalDisplaySetup()
@@ -1417,21 +1439,6 @@ void ATCSituationalDisplay::rescaleScene()
 
 void ATCSituationalDisplay::rescaleSectorsARTCCLow()
 {
-//    if(!visibleSectorsARTCCLow.empty())
-//    {
-//        QPen currentPen(visibleSectorsARTCCLow.at(0)->getLine(0)->pen());
-//        currentPen.setWidthF(ATCConst::ARTCC_LOW_LINE_WIDTH / currentScale);
-
-//        for(int i = 0; i < visibleSectorsARTCCLow.size(); i++)
-//        {
-//            for(int j = 0; j < visibleSectorsARTCCLow.at(i)->getCoordsVectorSize(); j++)
-//            {
-//                visibleSectorsARTCCLow.at(i)->getLine(j)->setPen(currentPen);
-//            }
-//        }
-//    }
-
-//REARRANGED FOR POLYGONS DATA
     if(!visibleSectorsARTCCLow.empty())
     {
         QPen currentPen(visibleSectorsARTCCLow.at(0)->getPolygon(0)->pen());
@@ -1902,10 +1909,6 @@ void ATCSituationalDisplay::displaySectorsARTCCLow()
             currentCoords2.x = (currentCoords2.x - sectorCentreX) * scaleFactor;
             currentCoords2.y = -1 * (currentCoords2.y - sectorCentreY) * scaleFactor;
 
-//            airspaceData->getSectorARTCCLow(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
-//                                                                                 currentCoords2.x, currentCoords2.y));
-
-
 //TEST FOR POLYGON DATA ARRANGEMENT
             if(flagCreateNewPolygon)
             {
@@ -1945,23 +1948,9 @@ void ATCSituationalDisplay::displaySectorsARTCCLow()
     }
 
 //Display ARTCC Low lines on scene
-    QPen pen(QColor(255, 247, 0));
+    QPen pen(settings->ARTCC_LOW_COLOR);
     pen.setWidthF(ATCConst::ARTCC_LOW_LINE_WIDTH / currentScale);
 
-//    for(int i = 0; i < airspaceData->getSectorARTCCLowVectorSize(); i++)
-//    {
-//        for(int j = 0; j < airspaceData->getSectorARTCCLow(i)->getCoordsVectorSize(); j++)
-//        {
-//            QGraphicsLineItem *currentSymbol = airspaceData->getSectorARTCCLow(i)->getLine(j);
-
-//            currentSymbol->setPen(pen);
-//            scene->addItem(currentSymbol);
-//        }
-
-//        visibleSectorsARTCCLow.append(airspaceData->getSectorARTCCLow(i));
-//    }
-
-//TEST FOR POLYGON DATA ARRANGEMENT
     for(int i = 0; i < airspaceData->getSectorARTCCLowVectorSize(); i++)
     {
         for(int j = 0; j < airspaceData->getSectorARTCCLow(i)->getPolygonsVectorSize(); j++)

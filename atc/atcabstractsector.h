@@ -3,6 +3,7 @@
 
 #include "atcairspacefix.h"
 #include <QGraphicsItem>
+#include <QPen>
 
 struct coordsPair{
     double x1;
@@ -23,11 +24,13 @@ public:
     coordsPair& getCoordsPair(int iterator);
     QGraphicsLineItem* getLine(int iterator);
     QGraphicsPolygonItem* getPolygon(int iterator);
+    QColor getColor();
 
     int getCoordsVectorSize();
     int getPolygonsVectorSize();
 
     void setName(QString name);
+    void setColor(QColor &color);
 
     void appendCoords1(ATCAirspaceFix* coord);
     void appendCoords2(ATCAirspaceFix *coord);

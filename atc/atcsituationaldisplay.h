@@ -3,6 +3,7 @@
 
 #include "atcairspace.h"
 #include "atcconst.h"
+#include "atcsettings.h"
 
 #include <QGraphicsView>
 #include <QVector>
@@ -29,8 +30,16 @@ public:
     qreal getBaseScale() const;
     void setBaseScale(qreal scale);
 
+    ATCSettings* getSettings();
+
+public slots:
+    void slotSetColorSectorARTCCLow(QColor color);
+
+    void slotFlagARTCCLow(bool);
+
 private:
     ATCAirspace *airspaceData = nullptr;
+    ATCSettings *settings = nullptr;
 
     qreal baseScale = 1;
     qreal scaleResolution = 0.15;
@@ -39,6 +48,8 @@ private:
 
     double sectorCentreX;
     double sectorCentreY;
+
+    bool flagARTCCLow = false;
 
     QGraphicsScene *scene = nullptr;
 

@@ -64,7 +64,7 @@ void MainWindow::on_buttonSettings_clicked()
 {
     if(!getFlagDialogSettingsExists())
     {
-        dialogSettings = new DialogSettings(this);
+        dialogSettings = new DialogSettings(ui->situationalDisplay ,this);
         dialogSettings->show();
 
         connect(dialogSettings, SIGNAL(closed()), this, SLOT(dialogSettingsClosed()));
