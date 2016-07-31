@@ -4,7 +4,9 @@
 #include "dialogcolorpicker.h"
 #include "atcdialog.h"
 #include "atcsituationaldisplay.h"
+#include "atcsettings.h"
 
+#include <QStandardItemModel>
 #include <QPalette>
 
 namespace Ui {
@@ -19,6 +21,9 @@ public:
     explicit DialogSettings(ATCSituationalDisplay *display, QWidget *parent = 0);
     ~DialogSettings();
 
+signals:
+    void signalLoadColors();
+
 private slots:
     ATC_MOUSE_HANDLER
 
@@ -30,11 +35,13 @@ private slots:
 private:
     Ui::DialogSettings *uiInner;
     DialogColorPicker *dialogColorPicker = nullptr;
-    ATCSituationalDisplay *situationalDisplay = nullptr;
+    ATCSituationalDisplay *situationalDisplay = nullptr;    
+    QStandardItemModel *settingsModel = nullptr;
 
     bool flagDialogColorPickerExists = false;
 
-    void initializeColorBoxes();
+//    void initializeColorBoxes();
+    void createSettingsModel();
 };
 
 #endif // DIALOGSETTINGS_H
