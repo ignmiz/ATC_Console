@@ -13,13 +13,6 @@ DialogSettings::DialogSettings(ATCSituationalDisplay *display, QWidget *parent) 
     windowSetup();    
     createSettingsModel();
     setupTableView();
-
-//    uiInner->widgetColor->setAutoFillBackground(true);
-
-    connect(uiInner->tableView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
-//    connect(dialogColorPicker, SIGNAL(signalColorPickerClosed()), situationalDisplay, SLOT(slotZeroFlags());
-
-//    connect(uiInner->buttonColorPicker, SIGNAL(clicked(bool)), situationalDisplay, SLOT(slotFlagARTCCLow(bool)));
 }
 
 DialogSettings::~DialogSettings()
@@ -28,53 +21,10 @@ DialogSettings::~DialogSettings()
     if(settingsModel != nullptr) delete settingsModel;
 }
 
-//void DialogSettings::on_buttonColorPicker_clicked()
-//{
-//    if(!flagDialogColorPickerExists)
-//    {
-//        QColor currentColor(uiInner->widgetColor->palette().color(QPalette::Window));
-
-//        dialogColorPicker = new DialogColorPicker(currentColor, this);
-//        dialogColorPicker->show();
-
-//        connect(dialogColorPicker, SIGNAL(signalColorPickerClosed()), this, SLOT(slotColorPickerClosed()));
-//        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotSetColor(QColor)));
-
-//        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorSectorARTCCLow(QColor)));
-
-//        flagDialogColorPickerExists = true;
-//    }
-//}
-
-//void DialogSettings::slotOpenColorPicker(const QModelIndex &index)
-//{
-//    if(!flagDialogColorPickerExists)
-//    {
-//        QColor currentColor(situationalDisplay->getSettings()->ARTCC_LOW_COLOR);
-
-//        dialogColorPicker = new DialogColorPicker(currentColor, this);
-//        dialogColorPicker->show();
-
-//        connect(dialogColorPicker, SIGNAL(signalColorPickerClosed()), this, SLOT(slotColorPickerClosed()));
-//    }
-//}
-
 void DialogSettings::slotColorPickerClosed()
 {
     flagDialogColorPickerExists = false;
-//    disconnect(dialogColorPicker, SIGNAL(signalColorPickerClosed()), this, SLOT(slotColorPickerClosed()));
-//    disconnect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotSetColor(QColor)));
-
-//    disconnect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorSectorARTCCLow(QColor)));
 }
-
-//void DialogSettings::slotSetColor(QColor color)
-//{
-//    QPalette palette = uiInner->widgetColor->palette();
-//    palette.setColor(QPalette::Window, color);
-
-//    uiInner->widgetColor->setPalette(palette);
-//}
 
 void DialogSettings::slotUpdateColorARTCCLow(QColor color)
 {
@@ -106,22 +56,6 @@ void DialogSettings::slotUpdateColorARTCC(QColor color)
 void DialogSettings::onTableClicked(const QModelIndex &index)
 {
     QVariant value = index.data();
-
-//    if(!flagDialogColorPickerExists && (
-//      (value.toString() == "ARTCC Low Color") ||
-//      (value.toString() == "ARTCC High Color") ||
-//      (value.toString() == "ARTCC Color")
-//      ))
-//    {
-//        QColor currentColor(situationalDisplay->getSettings()->ARTCC_LOW_COLOR);
-
-//        dialogColorPicker = new DialogColorPicker(currentColor, this);
-//        dialogColorPicker->show();
-
-//        connect(dialogColorPicker, SIGNAL(signalColorPickerClosed()), this, SLOT(slotColorPickerClosed()));
-
-//        flagDialogColorPickerExists = true;
-//    }
 
     if((value.toString() == "ARTCC Low Color") && !flagDialogColorPickerExists)
     {
@@ -175,6 +109,8 @@ void DialogSettings::setupTableView()
     uiInner->tableView->setColumnWidth(1, 178);
     uiInner->tableView->horizontalHeader()->setHidden(true);
     uiInner->tableView->verticalHeader()->setHidden(true);
+
+    connect(uiInner->tableView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
 }
 
 void DialogSettings::createSettingsModel()
@@ -206,13 +142,3 @@ QList<QStandardItem *> DialogSettings::createSettingsRow(QString text, QColor co
 
     return items;
 }
-
-//void DialogSettings::initializeColorBoxes()
-//{
-//    QColor color(situationalDisplay->getSettings()->ARTCC_LOW_COLOR);
-
-//    QPalette palette;
-//    palette.setColor(QPalette::Window, color);
-
-//    uiInner->widgetColor->setPalette(palette);
-//}

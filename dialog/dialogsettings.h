@@ -21,17 +21,10 @@ public:
     explicit DialogSettings(ATCSituationalDisplay *display, QWidget *parent = 0);
     ~DialogSettings();
 
-//signals:
-//    void signalOpenColorPicker();
-
 private slots:
     ATC_MOUSE_HANDLER
 
-//    void on_buttonColorPicker_clicked();
-//    void slotOpenColorPicker(const QModelIndex &index);
-
     void slotColorPickerClosed();
-//    void slotSetColor(QColor color);
 
     void slotUpdateColorARTCCLow(QColor color);
     void slotUpdateColorARTCCHigh(QColor color);
@@ -47,7 +40,6 @@ private:
 
     bool flagDialogColorPickerExists = false;
 
-//    void initializeColorBoxes();
     void setupTableView();
     void createSettingsModel();
     QList<QStandardItem *> createSettingsRow(QString text, QColor color);

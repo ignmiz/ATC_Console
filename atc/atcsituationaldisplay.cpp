@@ -61,14 +61,6 @@ ATCSettings* ATCSituationalDisplay::getSettings()
 
 void ATCSituationalDisplay::slotSetColorSectorARTCCLow(QColor color)
 {
-//    if(flagARTCCLow)
-//    {
-//        for(int i = 0; i < visibleSectorsARTCCLow.size(); i++)
-//        {
-//            visibleSectorsARTCCLow.at(i)->setColor(color);
-//        }
-//    }
-
     for(int i = 0; i < visibleSectorsARTCCLow.size(); i++)
     {
         visibleSectorsARTCCLow.at(i)->setColor(color);
@@ -90,18 +82,6 @@ void ATCSituationalDisplay::slotSetColorSectorARTCC(QColor color)
         visibleSectorsARTCC.at(i)->setColor(color);
     }
 }
-
-//void ATCSituationalDisplay::slotZeroFlags()
-//{
-//    flagARTCCLow = false;
-//    flagARTCCHigh = false;
-//    flagARTCC = false;
-//}
-
-//void ATCSituationalDisplay::slotFlagARTCCLow(bool)
-//{
-//    flagARTCCLow = true;
-//}
 
 void ATCSituationalDisplay::situationalDisplaySetup()
 {
@@ -1484,20 +1464,6 @@ void ATCSituationalDisplay::rescaleSectorsARTCCLow()
 
 void ATCSituationalDisplay::rescaleSectorsARTCCHigh()
 {
-//    if(!visibleSectorsARTCCHigh.empty())
-//    {
-//        QPen currentPen(visibleSectorsARTCCHigh.at(0)->getLine(0)->pen());
-//        currentPen.setWidthF(ATCConst::ARTCC_HIGH_LINE_WIDTH / currentScale);
-
-//        for(int i = 0; i < visibleSectorsARTCCHigh.size(); i++)
-//        {
-//            for(int j = 0; j < visibleSectorsARTCCHigh.at(i)->getCoordsVectorSize(); j++)
-//            {
-//                visibleSectorsARTCCHigh.at(i)->getLine(j)->setPen(currentPen);
-//            }
-//        }
-//    }
-
 //REARRANGED FOR POLYGONS DATA
     if(!visibleSectorsARTCCHigh.empty())
     {
@@ -1516,20 +1482,6 @@ void ATCSituationalDisplay::rescaleSectorsARTCCHigh()
 
 void ATCSituationalDisplay::rescaleSectorsARTCC()
 {
-//    if(!visibleSectorsARTCC.empty())
-//    {
-//        QPen currentPen(visibleSectorsARTCC.at(0)->getLine(0)->pen());
-//        currentPen.setWidthF(ATCConst::ARTCC_LINE_WIDTH / currentScale);
-
-//        for(int i = 0; i < visibleSectorsARTCC.size(); i++)
-//        {
-//            for(int j = 0; j < visibleSectorsARTCC.at(i)->getCoordsVectorSize(); j++)
-//            {
-//                visibleSectorsARTCC.at(i)->getLine(j)->setPen(currentPen);
-//            }
-//        }
-//    }
-
 //REARRANGED FOR POLYGONS DATA
     if(!visibleSectorsARTCC.empty())
     {
@@ -2026,9 +1978,6 @@ void ATCSituationalDisplay::displaySectorsARTCCHigh()
             currentCoords2.x = (currentCoords2.x - sectorCentreX) * scaleFactor;
             currentCoords2.y = -1 * (currentCoords2.y - sectorCentreY) * scaleFactor;
 
-//            airspaceData->getSectorARTCCHigh(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
-//                                                                                 currentCoords2.x, currentCoords2.y));
-
 //TEST FOR POLYGON DATA ARRANGEMENT
             if(flagCreateNewPolygon)
             {
@@ -2070,20 +2019,6 @@ void ATCSituationalDisplay::displaySectorsARTCCHigh()
     QPen pen(settings->ARTCC_HIGH_COLOR);
     pen.setWidthF(ATCConst::ARTCC_HIGH_LINE_WIDTH / currentScale);
 
-//    for(int i = 0; i < airspaceData->getSectorARTCCHighVectorSize(); i++)
-//    {
-//        for(int j = 0; j < airspaceData->getSectorARTCCHigh(i)->getCoordsVectorSize(); j++)
-//        {
-//            QGraphicsLineItem *currentSymbol = airspaceData->getSectorARTCCHigh(i)->getLine(j);
-
-//            currentSymbol->setPen(pen);
-//            scene->addItem(currentSymbol);
-//        }
-
-//        visibleSectorsARTCCHigh.append(airspaceData->getSectorARTCCHigh(i));
-//    }
-
-//TEST FOR POLYGON DATA ARRANGEMENT
     for(int i = 0; i < airspaceData->getSectorARTCCHighVectorSize(); i++)
     {
         for(int j = 0; j < airspaceData->getSectorARTCCHigh(i)->getPolygonsVectorSize(); j++)
@@ -2131,9 +2066,6 @@ void ATCSituationalDisplay::displaySectorsARTCC()
             currentCoords2.x = (currentCoords2.x - sectorCentreX) * scaleFactor;
             currentCoords2.y = -1 * (currentCoords2.y - sectorCentreY) * scaleFactor;
 
-//            airspaceData->getSectorARTCC(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
-//                                                                                 currentCoords2.x, currentCoords2.y));
-
 //TEST FOR POLYGON DATA ARRANGEMENT
             if(flagCreateNewPolygon)
             {
@@ -2175,20 +2107,6 @@ void ATCSituationalDisplay::displaySectorsARTCC()
     QPen pen(settings->ARTCC_COLOR);
     pen.setWidthF(ATCConst::ARTCC_LINE_WIDTH / currentScale);
 
-//    for(int i = 0; i < airspaceData->getSectorARTCCVectorSize(); i++)
-//    {
-//        for(int j = 0; j < airspaceData->getSectorARTCC(i)->getCoordsVectorSize(); j++)
-//        {
-//            QGraphicsLineItem *currentSymbol = airspaceData->getSectorARTCC(i)->getLine(j);
-
-//            currentSymbol->setPen(pen);
-//            scene->addItem(currentSymbol);
-//        }
-
-//        visibleSectorsARTCC.append(airspaceData->getSectorARTCC(i));
-//    }
-
-//TEST FOR POLYGON DATA ARRANGEMENT
     for(int i = 0; i < airspaceData->getSectorARTCCVectorSize(); i++)
     {
         for(int j = 0; j < airspaceData->getSectorARTCC(i)->getPolygonsVectorSize(); j++)
