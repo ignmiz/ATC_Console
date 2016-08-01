@@ -104,9 +104,9 @@ void DialogSettings::onTableClicked(const QModelIndex &index)
 void DialogSettings::setupTableView()
 {
     uiInner->tableView->setModel(settingsModel);
-//    uiInner->tableView->setGridStyle(Qt::NoPen);
+    uiInner->tableView->setGridStyle(Qt::NoPen);
     uiInner->tableView->setColumnWidth(0, 300);
-    uiInner->tableView->setColumnWidth(1, 178);
+    uiInner->tableView->setColumnWidth(1, 176);
     uiInner->tableView->horizontalHeader()->setHidden(true);
     uiInner->tableView->verticalHeader()->setHidden(true);
 
