@@ -42,6 +42,7 @@ private:
 
 //    void initializeColorBoxes();
     void createSettingsModel();
+    QList<QStandardItem *> createSettingsRow(QString text, QColor color);
 };
 
 #endif // DIALOGSETTINGS_H

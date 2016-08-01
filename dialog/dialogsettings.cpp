@@ -64,15 +64,19 @@ void DialogSettings::createSettingsModel()
 
     QList<QStandardItem*> items;
 
-    QStandardItem *name = new QStandardItem("ARTCC Low");
-    name->setFlags(Qt::NoItemFlags);
-    items.append(name);
+//    QStandardItem *name = new QStandardItem("ARTCC Low");
+//    name->setFlags(Qt::NoItemFlags);
+//    items.append(name);
 
-    QStandardItem *colorField = new QStandardItem("<Color here>");
-    colorField->setFlags(Qt::NoItemFlags);
-    items.append(colorField);
+//    QStandardItem *colorField = new QStandardItem("<Color here>");
+//    colorField->setFlags(Qt::NoItemFlags);
+//    items.append(colorField);
 
-    settingsModel->appendRow(items);
+//    settingsModel->appendRow(items);
+
+    settingsModel->appendRow(createSettingsRow("ARTCC Low", situationalDisplay->getSettings()->ARTCC_LOW_COLOR));
+    settingsModel->appendRow(createSettingsRow("ARTCC High", Qt::green));
+    settingsModel->appendRow(createSettingsRow("ARTCC", Qt::red));
 
     uiInner->tableView->setModel(settingsModel);
 //    uiInner->tableView->setGridStyle(Qt::NoPen);
@@ -80,6 +84,24 @@ void DialogSettings::createSettingsModel()
     uiInner->tableView->setColumnWidth(1, 178);
     uiInner->tableView->horizontalHeader()->setHidden(true);
     uiInner->tableView->verticalHeader()->setHidden(true);
+}
+
+QList<QStandardItem *> DialogSettings::createSettingsRow(QString text, QColor color)
+{
+    QList<QStandardItem*> items;
+
+    QStandardItem *name = new QStandardItem(text);
+    name->setFlags(Qt::NoItemFlags);
+    items.append(name);
+
+    QStandardItem *colorField = new QStandardItem();
+    colorField->setFlags(Qt::NoItemFlags);
+    items.append(colorField);
+
+    QBrush brush(color);
+    colorField->setBackground(brush);
+
+    return items;
 }
 
 //void DialogSettings::initializeColorBoxes()
