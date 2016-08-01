@@ -34,8 +34,11 @@ public:
 
 public slots:
     void slotSetColorSectorARTCCLow(QColor color);
+    void slotSetColorSectorARTCCHigh(QColor color);
+    void slotSetColorSectorARTCC(QColor color);
 
-    void slotFlagARTCCLow(bool);
+//    void slotZeroFlags();
+//    void slotFlagARTCCLow(bool);
 
 private:
     ATCAirspace *airspaceData = nullptr;
@@ -49,7 +52,9 @@ private:
     double sectorCentreX;
     double sectorCentreY;
 
-    bool flagARTCCLow = false;
+//    bool flagARTCCLow = false;
+//    bool flagARTCCHigh = false;
+//    bool flagARTCC = false;
 
     QGraphicsScene *scene = nullptr;
 

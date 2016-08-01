@@ -21,16 +21,23 @@ public:
     explicit DialogSettings(ATCSituationalDisplay *display, QWidget *parent = 0);
     ~DialogSettings();
 
-signals:
-    void signalLoadColors();
+//signals:
+//    void signalOpenColorPicker();
 
 private slots:
     ATC_MOUSE_HANDLER
 
-    void on_buttonColorPicker_clicked();
+//    void on_buttonColorPicker_clicked();
+//    void slotOpenColorPicker(const QModelIndex &index);
 
     void slotColorPickerClosed();
-    void slotSetColor(QColor color);
+//    void slotSetColor(QColor color);
+
+    void slotUpdateColorARTCCLow(QColor color);
+    void slotUpdateColorARTCCHigh(QColor color);
+    void slotUpdateColorARTCC(QColor color);
+
+    void onTableClicked(const QModelIndex &index);
 
 private:
     Ui::DialogSettings *uiInner;
@@ -41,6 +48,7 @@ private:
     bool flagDialogColorPickerExists = false;
 
 //    void initializeColorBoxes();
+    void setupTableView();
     void createSettingsModel();
     QList<QStandardItem *> createSettingsRow(QString text, QColor color);
 };

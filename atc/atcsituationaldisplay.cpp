@@ -26,15 +26,15 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
     displaySectorsARTCCLow();
     displaySectorsARTCCHigh();
     displaySectorsARTCC();
-//    displayAirwayLow();
-//    displayAirwayHigh();
-//    displaySTARs();
-//    displaySIDs();
-//    displayExtendedCentrelines();
-//    displayNDBs();
-//    displayVORs();
-//    displayFixes();
-//    displayAirports();
+    displayAirwayLow();
+    displayAirwayHigh();
+    displaySTARs();
+    displaySIDs();
+    displayExtendedCentrelines();
+    displayNDBs();
+    displayVORs();
+    displayFixes();
+    displayAirports();
 }
 
 ATCSituationalDisplay::~ATCSituationalDisplay()
@@ -61,19 +61,47 @@ ATCSettings* ATCSituationalDisplay::getSettings()
 
 void ATCSituationalDisplay::slotSetColorSectorARTCCLow(QColor color)
 {
-    if(flagARTCCLow)
+//    if(flagARTCCLow)
+//    {
+//        for(int i = 0; i < visibleSectorsARTCCLow.size(); i++)
+//        {
+//            visibleSectorsARTCCLow.at(i)->setColor(color);
+//        }
+//    }
+
+    for(int i = 0; i < visibleSectorsARTCCLow.size(); i++)
     {
-        for(int i = 0; i < visibleSectorsARTCCLow.size(); i++)
-        {
-            visibleSectorsARTCCLow.at(i)->setColor(color);
-        }
+        visibleSectorsARTCCLow.at(i)->setColor(color);
     }
 }
 
-void ATCSituationalDisplay::slotFlagARTCCLow(bool)
+void ATCSituationalDisplay::slotSetColorSectorARTCCHigh(QColor color)
 {
-    flagARTCCLow = true;
+    for(int i = 0; i < visibleSectorsARTCCHigh.size(); i++)
+    {
+        visibleSectorsARTCCHigh.at(i)->setColor(color);
+    }
 }
+
+void ATCSituationalDisplay::slotSetColorSectorARTCC(QColor color)
+{
+    for(int i = 0; i < visibleSectorsARTCC.size(); i++)
+    {
+        visibleSectorsARTCC.at(i)->setColor(color);
+    }
+}
+
+//void ATCSituationalDisplay::slotZeroFlags()
+//{
+//    flagARTCCLow = false;
+//    flagARTCCHigh = false;
+//    flagARTCC = false;
+//}
+
+//void ATCSituationalDisplay::slotFlagARTCCLow(bool)
+//{
+//    flagARTCCLow = true;
+//}
 
 void ATCSituationalDisplay::situationalDisplaySetup()
 {
@@ -2039,7 +2067,7 @@ void ATCSituationalDisplay::displaySectorsARTCCHigh()
     }
 
 //Display ARTCC High lines on scene
-    QPen pen(QColor(0, 255, 128));
+    QPen pen(settings->ARTCC_HIGH_COLOR);
     pen.setWidthF(ATCConst::ARTCC_HIGH_LINE_WIDTH / currentScale);
 
 //    for(int i = 0; i < airspaceData->getSectorARTCCHighVectorSize(); i++)
@@ -2144,7 +2172,7 @@ void ATCSituationalDisplay::displaySectorsARTCC()
     }
 
 //Display ARTCC lines on scene
-    QPen pen(QColor(255, 102, 178));
+    QPen pen(settings->ARTCC_COLOR);
     pen.setWidthF(ATCConst::ARTCC_LINE_WIDTH / currentScale);
 
 //    for(int i = 0; i < airspaceData->getSectorARTCCVectorSize(); i++)

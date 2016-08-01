@@ -2,8 +2,9 @@
 
 ATCSettings::ATCSettings()
 {
-    QColor color(90, 230, 230);
-    ARTCC_LOW_COLOR = color;
+    ARTCC_LOW_COLOR = qRgb(90, 230, 230);
+    ARTCC_HIGH_COLOR =  qRgb(255, 255, 255);
+    ARTCC_COLOR = qRgb(255, 0, 0);
 }
 
 ATCSettings::~ATCSettings()
