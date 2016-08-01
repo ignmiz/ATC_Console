@@ -56,7 +56,8 @@ SOURCES += main.cpp\
     atcsectorartcc.cpp \
     dialogsettings.cpp \
     dialogcolorpicker.cpp \
-    atcsettings.cpp
+    atcsettings.cpp \
+    atcsettingstableview.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -96,7 +97,8 @@ HEADERS  += mainwindow.h \
     atcsectorartcc.h \
     dialogsettings.h \
     dialogcolorpicker.h \
-    atcsettings.h
+    atcsettings.h \
+    atcsettingstableview.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
