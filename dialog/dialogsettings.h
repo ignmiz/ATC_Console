@@ -42,6 +42,7 @@ private:
 
     void setupTableView();
     void createSettingsModel();
+    void constructColorPicker(QColor &initColor);
     QList<QStandardItem *> createSettingsRow(QString text, QColor color);
 };
 

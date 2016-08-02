@@ -59,42 +59,48 @@ void DialogSettings::onTableClicked(const QModelIndex &index)
 
     if((value.toString() == "ARTCC Low Color") && !flagDialogColorPickerExists)
     {
-        QColor currentColor(situationalDisplay->getSettings()->ARTCC_LOW_COLOR);
+//        QColor currentColor(situationalDisplay->getSettings()->ARTCC_LOW_COLOR);
 
-        dialogColorPicker = new DialogColorPicker(currentColor, this);
-        dialogColorPicker->show();
+//        dialogColorPicker = new DialogColorPicker(currentColor, this);
+//        dialogColorPicker->show();
 
-        connect(dialogColorPicker, SIGNAL(signalColorPickerClosed()), this, SLOT(slotColorPickerClosed()));
+//        connect(dialogColorPicker, SIGNAL(signalColorPickerClosed()), this, SLOT(slotColorPickerClosed()));
 
-        flagDialogColorPickerExists = true;
+//        flagDialogColorPickerExists = true;
+
+        constructColorPicker(situationalDisplay->getSettings()->ARTCC_LOW_COLOR);
 
         connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorSectorARTCCLow(QColor)));
         connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateColorARTCCLow(QColor)));
     }
     else if((value.toString() == "ARTCC High Color") && !flagDialogColorPickerExists)
     {
-        QColor currentColor(situationalDisplay->getSettings()->ARTCC_HIGH_COLOR);
+//        QColor currentColor(situationalDisplay->getSettings()->ARTCC_HIGH_COLOR);
 
-        dialogColorPicker = new DialogColorPicker(currentColor, this);
-        dialogColorPicker->show();
+//        dialogColorPicker = new DialogColorPicker(currentColor, this);
+//        dialogColorPicker->show();
 
-        connect(dialogColorPicker, SIGNAL(signalColorPickerClosed()), this, SLOT(slotColorPickerClosed()));
+//        connect(dialogColorPicker, SIGNAL(signalColorPickerClosed()), this, SLOT(slotColorPickerClosed()));
 
-        flagDialogColorPickerExists = true;
+//        flagDialogColorPickerExists = true;
+
+        constructColorPicker(situationalDisplay->getSettings()->ARTCC_HIGH_COLOR);
 
         connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorSectorARTCCHigh(QColor)));
         connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateColorARTCCHigh(QColor)));
     }
     else if((value.toString() == "ARTCC Color") && !flagDialogColorPickerExists)
     {
-        QColor currentColor(situationalDisplay->getSettings()->ARTCC_COLOR);
+//        QColor currentColor(situationalDisplay->getSettings()->ARTCC_COLOR);
 
-        dialogColorPicker = new DialogColorPicker(currentColor, this);
-        dialogColorPicker->show();
+//        dialogColorPicker = new DialogColorPicker(currentColor, this);
+//        dialogColorPicker->show();
 
-        connect(dialogColorPicker, SIGNAL(signalColorPickerClosed()), this, SLOT(slotColorPickerClosed()));
+//        connect(dialogColorPicker, SIGNAL(signalColorPickerClosed()), this, SLOT(slotColorPickerClosed()));
 
-        flagDialogColorPickerExists = true;
+//        flagDialogColorPickerExists = true;
+
+        constructColorPicker(situationalDisplay->getSettings()->ARTCC_COLOR);
 
         connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorSectorARTCC(QColor)));
         connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateColorARTCC(QColor)));
@@ -114,6 +120,7 @@ void DialogSettings::setupTableView()
 
     uiInner->tableView->setColumnWidth(0, 300);
     uiInner->tableView->setColumnWidth(1, 176);
+
     uiInner->tableView->horizontalHeader()->setHidden(true);
     uiInner->tableView->verticalHeader()->setHidden(true);
 
@@ -124,11 +131,21 @@ void DialogSettings::createSettingsModel()
 {
     settingsModel = new QStandardItemModel(0, 2, this);
 
-    QList<QStandardItem*> items;
-
     settingsModel->appendRow(createSettingsRow("ARTCC Low", situationalDisplay->getSettings()->ARTCC_LOW_COLOR));
     settingsModel->appendRow(createSettingsRow("ARTCC High", situationalDisplay->getSettings()->ARTCC_HIGH_COLOR));
     settingsModel->appendRow(createSettingsRow("ARTCC", situationalDisplay->getSettings()->ARTCC_COLOR));
+}
+
+void DialogSettings::constructColorPicker(QColor &initColor)
+{
+    QColor currentColor(initColor);
+
+    dialogColorPicker = new DialogColorPicker(currentColor, this);
+    dialogColorPicker->show();
+
+    connect(dialogColorPicker, SIGNAL(signalColorPickerClosed()), this, SLOT(slotColorPickerClosed()));
+
+    flagDialogColorPickerExists = true;
 }
 
 QList<QStandardItem *> DialogSettings::createSettingsRow(QString text, QColor color)
