@@ -26,15 +26,15 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
     displaySectorsARTCCLow();
     displaySectorsARTCCHigh();
     displaySectorsARTCC();
-    displayAirwayLow();
-    displayAirwayHigh();
-    displaySTARs();
-    displaySIDs();
-    displayExtendedCentrelines();
-    displayNDBs();
-    displayVORs();
-    displayFixes();
-    displayAirports();
+//    displayAirwayLow();
+//    displayAirwayHigh();
+//    displaySTARs();
+//    displaySIDs();
+//    displayExtendedCentrelines();
+//    displayNDBs();
+//    displayVORs();
+//    displayFixes();
+//    displayAirports();
 }
 
 ATCSituationalDisplay::~ATCSituationalDisplay()
