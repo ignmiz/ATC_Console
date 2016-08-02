@@ -1,0 +1,1 @@
+DEFAULT = E:/Qt/ATC_Console/ATC_Console/settings/default.txt

@@ -19,7 +19,7 @@
      <x>10</x>
      <y>30</y>
      <width>480</width>
-     <height>660</height>
+     <height>550</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -33,7 +33,106 @@
 	border-style: inset;
 	border-width: 2px;
 	border-color: #141414;
+	font: 13px;
 }</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelDefaultSettings">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>590</y>
+     <width>101</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Default settings:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>620</y>
+     <width>91</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>User settings:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEditDefaultSettings">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>590</y>
+     <width>261</width>
+     <height>24</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonLoadSettings">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>660</y>
+     <width>121</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Load Settings</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonExportSettings">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>660</y>
+     <width>121</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Export Settings</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonBrowseDefault">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>590</y>
+     <width>80</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Browse...</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonBrowseUser">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>620</y>
+     <width>80</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Browse...</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEditUserSettings">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>620</y>
+     <width>261</width>
+     <height>24</height>
+    </rect>
    </property>
   </widget>
  </widget>

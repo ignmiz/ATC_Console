@@ -105,6 +105,13 @@ void DialogSettings::setupTableView()
 {
     uiInner->tableView->setModel(settingsModel);
     uiInner->tableView->setGridStyle(Qt::NoPen);
+
+    int rowHeight = 25;
+    for(int i = 0; i < settingsModel->rowCount(); i++)
+    {
+        uiInner->tableView->setRowHeight(i, rowHeight);
+    }
+
     uiInner->tableView->setColumnWidth(0, 300);
     uiInner->tableView->setColumnWidth(1, 176);
     uiInner->tableView->horizontalHeader()->setHidden(true);
