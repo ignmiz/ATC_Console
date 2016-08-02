@@ -26,15 +26,15 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
     displaySectorsARTCCLow();
     displaySectorsARTCCHigh();
     displaySectorsARTCC();
-//    displayAirwayLow();
-//    displayAirwayHigh();
-//    displaySTARs();
-//    displaySIDs();
-//    displayExtendedCentrelines();
-//    displayNDBs();
-//    displayVORs();
-//    displayFixes();
-//    displayAirports();
+    displayAirwayLow();
+    displayAirwayHigh();
+    displaySTARs();
+    displaySIDs();
+    displayExtendedCentrelines();
+    displayNDBs();
+    displayVORs();
+    displayFixes();
+    displayAirports();
 }
 
 ATCSituationalDisplay::~ATCSituationalDisplay()
@@ -1464,7 +1464,6 @@ void ATCSituationalDisplay::rescaleSectorsARTCCLow()
 
 void ATCSituationalDisplay::rescaleSectorsARTCCHigh()
 {
-//REARRANGED FOR POLYGONS DATA
     if(!visibleSectorsARTCCHigh.empty())
     {
         QPen currentPen(visibleSectorsARTCCHigh.at(0)->getPolygon(0)->pen());
@@ -1482,7 +1481,6 @@ void ATCSituationalDisplay::rescaleSectorsARTCCHigh()
 
 void ATCSituationalDisplay::rescaleSectorsARTCC()
 {
-//REARRANGED FOR POLYGONS DATA
     if(!visibleSectorsARTCC.empty())
     {
         QPen currentPen(visibleSectorsARTCC.at(0)->getPolygon(0)->pen());
@@ -1790,10 +1788,10 @@ void ATCSituationalDisplay::projectSectorsARTCCLow()
 
             coordsPair projected;
 
-            projected.x1 = currentCoords1.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords1.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            projected.y1 = currentCoords1.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords1.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
-            projected.x2 = currentCoords2.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords2.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            projected.y2 = currentCoords2.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords2.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+            projected.x1 = rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
+            projected.y1 = rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
+            projected.x2 = rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
+            projected.y2 = rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
 
             airspaceData->getSectorARTCCLow(i)->appendCoordsPair(projected);
         }
@@ -1818,10 +1816,10 @@ void ATCSituationalDisplay::projectSectorsARTCCHigh()
 
             coordsPair projected;
 
-            projected.x1 = currentCoords1.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords1.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            projected.y1 = currentCoords1.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords1.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
-            projected.x2 = currentCoords2.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords2.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            projected.y2 = currentCoords2.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords2.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+            projected.x1 = rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
+            projected.y1 = rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
+            projected.x2 = rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
+            projected.y2 = rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
 
             airspaceData->getSectorARTCCHigh(i)->appendCoordsPair(projected);
         }
@@ -1846,10 +1844,10 @@ void ATCSituationalDisplay::projectSectorsARTCC()
 
             coordsPair projected;
 
-            projected.x1 = currentCoords1.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords1.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            projected.y1 = currentCoords1.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords1.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
-            projected.x2 = currentCoords2.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords2.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            projected.y2 = currentCoords2.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords2.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+            projected.x1 = rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
+            projected.y1 = rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
+            projected.x2 = rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
+            projected.y2 = rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
 
             airspaceData->getSectorARTCC(i)->appendCoordsPair(projected);
         }
@@ -2134,8 +2132,8 @@ void ATCSituationalDisplay::displayFixes()
         currentFix.x = mercatorProjectionLon(airspaceData->getFix(i)->longitude());
         currentFix.y = mercatorProjectionLat(airspaceData->getFix(i)->latitude());
 
-        double xRotated = currentFix.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentFix.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-        double yRotated = currentFix.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentFix.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+        double xRotated = rotateX(currentFix.x, currentFix.y, rotationDeg);
+        double yRotated = rotateY(currentFix.x, currentFix.y, rotationDeg);
 
         currentFix.x = xRotated;
         currentFix.y = yRotated;
@@ -2215,7 +2213,7 @@ void ATCSituationalDisplay::displayFixes()
 void ATCSituationalDisplay::displayAirports()
 {
     QVector<coord> tempAirports;
-    double rotationDeg = 5;
+    double rotationDeg = ATCConst::AVG_DECLINATION;
 
 //Mercator projection of airports + rotation
     for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
@@ -2225,8 +2223,8 @@ void ATCSituationalDisplay::displayAirports()
         currentAirport.x = mercatorProjectionLon(airspaceData->getAirport(i)->longitude());
         currentAirport.y = mercatorProjectionLat(airspaceData->getAirport(i)->latitude());
 
-        double xRotated = currentAirport.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentAirport.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-        double yRotated = currentAirport.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentAirport.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+        double xRotated = rotateX(currentAirport.x, currentAirport.y, rotationDeg);
+        double yRotated = rotateY(currentAirport.x, currentAirport.y, rotationDeg);
 
         currentAirport.x = xRotated;
         currentAirport.y = yRotated;
@@ -2350,17 +2348,17 @@ void ATCSituationalDisplay::displayExtendedCentrelines()
         centrelineEnd2[i].x = mercatorProjectionLon(centrelineEnd2.at(i).x);
         centrelineEnd2[i].y = mercatorProjectionLat(centrelineEnd2.at(i).y);
 
-        double rwyCoords1xRot = rwyCoords1.at(i).x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - rwyCoords1.at(i).y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-        double rwyCoords1yRot = rwyCoords1.at(i).x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + rwyCoords1.at(i).y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+        double rwyCoords1xRot = rotateX(rwyCoords1.at(i).x, rwyCoords1.at(i).y, rotationDeg);
+        double rwyCoords1yRot = rotateY(rwyCoords1.at(i).x, rwyCoords1.at(i).y, rotationDeg);
 
-        double rwyCoords2xRot = rwyCoords2.at(i).x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - rwyCoords2.at(i).y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-        double rwyCoords2yRot = rwyCoords2.at(i).x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + rwyCoords2.at(i).y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+        double rwyCoords2xRot = rotateX(rwyCoords2.at(i).x, rwyCoords2.at(i).y, rotationDeg);
+        double rwyCoords2yRot = rotateY(rwyCoords2.at(i).x, rwyCoords2.at(i).y, rotationDeg);
 
-        double centrelineEnd1xRot = centrelineEnd1.at(i).x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - centrelineEnd1.at(i).y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-        double centrelineEnd1yRot = centrelineEnd1.at(i).x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + centrelineEnd1.at(i).y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+        double centrelineEnd1xRot = rotateX(centrelineEnd1.at(i).x, centrelineEnd1.at(i).y, rotationDeg);
+        double centrelineEnd1yRot = rotateY(centrelineEnd1.at(i).x, centrelineEnd1.at(i).y, rotationDeg);
 
-        double centrelineEnd2xRot = centrelineEnd2.at(i).x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - centrelineEnd2.at(i).y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-        double centrelineEnd2yRot = centrelineEnd2.at(i).x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + centrelineEnd2.at(i).y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+        double centrelineEnd2xRot = rotateX(centrelineEnd2.at(i).x, centrelineEnd2.at(i).y, rotationDeg);
+        double centrelineEnd2yRot = rotateY(centrelineEnd2.at(i).x, centrelineEnd2.at(i).y, rotationDeg);
 
         rwyCoords1[i].x = rwyCoords1xRot;
         rwyCoords1[i].y = rwyCoords1yRot;
@@ -2453,8 +2451,8 @@ void ATCSituationalDisplay::displayVORs()
         currentVOR.x = mercatorProjectionLon(airspaceData->getVOR(i)->longitude());
         currentVOR.y = mercatorProjectionLat(airspaceData->getVOR(i)->latitude());
 
-        double xRotated = currentVOR.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentVOR.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-        double yRotated = currentVOR.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentVOR.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+        double xRotated = rotateX(currentVOR.x, currentVOR.y, rotationDeg);
+        double yRotated = rotateY(currentVOR.x, currentVOR.y, rotationDeg);
 
         currentVOR.x = xRotated;
         currentVOR.y = yRotated;
@@ -2535,8 +2533,8 @@ void ATCSituationalDisplay::displayNDBs()
         currentNDB.x = mercatorProjectionLon(airspaceData->getNDB(i)->longitude());
         currentNDB.y = mercatorProjectionLat(airspaceData->getNDB(i)->latitude());
 
-        double xRotated = currentNDB.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentNDB.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-        double yRotated = currentNDB.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentNDB.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+        double xRotated = rotateX(currentNDB.x, currentNDB.y, rotationDeg);
+        double yRotated = rotateY(currentNDB.x, currentNDB.y, rotationDeg);
 
         currentNDB.x = xRotated;
         currentNDB.y = yRotated;
@@ -2628,10 +2626,10 @@ void ATCSituationalDisplay::displaySTARs()
             currentCoords2.x = mercatorProjectionLon(airspaceData->getSTARSymbol(i)->getCoords2(j)->longitude());
             currentCoords2.y = mercatorProjectionLat(airspaceData->getSTARSymbol(i)->getCoords2(j)->latitude());
 
-            double xRotated1 = currentCoords1.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords1.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            double yRotated1 = currentCoords1.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords1.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
-            double xRotated2 = currentCoords2.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords2.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            double yRotated2 = currentCoords2.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords2.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+            double xRotated1 = rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
+            double yRotated1 = rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
+            double xRotated2 = rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
+            double yRotated2 = rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
 
             currentCoords1.x = xRotated1;
             currentCoords1.y = yRotated1;
@@ -2710,10 +2708,10 @@ void ATCSituationalDisplay::displaySIDs()
             currentCoords2.x = mercatorProjectionLon(airspaceData->getSIDSymbol(i)->getCoords2(j)->longitude());
             currentCoords2.y = mercatorProjectionLat(airspaceData->getSIDSymbol(i)->getCoords2(j)->latitude());
 
-            double xRotated1 = currentCoords1.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords1.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            double yRotated1 = currentCoords1.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords1.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
-            double xRotated2 = currentCoords2.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords2.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            double yRotated2 = currentCoords2.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords2.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+            double xRotated1 = rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
+            double yRotated1 = rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
+            double xRotated2 = rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
+            double yRotated2 = rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
 
             currentCoords1.x = xRotated1;
             currentCoords1.y = yRotated1;
@@ -2792,10 +2790,10 @@ void ATCSituationalDisplay::displayAirwayLow()
             currentCoords2.x = mercatorProjectionLon(airspaceData->getAirwayLow(i)->getCoords2(j)->longitude());
             currentCoords2.y = mercatorProjectionLat(airspaceData->getAirwayLow(i)->getCoords2(j)->latitude());
 
-            double xRotated1 = currentCoords1.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords1.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            double yRotated1 = currentCoords1.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords1.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
-            double xRotated2 = currentCoords2.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords2.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            double yRotated2 = currentCoords2.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords2.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+            double xRotated1 = rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
+            double yRotated1 = rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
+            double xRotated2 = rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
+            double yRotated2 = rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
 
             currentCoords1.x = xRotated1;
             currentCoords1.y = yRotated1;
@@ -2874,10 +2872,10 @@ void ATCSituationalDisplay::displayAirwayHigh()
             currentCoords2.x = mercatorProjectionLon(airspaceData->getAirwayLow(i)->getCoords2(j)->longitude());
             currentCoords2.y = mercatorProjectionLat(airspaceData->getAirwayLow(i)->getCoords2(j)->latitude());
 
-            double xRotated1 = currentCoords1.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords1.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            double yRotated1 = currentCoords1.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords1.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
-            double xRotated2 = currentCoords2.x * qCos(rotationDeg * ATCConst::DEG_2_RAD) - currentCoords2.y * qSin(rotationDeg * ATCConst::DEG_2_RAD);
-            double yRotated2 = currentCoords2.x * qSin(rotationDeg * ATCConst::DEG_2_RAD) + currentCoords2.y * qCos(rotationDeg * ATCConst::DEG_2_RAD);
+            double xRotated1 = rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
+            double yRotated1 = rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
+            double xRotated2 = rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
+            double yRotated2 = rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
 
             currentCoords1.x = xRotated1;
             currentCoords1.y = yRotated1;
@@ -2940,6 +2938,16 @@ double ATCSituationalDisplay::mercatorProjectionLat(double latitudeDeg, double s
                * qPow((1 - ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(latitudeDeg * ATCConst::DEG_2_RAD)) /
                (1 + ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(latitudeDeg * ATCConst::DEG_2_RAD)) ,
                       ATCConst::WGS84_FIRST_ECCENTRICITY / 2)) * ATCConst::RAD_2_DEG;
+}
+
+double ATCSituationalDisplay::rotateX(double coordX, double coordY, double angleDeg)
+{
+    return coordX * qCos(angleDeg * ATCConst::DEG_2_RAD) - coordY * qSin(angleDeg * ATCConst::DEG_2_RAD);
+}
+
+double ATCSituationalDisplay::rotateY(double coordX, double coordY, double angleDeg)
+{
+    return coordX * qSin(angleDeg * ATCConst::DEG_2_RAD) + coordY * qCos(angleDeg * ATCConst::DEG_2_RAD);
 }
 
 void ATCSituationalDisplay::calculateSectorParameters()

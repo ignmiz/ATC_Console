@@ -106,6 +106,9 @@ private:
     double mercatorProjectionLon(double longitude, double referenceLongitude = 0, double scale = ATCConst::WGS84_RADIUS);
     double mercatorProjectionLat(double latitude, double scale = ATCConst::WGS84_RADIUS);
 
+    double rotateX(double coordX, double coordY, double angleDeg);
+    double rotateY(double coordX, double coordY, double angleDeg);
+
     void calculateSectorParameters();
 
 protected:

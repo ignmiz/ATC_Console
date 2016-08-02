@@ -59,15 +59,6 @@ void DialogSettings::onTableClicked(const QModelIndex &index)
 
     if((value.toString() == "ARTCC Low Color") && !flagDialogColorPickerExists)
     {
-//        QColor currentColor(situationalDisplay->getSettings()->ARTCC_LOW_COLOR);
-
-//        dialogColorPicker = new DialogColorPicker(currentColor, this);
-//        dialogColorPicker->show();
-
-//        connect(dialogColorPicker, SIGNAL(signalColorPickerClosed()), this, SLOT(slotColorPickerClosed()));
-
-//        flagDialogColorPickerExists = true;
-
         constructColorPicker(situationalDisplay->getSettings()->ARTCC_LOW_COLOR);
 
         connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorSectorARTCCLow(QColor)));
@@ -75,15 +66,6 @@ void DialogSettings::onTableClicked(const QModelIndex &index)
     }
     else if((value.toString() == "ARTCC High Color") && !flagDialogColorPickerExists)
     {
-//        QColor currentColor(situationalDisplay->getSettings()->ARTCC_HIGH_COLOR);
-
-//        dialogColorPicker = new DialogColorPicker(currentColor, this);
-//        dialogColorPicker->show();
-
-//        connect(dialogColorPicker, SIGNAL(signalColorPickerClosed()), this, SLOT(slotColorPickerClosed()));
-
-//        flagDialogColorPickerExists = true;
-
         constructColorPicker(situationalDisplay->getSettings()->ARTCC_HIGH_COLOR);
 
         connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorSectorARTCCHigh(QColor)));
@@ -91,15 +73,6 @@ void DialogSettings::onTableClicked(const QModelIndex &index)
     }
     else if((value.toString() == "ARTCC Color") && !flagDialogColorPickerExists)
     {
-//        QColor currentColor(situationalDisplay->getSettings()->ARTCC_COLOR);
-
-//        dialogColorPicker = new DialogColorPicker(currentColor, this);
-//        dialogColorPicker->show();
-
-//        connect(dialogColorPicker, SIGNAL(signalColorPickerClosed()), this, SLOT(slotColorPickerClosed()));
-
-//        flagDialogColorPickerExists = true;
-
         constructColorPicker(situationalDisplay->getSettings()->ARTCC_COLOR);
 
         connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorSectorARTCC(QColor)));
