@@ -10,7 +10,7 @@ ATCSettings::ATCSettings()
 //    loadSettings("E:/Qt/ATC_Console/ATC_Console/config/user/user1.txt");
 //    loadSettings("E:/Qt/ATC_Console/ATC_Console/config/user/user2.txt");
 
-    exportSettings("E:/Qt/ATC_Console/ATC_Console/config/user/user_from_code.txt");
+//    exportSettings("E:/Qt/ATC_Console/ATC_Console/config/user/user_from_code.txt");
 }
 
 ATCSettings::~ATCSettings()

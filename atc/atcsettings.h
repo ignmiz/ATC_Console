@@ -13,6 +13,9 @@ public:
 
     void assignDefaultPath();
     void loadSettings(QString path);
+    void exportSettings(QString path);
+
+    bool fileExists(QString path);
 
     QString SETTINGS_NAME;
     QString SETTINGS_DFLT_PATH;
