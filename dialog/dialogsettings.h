@@ -7,6 +7,7 @@
 #include "atcsettings.h"
 
 #include <QStandardItemModel>
+#include <QFileDialog>
 #include <QPalette>
 
 namespace Ui {
@@ -31,6 +32,8 @@ private slots:
     void slotUpdateColorARTCC(QColor color);
 
     void onTableClicked(const QModelIndex &index);
+
+    void on_buttonExportSettings_clicked();
 
 private:
     Ui::DialogSettings *uiInner;

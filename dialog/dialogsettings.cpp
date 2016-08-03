@@ -139,3 +139,8 @@ QList<QStandardItem *> DialogSettings::createSettingsRow(QString text, QColor co
 
     return items;
 }
+
+void DialogSettings::on_buttonExportSettings_clicked()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"));
+}
