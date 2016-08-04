@@ -34,6 +34,7 @@ private slots:
     void onTableClicked(const QModelIndex &index);
 
     void on_buttonExportSettings_clicked();
+    void on_buttonLoadSettings_clicked();
 
 private:
     Ui::DialogSettings *uiInner;

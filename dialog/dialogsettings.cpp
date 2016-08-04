@@ -1,7 +1,8 @@
 #include "dialogsettings.h"
 #include "ui_dialogsettings.h"
 
-#include <QTimer>
+//#include <QTimer>
+#include <QMessageBox>
 #include <QDebug>
 
 DialogSettings::DialogSettings(ATCSituationalDisplay *display, QWidget *parent) :
@@ -142,5 +143,17 @@ QList<QStandardItem *> DialogSettings::createSettingsRow(QString text, QColor co
 
 void DialogSettings::on_buttonExportSettings_clicked()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"));
+    QString filePath = QFileDialog::getSaveFileName(this, tr("Export to..."), situationalDisplay->getSettings()->SETTINGS_EXPORT_PATH, tr("Text files(*.txt)"));
+    if(filePath.isEmpty()) return;
+
+    situationalDisplay->getSettings()->exportSettings(filePath);
+
+    QMessageBox msgBox(this);
+    msgBox.setText("Settings successfuly exported to: " + filePath);
+    msgBox.exec();
+}
+
+void DialogSettings::on_buttonLoadSettings_clicked()
+{
+
 }

@@ -11,7 +11,7 @@ public:
     explicit ATCSettings();
     ~ATCSettings();
 
-    void assignDefaultPath();
+    void assignPaths();
     void loadSettings(QString path);
     void exportSettings(QString path);
 
@@ -19,6 +19,7 @@ public:
 
     QString SETTINGS_NAME;
     QString SETTINGS_DFLT_PATH;
+    QString SETTINGS_EXPORT_PATH;
     QString SETTINGS_ACTIVE_PATH;
 
     QColor ARTCC_LOW_COLOR;

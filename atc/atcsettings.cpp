@@ -5,12 +5,8 @@
 
 ATCSettings::ATCSettings()
 {
-    assignDefaultPath();
+    assignPaths();
     loadSettings(SETTINGS_DFLT_PATH);
-//    loadSettings("E:/Qt/ATC_Console/ATC_Console/config/user/user1.txt");
-//    loadSettings("E:/Qt/ATC_Console/ATC_Console/config/user/user2.txt");
-
-//    exportSettings("E:/Qt/ATC_Console/ATC_Console/config/user/user_from_code.txt");
 }
 
 ATCSettings::~ATCSettings()
@@ -18,9 +14,9 @@ ATCSettings::~ATCSettings()
 
 }
 
-void ATCSettings::assignDefaultPath()
+void ATCSettings::assignPaths()
 {
-    QString paths("E:/Qt/ATC_Console/ATC_Console/config/paths.txt"); //HERE SHOULD BE RELATIVE INSTALLATION PATH TO paths.txt
+    QString paths("../../ATC_Console/ATC_Console/config/paths.txt");
 
     QFile pathsFile(paths);
 
@@ -41,6 +37,11 @@ void ATCSettings::assignDefaultPath()
         if(stringList.at(0).trimmed() == "DEFAULT")
         {
             SETTINGS_DFLT_PATH = stringList.at(1).trimmed();
+        }
+        else if(stringList.at(0).trimmed() == "EXPORT")
+        {
+            SETTINGS_EXPORT_PATH = stringList.at(1).trimmed();
+            qDebug() << SETTINGS_EXPORT_PATH;
         }
     }
 
@@ -179,6 +180,10 @@ void ATCSettings::loadSettings(QString path)
 
 void ATCSettings::exportSettings(QString path)
 {
+    QStringList pathElements = path.split("/", QString::KeepEmptyParts);
+    QString fileName = pathElements.at(pathElements.size() - 1).trimmed();
+    QString nameWithoutExtension = fileName.split(".", QString::KeepEmptyParts).at(0).trimmed();
+
     QFile file(path);
 
 //    if(fileExists(path))
@@ -203,7 +208,7 @@ void ATCSettings::exportSettings(QString path)
     QTextStream out(&file);
 
     out << "[INFO]" << endl;
-    out << "NAME = " << SETTINGS_NAME << endl;
+    out << "NAME = " << nameWithoutExtension << endl; //THIS NEEDS TO BE CHANGED
     out << endl;
 
     out << "[ARTCC LOW]" << endl;
@@ -216,6 +221,8 @@ void ATCSettings::exportSettings(QString path)
 
     out << "[ARTCC]" << endl;
     out << "COLOR = " << ARTCC_COLOR.red() << ", " << ARTCC_COLOR.green() << ", " << ARTCC_COLOR.blue() << endl;
+
+    file.close();
 }
 
 bool ATCSettings::fileExists(QString path)
