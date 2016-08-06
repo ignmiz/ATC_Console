@@ -27,9 +27,9 @@ private slots:
 
     void slotColorPickerClosed();
 
-    void slotUpdateColorARTCCLow(QColor color);
-    void slotUpdateColorARTCCHigh(QColor color);
-    void slotUpdateColorARTCC(QColor color);
+    void slotUpdateTableColorARTCCLow(QColor color);
+    void slotUpdateTableColorARTCCHigh(QColor color);
+    void slotUpdateTableColorARTCC(QColor color);
 
     void onTableClicked(const QModelIndex &index);
 
@@ -47,6 +47,7 @@ private:
 
     void setupTableView();
     void createSettingsModel();
+    void connectSlots();
     void constructColorPicker(QColor &initColor);
     QList<QStandardItem *> createSettingsRow(QString text, QColor color);
 };

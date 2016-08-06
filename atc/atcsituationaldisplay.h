@@ -110,6 +110,7 @@ private:
     double rotateY(double coordX, double coordY, double angleDeg);
 
     void calculateSectorParameters();
+    void connectSlots();
 
 protected:
     void wheelEvent(QWheelEvent *event);

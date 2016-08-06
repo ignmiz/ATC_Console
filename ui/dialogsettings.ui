@@ -116,7 +116,7 @@
     <string>Export Settings</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEditUserSettings">
+  <widget class="QLineEdit" name="lineEditActiveSettings">
    <property name="geometry">
     <rect>
      <x>140</x>

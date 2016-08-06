@@ -13,6 +13,7 @@
 ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(parent), airspaceData(new ATCAirspace), settings(new ATCSettings)
 {
     situationalDisplaySetup();
+    connectSlots();
     loadData();
 
     rescaleScene();
@@ -3070,6 +3071,13 @@ void ATCSituationalDisplay::calculateSectorParameters()
     {
         scaleFactor = ATCConst::SCENE_WIDTH / ATCConst::SECTOR_SHRINK_FACTOR / spanX;
     }
+}
+
+void ATCSituationalDisplay::connectSlots()
+{
+    connect(settings, SIGNAL(signalColorARTCCLow(QColor)), this, SLOT(slotSetColorSectorARTCCLow(QColor)));
+    connect(settings, SIGNAL(signalColorARTCCHigh(QColor)), this, SLOT(slotSetColorSectorARTCCHigh(QColor)));
+    connect(settings, SIGNAL(signalColorARTCC(QColor)), this, SLOT(slotSetColorSectorARTCC(QColor)));
 }
 
 void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)

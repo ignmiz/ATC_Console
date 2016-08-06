@@ -1,7 +1,6 @@
 #include "dialogsettings.h"
 #include "ui_dialogsettings.h"
 
-//#include <QTimer>
 #include <QMessageBox>
 #include <QDebug>
 
@@ -15,11 +14,13 @@ DialogSettings::DialogSettings(ATCSituationalDisplay *display, QWidget *parent) 
     createSettingsModel();
     setupTableView();
 
+    connectSlots();
+
     uiInner->lineEditDefaultSettings->setReadOnly(true);
-    uiInner->lineEditUserSettings->setReadOnly(true);
+    uiInner->lineEditActiveSettings->setReadOnly(true);
 
     uiInner->lineEditDefaultSettings->setText(situationalDisplay->getSettings()->SETTINGS_DFLT_PATH);
-    uiInner->lineEditUserSettings->setText(situationalDisplay->getSettings()->SETTINGS_ACTIVE_PATH);
+    uiInner->lineEditActiveSettings->setText(situationalDisplay->getSettings()->SETTINGS_ACTIVE_PATH);
 }
 
 DialogSettings::~DialogSettings()
@@ -33,7 +34,7 @@ void DialogSettings::slotColorPickerClosed()
     flagDialogColorPickerExists = false;
 }
 
-void DialogSettings::slotUpdateColorARTCCLow(QColor color)
+void DialogSettings::slotUpdateTableColorARTCCLow(QColor color)
 {
     QBrush brush(color);
     settingsModel->item(0, 1)->setBackground(brush);
@@ -42,7 +43,7 @@ void DialogSettings::slotUpdateColorARTCCLow(QColor color)
     situationalDisplay->getSettings()->ARTCC_LOW_COLOR = color;
 }
 
-void DialogSettings::slotUpdateColorARTCCHigh(QColor color)
+void DialogSettings::slotUpdateTableColorARTCCHigh(QColor color)
 {
     QBrush brush(color);
     settingsModel->item(1, 1)->setBackground(brush);
@@ -51,7 +52,7 @@ void DialogSettings::slotUpdateColorARTCCHigh(QColor color)
     situationalDisplay->getSettings()->ARTCC_HIGH_COLOR = color;
 }
 
-void DialogSettings::slotUpdateColorARTCC(QColor color)
+void DialogSettings::slotUpdateTableColorARTCC(QColor color)
 {
     QBrush brush(color);
     settingsModel->item(2, 1)->setBackground(brush);
@@ -69,21 +70,21 @@ void DialogSettings::onTableClicked(const QModelIndex &index)
         constructColorPicker(situationalDisplay->getSettings()->ARTCC_LOW_COLOR);
 
         connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorSectorARTCCLow(QColor)));
-        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateColorARTCCLow(QColor)));
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateTableColorARTCCLow(QColor)));
     }
     else if((value.toString() == "ARTCC High Color") && !flagDialogColorPickerExists)
     {
         constructColorPicker(situationalDisplay->getSettings()->ARTCC_HIGH_COLOR);
 
         connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorSectorARTCCHigh(QColor)));
-        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateColorARTCCHigh(QColor)));
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateTableColorARTCCHigh(QColor)));
     }
     else if((value.toString() == "ARTCC Color") && !flagDialogColorPickerExists)
     {
         constructColorPicker(situationalDisplay->getSettings()->ARTCC_COLOR);
 
         connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorSectorARTCC(QColor)));
-        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateColorARTCC(QColor)));
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateTableColorARTCC(QColor)));
     }
 }
 
@@ -114,6 +115,13 @@ void DialogSettings::createSettingsModel()
     settingsModel->appendRow(createSettingsRow("ARTCC Low", situationalDisplay->getSettings()->ARTCC_LOW_COLOR));
     settingsModel->appendRow(createSettingsRow("ARTCC High", situationalDisplay->getSettings()->ARTCC_HIGH_COLOR));
     settingsModel->appendRow(createSettingsRow("ARTCC", situationalDisplay->getSettings()->ARTCC_COLOR));
+}
+
+void DialogSettings::connectSlots()
+{
+    connect(situationalDisplay->getSettings(), SIGNAL(signalColorARTCCLow(QColor)), this, SLOT(slotUpdateTableColorARTCCLow(QColor)));
+    connect(situationalDisplay->getSettings(), SIGNAL(signalColorARTCCHigh(QColor)), this, SLOT(slotUpdateTableColorARTCCHigh(QColor)));
+    connect(situationalDisplay->getSettings(), SIGNAL(signalColorARTCC(QColor)), this, SLOT(slotUpdateTableColorARTCC(QColor)));
 }
 
 void DialogSettings::constructColorPicker(QColor &initColor)
@@ -161,7 +169,12 @@ void DialogSettings::on_buttonExportSettings_clicked()
 
 void DialogSettings::on_buttonLoadSettings_clicked()
 {
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Load settings..."), situationalDisplay->getSettings()->SETTINGS_EXPORT_PATH, tr("Text files(*.txt)"));
+    if(filePath.isEmpty()) return;
 
+    situationalDisplay->getSettings()->loadSettings(filePath);
+
+    uiInner->lineEditActiveSettings->setText(situationalDisplay->getSettings()->SETTINGS_ACTIVE_PATH);
 }
 
 void DialogSettings::on_buttonSetToDefault_clicked()

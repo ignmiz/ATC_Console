@@ -5,17 +5,17 @@
 #include <QFile>
 #include <QTextStream>
 
-class ATCSettings
+class ATCSettings : public QObject
 {
+    Q_OBJECT
+
 public:
     explicit ATCSettings();
     ~ATCSettings();
 
-    void assignPaths();
     void setDefaultPath(QString newPath);
-
-    void loadInitialSettings(QString path);
     void exportSettings(QString path);
+    void loadSettings(QString path);
 
     bool fileExists(QString path);
 
@@ -30,9 +30,18 @@ public:
     QColor ARTCC_HIGH_COLOR;
     QColor ARTCC_COLOR;
 
+signals:
+    void signalColorARTCCLow(const QColor &color);
+    void signalColorARTCCHigh(const QColor &color);
+    void signalColorARTCC(const QColor &color);
+
 private:
     QRgb colorFromString(QString string);
 
+    void assignPaths();
+    void loadInitialSettings(QString path);
+
+    void interpretSettingsFile(QString path);
 };
 
 #endif // ATCSETTINGS_H

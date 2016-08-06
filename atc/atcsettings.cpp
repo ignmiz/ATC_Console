@@ -67,11 +67,18 @@ void ATCSettings::setDefaultPath(QString newPath)
 
 void ATCSettings::loadInitialSettings(QString path)
 {
+    interpretSettingsFile(path);
+
+    SETTINGS_ACTIVE_PATH = path;
+}
+
+void ATCSettings::interpretSettingsFile(QString path)
+{
     QFile file(path);
 
     if(!file.open(QFile::ReadOnly | QFile::Text))
     {
-        qDebug() << "Error while opening file";
+        qDebug() << "Error while opening file " << path;
         return;
     }
 
@@ -194,7 +201,7 @@ void ATCSettings::loadInitialSettings(QString path)
         }
     }
 
-    SETTINGS_ACTIVE_PATH = path;
+    file.close();
 }
 
 void ATCSettings::exportSettings(QString path)
@@ -204,19 +211,6 @@ void ATCSettings::exportSettings(QString path)
     QString nameWithoutExtension = fileName.split(".", QString::KeepEmptyParts).at(0).trimmed();
 
     QFile file(path);
-
-//    if(fileExists(path))
-//    {
-        //Here comes out a MsgBox with question to overwrite
-//        qDebug() << "File " + path + " exists!";
-//        return;
-
-        //Here is the part which overwrites
-//        if(!file.open(QFile::Truncate | QFile::Text))
-//        {
-//            qDebug() << "Error while opening file for truncate " + path;
-//        }
-//    }
 
     if(!file.open(QFile::WriteOnly | QFile::Text))
     {
@@ -242,6 +236,17 @@ void ATCSettings::exportSettings(QString path)
     out << "COLOR = " << ARTCC_COLOR.red() << ", " << ARTCC_COLOR.green() << ", " << ARTCC_COLOR.blue() << endl;
 
     file.close();
+}
+
+void ATCSettings::loadSettings(QString path)
+{
+    interpretSettingsFile(path);
+
+    emit signalColorARTCCLow(ARTCC_LOW_COLOR);
+    emit signalColorARTCCHigh(ARTCC_HIGH_COLOR);
+    emit signalColorARTCC(ARTCC_COLOR);
+
+    SETTINGS_ACTIVE_PATH = path;
 }
 
 bool ATCSettings::fileExists(QString path)
