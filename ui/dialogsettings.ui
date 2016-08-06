@@ -53,7 +53,7 @@
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="labelActiveSettings">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -135,6 +135,19 @@
 	border-color: #141414;
 	font: 13px;
 }</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonSetToDefault">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>660</y>
+     <width>120</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Set to Default</string>
    </property>
   </widget>
  </widget>

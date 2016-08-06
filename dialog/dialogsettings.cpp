@@ -14,6 +14,12 @@ DialogSettings::DialogSettings(ATCSituationalDisplay *display, QWidget *parent) 
     windowSetup();    
     createSettingsModel();
     setupTableView();
+
+    uiInner->lineEditDefaultSettings->setReadOnly(true);
+    uiInner->lineEditUserSettings->setReadOnly(true);
+
+    uiInner->lineEditDefaultSettings->setText(situationalDisplay->getSettings()->SETTINGS_DFLT_PATH);
+    uiInner->lineEditUserSettings->setText(situationalDisplay->getSettings()->SETTINGS_ACTIVE_PATH);
 }
 
 DialogSettings::~DialogSettings()
@@ -156,4 +162,18 @@ void DialogSettings::on_buttonExportSettings_clicked()
 void DialogSettings::on_buttonLoadSettings_clicked()
 {
 
+}
+
+void DialogSettings::on_buttonSetToDefault_clicked()
+{
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Set as default config..."), situationalDisplay->getSettings()->SETTINGS_EXPORT_PATH, tr("Text files(*.txt)"));
+    if(filePath.isEmpty()) return;
+
+    situationalDisplay->getSettings()->setDefaultPath(filePath);
+
+    QMessageBox msgBox(this);
+    msgBox.setText("Default settings set to: " + filePath);
+    msgBox.exec();
+
+    uiInner->lineEditDefaultSettings->setText(situationalDisplay->getSettings()->SETTINGS_DFLT_PATH);
 }

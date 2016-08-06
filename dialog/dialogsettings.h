@@ -35,6 +35,7 @@ private slots:
 
     void on_buttonExportSettings_clicked();
     void on_buttonLoadSettings_clicked();
+    void on_buttonSetToDefault_clicked();
 
 private:
     Ui::DialogSettings *uiInner;

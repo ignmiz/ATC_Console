@@ -6,7 +6,7 @@
 ATCSettings::ATCSettings()
 {
     assignPaths();
-    loadSettings(SETTINGS_DFLT_PATH);
+    loadInitialSettings(SETTINGS_DFLT_PATH);
 }
 
 ATCSettings::~ATCSettings()
@@ -16,9 +16,7 @@ ATCSettings::~ATCSettings()
 
 void ATCSettings::assignPaths()
 {
-    QString paths("../../ATC_Console/ATC_Console/config/paths.txt");
-
-    QFile pathsFile(paths);
+    QFile pathsFile(SETTINGS_PATHS_FILE);
 
     if(!pathsFile.open(QFile::ReadOnly | QFile::Text))
     {
@@ -41,14 +39,33 @@ void ATCSettings::assignPaths()
         else if(stringList.at(0).trimmed() == "EXPORT")
         {
             SETTINGS_EXPORT_PATH = stringList.at(1).trimmed();
-            qDebug() << SETTINGS_EXPORT_PATH;
         }
     }
 
     pathsFile.close();
 }
 
-void ATCSettings::loadSettings(QString path)
+void ATCSettings::setDefaultPath(QString newPath)
+{
+    QFile pathsFile(SETTINGS_PATHS_FILE);
+
+    if(!pathsFile.open(QFile::WriteOnly | QFile::Text))
+    {
+        qDebug() << "Error while opening " + SETTINGS_PATHS_FILE + " file";
+        return;
+    }
+
+    QTextStream out(&pathsFile);
+
+    out << "DEFAULT = " << newPath << endl;
+    out << "EXPORT = " << SETTINGS_EXPORT_PATH << endl;
+
+    pathsFile.close();
+
+    SETTINGS_DFLT_PATH = newPath;
+}
+
+void ATCSettings::loadInitialSettings(QString path)
 {
     QFile file(path);
 
@@ -176,6 +193,8 @@ void ATCSettings::loadSettings(QString path)
             }
         }
     }
+
+    SETTINGS_ACTIVE_PATH = path;
 }
 
 void ATCSettings::exportSettings(QString path)
@@ -208,7 +227,7 @@ void ATCSettings::exportSettings(QString path)
     QTextStream out(&file);
 
     out << "[INFO]" << endl;
-    out << "NAME = " << nameWithoutExtension << endl; //THIS NEEDS TO BE CHANGED
+    out << "NAME = " << nameWithoutExtension << endl;
     out << endl;
 
     out << "[ARTCC LOW]" << endl;

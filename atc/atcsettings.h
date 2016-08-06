@@ -12,12 +12,16 @@ public:
     ~ATCSettings();
 
     void assignPaths();
-    void loadSettings(QString path);
+    void setDefaultPath(QString newPath);
+
+    void loadInitialSettings(QString path);
     void exportSettings(QString path);
 
     bool fileExists(QString path);
 
     QString SETTINGS_NAME;
+
+    QString SETTINGS_PATHS_FILE = "../../ATC_Console/ATC_Console/config/paths.txt";
     QString SETTINGS_DFLT_PATH;
     QString SETTINGS_EXPORT_PATH;
     QString SETTINGS_ACTIVE_PATH;
