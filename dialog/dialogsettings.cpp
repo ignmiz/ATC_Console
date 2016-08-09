@@ -177,7 +177,7 @@ void DialogSettings::on_buttonLoadSettings_clicked()
     uiInner->lineEditActiveSettings->setText(situationalDisplay->getSettings()->SETTINGS_ACTIVE_PATH);
 }
 
-void DialogSettings::on_buttonSetToDefault_clicked()
+void DialogSettings::on_buttonSetDefault_clicked()
 {
     QString filePath = QFileDialog::getOpenFileName(this, tr("Set as default config..."), situationalDisplay->getSettings()->SETTINGS_EXPORT_PATH, tr("Text files(*.txt)"));
     if(filePath.isEmpty()) return;

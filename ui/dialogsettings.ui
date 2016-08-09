@@ -13,20 +13,86 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="ATCSettingsTableView" name="tableView">
+  <widget class="QTabWidget" name="tabWidget">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>5</x>
      <y>30</y>
-     <width>480</width>
-     <height>550</height>
+     <width>490</width>
+     <height>665</height>
     </rect>
    </property>
-   <property name="autoFillBackground">
-    <bool>false</bool>
-   </property>
    <property name="styleSheet">
-    <string notr="true">QTableView
+    <string notr="true">QTabWidget
+{
+	background: #000000;
+	border: none;
+}
+
+QTabWidget::tab-bar
+{
+	left: 5px;
+}
+
+QTabWidget::pane
+{
+	border: none;
+}
+
+QWidget#tabSymbology, QWidget#tabDisplayedObjects
+{
+	background: #000000;
+}
+
+QTabBar::tab
+{
+	color: #c8c8c8;
+	width: 240px;
+}
+
+QTabBar::tab:selected
+{
+	font: bold;
+	background: #3c3c3c;
+}
+
+QTabBar::tab:selected:hover
+{
+	font: bold;
+	background: #464646;
+}
+
+QTabBar::tab:!selected
+{
+	background: #1e1e1e;
+}
+
+QTabBar::tab:!selected:hover
+{
+	background: #282828;
+}</string>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="tabSymbology">
+    <attribute name="title">
+     <string>Symbology</string>
+    </attribute>
+    <widget class="ATCSettingsTableView" name="tableView">
+     <property name="geometry">
+      <rect>
+       <x>5</x>
+       <y>10</y>
+       <width>480</width>
+       <height>505</height>
+      </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QTableView
 {
 	color: #c8c8c8;
 	background-color: #1e1e1e;
@@ -35,51 +101,35 @@
 	border-color: #141414;
 	font: 13px;
 }</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="labelDefaultSettings">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>590</y>
-     <width>110</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Default settings:</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-   </property>
-  </widget>
-  <widget class="QLabel" name="labelActiveSettings">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>620</y>
-     <width>110</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Active settings:</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="lineEditDefaultSettings">
-   <property name="geometry">
-    <rect>
-     <x>140</x>
-     <y>590</y>
-     <width>350</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QLineEdit
+     </property>
+    </widget>
+    <widget class="QLabel" name="labelDefaultSettings">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>525</y>
+       <width>110</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Default settings:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEditDefaultSettings">
+     <property name="geometry">
+      <rect>
+       <x>135</x>
+       <y>525</y>
+       <width>350</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QLineEdit
 {
 	color: #c8c8c8;
 	background-color: #1e1e1e;
@@ -88,45 +138,35 @@
 	border-color: #141414;
 	font: 13px;
 }</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="buttonLoadSettings">
-   <property name="geometry">
-    <rect>
-     <x>240</x>
-     <y>660</y>
-     <width>120</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Load Settings</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="buttonExportSettings">
-   <property name="geometry">
-    <rect>
-     <x>370</x>
-     <y>660</y>
-     <width>120</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Export Settings</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="lineEditActiveSettings">
-   <property name="geometry">
-    <rect>
-     <x>140</x>
-     <y>620</y>
-     <width>350</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QLineEdit
+     </property>
+    </widget>
+    <widget class="QLabel" name="labelActiveSettings">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>560</y>
+       <width>110</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Active settings:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEditActiveSettings">
+     <property name="geometry">
+      <rect>
+       <x>135</x>
+       <y>560</y>
+       <width>350</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QLineEdit
 {
 	color: #c8c8c8;
 	background-color: #1e1e1e;
@@ -135,20 +175,53 @@
 	border-color: #141414;
 	font: 13px;
 }</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="buttonSetToDefault">
-   <property name="geometry">
-    <rect>
-     <x>110</x>
-     <y>660</y>
-     <width>120</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Set to Default</string>
-   </property>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="buttonSetDefault">
+     <property name="geometry">
+      <rect>
+       <x>105</x>
+       <y>605</y>
+       <width>120</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Set as Default</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="buttonLoadSettings">
+     <property name="geometry">
+      <rect>
+       <x>235</x>
+       <y>605</y>
+       <width>120</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Load Settings</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="buttonExportSettings">
+     <property name="geometry">
+      <rect>
+       <x>365</x>
+       <y>605</y>
+       <width>120</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Export Settings</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tabDisplayedObjects">
+    <attribute name="title">
+     <string>Display</string>
+    </attribute>
+   </widget>
   </widget>
  </widget>
  <customwidgets>
