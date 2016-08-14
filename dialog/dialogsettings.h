@@ -41,15 +41,23 @@ private:
     Ui::DialogSettings *uiInner;
     DialogColorPicker *dialogColorPicker = nullptr;
     ATCSituationalDisplay *situationalDisplay = nullptr;    
-    QStandardItemModel *settingsModel = nullptr;
+    QStandardItemModel *modelSymbology = nullptr;
+    QStandardItemModel *modelDisplay = nullptr;
 
     bool flagDialogColorPickerExists = false;
 
-    void setupTableView();
-    void createSettingsModel();
+    void setupViewSymbology();
+    void setupViewDisplay();
+    void createModelSymbology();
+    void createModelDisplay();
+
     void connectSlots();
+
     void constructColorPicker(QColor &initColor);
-    QList<QStandardItem *> createSettingsRow(QString text, QColor color);
+    QList<QStandardItem*> createSymbologyRow(QString text, QColor color);
+
+    QList<QStandardItem*> createDisplayHeader(QString text);
+    QList<QStandardItem*> createDisplayRow(QString text, bool checked);
 };
 
 #endif // DIALOGSETTINGS_H

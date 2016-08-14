@@ -72,8 +72,11 @@ QTabBar::tab:!selected:hover
 	background: #282828;
 }</string>
    </property>
+   <property name="tabPosition">
+    <enum>QTabWidget::North</enum>
+   </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tabSymbology">
     <attribute name="title">
@@ -221,6 +224,27 @@ QTabBar::tab:!selected:hover
     <attribute name="title">
      <string>Display</string>
     </attribute>
+    <widget class="QTreeView" name="treeView">
+     <property name="geometry">
+      <rect>
+       <x>5</x>
+       <y>10</y>
+       <width>480</width>
+       <height>505</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QTreeView
+{
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	font: 13px;
+}</string>
+     </property>
+    </widget>
    </widget>
   </widget>
  </widget>

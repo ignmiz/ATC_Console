@@ -10,9 +10,13 @@ DialogSettings::DialogSettings(ATCSituationalDisplay *display, QWidget *parent) 
     uiInner(new Ui::DialogSettings)
 {
     uiInner->setupUi(this);
-    windowSetup();    
-    createSettingsModel();
-    setupTableView();
+    windowSetup();
+
+    createModelSymbology();
+    createModelDisplay();
+
+    setupViewSymbology();
+    setupViewDisplay();
 
     connectSlots();
 
@@ -26,7 +30,8 @@ DialogSettings::DialogSettings(ATCSituationalDisplay *display, QWidget *parent) 
 DialogSettings::~DialogSettings()
 {
     delete uiInner;
-    if(settingsModel != nullptr) delete settingsModel;
+    if(modelSymbology != nullptr) delete modelSymbology;
+    if(modelDisplay != nullptr) delete modelDisplay;
 }
 
 void DialogSettings::slotColorPickerClosed()
@@ -37,8 +42,8 @@ void DialogSettings::slotColorPickerClosed()
 void DialogSettings::slotUpdateTableColorARTCCLow(QColor color)
 {
     QBrush brush(color);
-    settingsModel->item(0, 1)->setBackground(brush);
-    settingsModel->item(0, 1)->setForeground(brush);
+    modelSymbology->item(0, 1)->setBackground(brush);
+    modelSymbology->item(0, 1)->setForeground(brush);
 
     situationalDisplay->getSettings()->ARTCC_LOW_COLOR = color;
 }
@@ -46,8 +51,8 @@ void DialogSettings::slotUpdateTableColorARTCCLow(QColor color)
 void DialogSettings::slotUpdateTableColorARTCCHigh(QColor color)
 {
     QBrush brush(color);
-    settingsModel->item(1, 1)->setBackground(brush);
-    settingsModel->item(1, 1)->setForeground(brush);
+    modelSymbology->item(1, 1)->setBackground(brush);
+    modelSymbology->item(1, 1)->setForeground(brush);
 
     situationalDisplay->getSettings()->ARTCC_HIGH_COLOR = color;
 }
@@ -55,8 +60,8 @@ void DialogSettings::slotUpdateTableColorARTCCHigh(QColor color)
 void DialogSettings::slotUpdateTableColorARTCC(QColor color)
 {
     QBrush brush(color);
-    settingsModel->item(2, 1)->setBackground(brush);
-    settingsModel->item(2, 1)->setForeground(brush);
+    modelSymbology->item(2, 1)->setBackground(brush);
+    modelSymbology->item(2, 1)->setForeground(brush);
 
     situationalDisplay->getSettings()->ARTCC_COLOR = color;
 }
@@ -88,13 +93,13 @@ void DialogSettings::onTableClicked(const QModelIndex &index)
     }
 }
 
-void DialogSettings::setupTableView()
+void DialogSettings::setupViewSymbology()
 {
-    uiInner->tableView->setModel(settingsModel);
+    uiInner->tableView->setModel(modelSymbology);
     uiInner->tableView->setGridStyle(Qt::NoPen);
 
     int rowHeight = 25;
-    for(int i = 0; i < settingsModel->rowCount(); i++)
+    for(int i = 0; i < modelSymbology->rowCount(); i++)
     {
         uiInner->tableView->setRowHeight(i, rowHeight);
     }
@@ -108,13 +113,47 @@ void DialogSettings::setupTableView()
     connect(uiInner->tableView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
 }
 
-void DialogSettings::createSettingsModel()
+void DialogSettings::setupViewDisplay()
 {
-    settingsModel = new QStandardItemModel(0, 2, this);
+    uiInner->treeView->setModel(modelDisplay);
+    uiInner->treeView->setHeaderHidden(true);
 
-    settingsModel->appendRow(createSettingsRow("ARTCC Low", situationalDisplay->getSettings()->ARTCC_LOW_COLOR));
-    settingsModel->appendRow(createSettingsRow("ARTCC High", situationalDisplay->getSettings()->ARTCC_HIGH_COLOR));
-    settingsModel->appendRow(createSettingsRow("ARTCC", situationalDisplay->getSettings()->ARTCC_COLOR));
+    uiInner->treeView->setColumnWidth(0, 375);
+    uiInner->treeView->setColumnWidth(1, 50);
+}
+
+void DialogSettings::createModelSymbology()
+{
+    modelSymbology = new QStandardItemModel(0, 2, this);
+
+    modelSymbology->appendRow(createSymbologyRow("ARTCC Low", situationalDisplay->getSettings()->ARTCC_LOW_COLOR));
+    modelSymbology->appendRow(createSymbologyRow("ARTCC High", situationalDisplay->getSettings()->ARTCC_HIGH_COLOR));
+    modelSymbology->appendRow(createSymbologyRow("ARTCC", situationalDisplay->getSettings()->ARTCC_COLOR));
+}
+
+void DialogSettings::createModelDisplay()
+{
+    modelDisplay = new QStandardItemModel(0, 2, this);
+
+    QList<QStandardItem*> headerSectorARTCCLow(createDisplayHeader("ARTCC Low"));
+    modelDisplay->appendRow(headerSectorARTCCLow);
+
+    headerSectorARTCCLow.at(0)->appendRow(createDisplayRow("ARTCC Low 1", true));
+    headerSectorARTCCLow.at(0)->appendRow(createDisplayRow("ARTCC Low 2", false));
+
+    QList<QStandardItem*> headerSectorARTCCHigh(createDisplayHeader("ARTCC High"));
+    modelDisplay->appendRow(headerSectorARTCCHigh);
+
+    headerSectorARTCCHigh.at(0)->appendRow(createDisplayRow("ARTCC High 1", false));
+
+    QList<QStandardItem*> headerSectorARTCC(createDisplayHeader("ARTCC"));
+    modelDisplay->appendRow(headerSectorARTCC);
+
+    for(int i = 0; i < 50; i++)
+    {
+        QString name("ARTCC " + QString::number(i));
+        headerSectorARTCC.at(0)->appendRow(createDisplayRow(name, true));
+    }
 }
 
 void DialogSettings::connectSlots()
@@ -136,7 +175,7 @@ void DialogSettings::constructColorPicker(QColor &initColor)
     flagDialogColorPickerExists = true;
 }
 
-QList<QStandardItem *> DialogSettings::createSettingsRow(QString text, QColor color)
+QList<QStandardItem *> DialogSettings::createSymbologyRow(QString text, QColor color)
 {
     QList<QStandardItem*> items;
 
@@ -153,6 +192,48 @@ QList<QStandardItem *> DialogSettings::createSettingsRow(QString text, QColor co
     colorField->setForeground(brush);
 
     return items;
+}
+
+QList<QStandardItem*> DialogSettings::createDisplayHeader(QString text)
+{
+    QList<QStandardItem*> rowHeader;
+
+    QStandardItem *headerName = new QStandardItem(text);
+    headerName->setFlags(Qt::NoItemFlags);
+    rowHeader.append(headerName);
+
+    QStandardItem *headerFiller = new QStandardItem();
+    headerFiller->setFlags(Qt::NoItemFlags);
+    rowHeader.append(headerFiller);
+
+    return rowHeader;
+}
+
+QList<QStandardItem *> DialogSettings::createDisplayRow(QString text, bool checked)
+{
+    QList<QStandardItem*> rowDisplay;
+
+    QStandardItem *name = new QStandardItem(text);
+    name->setFlags(Qt::NoItemFlags);
+    rowDisplay.append(name);
+
+    QStandardItem *checkbox = new QStandardItem();
+    checkbox->setEditable(false);
+    checkbox->setSelectable(false);
+    checkbox->setCheckable(true);
+
+    if(checked)
+    {
+        checkbox->setCheckState(Qt::Checked);
+    }
+    else
+    {
+        checkbox->setCheckState(Qt::Unchecked);
+    }
+
+    rowDisplay.append(checkbox);
+
+    return rowDisplay;
 }
 
 void DialogSettings::on_buttonExportSettings_clicked()
