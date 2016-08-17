@@ -58,6 +58,10 @@ private:
 
     QList<QStandardItem*> createDisplayHeader(QString text);
     QList<QStandardItem*> createDisplayRow(QString text, bool checked);
+
+    void populateTreeModel(QString headerName, QVector<ATCAbstractSector*> &vector, QStandardItemModel *model, bool dummyDisplayFlag);
+
+    template <class T> void populateTreeModelTemplate(QString headerName, QVector<T*> &vector, QStandardItemModel *model, bool dummyDisplayFlag);
 };
 
 #endif // DIALOGSETTINGS_H

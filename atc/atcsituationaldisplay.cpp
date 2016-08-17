@@ -60,6 +60,11 @@ ATCSettings* ATCSituationalDisplay::getSettings()
     return settings;
 }
 
+ATCAirspace *ATCSituationalDisplay::getAirspaceData()
+{
+    return airspaceData;
+}
+
 void ATCSituationalDisplay::slotSetColorSectorARTCCLow(QColor color)
 {
     for(int i = 0; i < visibleSectorsARTCCLow.size(); i++)

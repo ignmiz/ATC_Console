@@ -391,6 +391,61 @@ ATCAirwayHigh *ATCAirspace::getAirwayHigh(int iterator)
     return highAirways.at(iterator);
 }
 
+QVector<ATCSectorARTCCLow*>& ATCAirspace::getSectorARTCCLowVector()
+{
+    return sectorsARTCCLow;
+}
+
+QVector<ATCSectorARTCCHigh*>& ATCAirspace::getSectorARTCCHighVector()
+{
+    return sectorsARTCCHigh;
+}
+
+QVector<ATCSectorARTCC*>& ATCAirspace::getSectorARTCCVector()
+{
+    return sectorsARTCC;
+}
+
+QVector<ATCNavFix*>& ATCAirspace::getFixesVector()
+{
+    return fixes;
+}
+
+QVector<ATCBeaconNDB*>& ATCAirspace::getNDBsVector()
+{
+    return ndbs;
+}
+
+QVector<ATCBeaconVOR*>& ATCAirspace::getVORsVector()
+{
+    return vors;
+}
+
+QVector<ATCAirport*>& ATCAirspace::getAirportsVector()
+{
+    return airports;
+}
+
+QVector<ATCProcedureSIDSymbol*>& ATCAirspace::getSIDSymbolsVector()
+{
+    return sidSymbols;
+}
+
+QVector<ATCProcedureSTARSymbol*>& ATCAirspace::getSTARSymbolsVector()
+{
+    return starSymbols;
+}
+
+QVector<ATCAirwayLow*>& ATCAirspace::getAirwayLowVector()
+{
+    return lowAirways;
+}
+
+QVector<ATCAirwayHigh*>& ATCAirspace::getAirwayHighVector()
+{
+    return highAirways;
+}
+
 double ATCAirspace::getNavaidLatitude(QString name)
 {
     if(isFix(name))

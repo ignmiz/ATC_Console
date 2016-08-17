@@ -31,6 +31,7 @@ public:
     void setBaseScale(qreal scale);
 
     ATCSettings* getSettings();
+    ATCAirspace* getAirspaceData();
 
 public slots:
     void slotSetColorSectorARTCCLow(QColor color);

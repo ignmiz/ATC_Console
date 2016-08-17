@@ -84,6 +84,18 @@ public:
     ATCAirwayLow* getAirwayLow(int iterator);
     ATCAirwayHigh* getAirwayHigh(int iterator);
 
+    QVector<ATCSectorARTCCLow*>& getSectorARTCCLowVector();
+    QVector<ATCSectorARTCCHigh*>& getSectorARTCCHighVector();
+    QVector<ATCSectorARTCC*>& getSectorARTCCVector();
+    QVector<ATCNavFix*>& getFixesVector();
+    QVector<ATCBeaconNDB*>& getNDBsVector();
+    QVector<ATCBeaconVOR*>& getVORsVector();
+    QVector<ATCAirport*>& getAirportsVector();
+    QVector<ATCProcedureSIDSymbol*>& getSIDSymbolsVector();
+    QVector<ATCProcedureSTARSymbol*>& getSTARSymbolsVector();
+    QVector<ATCAirwayLow*>& getAirwayLowVector();
+    QVector<ATCAirwayHigh*>& getAirwayHighVector();
+
     ATCAirspaceSector* getLastSector();
     ATCSectorARTCCLow* getLastSectorARTCCLow();
     ATCSectorARTCCHigh* getLastSectorARTCCHigh();
