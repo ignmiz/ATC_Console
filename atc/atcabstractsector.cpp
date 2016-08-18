@@ -124,3 +124,23 @@ void ATCAbstractSector::appendPolygon(QGraphicsPolygonItem *polygon)
 {
     polygons.append(polygon);
 }
+
+void ATCAbstractSector::show() //TO BE CHANGED
+{
+    visible = true;
+}
+
+void ATCAbstractSector::hide() //TO BE CHANGED
+{
+    visible = false;
+}
+
+bool ATCAbstractSector::isVisible()
+{
+    return visible;
+}
+
+void ATCAbstractSector::setFlagVisible(bool flag)
+{
+    visible = flag;
+}

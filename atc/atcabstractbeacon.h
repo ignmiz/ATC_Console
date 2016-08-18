@@ -22,12 +22,19 @@ public:
     void setScenePosition(QPointF *position);
     void setLabel(QGraphicsSimpleTextItem *textLabel);
 
+    void show();
+    void hide();
+    bool isVisible();
+    void setFlagVisible(bool flag); //TEMPORARY
+
 private:
     QString name;
     float frequency;
     QPointF *scenePosition = nullptr;
     QAbstractGraphicsShapeItem *symbol = nullptr;
     QGraphicsSimpleTextItem *label = nullptr;
+
+    bool visible = false;
 };
 
 #endif // ATCABSTRACTBEACON_H

@@ -52,3 +52,23 @@ void ATCNavFix::setLabel(QGraphicsSimpleTextItem *textLabel)
 {
     label = textLabel;
 }
+
+void ATCNavFix::show()
+{
+    visible = true;
+}
+
+void ATCNavFix::hide()
+{
+    visible = false;
+}
+
+bool ATCNavFix::isVisible()
+{
+    return visible;
+}
+
+void ATCNavFix::setFlagVisible(bool flag)
+{
+    visible = flag;
+}

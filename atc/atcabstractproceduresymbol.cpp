@@ -75,3 +75,23 @@ void ATCAbstractProcedureSymbol::appendLine(QGraphicsLineItem *line)
 {
     lines.append(line);
 }
+
+void ATCAbstractProcedureSymbol::show()
+{
+    visible = true;
+}
+
+void ATCAbstractProcedureSymbol::hide()
+{
+    visible = false;
+}
+
+bool ATCAbstractProcedureSymbol::isVisible()
+{
+    return visible;
+}
+
+void ATCAbstractProcedureSymbol::setFlagVisible(bool flag)
+{
+    visible = flag;
+}

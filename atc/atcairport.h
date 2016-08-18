@@ -31,12 +31,19 @@ public:
 
    bool isRunwayVectorEmpty();
 
+   void show();
+   void hide();
+   bool isVisible();
+   void setFlagVisible(bool flag); //TEMPORARY
+
 private:
    QString name;
    QPointF *scenePosition = nullptr;
    QGraphicsEllipseItem *symbol = nullptr;
    QGraphicsSimpleTextItem *label = nullptr;
    QVector<ATCRunway*> runways;
+
+   bool visible = false;
 };
 
 #endif // ATCAIRPORT_H

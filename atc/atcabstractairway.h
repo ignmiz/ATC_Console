@@ -23,11 +23,18 @@ public:
     void appendCoords2(ATCAirspaceFix *coord);
     void appendLine(QGraphicsLineItem *line);
 
+    void show();
+    void hide();
+    bool isVisible();
+    void setFlagVisible(bool flag); //TEMPORARY
+
 private:
     QString airwayName;
     QVector<ATCAirspaceFix*> coords1;
     QVector<ATCAirspaceFix*> coords2;
     QVector<QGraphicsLineItem*> lines;
+
+    bool visible = false;
 };
 
 #endif // ATCABSTRACTAIRWAY_H

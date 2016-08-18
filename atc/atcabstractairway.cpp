@@ -75,3 +75,23 @@ void ATCAbstractAirway::appendLine(QGraphicsLineItem *line)
 {
     lines.append(line);
 }
+
+void ATCAbstractAirway::show()
+{
+    visible = true;
+}
+
+void ATCAbstractAirway::hide()
+{
+    visible = false;
+}
+
+bool ATCAbstractAirway::isVisible()
+{
+    return visible;
+}
+
+void ATCAbstractAirway::setFlagVisible(bool flag)
+{
+    visible = flag;
+}

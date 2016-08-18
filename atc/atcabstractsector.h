@@ -38,6 +38,11 @@ public:
     void appendLine(QGraphicsLineItem *line);
     void appendPolygon(QGraphicsPolygonItem *polygon);
 
+    void show();
+    void hide();
+    bool isVisible();
+    void setFlagVisible(bool flag); //TEMPORARY
+
 private:
     QString sectorName;
     QVector<ATCAirspaceFix*> coords1;
@@ -45,6 +50,8 @@ private:
     QVector<QGraphicsLineItem*> lines;
     QVector<coordsPair> projectedCoords;
     QVector<QGraphicsPolygonItem*> polygons;
+
+    bool visible = false;
 };
 
 #endif // ATCABSTRACTSECTOR_H

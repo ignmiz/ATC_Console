@@ -1946,6 +1946,7 @@ void ATCSituationalDisplay::displaySectorsARTCCLow()
         }
 
         visibleSectorsARTCCLow.append(airspaceData->getSectorARTCCLow(i));
+        airspaceData->getSectorARTCCLow(i)->setFlagVisible(true);
     }
 }
 
@@ -2034,6 +2035,7 @@ void ATCSituationalDisplay::displaySectorsARTCCHigh()
         }
 
         visibleSectorsARTCCHigh.append(airspaceData->getSectorARTCCHigh(i));
+        airspaceData->getSectorARTCCHigh(i)->setFlagVisible(true);
     }
 }
 
@@ -2122,6 +2124,7 @@ void ATCSituationalDisplay::displaySectorsARTCC()
         }
 
         visibleSectorsARTCC.append(airspaceData->getSectorARTCC(i));
+        airspaceData->getSectorARTCC(i)->setFlagVisible(true);
     }
 }
 
@@ -2213,6 +2216,7 @@ void ATCSituationalDisplay::displayFixes()
                              positionY + ATCConst::FIX_LABEL_DY / currentScale);
 
         scene->addItem(currentLabel);
+        currentFix->setFlagVisible(true);
     }
 }
 
@@ -2276,23 +2280,24 @@ void ATCSituationalDisplay::displayAirports()
     QFont textFont("Arial");
     textFont.setPointSizeF(ATCConst::AIRPORT_LABEL_HEIGHT / currentScale);
 
-        for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
-        {
-            ATCAirport *currentAirport = airspaceData->getAirport(i);
-            QGraphicsSimpleTextItem *currentLabel = new QGraphicsSimpleTextItem(currentAirport->getName());
-            currentAirport->setLabel(currentLabel);
+    for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
+    {
+        ATCAirport *currentAirport = airspaceData->getAirport(i);
+        QGraphicsSimpleTextItem *currentLabel = new QGraphicsSimpleTextItem(currentAirport->getName());
+        currentAirport->setLabel(currentLabel);
 
-            currentLabel->setBrush(textBrush);
-            currentLabel->setFont(textFont);
+        currentLabel->setBrush(textBrush);
+        currentLabel->setFont(textFont);
 
-            double positionX = currentAirport->getScenePosition()->x();
-            double positionY = currentAirport->getScenePosition()->y();
+        double positionX = currentAirport->getScenePosition()->x();
+        double positionY = currentAirport->getScenePosition()->y();
 
-            currentLabel->setPos(positionX + ATCConst::AIRPORT_LABEL_DX / currentScale,
-                                 positionY + ATCConst::AIRPORT_LABEL_DY / currentScale);
+        currentLabel->setPos(positionX + ATCConst::AIRPORT_LABEL_DX / currentScale,
+                             positionY + ATCConst::AIRPORT_LABEL_DY / currentScale);
 
-            scene->addItem(currentLabel);
-        }
+        scene->addItem(currentLabel);
+        currentAirport->setFlagVisible(true);
+    }
 }
 
 void ATCSituationalDisplay::displayExtendedCentrelines()
@@ -2523,6 +2528,7 @@ void ATCSituationalDisplay::displayVORs()
                              positionY + ATCConst::VOR_LABEL_DY / currentScale);
 
         scene->addItem(currentLabel);
+        currentVOR->setFlagVisible(true);
     }
 }
 
@@ -2602,6 +2608,7 @@ void ATCSituationalDisplay::displayNDBs()
                              positionY + ATCConst::VOR_LABEL_DY / currentScale);
 
         scene->addItem(currentLabel);
+        currentNDB->setFlagVisible(true);
     }
 }
 
@@ -2684,6 +2691,7 @@ void ATCSituationalDisplay::displaySTARs()
         }
 
         visibleSTARs.append(airspaceData->getSTARSymbol(i));
+        airspaceData->getSTARSymbol(i)->setFlagVisible(true);
     }
 }
 
@@ -2766,6 +2774,7 @@ void ATCSituationalDisplay::displaySIDs()
         }
 
         visibleSIDs.append(airspaceData->getSIDSymbol(i));
+        airspaceData->getSIDSymbol(i)->setFlagVisible(true);
     }
 }
 
@@ -2848,6 +2857,7 @@ void ATCSituationalDisplay::displayAirwayLow()
         }
 
         visibleLowAirways.append(airspaceData->getAirwayLow(i));
+        airspaceData->getAirwayLow(i)->setFlagVisible(true);
     }
 }
 
@@ -2930,6 +2940,7 @@ void ATCSituationalDisplay::displayAirwayHigh()
         }
 
         visibleHighAirways.append(airspaceData->getAirwayHigh(i));
+        airspaceData->getAirwayHigh(i)->setFlagVisible(true);
     }
 }
 

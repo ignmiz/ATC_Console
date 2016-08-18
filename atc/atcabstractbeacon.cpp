@@ -65,3 +65,23 @@ void ATCAbstractBeacon::setLabel(QGraphicsSimpleTextItem *textLabel)
 {
     label = textLabel;
 }
+
+void ATCAbstractBeacon::show()
+{
+    visible = true;
+}
+
+void ATCAbstractBeacon::hide()
+{
+    visible = false;
+}
+
+bool ATCAbstractBeacon::isVisible()
+{
+    return visible;
+}
+
+void ATCAbstractBeacon::setFlagVisible(bool flag)
+{
+    visible = flag;
+}

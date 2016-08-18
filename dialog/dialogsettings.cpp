@@ -117,6 +117,7 @@ void DialogSettings::setupViewDisplay()
 {
     uiInner->treeView->setModel(modelDisplay);
     uiInner->treeView->setHeaderHidden(true);
+    uiInner->treeView->sortByColumn(0, Qt::AscendingOrder);
 
     uiInner->treeView->setColumnWidth(0, 375);
     uiInner->treeView->setColumnWidth(1, 50);
@@ -134,47 +135,20 @@ void DialogSettings::createModelSymbology()
 void DialogSettings::createModelDisplay()
 {
     ATCAirspace* airspaceData = situationalDisplay->getAirspaceData();
-    bool dummyDisplayFlag = true; //TO BE CHANGED!---------------------------
 
     modelDisplay = new QStandardItemModel(0, 2, this);
 
-//    QList<QStandardItem*> headerSectorARTCCLow(createDisplayHeader("ARTCC Low"));
-
-//    for(int i = 0; i < airspaceData->getSectorARTCCLowVectorSize(); i++)
-//    {
-//        headerSectorARTCCLow.at(0)->appendRow(createDisplayRow(airspaceData->getSectorARTCCLow(i)->getName(), dummyDisplayFlag));
-//    }
-
-//    modelDisplay->appendRow(headerSectorARTCCLow);
-
-//    populateTreeModel("ARTCC Low", reinterpret_cast<QVector<ATCAbstractSector*>&>(airspaceData->getSectorARTCCLowVector()), modelDisplay, dummyDisplayFlag);
-
-    populateTreeModelTemplate("ARTCC Low", airspaceData->getSectorARTCCLowVector(), modelDisplay, dummyDisplayFlag);
-    populateTreeModelTemplate("ARTCC High", airspaceData->getSectorARTCCHighVector(), modelDisplay, dummyDisplayFlag);
-    populateTreeModelTemplate("ARTCC", airspaceData->getSectorARTCCVector(), modelDisplay, dummyDisplayFlag);
-    populateTreeModelTemplate("Fixes", airspaceData->getFixesVector(), modelDisplay, dummyDisplayFlag);
-    populateTreeModelTemplate("NDBs", airspaceData->getNDBsVector(), modelDisplay, dummyDisplayFlag);
-    populateTreeModelTemplate("VORs", airspaceData->getVORsVector(), modelDisplay, dummyDisplayFlag);
-    populateTreeModelTemplate("Airports", airspaceData->getAirportsVector(), modelDisplay, dummyDisplayFlag);
-    populateTreeModelTemplate("SID Symbols", airspaceData->getSIDSymbolsVector(), modelDisplay, dummyDisplayFlag);
-    populateTreeModelTemplate("STAR Symbols", airspaceData->getSTARSymbolsVector(), modelDisplay, dummyDisplayFlag);
-    populateTreeModelTemplate("Low Airways", airspaceData->getAirwayLowVector(), modelDisplay, dummyDisplayFlag);
-    populateTreeModelTemplate("High Airways", airspaceData->getAirwayHighVector(), modelDisplay, dummyDisplayFlag);
-
-
-//    QList<QStandardItem*> headerSectorARTCCHigh(createDisplayHeader("ARTCC High"));
-//    modelDisplay->appendRow(headerSectorARTCCHigh);
-
-//    headerSectorARTCCHigh.at(0)->appendRow(createDisplayRow("ARTCC High 1", false));
-
-//    QList<QStandardItem*> headerSectorARTCC(createDisplayHeader("ARTCC"));
-//    modelDisplay->appendRow(headerSectorARTCC);
-
-//    for(int i = 0; i < 50; i++)
-//    {
-//        QString name("ARTCC " + QString::number(i));
-//        headerSectorARTCC.at(0)->appendRow(createDisplayRow(name, true));
-//    }
+    populateTreeModel("Sectors: ARTCC Low", airspaceData->getSectorARTCCLowVector(), modelDisplay);
+    populateTreeModel("Sectors: ARTCC High", airspaceData->getSectorARTCCHighVector(), modelDisplay);
+    populateTreeModel("Sectors: ARTCC", airspaceData->getSectorARTCCVector(), modelDisplay);
+    populateTreeModel("Fixes", airspaceData->getFixesVector(), modelDisplay);
+    populateTreeModel("Beacons: NDB", airspaceData->getNDBsVector(), modelDisplay);
+    populateTreeModel("Beacons: VOR", airspaceData->getVORsVector(), modelDisplay);
+    populateTreeModel("Airports", airspaceData->getAirportsVector(), modelDisplay);
+    populateTreeModel("Procedures: SID", airspaceData->getSIDSymbolsVector(), modelDisplay);
+    populateTreeModel("Procedures: STAR", airspaceData->getSTARSymbolsVector(), modelDisplay);
+    populateTreeModel("Airways: Low", airspaceData->getAirwayLowVector(), modelDisplay);
+    populateTreeModel("Airways: High", airspaceData->getAirwayHighVector(), modelDisplay);
 }
 
 void DialogSettings::connectSlots()
@@ -257,18 +231,6 @@ QList<QStandardItem *> DialogSettings::createDisplayRow(QString text, bool check
     return rowDisplay;
 }
 
-void DialogSettings::populateTreeModel(QString headerName, QVector<ATCAbstractSector*> &vector, QStandardItemModel *model, bool dummyDisplayFlag)
-{
-    QList<QStandardItem*> categoryHeader(createDisplayHeader(headerName));
-
-    for(int i = 0; i < vector.size(); i++)
-    {
-        categoryHeader.at(0)->appendRow(createDisplayRow(vector.at(i)->getName(), dummyDisplayFlag));
-    }
-
-    model->appendRow(categoryHeader);
-}
-
 void DialogSettings::on_buttonExportSettings_clicked()
 {
     QString filePath = QFileDialog::getSaveFileName(this, tr("Export to..."), situationalDisplay->getSettings()->SETTINGS_EXPORT_PATH, tr("Text files(*.txt)"));
@@ -305,13 +267,13 @@ void DialogSettings::on_buttonSetDefault_clicked()
     uiInner->lineEditDefaultSettings->setText(situationalDisplay->getSettings()->SETTINGS_DFLT_PATH);
 }
 
-template <class T> void DialogSettings::populateTreeModelTemplate(QString headerName, QVector<T*> &vector, QStandardItemModel *model, bool dummyDisplayFlag)
+template<class T> void DialogSettings::populateTreeModel(QString headerName, QVector<T*> const &vector, QStandardItemModel *model)
 {
     QList<QStandardItem*> categoryHeader(createDisplayHeader(headerName));
 
     for(int i = 0; i < vector.size(); i++)
     {
-        categoryHeader.at(0)->appendRow(createDisplayRow(vector.at(i)->getName(), dummyDisplayFlag));
+        categoryHeader.at(0)->appendRow(createDisplayRow(vector.at(i)->getName(), vector.at(i)->isVisible()));
     }
 
     model->appendRow(categoryHeader);

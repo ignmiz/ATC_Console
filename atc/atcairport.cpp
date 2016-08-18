@@ -92,3 +92,23 @@ bool ATCAirport::isRunwayVectorEmpty()
     else
         return false;
 }
+
+void ATCAirport::show()
+{
+    visible = true;
+}
+
+void ATCAirport::hide()
+{
+    visible = false;
+}
+
+bool ATCAirport::isVisible()
+{
+    return visible;
+}
+
+void ATCAirport::setFlagVisible(bool flag)
+{
+    visible = flag;
+}
