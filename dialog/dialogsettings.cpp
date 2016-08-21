@@ -93,6 +93,122 @@ void DialogSettings::onTableClicked(const QModelIndex &index)
     }
 }
 
+void DialogSettings::onTreeViewClicked(const QModelIndex &index)
+{
+    bool isNotHeader(index.parent().isValid());
+
+    if(isNotHeader)
+    {
+        QModelIndex checkboxIndex(index.model()->index(index.row(), 1, index.parent()));
+        QModelIndex nameIndex(index.model()->index(index.row(), 0, index.parent()));
+
+        QStandardItem *checkboxItem(modelDisplay->itemFromIndex(checkboxIndex));
+        bool isChecked((checkboxItem->checkState()) == Qt::Checked);
+
+        QString parentHeaderName(index.parent().data().toString());
+        QString rowName(nameIndex.data().toString());
+
+        if(isChecked)
+        {
+            checkboxItem->setCheckState(Qt::Unchecked);
+
+            if(parentHeaderName == "Sectors: ARTCC Low")
+            {
+                emit signalHideSectorARTCCLow(rowName);
+            }
+            else if(parentHeaderName == "Sectors: ARTCC High")
+            {
+                emit signalHideSectorARTCCHigh(rowName);
+            }
+            else if(parentHeaderName == "Sectors: ARTCC")
+            {
+                emit signalHideSectorARTCC(rowName);
+            }
+            else if(parentHeaderName == "Fixes")
+            {
+                emit signalHideFix(rowName);
+            }
+            else if(parentHeaderName == "Beacons: NDB")
+            {
+                emit signalHideNDB(rowName);
+            }
+            else if(parentHeaderName == "Beacons: VOR")
+            {
+                emit signalHideVOR(rowName);
+            }
+            else if(parentHeaderName == "Airports")
+            {
+                emit signalHideAirport(rowName);
+            }
+            else if(parentHeaderName == "Procedures: SID")
+            {
+                emit signalHideSID(rowName);
+            }
+            else if(parentHeaderName == "Procedures: STAR")
+            {
+                emit signalHideSTAR(rowName);
+            }
+            else if(parentHeaderName == "Airways: Low")
+            {
+                emit signalHideAirwayLow(rowName);
+            }
+            else if(parentHeaderName == "Airways: High")
+            {
+                emit signalHideAirwayHigh(rowName);
+            }
+        }
+        else
+        {
+            checkboxItem->setCheckState(Qt::Checked);
+
+            if(parentHeaderName == "Sectors: ARTCC Low")
+            {
+                emit signalShowSectorARTCCLow(rowName);
+            }
+            else if(parentHeaderName == "Sectors: ARTCC High")
+            {
+                emit signalShowSectorARTCCHigh(rowName);
+            }
+            else if(parentHeaderName == "Sectors: ARTCC")
+            {
+                emit signalShowSectorARTCC(rowName);
+            }
+            else if(parentHeaderName == "Fixes")
+            {
+                emit signalShowFix(rowName);
+            }
+            else if(parentHeaderName == "Beacons: NDB")
+            {
+                emit signalShowNDB(rowName);
+            }
+            else if(parentHeaderName == "Beacons: VOR")
+            {
+                emit signalShowVOR(rowName);
+            }
+            else if(parentHeaderName == "Airports")
+            {
+                emit signalShowAirport(rowName);
+            }
+            else if(parentHeaderName == "Procedures: SID")
+            {
+                emit signalShowSID(rowName);
+            }
+            else if(parentHeaderName == "Procedures: STAR")
+            {
+                emit signalShowSTAR(rowName);
+            }
+            else if(parentHeaderName == "Airways: Low")
+            {
+                emit signalShowAirwayLow(rowName);
+            }
+            else if(parentHeaderName == "Airways: High")
+            {
+                emit signalShowAirwayHigh(rowName);
+            }
+        }
+    }
+}
+
 void DialogSettings::setupViewSymbology()
 {
     uiInner->tableView->setModel(modelSymbology);
@@ -111,6 +227,7 @@ void DialogSettings::setupViewSymbology()
     uiInner->tableView->verticalHeader()->setHidden(true);
 
     connect(uiInner->tableView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
+    connect(uiInner->treeView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTreeViewClicked(const QModelIndex &)));
 }
 
 void DialogSettings::setupViewDisplay()
@@ -156,6 +273,30 @@ void DialogSettings::connectSlots()
     connect(situationalDisplay->getSettings(), SIGNAL(signalColorARTCCLow(QColor)), this, SLOT(slotUpdateTableColorARTCCLow(QColor)));
     connect(situationalDisplay->getSettings(), SIGNAL(signalColorARTCCHigh(QColor)), this, SLOT(slotUpdateTableColorARTCCHigh(QColor)));
     connect(situationalDisplay->getSettings(), SIGNAL(signalColorARTCC(QColor)), this, SLOT(slotUpdateTableColorARTCC(QColor)));
+
+    connect(this, SIGNAL(signalHideSectorARTCCLow(QString)), situationalDisplay, SLOT(slotHideSectorARTCCLow(QString)));
+    connect(this, SIGNAL(signalHideSectorARTCCHigh(QString)), situationalDisplay, SLOT(slotHideSectorARTCCHigh(QString)));
+    connect(this, SIGNAL(signalHideSectorARTCC(QString)), situationalDisplay, SLOT(slotHideSectorARTCC(QString)));
+    connect(this, SIGNAL(signalHideFix(QString)), situationalDisplay, SLOT(slotHideFix(QString)));
+    connect(this, SIGNAL(signalHideNDB(QString)), situationalDisplay, SLOT(slotHideNDB(QString)));
+    connect(this, SIGNAL(signalHideVOR(QString)), situationalDisplay, SLOT(slotHideVOR(QString)));
+    connect(this, SIGNAL(signalHideAirport(QString)), situationalDisplay, SLOT(slotHideAirport(QString)));
+    connect(this, SIGNAL(signalHideSID(QString)), situationalDisplay, SLOT(slotHideSID(QString)));
+    connect(this, SIGNAL(signalHideSTAR(QString)), situationalDisplay, SLOT(slotHideSTAR(QString)));
+    connect(this, SIGNAL(signalHideAirwayLow(QString)), situationalDisplay, SLOT(slotHideAirwayLow(QString)));
+    connect(this, SIGNAL(signalHideAirwayHigh(QString)), situationalDisplay, SLOT(slotHideSTAR(QString)));
+
+    connect(this, SIGNAL(signalShowSectorARTCCLow(QString)), situationalDisplay, SLOT(slotShowSectorARTCCLow(QString)));
+    connect(this, SIGNAL(signalShowSectorARTCCHigh(QString)), situationalDisplay, SLOT(slotShowSectorARTCCHigh(QString)));
+    connect(this, SIGNAL(signalShowSectorARTCC(QString)), situationalDisplay, SLOT(slotShowSectorARTCC(QString)));
+    connect(this, SIGNAL(signalShowFix(QString)), situationalDisplay, SLOT(slotShowFix(QString)));
+    connect(this, SIGNAL(signalShowNDB(QString)), situationalDisplay, SLOT(slotShowNDB(QString)));
+    connect(this, SIGNAL(signalShowVOR(QString)), situationalDisplay, SLOT(slotShowVOR(QString)));
+    connect(this, SIGNAL(signalShowAirport(QString)), situationalDisplay, SLOT(slotShowAirport(QString)));
+    connect(this, SIGNAL(signalShowSID(QString)), situationalDisplay, SLOT(slotShowSID(QString)));
+    connect(this, SIGNAL(signalShowSTAR(QString)), situationalDisplay, SLOT(slotShowSTAR(QString)));
+    connect(this, SIGNAL(signalShowAirwayLow(QString)), situationalDisplay, SLOT(slotShowAirwayLow(QString)));
+    connect(this, SIGNAL(signalShowAirwayHigh(QString)), situationalDisplay, SLOT(slotShowSTAR(QString)));
 }
 
 void DialogSettings::constructColorPicker(QColor &initColor)
@@ -215,7 +356,7 @@ QList<QStandardItem *> DialogSettings::createDisplayRow(QString text, bool check
     QStandardItem *checkbox = new QStandardItem();
     checkbox->setEditable(false);
     checkbox->setSelectable(false);
-    checkbox->setCheckable(true);
+    checkbox->setCheckable(false);
 
     if(checked)
     {

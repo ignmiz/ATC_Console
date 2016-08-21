@@ -490,6 +490,45 @@ double ATCAirspace::getNavaidLongitude(QString name)
     return -200;
 }
 
+ATCSectorARTCCLow* ATCAirspace::findSectorARTCCLow(QString name)
+{
+    for(int i = 0; i < sectorsARTCCLow.size(); i++)
+    {
+        if(sectorsARTCCLow.at(i)->getName() == name)
+        {
+            return sectorsARTCCLow.at(i);
+        }
+    }
+
+    return nullptr;
+}
+
+ATCSectorARTCCHigh* ATCAirspace::findSectorARTCCHigh(QString name)
+{
+    for(int i = 0; i < sectorsARTCCHigh.size(); i++)
+    {
+        if(sectorsARTCCHigh.at(i)->getName() == name)
+        {
+            return sectorsARTCCHigh.at(i);
+        }
+    }
+
+    return nullptr;
+}
+
+ATCSectorARTCC* ATCAirspace::findSectorARTCC(QString name)
+{
+    for(int i = 0; i < sectorsARTCC.size(); i++)
+    {
+        if(sectorsARTCC.at(i)->getName() == name)
+        {
+            return sectorsARTCC.at(i);
+        }
+    }
+
+    return nullptr;
+}
+
 ATCAirport* ATCAirspace::findAirport(QString ICAOname)
 {
     for(int i = 0; i < airports.size(); i++)
@@ -536,6 +575,32 @@ ATCBeaconNDB *ATCAirspace::findNDB(QString name)
         if(ndbs.at(i)->getName() == name)
         {
             return ndbs.at(i);
+        }
+    }
+
+    return nullptr;
+}
+
+ATCProcedureSIDSymbol* ATCAirspace::findSIDSymbol(QString name)
+{
+    for(int i = 0; i < sidSymbols.size(); i++)
+    {
+        if(sidSymbols.at(i)->getName() == name)
+        {
+            return sidSymbols.at(i);
+        }
+    }
+
+    return nullptr;
+}
+
+ATCProcedureSTARSymbol* ATCAirspace::findSTARSymbol(QString name)
+{
+    for(int i = 0; i < starSymbols.size(); i++)
+    {
+        if(starSymbols.at(i)->getName() == name)
+        {
+            return starSymbols.at(i);
         }
     }
 

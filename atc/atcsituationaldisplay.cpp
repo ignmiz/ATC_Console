@@ -27,15 +27,15 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
     displaySectorsARTCCLow();
     displaySectorsARTCCHigh();
     displaySectorsARTCC();
-//    displayAirwayLow();
-//    displayAirwayHigh();
-//    displaySTARs();
-//    displaySIDs();
-//    displayExtendedCentrelines();
-//    displayNDBs();
-//    displayVORs();
-//    displayFixes();
-//    displayAirports();
+    displayAirwayLow();
+    displayAirwayHigh();
+    displaySTARs();
+    displaySIDs();
+    displayExtendedCentrelines();
+    displayNDBs();
+    displayVORs();
+    displayFixes();
+    displayAirports();
 }
 
 ATCSituationalDisplay::~ATCSituationalDisplay()
@@ -86,6 +86,238 @@ void ATCSituationalDisplay::slotSetColorSectorARTCC(QColor color)
     for(int i = 0; i < visibleSectorsARTCC.size(); i++)
     {
         visibleSectorsARTCC.at(i)->setColor(color);
+    }
+}
+
+void ATCSituationalDisplay::slotHideSectorARTCCLow(QString name)
+{
+    ATCSectorARTCCLow *current = airspaceData->findSectorARTCCLow(name);
+
+    if(current != nullptr)
+    {
+        current->hide();
+    }
+}
+
+void ATCSituationalDisplay::slotHideSectorARTCCHigh(QString name)
+{
+    ATCSectorARTCCHigh *current = airspaceData->findSectorARTCCHigh(name);
+
+    if(current != nullptr)
+    {
+        current->hide();
+    }
+}
+
+void ATCSituationalDisplay::slotHideSectorARTCC(QString name)
+{
+    ATCSectorARTCC *current = airspaceData->findSectorARTCC(name);
+
+    if(current != nullptr)
+    {
+        current->hide();
+    }
+}
+
+void ATCSituationalDisplay::slotHideFix(QString name)
+{
+//    ATCNavFix *current = airspaceData->findFix(name);
+
+//    if(current != nullptr)
+//    {
+//        current->hide();
+//    }
+
+    for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
+    {
+        ATCNavFix *current = airspaceData->getFix(i);
+        current->hide();
+    }
+}
+
+void ATCSituationalDisplay::slotHideNDB(QString name)
+{
+    ATCBeaconNDB *current = airspaceData->findNDB(name);
+
+    if(current != nullptr)
+    {
+        current->hide();
+    }
+}
+
+void ATCSituationalDisplay::slotHideVOR(QString name)
+{
+    ATCBeaconVOR *current = airspaceData->findVOR(name);
+
+    if(current != nullptr)
+    {
+        current->hide();
+    }
+}
+
+void ATCSituationalDisplay::slotHideAirport(QString name)
+{
+    ATCAirport *current = airspaceData->findAirport(name);
+
+    if(current != nullptr)
+    {
+        current->hide();
+    }
+}
+
+void ATCSituationalDisplay::slotHideSID(QString name)
+{
+    ATCProcedureSIDSymbol *current = airspaceData->findSIDSymbol(name);
+
+    if(current != nullptr)
+    {
+        current->hide();
+    }
+}
+
+void ATCSituationalDisplay::slotHideSTAR(QString name)
+{
+    ATCProcedureSTARSymbol *current = airspaceData->findSTARSymbol(name);
+
+    if(current != nullptr)
+    {
+        current->hide();
+    }
+}
+
+void ATCSituationalDisplay::slotHideAirwayLow(QString name)
+{
+    ATCAirwayLow *current = airspaceData->findAirwayLow(name);
+
+    if(current != nullptr)
+    {
+        current->hide();
+    }
+}
+
+void ATCSituationalDisplay::slotHideAirwayHigh(QString name)
+{
+    ATCAirwayHigh *current = airspaceData->findAirwayHigh(name);
+
+    if(current != nullptr)
+    {
+        current->hide();
+    }
+}
+
+void ATCSituationalDisplay::slotShowSectorARTCCLow(QString name)
+{
+    ATCSectorARTCCLow *current = airspaceData->findSectorARTCCLow(name);
+
+    if(current != nullptr)
+    {
+        current->show();
+    }
+}
+
+void ATCSituationalDisplay::slotShowSectorARTCCHigh(QString name)
+{
+    ATCSectorARTCCHigh *current = airspaceData->findSectorARTCCHigh(name);
+
+    if(current != nullptr)
+    {
+        current->show();
+    }
+}
+
+void ATCSituationalDisplay::slotShowSectorARTCC(QString name)
+{
+    ATCSectorARTCC *current = airspaceData->findSectorARTCC(name);
+
+    if(current != nullptr)
+    {
+        current->show();
+    }
+}
+
+void ATCSituationalDisplay::slotShowFix(QString name)
+{
+//    ATCNavFix *current = airspaceData->findFix(name);
+
+//    if(current != nullptr)
+//    {
+//        current->show();
+//    }
+
+    for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
+    {
+        ATCNavFix *current = airspaceData->getFix(i);
+        current->show();
+    }
+}
+
+void ATCSituationalDisplay::slotShowNDB(QString name)
+{
+    ATCBeaconNDB *current = airspaceData->findNDB(name);
+
+    if(current != nullptr)
+    {
+        current->show();
+    }
+}
+
+void ATCSituationalDisplay::slotShowVOR(QString name)
+{
+    ATCBeaconVOR *current = airspaceData->findVOR(name);
+
+    if(current != nullptr)
+    {
+        current->show();
+    }
+}
+
+void ATCSituationalDisplay::slotShowAirport(QString name)
+{
+    ATCAirport *current = airspaceData->findAirport(name);
+
+    if(current != nullptr)
+    {
+        current->show();
+    }
+}
+
+void ATCSituationalDisplay::slotShowSID(QString name)
+{
+    ATCProcedureSIDSymbol *current = airspaceData->findSIDSymbol(name);
+
+    if(current != nullptr)
+    {
+        current->show();
+    }
+}
+
+void ATCSituationalDisplay::slotShowSTAR(QString name)
+{
+    ATCProcedureSTARSymbol *current = airspaceData->findSTARSymbol(name);
+
+    if(current != nullptr)
+    {
+        current->show();
+    }
+}
+
+void ATCSituationalDisplay::slotShowAirwayLow(QString name)
+{
+    ATCAirwayLow *current = airspaceData->findAirwayLow(name);
+
+    if(current != nullptr)
+    {
+        current->show();
+    }
+}
+
+void ATCSituationalDisplay::slotShowAirwayHigh(QString name)
+{
+    ATCAirwayHigh *current = airspaceData->findAirwayHigh(name);
+
+    if(current != nullptr)
+    {
+        current->show();
     }
 }
 
@@ -467,13 +699,23 @@ void ATCSituationalDisplay::loadData()
                         lon2 = airspaceData->getNavaidLongitude(lon2String);
                     }
 
-                    ATCSectorARTCCLow *currentObject = new ATCSectorARTCCLow(name);
-                    currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
-                    currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                    ATCSectorARTCCLow *currentObject = airspaceData->findSectorARTCCLow(name);
 
-                    airspaceData->appendSectorARTCCLow(currentObject);
+                    if(currentObject == nullptr)
+                    {
+                        currentObject = new ATCSectorARTCCLow(name);
+                        currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                        currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
 
-                    qDebug() << "Sector ARTCC Low:" << currentObject->getName() << "appended...";
+                        airspaceData->appendSectorARTCCLow(currentObject);
+
+                        qDebug() << "Sector ARTCC Low:" << currentObject->getName() << "appended...";
+                    }
+                    else
+                    {
+                        currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                        currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                    }
                 }
                 else if((iterator == 0) && coordsFound)
                 {
@@ -606,13 +848,23 @@ void ATCSituationalDisplay::loadData()
                         lon2 = airspaceData->getNavaidLongitude(lon2String);
                     }
 
-                    ATCSectorARTCCHigh *currentObject = new ATCSectorARTCCHigh(name);
-                    currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
-                    currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                    ATCSectorARTCCHigh *currentObject = airspaceData->findSectorARTCCHigh(name);
 
-                    airspaceData->appendSectorARTCCHigh(currentObject);
+                    if(currentObject == nullptr)
+                    {
+                        currentObject = new ATCSectorARTCCHigh(name);
+                        currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                        currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
 
-                    qDebug() << "Sector ARTCC High:" << currentObject->getName() << "appended...";
+                        airspaceData->appendSectorARTCCHigh(currentObject);
+
+                        qDebug() << "Sector ARTCC High:" << currentObject->getName() << "appended...";
+                    }
+                    else
+                    {
+                        currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                        currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                    }
                 }
                 else if((iterator == 0) && coordsFound)
                 {
@@ -745,13 +997,23 @@ void ATCSituationalDisplay::loadData()
                         lon2 = airspaceData->getNavaidLongitude(lon2String);
                     }
 
-                    ATCSectorARTCC *currentObject = new ATCSectorARTCC(name);
-                    currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
-                    currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                    ATCSectorARTCC *currentObject = airspaceData->findSectorARTCC(name);
 
-                    airspaceData->appendSectorARTCC(currentObject);
+                    if(currentObject == nullptr)
+                    {
+                        currentObject = new ATCSectorARTCC(name);
+                        currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                        currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
 
-                    qDebug() << "Sector ARTCC:" << currentObject->getName() << "appended...";
+                        airspaceData->appendSectorARTCC(currentObject);
+
+                        qDebug() << "Sector ARTCC:" << currentObject->getName() << "appended...";
+                    }
+                    else
+                    {
+                        currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                        currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                    }
                 }
                 else if((iterator == 0) && coordsFound)
                 {

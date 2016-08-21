@@ -38,6 +38,30 @@ public slots:
     void slotSetColorSectorARTCCHigh(QColor color);
     void slotSetColorSectorARTCC(QColor color);
 
+    void slotHideSectorARTCCLow(QString name);
+    void slotHideSectorARTCCHigh(QString name);
+    void slotHideSectorARTCC(QString name);
+    void slotHideFix(QString name);
+    void slotHideNDB(QString name);
+    void slotHideVOR(QString name);
+    void slotHideAirport(QString name);
+    void slotHideSID(QString name);
+    void slotHideSTAR(QString name);
+    void slotHideAirwayLow(QString name);
+    void slotHideAirwayHigh(QString name);
+
+    void slotShowSectorARTCCLow(QString name);
+    void slotShowSectorARTCCHigh(QString name);
+    void slotShowSectorARTCC(QString name);
+    void slotShowFix(QString name);
+    void slotShowNDB(QString name);
+    void slotShowVOR(QString name);
+    void slotShowAirport(QString name);
+    void slotShowSID(QString name);
+    void slotShowSTAR(QString name);
+    void slotShowAirwayLow(QString name);
+    void slotShowAirwayHigh(QString name);
+
 private:
     ATCAirspace *airspaceData = nullptr;
     ATCSettings *settings = nullptr;

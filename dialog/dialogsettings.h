@@ -22,6 +22,31 @@ public:
     explicit DialogSettings(ATCSituationalDisplay *display, QWidget *parent = 0);
     ~DialogSettings();
 
+signals:
+    void signalHideSectorARTCCLow(QString);
+    void signalHideSectorARTCCHigh(QString);
+    void signalHideSectorARTCC(QString);
+    void signalHideFix(QString);
+    void signalHideNDB(QString);
+    void signalHideVOR(QString);
+    void signalHideAirport(QString);
+    void signalHideSID(QString);
+    void signalHideSTAR(QString);
+    void signalHideAirwayLow(QString);
+    void signalHideAirwayHigh(QString);
+
+    void signalShowSectorARTCCLow(QString);
+    void signalShowSectorARTCCHigh(QString);
+    void signalShowSectorARTCC(QString);
+    void signalShowFix(QString);
+    void signalShowNDB(QString);
+    void signalShowVOR(QString);
+    void signalShowAirport(QString);
+    void signalShowSID(QString);
+    void signalShowSTAR(QString);
+    void signalShowAirwayLow(QString);
+    void signalShowAirwayHigh(QString);
+
 private slots:
     ATC_MOUSE_HANDLER
 
@@ -32,6 +57,7 @@ private slots:
     void slotUpdateTableColorARTCC(QColor color);
 
     void onTableClicked(const QModelIndex &index);
+    void onTreeViewClicked(const QModelIndex &index);
 
     void on_buttonExportSettings_clicked();
     void on_buttonLoadSettings_clicked();

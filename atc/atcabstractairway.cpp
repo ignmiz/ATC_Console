@@ -78,11 +78,21 @@ void ATCAbstractAirway::appendLine(QGraphicsLineItem *line)
 
 void ATCAbstractAirway::show()
 {
+    for(int i = 0; i < lines.size(); i++)
+    {
+        lines.at(i)->show();
+    }
+
     visible = true;
 }
 
 void ATCAbstractAirway::hide()
 {
+    for(int i = 0; i < lines.size(); i++)
+    {
+        lines.at(i)->hide();
+    }
+
     visible = false;
 }
 

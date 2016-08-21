@@ -95,11 +95,17 @@ bool ATCAirport::isRunwayVectorEmpty()
 
 void ATCAirport::show()
 {
+    symbol->show();
+    label->show();
+
     visible = true;
 }
 
 void ATCAirport::hide()
 {
+    symbol->hide();
+    label->hide();
+
     visible = false;
 }
 

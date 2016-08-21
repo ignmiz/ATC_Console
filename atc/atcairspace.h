@@ -108,10 +108,15 @@ public:
     double getNavaidLatitude(QString name);
     double getNavaidLongitude(QString name);
 
+    ATCSectorARTCCLow* findSectorARTCCLow(QString name);
+    ATCSectorARTCCHigh* findSectorARTCCHigh(QString name);
+    ATCSectorARTCC* findSectorARTCC(QString name);
     ATCAirport* findAirport(QString ICAOname);
     ATCNavFix* findFix(QString fixName);
     ATCBeaconVOR* findVOR(QString name);
     ATCBeaconNDB* findNDB(QString name);
+    ATCProcedureSIDSymbol* findSIDSymbol(QString name);
+    ATCProcedureSTARSymbol* findSTARSymbol(QString name);
     ATCAirwayLow* findAirwayLow(QString name);
     ATCAirwayHigh* findAirwayHigh(QString name);
 

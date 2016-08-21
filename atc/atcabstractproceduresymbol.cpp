@@ -78,11 +78,21 @@ void ATCAbstractProcedureSymbol::appendLine(QGraphicsLineItem *line)
 
 void ATCAbstractProcedureSymbol::show()
 {
+    for(int i = 0; i < lines.size(); i++)
+    {
+        lines.at(i)->show();
+    }
+
     visible = true;
 }
 
 void ATCAbstractProcedureSymbol::hide()
 {
+    for(int i = 0; i < lines.size(); i++)
+    {
+        lines.at(i)->hide();
+    }
+
     visible = false;
 }
 
