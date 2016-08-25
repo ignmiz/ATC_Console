@@ -59,6 +59,8 @@ private slots:
     void onTableClicked(const QModelIndex &index);
     void onTreeViewClicked(const QModelIndex &index);
 
+    void slotHeaderStateChanged(QStandardItem *item);
+
     void on_buttonExportSettings_clicked();
     void on_buttonLoadSettings_clicked();
     void on_buttonSetDefault_clicked();

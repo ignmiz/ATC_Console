@@ -209,6 +209,180 @@ void DialogSettings::onTreeViewClicked(const QModelIndex &index)
     }
 }
 
+void DialogSettings::slotHeaderStateChanged(QStandardItem *item)
+{
+    QModelIndex checkboxIndex(item->index());
+    QModelIndex nameIndex(checkboxIndex.model()->index(checkboxIndex.row(), 0, checkboxIndex.parent()));
+
+    QStandardItem *headerItem(modelDisplay->itemFromIndex(nameIndex));
+
+    QString headerName(nameIndex.data().toString());
+    bool isChecked(!(item->checkState() == Qt::Checked));
+
+    qDebug() << headerName;
+
+    int childrenCount = headerItem->rowCount();
+
+    if(isChecked)
+    {
+        for(int i = 0; i < childrenCount; i++)
+        {
+            QStandardItem *childNameItem(headerItem->child(i));
+
+            QModelIndex childNameIndex(childNameItem->index());
+            QModelIndex childCheckboxIndex(childNameIndex.model()->index(childNameIndex.row(), 1, childNameIndex.parent()));
+
+            QStandardItem *childCheckboxItem(modelDisplay->itemFromIndex(childCheckboxIndex));
+
+            QString childName(childNameIndex.data().toString());
+
+            if(headerName == "Sectors: ARTCC Low")
+            {
+                emit signalHideSectorARTCCLow(childName);
+            }
+            else if(headerName == "Sectors: ARTCC High")
+            {
+                emit signalHideSectorARTCCHigh(childName);
+            }
+            else if(headerName == "Sectors: ARTCC")
+            {
+                emit signalHideSectorARTCC(childName);
+            }
+            else if(headerName == "Fixes")
+            {
+                emit signalHideFix(childName);
+            }
+            else if(headerName == "Beacons: NDB")
+            {
+                emit signalHideNDB(childName);
+            }
+            else if(headerName == "Beacons: VOR")
+            {
+                emit signalHideVOR(childName);
+            }
+            else if(headerName == "Airports")
+            {
+                emit signalHideAirport(childName);
+            }
+            else if(headerName == "Procedures: SID")
+            {
+                emit signalHideSID(childName);
+            }
+            else if(headerName == "Procedures: STAR")
+            {
+                emit signalHideSTAR(childName);
+            }
+            else if(headerName == "Airways: Low")
+            {
+                emit signalHideAirwayLow(childName);
+            }
+            else if(headerName == "Airways: High")
+            {
+                emit signalHideAirwayHigh(childName);
+            }
+
+            childCheckboxItem->setCheckState(Qt::Unchecked);
+        }
+    }
+    else
+    {
+        for(int i = 0; i < childrenCount; i++)
+        {
+            QStandardItem *childNameItem(headerItem->child(i));
+
+            QModelIndex childNameIndex(childNameItem->index());
+            QModelIndex childCheckboxIndex(childNameIndex.model()->index(childNameIndex.row(), 1, childNameIndex.parent()));
+
+            QStandardItem *childCheckboxItem(modelDisplay->itemFromIndex(childCheckboxIndex));
+
+            QString childName(childNameIndex.data().toString());
+
+            if(headerName == "Sectors: ARTCC Low")
+            {
+                emit signalShowSectorARTCCLow(childName);
+            }
+            else if(headerName == "Sectors: ARTCC High")
+            {
+                emit signalShowSectorARTCCHigh(childName);
+            }
+            else if(headerName == "Sectors: ARTCC")
+            {
+                emit signalShowSectorARTCC(childName);
+            }
+            else if(headerName == "Fixes")
+            {
+                emit signalShowFix(childName);
+            }
+            else if(headerName == "Beacons: NDB")
+            {
+                emit signalShowNDB(childName);
+            }
+            else if(headerName == "Beacons: VOR")
+            {
+                emit signalShowVOR(childName);
+            }
+            else if(headerName == "Airports")
+            {
+                emit signalShowAirport(childName);
+            }
+            else if(headerName == "Procedures: SID")
+            {
+                emit signalShowSID(childName);
+            }
+            else if(headerName == "Procedures: STAR")
+            {
+                emit signalShowSTAR(childName);
+            }
+            else if(headerName == "Airways: Low")
+            {
+                emit signalShowAirwayLow(childName);
+            }
+            else if(headerName == "Airways: High")
+            {
+                emit signalShowAirwayHigh(childName);
+            }
+
+            childCheckboxItem->setCheckState(Qt::Checked);
+        }
+    }
+}
+
+void DialogSettings::on_buttonExportSettings_clicked()
+{
+    QString filePath = QFileDialog::getSaveFileName(this, tr("Export to..."), situationalDisplay->getSettings()->SETTINGS_EXPORT_PATH, tr("Text files(*.txt)"));
+    if(filePath.isEmpty()) return;
+
+    situationalDisplay->getSettings()->exportSettings(filePath);
+
+    QMessageBox msgBox(this);
+    msgBox.setText("Settings successfuly exported to: " + filePath);
+    msgBox.exec();
+}
+
+void DialogSettings::on_buttonLoadSettings_clicked()
+{
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Load settings..."), situationalDisplay->getSettings()->SETTINGS_EXPORT_PATH, tr("Text files(*.txt)"));
+    if(filePath.isEmpty()) return;
+
+    situationalDisplay->getSettings()->loadSettings(filePath);
+
+    uiInner->lineEditActiveSettings->setText(situationalDisplay->getSettings()->SETTINGS_ACTIVE_PATH);
+}
+
+void DialogSettings::on_buttonSetDefault_clicked()
+{
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Set as default config..."), situationalDisplay->getSettings()->SETTINGS_EXPORT_PATH, tr("Text files(*.txt)"));
+    if(filePath.isEmpty()) return;
+
+    situationalDisplay->getSettings()->setDefaultPath(filePath);
+
+    QMessageBox msgBox(this);
+    msgBox.setText("Default settings set to: " + filePath);
+    msgBox.exec();
+
+    uiInner->lineEditDefaultSettings->setText(situationalDisplay->getSettings()->SETTINGS_DFLT_PATH);
+}
+
 void DialogSettings::setupViewSymbology()
 {
     uiInner->tableView->setModel(modelSymbology);
@@ -225,9 +399,6 @@ void DialogSettings::setupViewSymbology()
 
     uiInner->tableView->horizontalHeader()->setHidden(true);
     uiInner->tableView->verticalHeader()->setHidden(true);
-
-    connect(uiInner->tableView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
-    connect(uiInner->treeView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTreeViewClicked(const QModelIndex &)));
 }
 
 void DialogSettings::setupViewDisplay()
@@ -237,7 +408,7 @@ void DialogSettings::setupViewDisplay()
     uiInner->treeView->sortByColumn(0, Qt::AscendingOrder);
 
     uiInner->treeView->setColumnWidth(0, 375);
-    uiInner->treeView->setColumnWidth(1, 50);
+    uiInner->treeView->setColumnWidth(1, 25);
 }
 
 void DialogSettings::createModelSymbology()
@@ -270,6 +441,9 @@ void DialogSettings::createModelDisplay()
 
 void DialogSettings::connectSlots()
 {
+    connect(uiInner->tableView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
+    connect(uiInner->treeView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTreeViewClicked(const QModelIndex &)));
+
     connect(situationalDisplay->getSettings(), SIGNAL(signalColorARTCCLow(QColor)), this, SLOT(slotUpdateTableColorARTCCLow(QColor)));
     connect(situationalDisplay->getSettings(), SIGNAL(signalColorARTCCHigh(QColor)), this, SLOT(slotUpdateTableColorARTCCHigh(QColor)));
     connect(situationalDisplay->getSettings(), SIGNAL(signalColorARTCC(QColor)), this, SLOT(slotUpdateTableColorARTCC(QColor)));
@@ -297,6 +471,8 @@ void DialogSettings::connectSlots()
     connect(this, SIGNAL(signalShowSTAR(QString)), situationalDisplay, SLOT(slotShowSTAR(QString)));
     connect(this, SIGNAL(signalShowAirwayLow(QString)), situationalDisplay, SLOT(slotShowAirwayLow(QString)));
     connect(this, SIGNAL(signalShowAirwayHigh(QString)), situationalDisplay, SLOT(slotShowSTAR(QString)));
+
+    connect(modelDisplay, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(slotHeaderStateChanged(QStandardItem*)));
 }
 
 void DialogSettings::constructColorPicker(QColor &initColor)
@@ -338,9 +514,13 @@ QList<QStandardItem*> DialogSettings::createDisplayHeader(QString text)
     headerName->setFlags(Qt::NoItemFlags);
     rowHeader.append(headerName);
 
-    QStandardItem *headerFiller = new QStandardItem();
-    headerFiller->setFlags(Qt::NoItemFlags);
-    rowHeader.append(headerFiller);
+    QStandardItem *headerCheckbox = new QStandardItem();
+    headerCheckbox->setEditable(false);
+    headerCheckbox->setSelectable(false);
+    headerCheckbox->setCheckable(true);
+    headerCheckbox->setUserTristate(false);
+    headerCheckbox->setTextAlignment(Qt::AlignCenter);
+    rowHeader.append(headerCheckbox);
 
     return rowHeader;
 }
@@ -370,42 +550,6 @@ QList<QStandardItem *> DialogSettings::createDisplayRow(QString text, bool check
     rowDisplay.append(checkbox);
 
     return rowDisplay;
-}
-
-void DialogSettings::on_buttonExportSettings_clicked()
-{
-    QString filePath = QFileDialog::getSaveFileName(this, tr("Export to..."), situationalDisplay->getSettings()->SETTINGS_EXPORT_PATH, tr("Text files(*.txt)"));
-    if(filePath.isEmpty()) return;
-
-    situationalDisplay->getSettings()->exportSettings(filePath);
-
-    QMessageBox msgBox(this);
-    msgBox.setText("Settings successfuly exported to: " + filePath);
-    msgBox.exec();
-}
-
-void DialogSettings::on_buttonLoadSettings_clicked()
-{
-    QString filePath = QFileDialog::getOpenFileName(this, tr("Load settings..."), situationalDisplay->getSettings()->SETTINGS_EXPORT_PATH, tr("Text files(*.txt)"));
-    if(filePath.isEmpty()) return;
-
-    situationalDisplay->getSettings()->loadSettings(filePath);
-
-    uiInner->lineEditActiveSettings->setText(situationalDisplay->getSettings()->SETTINGS_ACTIVE_PATH);
-}
-
-void DialogSettings::on_buttonSetDefault_clicked()
-{
-    QString filePath = QFileDialog::getOpenFileName(this, tr("Set as default config..."), situationalDisplay->getSettings()->SETTINGS_EXPORT_PATH, tr("Text files(*.txt)"));
-    if(filePath.isEmpty()) return;
-
-    situationalDisplay->getSettings()->setDefaultPath(filePath);
-
-    QMessageBox msgBox(this);
-    msgBox.setText("Default settings set to: " + filePath);
-    msgBox.exec();
-
-    uiInner->lineEditDefaultSettings->setText(situationalDisplay->getSettings()->SETTINGS_DFLT_PATH);
 }
 
 template<class T> void DialogSettings::populateTreeModel(QString headerName, QVector<T*> const &vector, QStandardItemModel *model)
