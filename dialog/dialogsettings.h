@@ -72,10 +72,23 @@ private:
     QStandardItemModel *modelSymbology = nullptr;
     QStandardItemModel *modelDisplay = nullptr;
 
+    int visibleSectorsARTCCLow = 0;
+    int visibleSectorsARTCCHigh = 0;
+    int visibleSectorsARTCC = 0;
+    int visibleFixes = 0;
+    int visibleNDBs = 0;
+    int visibleVORs = 0;
+    int visibleAirports = 0;
+    int visibleSIDSymbols = 0;
+    int visibleSTARSymbols = 0;
+    int visibleAirwaysLow = 0;
+    int visibleAirwaysHigh = 0;
+
     bool flagDialogColorPickerExists = false;
 
     void setupViewSymbology();
     void setupViewDisplay();
+
     void createModelSymbology();
     void createModelDisplay();
 
@@ -85,9 +98,9 @@ private:
     QList<QStandardItem*> createSymbologyRow(QString text, QColor color);
 
     QList<QStandardItem*> createDisplayHeader(QString text);
-    QList<QStandardItem*> createDisplayRow(QString text, bool checked);
+    QList<QStandardItem*> createDisplayRow(QString text, bool checked, int &counter);
 
-    template<class T> void populateTreeModel(QString headerName, QVector<T*> const &vector, QStandardItemModel *model);
+    template<class T> void populateTreeModel(QString headerName, QVector<T*> const &vector, int &counter, QStandardItemModel *model);
 };
 
 #endif // DIALOGSETTINGS_H

@@ -105,105 +105,127 @@ void DialogSettings::onTreeViewClicked(const QModelIndex &index)
         QStandardItem *checkboxItem(modelDisplay->itemFromIndex(checkboxIndex));
         bool isChecked((checkboxItem->checkState()) == Qt::Checked);
 
-        QString parentHeaderName(index.parent().data().toString());
-        QString rowName(nameIndex.data().toString());
+        QString headerName(index.parent().data().toString());
+        QString childName(nameIndex.data().toString());
 
         if(isChecked)
         {
             checkboxItem->setCheckState(Qt::Unchecked);
 
-            if(parentHeaderName == "Sectors: ARTCC Low")
+            if(headerName == "Sectors: ARTCC Low")
             {
-                emit signalHideSectorARTCCLow(rowName);
+                emit signalHideSectorARTCCLow(childName);
+                visibleSectorsARTCCLow--;
             }
-            else if(parentHeaderName == "Sectors: ARTCC High")
+            else if(headerName == "Sectors: ARTCC High")
             {
-                emit signalHideSectorARTCCHigh(rowName);
+                emit signalHideSectorARTCCHigh(childName);
+                visibleSectorsARTCCHigh--;
             }
-            else if(parentHeaderName == "Sectors: ARTCC")
+            else if(headerName == "Sectors: ARTCC")
             {
-                emit signalHideSectorARTCC(rowName);
+                emit signalHideSectorARTCC(childName);
+                visibleSectorsARTCC--;
             }
-            else if(parentHeaderName == "Fixes")
+            else if(headerName == "Fixes")
             {
-                emit signalHideFix(rowName);
+                emit signalHideFix(childName);
+                visibleFixes--;
             }
-            else if(parentHeaderName == "Beacons: NDB")
+            else if(headerName == "Beacons: NDB")
             {
-                emit signalHideNDB(rowName);
+                emit signalHideNDB(childName);
+                visibleNDBs--;
             }
-            else if(parentHeaderName == "Beacons: VOR")
+            else if(headerName == "Beacons: VOR")
             {
-                emit signalHideVOR(rowName);
+                emit signalHideVOR(childName);
+                visibleVORs--;
             }
-            else if(parentHeaderName == "Airports")
+            else if(headerName == "Airports")
             {
-                emit signalHideAirport(rowName);
+                emit signalHideAirport(childName);
+                visibleAirports--;
             }
-            else if(parentHeaderName == "Procedures: SID")
+            else if(headerName == "Procedures: SID")
             {
-                emit signalHideSID(rowName);
+                emit signalHideSID(childName);
+                visibleSIDSymbols--;
             }
-            else if(parentHeaderName == "Procedures: STAR")
+            else if(headerName == "Procedures: STAR")
             {
-                emit signalHideSTAR(rowName);
+                emit signalHideSTAR(childName);
+                visibleSTARSymbols--;
             }
-            else if(parentHeaderName == "Airways: Low")
+            else if(headerName == "Airways: Low")
             {
-                emit signalHideAirwayLow(rowName);
+                emit signalHideAirwayLow(childName);
+                visibleAirwaysLow--;
             }
-            else if(parentHeaderName == "Airways: High")
+            else if(headerName == "Airways: High")
             {
-                emit signalHideAirwayHigh(rowName);
+                emit signalHideAirwayHigh(childName);
+                visibleAirwaysHigh--;
             }
         }
         else
         {
             checkboxItem->setCheckState(Qt::Checked);
 
-            if(parentHeaderName == "Sectors: ARTCC Low")
+            if(headerName == "Sectors: ARTCC Low")
             {
-                emit signalShowSectorARTCCLow(rowName);
+                emit signalShowSectorARTCCLow(childName);
+                visibleSectorsARTCCLow++;
             }
-            else if(parentHeaderName == "Sectors: ARTCC High")
+            else if(headerName == "Sectors: ARTCC High")
             {
-                emit signalShowSectorARTCCHigh(rowName);
+                emit signalShowSectorARTCCHigh(childName);
+                visibleSectorsARTCCHigh++;
             }
-            else if(parentHeaderName == "Sectors: ARTCC")
+            else if(headerName == "Sectors: ARTCC")
             {
-                emit signalShowSectorARTCC(rowName);
+                emit signalShowSectorARTCC(childName);
+                visibleSectorsARTCC++;
             }
-            else if(parentHeaderName == "Fixes")
+            else if(headerName == "Fixes")
             {
-                emit signalShowFix(rowName);
+                emit signalShowFix(childName);
+                visibleFixes++;
             }
-            else if(parentHeaderName == "Beacons: NDB")
+            else if(headerName == "Beacons: NDB")
             {
-                emit signalShowNDB(rowName);
+                emit signalShowNDB(childName);
+                visibleNDBs++;
             }
-            else if(parentHeaderName == "Beacons: VOR")
+            else if(headerName == "Beacons: VOR")
             {
-                emit signalShowVOR(rowName);
+                emit signalShowVOR(childName);
+                visibleVORs++;
             }
-            else if(parentHeaderName == "Airports")
+            else if(headerName == "Airports")
             {
-                emit signalShowAirport(rowName);
+                emit signalShowAirport(childName);
+                visibleAirports++;
             }
-            else if(parentHeaderName == "Procedures: SID")
+            else if(headerName == "Procedures: SID")
             {
-                emit signalShowSID(rowName);
+                emit signalShowSID(childName);
+                visibleSIDSymbols++;
             }
-            else if(parentHeaderName == "Procedures: STAR")
+            else if(headerName == "Procedures: STAR")
             {
-                emit signalShowSTAR(rowName);
+                emit signalShowSTAR(childName);
+                visibleSTARSymbols++;
             }
-            else if(parentHeaderName == "Airways: Low")
+            else if(headerName == "Airways: Low")
             {
-                emit signalShowAirwayLow(rowName);
+                emit signalShowAirwayLow(childName);
+                visibleAirwaysLow++;
             }
-            else if(parentHeaderName == "Airways: High")
+            else if(headerName == "Airways: High")
             {
-                emit signalShowAirwayHigh(rowName);
+                emit signalShowAirwayHigh(childName);
+                visibleAirwaysHigh++;
             }
         }
     }
@@ -217,7 +239,7 @@ void DialogSettings::slotHeaderStateChanged(QStandardItem *item)
     QStandardItem *headerItem(modelDisplay->itemFromIndex(nameIndex));
 
     QString headerName(nameIndex.data().toString());
-    bool isChecked(!(item->checkState() == Qt::Checked));
+    bool isChecked(item->checkState() == Qt::Unchecked);
 
     qDebug() << headerName;
 
@@ -239,46 +261,57 @@ void DialogSettings::slotHeaderStateChanged(QStandardItem *item)
             if(headerName == "Sectors: ARTCC Low")
             {
                 emit signalHideSectorARTCCLow(childName);
+                visibleSectorsARTCCLow--;
             }
             else if(headerName == "Sectors: ARTCC High")
             {
                 emit signalHideSectorARTCCHigh(childName);
+                visibleSectorsARTCCHigh--;
             }
             else if(headerName == "Sectors: ARTCC")
             {
                 emit signalHideSectorARTCC(childName);
+                visibleSectorsARTCC--;
             }
             else if(headerName == "Fixes")
             {
                 emit signalHideFix(childName);
+                visibleFixes--;
             }
             else if(headerName == "Beacons: NDB")
             {
                 emit signalHideNDB(childName);
+                visibleNDBs--;
             }
             else if(headerName == "Beacons: VOR")
             {
                 emit signalHideVOR(childName);
+                visibleVORs--;
             }
             else if(headerName == "Airports")
             {
                 emit signalHideAirport(childName);
+                visibleAirports--;
             }
             else if(headerName == "Procedures: SID")
             {
                 emit signalHideSID(childName);
+                visibleSIDSymbols--;
             }
             else if(headerName == "Procedures: STAR")
             {
                 emit signalHideSTAR(childName);
+                visibleSTARSymbols--;
             }
             else if(headerName == "Airways: Low")
             {
                 emit signalHideAirwayLow(childName);
+                visibleAirwaysLow--;
             }
             else if(headerName == "Airways: High")
             {
                 emit signalHideAirwayHigh(childName);
+                visibleAirwaysHigh--;
             }
 
             childCheckboxItem->setCheckState(Qt::Unchecked);
@@ -300,46 +333,57 @@ void DialogSettings::slotHeaderStateChanged(QStandardItem *item)
             if(headerName == "Sectors: ARTCC Low")
             {
                 emit signalShowSectorARTCCLow(childName);
+                visibleSectorsARTCCLow++;
             }
             else if(headerName == "Sectors: ARTCC High")
             {
                 emit signalShowSectorARTCCHigh(childName);
+                visibleSectorsARTCCHigh++;
             }
             else if(headerName == "Sectors: ARTCC")
             {
                 emit signalShowSectorARTCC(childName);
+                visibleSectorsARTCC++;
             }
             else if(headerName == "Fixes")
             {
                 emit signalShowFix(childName);
+                visibleFixes++;
             }
             else if(headerName == "Beacons: NDB")
             {
                 emit signalShowNDB(childName);
+                visibleNDBs++;
             }
             else if(headerName == "Beacons: VOR")
             {
                 emit signalShowVOR(childName);
+                visibleVORs++;
             }
             else if(headerName == "Airports")
             {
                 emit signalShowAirport(childName);
+                visibleAirports++;
             }
             else if(headerName == "Procedures: SID")
             {
                 emit signalShowSID(childName);
+                visibleSIDSymbols++;
             }
             else if(headerName == "Procedures: STAR")
             {
                 emit signalShowSTAR(childName);
+                visibleSTARSymbols++;
             }
             else if(headerName == "Airways: Low")
             {
                 emit signalShowAirwayLow(childName);
+                visibleAirwaysLow++;
             }
             else if(headerName == "Airways: High")
             {
                 emit signalShowAirwayHigh(childName);
+                visibleAirwaysHigh++;
             }
 
             childCheckboxItem->setCheckState(Qt::Checked);
@@ -426,17 +470,17 @@ void DialogSettings::createModelDisplay()
 
     modelDisplay = new QStandardItemModel(0, 2, this);
 
-    populateTreeModel("Sectors: ARTCC Low", airspaceData->getSectorARTCCLowVector(), modelDisplay);
-    populateTreeModel("Sectors: ARTCC High", airspaceData->getSectorARTCCHighVector(), modelDisplay);
-    populateTreeModel("Sectors: ARTCC", airspaceData->getSectorARTCCVector(), modelDisplay);
-    populateTreeModel("Fixes", airspaceData->getFixesVector(), modelDisplay);
-    populateTreeModel("Beacons: NDB", airspaceData->getNDBsVector(), modelDisplay);
-    populateTreeModel("Beacons: VOR", airspaceData->getVORsVector(), modelDisplay);
-    populateTreeModel("Airports", airspaceData->getAirportsVector(), modelDisplay);
-    populateTreeModel("Procedures: SID", airspaceData->getSIDSymbolsVector(), modelDisplay);
-    populateTreeModel("Procedures: STAR", airspaceData->getSTARSymbolsVector(), modelDisplay);
-    populateTreeModel("Airways: Low", airspaceData->getAirwayLowVector(), modelDisplay);
-    populateTreeModel("Airways: High", airspaceData->getAirwayHighVector(), modelDisplay);
+    populateTreeModel("Sectors: ARTCC Low", airspaceData->getSectorARTCCLowVector(), visibleSectorsARTCCLow, modelDisplay);
+    populateTreeModel("Sectors: ARTCC High", airspaceData->getSectorARTCCHighVector(), visibleSectorsARTCCHigh, modelDisplay);
+    populateTreeModel("Sectors: ARTCC", airspaceData->getSectorARTCCVector(), visibleSectorsARTCC, modelDisplay);
+    populateTreeModel("Fixes", airspaceData->getFixesVector(), visibleFixes, modelDisplay);
+    populateTreeModel("Beacons: NDB", airspaceData->getNDBsVector(), visibleNDBs, modelDisplay);
+    populateTreeModel("Beacons: VOR", airspaceData->getVORsVector(), visibleVORs, modelDisplay);
+    populateTreeModel("Airports", airspaceData->getAirportsVector(), visibleAirports, modelDisplay);
+    populateTreeModel("Procedures: SID", airspaceData->getSIDSymbolsVector(), visibleSIDSymbols, modelDisplay);
+    populateTreeModel("Procedures: STAR", airspaceData->getSTARSymbolsVector(), visibleSTARSymbols, modelDisplay);
+    populateTreeModel("Airways: Low", airspaceData->getAirwayLowVector(), visibleAirwaysLow, modelDisplay);
+    populateTreeModel("Airways: High", airspaceData->getAirwayHighVector(), visibleAirwaysHigh, modelDisplay);
 }
 
 void DialogSettings::connectSlots()
@@ -525,7 +569,7 @@ QList<QStandardItem*> DialogSettings::createDisplayHeader(QString text)
     return rowHeader;
 }
 
-QList<QStandardItem *> DialogSettings::createDisplayRow(QString text, bool checked)
+QList<QStandardItem *> DialogSettings::createDisplayRow(QString text, bool checked, int &counter)
 {
     QList<QStandardItem*> rowDisplay;
 
@@ -541,6 +585,7 @@ QList<QStandardItem *> DialogSettings::createDisplayRow(QString text, bool check
     if(checked)
     {
         checkbox->setCheckState(Qt::Checked);
+        counter++;
     }
     else
     {
@@ -552,13 +597,26 @@ QList<QStandardItem *> DialogSettings::createDisplayRow(QString text, bool check
     return rowDisplay;
 }
 
-template<class T> void DialogSettings::populateTreeModel(QString headerName, QVector<T*> const &vector, QStandardItemModel *model)
+template<class T> void DialogSettings::populateTreeModel(QString headerName, QVector<T*> const &vector, int &counter, QStandardItemModel *model)
 {
     QList<QStandardItem*> categoryHeader(createDisplayHeader(headerName));
 
     for(int i = 0; i < vector.size(); i++)
     {
-        categoryHeader.at(0)->appendRow(createDisplayRow(vector.at(i)->getName(), vector.at(i)->isVisible()));
+        categoryHeader.at(0)->appendRow(createDisplayRow(vector.at(i)->getName(), vector.at(i)->isVisible(), counter));
+    }
+
+    if((vector.size() == counter) && (counter != 0))
+    {
+        categoryHeader.at(1)->setCheckState(Qt::Checked);
+    }
+    else if(counter == 0)
+    {
+        categoryHeader.at(1)->setCheckState(Qt::Unchecked);
+    }
+    else
+    {
+        categoryHeader.at(1)->setCheckState(Qt::PartiallyChecked);
     }
 
     model->appendRow(categoryHeader);
