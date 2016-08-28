@@ -393,6 +393,10 @@ void ATCSituationalDisplay::loadData()
     bool flagLowAirway = false;
     bool flagHighAirway = false;
 
+    ATCSectorARTCCLow *tempARTCCLow;
+    ATCSectorARTCCHigh *tempARTCCHigh;
+    ATCSectorARTCC *tempARTCC;
+
     QTextStream sctStream(&sctFile);
     while(!sctStream.atEnd())
     {
@@ -695,6 +699,8 @@ void ATCSituationalDisplay::loadData()
                         currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
                         currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
 
+                        tempARTCCLow = currentObject;
+
                         airspaceData->appendSectorARTCCLow(currentObject);
 
                         qDebug() << "Sector ARTCC Low:" << currentObject->getName() << "appended...";
@@ -703,6 +709,8 @@ void ATCSituationalDisplay::loadData()
                     {
                         currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
                         currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                        tempARTCCLow = currentObject;
                     }
                 }
                 else if((iterator == 0) && coordsFound)
@@ -753,8 +761,8 @@ void ATCSituationalDisplay::loadData()
                         lon2 = airspaceData->getNavaidLongitude(lon2String);
                     }
 
-                    airspaceData->getLastSectorARTCCLow()->appendCoords1(new ATCAirspaceFix(lat1, lon1));
-                    airspaceData->getLastSectorARTCCLow()->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                    tempARTCCLow->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                    tempARTCCLow->appendCoords2(new ATCAirspaceFix(lat2, lon2));
                 }
             }
             else if(flagARTCCHigh)
@@ -844,6 +852,8 @@ void ATCSituationalDisplay::loadData()
                         currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
                         currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
 
+                        tempARTCCHigh = currentObject;
+
                         airspaceData->appendSectorARTCCHigh(currentObject);
 
                         qDebug() << "Sector ARTCC High:" << currentObject->getName() << "appended...";
@@ -852,6 +862,8 @@ void ATCSituationalDisplay::loadData()
                     {
                         currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
                         currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                        tempARTCCHigh = currentObject;
                     }
                 }
                 else if((iterator == 0) && coordsFound)
@@ -902,8 +914,8 @@ void ATCSituationalDisplay::loadData()
                         lon2 = airspaceData->getNavaidLongitude(lon2String);
                     }
 
-                    airspaceData->getLastSectorARTCCHigh()->appendCoords1(new ATCAirspaceFix(lat1, lon1));
-                    airspaceData->getLastSectorARTCCHigh()->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                    tempARTCCHigh->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                    tempARTCCHigh->appendCoords2(new ATCAirspaceFix(lat2, lon2));
                 }
             }
             else if(flagARTCC)
@@ -993,6 +1005,8 @@ void ATCSituationalDisplay::loadData()
                         currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
                         currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
 
+                        tempARTCC = currentObject;
+
                         airspaceData->appendSectorARTCC(currentObject);
 
                         qDebug() << "Sector ARTCC:" << currentObject->getName() << "appended...";
@@ -1001,6 +1015,8 @@ void ATCSituationalDisplay::loadData()
                     {
                         currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
                         currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                        tempARTCC = currentObject;
                     }
                 }
                 else if((iterator == 0) && coordsFound)
@@ -1051,8 +1067,8 @@ void ATCSituationalDisplay::loadData()
                         lon2 = airspaceData->getNavaidLongitude(lon2String);
                     }
 
-                    airspaceData->getLastSectorARTCC()->appendCoords1(new ATCAirspaceFix(lat1, lon1));
-                    airspaceData->getLastSectorARTCC()->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                    tempARTCC->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                    tempARTCC->appendCoords2(new ATCAirspaceFix(lat2, lon2));
                 }
             }
             else if(flagFixes)
