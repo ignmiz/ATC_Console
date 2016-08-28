@@ -121,16 +121,10 @@ void ATCSituationalDisplay::slotHideSectorARTCC(QString name)
 
 void ATCSituationalDisplay::slotHideFix(QString name)
 {
-//    ATCNavFix *current = airspaceData->findFix(name);
+    ATCNavFix *current = airspaceData->findFix(name);
 
-//    if(current != nullptr)
-//    {
-//        current->hide();
-//    }
-
-    for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
+    if(current != nullptr)
     {
-        ATCNavFix *current = airspaceData->getFix(i);
         current->hide();
     }
 }
@@ -237,16 +231,10 @@ void ATCSituationalDisplay::slotShowSectorARTCC(QString name)
 
 void ATCSituationalDisplay::slotShowFix(QString name)
 {
-//    ATCNavFix *current = airspaceData->findFix(name);
+    ATCNavFix *current = airspaceData->findFix(name);
 
-//    if(current != nullptr)
-//    {
-//        current->show();
-//    }
-
-    for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
+    if(current != nullptr)
     {
-        ATCNavFix *current = airspaceData->getFix(i);
         current->show();
     }
 }

@@ -101,6 +101,9 @@ private:
     QList<QStandardItem*> createDisplayRow(QString text, bool checked, int &counter);
 
     template<class T> void populateTreeModel(QString headerName, QVector<T*> const &vector, int &counter, QStandardItemModel *model);
+
+    void decrementChildCounter(int &counter, QStandardItem *headerName, QStandardItem *headerCheckbox);
+    void incrementChildCounter(int &counter, QStandardItem *headerName, QStandardItem *headerCheckbox);
 };
 
 #endif // DIALOGSETTINGS_H
