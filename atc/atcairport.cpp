@@ -80,6 +80,14 @@ void ATCAirport::setLabel(QGraphicsSimpleTextItem *text)
     label = text;
 }
 
+void ATCAirport::setColor(QColor color)
+{
+    QPen newPen(symbol->pen());
+    newPen.setColor(color);
+
+    symbol->setPen(newPen);
+}
+
 void ATCAirport::appendRunway(ATCRunway *runway)
 {
     runways.append(runway);

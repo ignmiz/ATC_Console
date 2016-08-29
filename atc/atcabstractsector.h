@@ -24,7 +24,6 @@ public:
     coordsPair& getCoordsPair(int iterator);
     QGraphicsLineItem* getLine(int iterator);
     QGraphicsPolygonItem* getPolygon(int iterator);
-    QColor getColor();
 
     int getCoordsVectorSize();
     int getPolygonsVectorSize();

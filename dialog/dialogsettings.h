@@ -55,9 +55,18 @@ private slots:
     void slotUpdateTableColorARTCCLow(QColor color);
     void slotUpdateTableColorARTCCHigh(QColor color);
     void slotUpdateTableColorARTCC(QColor color);
+    void slotUpdateTableColorVOR(QColor color);
+    void slotUpdateTableColorNDB(QColor color);
+    void slotUpdateTableColorFix(QColor color);
+    void slotUpdateTableColorAirport(QColor color);
+    void slotUpdateTableColorRunway(QColor color);
+    void slotUpdateTableColorSTAR(QColor color);
+    void slotUpdateTableColorSID(QColor color);
+    void slotUpdateTableColorAirwayLow(QColor color);
+    void slotUpdateTableColorAirwayHigh(QColor color);
 
-    void onTableClicked(const QModelIndex &index);
-    void onTreeViewClicked(const QModelIndex &index);
+    void onViewSymbologyClicked(const QModelIndex &index);
+    void onViewDisplayClicked(const QModelIndex &index);
 
     void slotHeaderStateChanged(QStandardItem *item);
 
@@ -100,7 +109,7 @@ private:
     QList<QStandardItem*> createDisplayHeader(QString text);
     QList<QStandardItem*> createDisplayRow(QString text, bool checked, int &counter);
 
-    template<class T> void populateTreeModel(QString headerName, QVector<T*> const &vector, int &counter, QStandardItemModel *model);
+    template<class T> void populateModelDisplay(QString headerName, QVector<T*> const &vector, int &counter, QStandardItemModel *model);
 
     void decrementChildCounter(int &counter, QStandardItem *headerName, QStandardItem *headerCheckbox);
     void incrementChildCounter(int &counter, QStandardItem *headerName, QStandardItem *headerCheckbox);

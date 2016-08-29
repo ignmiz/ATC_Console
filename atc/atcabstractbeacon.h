@@ -3,6 +3,7 @@
 
 #include <QGeoCoordinate>
 #include <QGraphicsItem>
+#include <QPen>
 
 class ATCAbstractBeacon : public QGeoCoordinate
 {
@@ -21,6 +22,7 @@ public:
     void setSymbol(QAbstractGraphicsShapeItem *graphicsItem);
     void setScenePosition(QPointF *position);
     void setLabel(QGraphicsSimpleTextItem *textLabel);
+    void setColor(QColor color);
 
     void show();
     void hide();

@@ -37,6 +37,15 @@ public slots:
     void slotSetColorSectorARTCCLow(QColor color);
     void slotSetColorSectorARTCCHigh(QColor color);
     void slotSetColorSectorARTCC(QColor color);
+    void slotSetColorVOR(QColor color);
+    void slotSetColorNDB(QColor color);
+    void slotSetColorFix(QColor color);
+    void slotSetColorAirport(QColor color);
+    void slotSetColorRunway(QColor color);
+    void slotSetColorSTAR(QColor color);
+    void slotSetColorSID(QColor color);
+    void slotSetColorAirwayLow(QColor color);
+    void slotSetColorAirwayHigh(QColor color);
 
     void slotHideSectorARTCCLow(QString name);
     void slotHideSectorARTCCHigh(QString name);

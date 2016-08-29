@@ -53,6 +53,14 @@ void ATCNavFix::setLabel(QGraphicsSimpleTextItem *textLabel)
     label = textLabel;
 }
 
+void ATCNavFix::setColor(QColor color)
+{
+    QPen newPen(symbol->pen());
+    newPen.setColor(color);
+
+    symbol->setPen(newPen);
+}
+
 void ATCNavFix::show()
 {
     symbol->show();

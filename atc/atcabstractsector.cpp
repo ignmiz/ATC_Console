@@ -69,11 +69,6 @@ QGraphicsPolygonItem *ATCAbstractSector::getPolygon(int iterator)
     return polygons.at(iterator);
 }
 
-QColor ATCAbstractSector::getColor()
-{
-    return polygons.at(0)->pen().color();
-}
-
 int ATCAbstractSector::getCoordsVectorSize()
 {
     return coords1.size();

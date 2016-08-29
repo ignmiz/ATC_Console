@@ -4,6 +4,7 @@
 #include "atcabstractfix.h"
 
 #include <QGraphicsItem>
+#include <QPen>
 
 class ATCNavFix : public ATCAbstractFix
 {
@@ -20,6 +21,7 @@ public:
     void setSymbol(QAbstractGraphicsShapeItem *fixSymbol);
     void setScenePosition(QPointF *position);
     void setLabel(QGraphicsSimpleTextItem *textLabel);
+    void setColor(QColor color);
 
     void show();
     void hide();

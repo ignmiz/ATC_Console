@@ -4,6 +4,7 @@
 #include "atcairspacefix.h"
 
 #include <QGraphicsItem>
+#include <QPen>
 
 class ATCAbstractAirway
 {
@@ -18,6 +19,7 @@ public:
     int getCoordsVectorSize();
 
     void setName(QString name);
+    void setColor(QColor color);
 
     void appendCoords1(ATCAirspaceFix* coord);
     void appendCoords2(ATCAirspaceFix *coord);

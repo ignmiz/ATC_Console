@@ -82,7 +82,7 @@ QTabBar::tab:!selected:hover
     <attribute name="title">
      <string>Symbology</string>
     </attribute>
-    <widget class="ATCSettingsTableView" name="tableView">
+    <widget class="ATCSettingsTableView" name="viewSymbology">
      <property name="geometry">
       <rect>
        <x>5</x>
@@ -248,7 +248,7 @@ QScrollBar::sub-page:vertical
     <attribute name="title">
      <string>Display</string>
     </attribute>
-    <widget class="QTreeView" name="treeView">
+    <widget class="QTreeView" name="viewDisplay">
      <property name="geometry">
       <rect>
        <x>5</x>

@@ -66,34 +66,178 @@ void DialogSettings::slotUpdateTableColorARTCC(QColor color)
     situationalDisplay->getSettings()->ARTCC_COLOR = color;
 }
 
-void DialogSettings::onTableClicked(const QModelIndex &index)
+void DialogSettings::slotUpdateTableColorVOR(QColor color)
+{
+    QBrush brush(color);
+    modelSymbology->item(3, 1)->setBackground(brush);
+    modelSymbology->item(3, 1)->setForeground(brush);
+
+    situationalDisplay->getSettings()->VOR_COLOR = color;
+}
+
+void DialogSettings::slotUpdateTableColorNDB(QColor color)
+{
+    QBrush brush(color);
+    modelSymbology->item(4, 1)->setBackground(brush);
+    modelSymbology->item(4, 1)->setForeground(brush);
+
+    situationalDisplay->getSettings()->NDB_COLOR = color;
+}
+
+void DialogSettings::slotUpdateTableColorFix(QColor color)
+{
+    QBrush brush(color);
+    modelSymbology->item(5, 1)->setBackground(brush);
+    modelSymbology->item(5, 1)->setForeground(brush);
+
+    situationalDisplay->getSettings()->FIX_COLOR = color;
+}
+
+void DialogSettings::slotUpdateTableColorAirport(QColor color)
+{
+    QBrush brush(color);
+    modelSymbology->item(6, 1)->setBackground(brush);
+    modelSymbology->item(6, 1)->setForeground(brush);
+
+    situationalDisplay->getSettings()->AIRPORT_COLOR = color;
+}
+
+void DialogSettings::slotUpdateTableColorRunway(QColor color)
+{
+    QBrush brush(color);
+    modelSymbology->item(7, 1)->setBackground(brush);
+    modelSymbology->item(7, 1)->setForeground(brush);
+
+    situationalDisplay->getSettings()->RUNWAY_COLOR = color;
+}
+
+void DialogSettings::slotUpdateTableColorSTAR(QColor color)
+{
+    QBrush brush(color);
+    modelSymbology->item(8, 1)->setBackground(brush);
+    modelSymbology->item(8, 1)->setForeground(brush);
+
+    situationalDisplay->getSettings()->STAR_COLOR = color;
+}
+
+void DialogSettings::slotUpdateTableColorSID(QColor color)
+{
+    QBrush brush(color);
+    modelSymbology->item(9, 1)->setBackground(brush);
+    modelSymbology->item(9, 1)->setForeground(brush);
+
+    situationalDisplay->getSettings()->SID_COLOR = color;
+}
+
+void DialogSettings::slotUpdateTableColorAirwayLow(QColor color)
+{
+    QBrush brush(color);
+    modelSymbology->item(10, 1)->setBackground(brush);
+    modelSymbology->item(10, 1)->setForeground(brush);
+
+    situationalDisplay->getSettings()->AIRWAY_LOW_COLOR = color;
+}
+
+void DialogSettings::slotUpdateTableColorAirwayHigh(QColor color)
+{
+    QBrush brush(color);
+    modelSymbology->item(11, 1)->setBackground(brush);
+    modelSymbology->item(11, 1)->setForeground(brush);
+
+    situationalDisplay->getSettings()->AIRWAY_HIGH_COLOR = color;
+}
+
+void DialogSettings::onViewSymbologyClicked(const QModelIndex &index)
 {
     QVariant value = index.data();
 
-    if((value.toString() == "ARTCC Low Color") && !flagDialogColorPickerExists)
+    if((value.toString() == "Sectors ARTCC Low Color") && !flagDialogColorPickerExists)
     {
         constructColorPicker(situationalDisplay->getSettings()->ARTCC_LOW_COLOR);
 
         connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorSectorARTCCLow(QColor)));
         connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateTableColorARTCCLow(QColor)));
     }
-    else if((value.toString() == "ARTCC High Color") && !flagDialogColorPickerExists)
+    else if((value.toString() == "Sectors ARTCC High Color") && !flagDialogColorPickerExists)
     {
         constructColorPicker(situationalDisplay->getSettings()->ARTCC_HIGH_COLOR);
 
         connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorSectorARTCCHigh(QColor)));
         connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateTableColorARTCCHigh(QColor)));
     }
-    else if((value.toString() == "ARTCC Color") && !flagDialogColorPickerExists)
+    else if((value.toString() == "Sectors ARTCC Color") && !flagDialogColorPickerExists)
     {
         constructColorPicker(situationalDisplay->getSettings()->ARTCC_COLOR);
 
         connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorSectorARTCC(QColor)));
         connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateTableColorARTCC(QColor)));
     }
+    else if((value.toString() == "VORs Color") && !flagDialogColorPickerExists)
+    {
+        constructColorPicker(situationalDisplay->getSettings()->VOR_COLOR);
+
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorVOR(QColor)));
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateTableColorVOR(QColor)));
+    }
+    else if((value.toString() == "NDBs Color") && !flagDialogColorPickerExists)
+    {
+        constructColorPicker(situationalDisplay->getSettings()->NDB_COLOR);
+
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorNDB(QColor)));
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateTableColorNDB(QColor)));
+    }
+    else if((value.toString() == "Fixes Color") && !flagDialogColorPickerExists)
+    {
+        constructColorPicker(situationalDisplay->getSettings()->FIX_COLOR);
+
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorFix(QColor)));
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateTableColorFix(QColor)));
+    }
+    else if((value.toString() == "Airports Color") && !flagDialogColorPickerExists)
+    {
+        constructColorPicker(situationalDisplay->getSettings()->AIRPORT_COLOR);
+
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorAirport(QColor)));
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateTableColorAirport(QColor)));
+    }
+    else if((value.toString() == "Runways Color") && !flagDialogColorPickerExists)
+    {
+        constructColorPicker(situationalDisplay->getSettings()->RUNWAY_COLOR);
+
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorRunway(QColor)));
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateTableColorRunway(QColor)));
+    }
+    else if((value.toString() == "STARs Color") && !flagDialogColorPickerExists)
+    {
+        constructColorPicker(situationalDisplay->getSettings()->STAR_COLOR);
+
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorSTAR(QColor)));
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateTableColorSTAR(QColor)));
+    }
+    else if((value.toString() == "SIDs Color") && !flagDialogColorPickerExists)
+    {
+        constructColorPicker(situationalDisplay->getSettings()->SID_COLOR);
+
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorSID(QColor)));
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateTableColorSID(QColor)));
+    }
+    else if((value.toString() == "Low Airways Color") && !flagDialogColorPickerExists)
+    {
+        constructColorPicker(situationalDisplay->getSettings()->AIRWAY_LOW_COLOR);
+
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorAirwayLow(QColor)));
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateTableColorAirwayLow(QColor)));
+    }
+    else if((value.toString() == "High Airways Color") && !flagDialogColorPickerExists)
+    {
+        constructColorPicker(situationalDisplay->getSettings()->AIRWAY_HIGH_COLOR);
+
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorAirwayHigh(QColor)));
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateTableColorAirwayHigh(QColor)));
+    }
 }
 
-void DialogSettings::onTreeViewClicked(const QModelIndex &index)
+void DialogSettings::onViewDisplayClicked(const QModelIndex &index)
 {
     bool isNotHeader(index.parent().isValid());
 
@@ -504,39 +648,48 @@ void DialogSettings::on_buttonSetDefault_clicked()
 
 void DialogSettings::setupViewSymbology()
 {
-    uiInner->tableView->setModel(modelSymbology);
-    uiInner->tableView->setGridStyle(Qt::NoPen);
+    uiInner->viewSymbology->setModel(modelSymbology);
+    uiInner->viewSymbology->setGridStyle(Qt::NoPen);
 
     int rowHeight = 25;
     for(int i = 0; i < modelSymbology->rowCount(); i++)
     {
-        uiInner->tableView->setRowHeight(i, rowHeight);
+        uiInner->viewSymbology->setRowHeight(i, rowHeight);
     }
 
-    uiInner->tableView->setColumnWidth(0, 300);
-    uiInner->tableView->setColumnWidth(1, 176);
+    uiInner->viewSymbology->setColumnWidth(0, 300);
+    uiInner->viewSymbology->setColumnWidth(1, 176);
 
-    uiInner->tableView->horizontalHeader()->setHidden(true);
-    uiInner->tableView->verticalHeader()->setHidden(true);
+    uiInner->viewSymbology->horizontalHeader()->setHidden(true);
+    uiInner->viewSymbology->verticalHeader()->setHidden(true);
 }
 
 void DialogSettings::setupViewDisplay()
 {
-    uiInner->treeView->setModel(modelDisplay);
-    uiInner->treeView->setHeaderHidden(true);
-    uiInner->treeView->sortByColumn(0, Qt::AscendingOrder);
+    uiInner->viewDisplay->setModel(modelDisplay);
+    uiInner->viewDisplay->setHeaderHidden(true);
+    uiInner->viewDisplay->sortByColumn(0, Qt::AscendingOrder);
 
-    uiInner->treeView->setColumnWidth(0, 375);
-    uiInner->treeView->setColumnWidth(1, 25);
+    uiInner->viewDisplay->setColumnWidth(0, 375);
+    uiInner->viewDisplay->setColumnWidth(1, 25);
 }
 
 void DialogSettings::createModelSymbology()
 {
     modelSymbology = new QStandardItemModel(0, 2, this);
 
-    modelSymbology->appendRow(createSymbologyRow("ARTCC Low", situationalDisplay->getSettings()->ARTCC_LOW_COLOR));
-    modelSymbology->appendRow(createSymbologyRow("ARTCC High", situationalDisplay->getSettings()->ARTCC_HIGH_COLOR));
-    modelSymbology->appendRow(createSymbologyRow("ARTCC", situationalDisplay->getSettings()->ARTCC_COLOR));
+    modelSymbology->appendRow(createSymbologyRow("Sectors ARTCC Low", situationalDisplay->getSettings()->ARTCC_LOW_COLOR));
+    modelSymbology->appendRow(createSymbologyRow("Sectors ARTCC High", situationalDisplay->getSettings()->ARTCC_HIGH_COLOR));
+    modelSymbology->appendRow(createSymbologyRow("Sectors ARTCC", situationalDisplay->getSettings()->ARTCC_COLOR));
+    modelSymbology->appendRow(createSymbologyRow("VORs", situationalDisplay->getSettings()->VOR_COLOR));
+    modelSymbology->appendRow(createSymbologyRow("NDBs", situationalDisplay->getSettings()->NDB_COLOR));
+    modelSymbology->appendRow(createSymbologyRow("Fixes", situationalDisplay->getSettings()->FIX_COLOR));
+    modelSymbology->appendRow(createSymbologyRow("Airports", situationalDisplay->getSettings()->AIRPORT_COLOR));
+    modelSymbology->appendRow(createSymbologyRow("Runways", situationalDisplay->getSettings()->RUNWAY_COLOR));
+    modelSymbology->appendRow(createSymbologyRow("STARs", situationalDisplay->getSettings()->STAR_COLOR));
+    modelSymbology->appendRow(createSymbologyRow("SIDs", situationalDisplay->getSettings()->SID_COLOR));
+    modelSymbology->appendRow(createSymbologyRow("Low Airways", situationalDisplay->getSettings()->AIRWAY_LOW_COLOR));
+    modelSymbology->appendRow(createSymbologyRow("High Airways", situationalDisplay->getSettings()->AIRWAY_HIGH_COLOR));
 }
 
 void DialogSettings::createModelDisplay()
@@ -545,27 +698,36 @@ void DialogSettings::createModelDisplay()
 
     modelDisplay = new QStandardItemModel(0, 2, this);
 
-    populateTreeModel("Sectors: ARTCC Low", airspaceData->getSectorARTCCLowVector(), visibleSectorsARTCCLow, modelDisplay);
-    populateTreeModel("Sectors: ARTCC High", airspaceData->getSectorARTCCHighVector(), visibleSectorsARTCCHigh, modelDisplay);
-    populateTreeModel("Sectors: ARTCC", airspaceData->getSectorARTCCVector(), visibleSectorsARTCC, modelDisplay);
-    populateTreeModel("Fixes", airspaceData->getFixesVector(), visibleFixes, modelDisplay);
-    populateTreeModel("Beacons: NDB", airspaceData->getNDBsVector(), visibleNDBs, modelDisplay);
-    populateTreeModel("Beacons: VOR", airspaceData->getVORsVector(), visibleVORs, modelDisplay);
-    populateTreeModel("Airports", airspaceData->getAirportsVector(), visibleAirports, modelDisplay);
-    populateTreeModel("Procedures: SID", airspaceData->getSIDSymbolsVector(), visibleSIDSymbols, modelDisplay);
-    populateTreeModel("Procedures: STAR", airspaceData->getSTARSymbolsVector(), visibleSTARSymbols, modelDisplay);
-    populateTreeModel("Airways: Low", airspaceData->getAirwayLowVector(), visibleAirwaysLow, modelDisplay);
-    populateTreeModel("Airways: High", airspaceData->getAirwayHighVector(), visibleAirwaysHigh, modelDisplay);
+    populateModelDisplay("Sectors: ARTCC Low", airspaceData->getSectorARTCCLowVector(), visibleSectorsARTCCLow, modelDisplay);
+    populateModelDisplay("Sectors: ARTCC High", airspaceData->getSectorARTCCHighVector(), visibleSectorsARTCCHigh, modelDisplay);
+    populateModelDisplay("Sectors: ARTCC", airspaceData->getSectorARTCCVector(), visibleSectorsARTCC, modelDisplay);
+    populateModelDisplay("Fixes", airspaceData->getFixesVector(), visibleFixes, modelDisplay);
+    populateModelDisplay("Beacons: NDB", airspaceData->getNDBsVector(), visibleNDBs, modelDisplay);
+    populateModelDisplay("Beacons: VOR", airspaceData->getVORsVector(), visibleVORs, modelDisplay);
+    populateModelDisplay("Airports", airspaceData->getAirportsVector(), visibleAirports, modelDisplay);
+    populateModelDisplay("Procedures: SID", airspaceData->getSIDSymbolsVector(), visibleSIDSymbols, modelDisplay);
+    populateModelDisplay("Procedures: STAR", airspaceData->getSTARSymbolsVector(), visibleSTARSymbols, modelDisplay);
+    populateModelDisplay("Airways: Low", airspaceData->getAirwayLowVector(), visibleAirwaysLow, modelDisplay);
+    populateModelDisplay("Airways: High", airspaceData->getAirwayHighVector(), visibleAirwaysHigh, modelDisplay);
 }
 
 void DialogSettings::connectSlots()
 {
-    connect(uiInner->tableView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableClicked(const QModelIndex &)));
-    connect(uiInner->treeView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTreeViewClicked(const QModelIndex &)));
+    connect(uiInner->viewSymbology, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onViewSymbologyClicked(const QModelIndex &)));
+    connect(uiInner->viewDisplay, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onViewDisplayClicked(const QModelIndex &)));
 
     connect(situationalDisplay->getSettings(), SIGNAL(signalColorARTCCLow(QColor)), this, SLOT(slotUpdateTableColorARTCCLow(QColor)));
     connect(situationalDisplay->getSettings(), SIGNAL(signalColorARTCCHigh(QColor)), this, SLOT(slotUpdateTableColorARTCCHigh(QColor)));
     connect(situationalDisplay->getSettings(), SIGNAL(signalColorARTCC(QColor)), this, SLOT(slotUpdateTableColorARTCC(QColor)));
+    connect(situationalDisplay->getSettings(), SIGNAL(signalColorVOR(QColor)), this, SLOT(slotUpdateTableColorVOR(QColor)));
+    connect(situationalDisplay->getSettings(), SIGNAL(signalColorNDB(QColor)), this, SLOT(slotUpdateTableColorNDB(QColor)));
+    connect(situationalDisplay->getSettings(), SIGNAL(signalColorFix(QColor)), this, SLOT(slotUpdateTableColorFix(QColor)));
+    connect(situationalDisplay->getSettings(), SIGNAL(signalColorAirport(QColor)), this, SLOT(slotUpdateTableColorAirport(QColor)));
+    connect(situationalDisplay->getSettings(), SIGNAL(signalColorRunway(QColor)), this, SLOT(slotUpdateTableColorRunway(QColor)));
+    connect(situationalDisplay->getSettings(), SIGNAL(signalColorSTAR(QColor)), this, SLOT(slotUpdateTableColorSTAR(QColor)));
+    connect(situationalDisplay->getSettings(), SIGNAL(signalColorSID(QColor)), this, SLOT(slotUpdateTableColorSID(QColor)));
+    connect(situationalDisplay->getSettings(), SIGNAL(signalColorAirwayLow(QColor)), this, SLOT(slotUpdateTableColorAirwayLow(QColor)));
+    connect(situationalDisplay->getSettings(), SIGNAL(signalColorAirwayHigh(QColor)), this, SLOT(slotUpdateTableColorAirwayHigh(QColor)));
 
     connect(this, SIGNAL(signalHideSectorARTCCLow(QString)), situationalDisplay, SLOT(slotHideSectorARTCCLow(QString)));
     connect(this, SIGNAL(signalHideSectorARTCCHigh(QString)), situationalDisplay, SLOT(slotHideSectorARTCCHigh(QString)));
@@ -700,7 +862,7 @@ void DialogSettings::incrementChildCounter(int &counter, QStandardItem *headerNa
     }
 }
 
-template<class T> void DialogSettings::populateTreeModel(QString headerName, QVector<T*> const &vector, int &counter, QStandardItemModel *model)
+template<class T> void DialogSettings::populateModelDisplay(QString headerName, QVector<T*> const &vector, int &counter, QStandardItemModel *model)
 {
     QList<QStandardItem*> categoryHeader(createDisplayHeader(headerName));
 

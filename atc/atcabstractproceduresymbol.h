@@ -6,6 +6,7 @@
 #include <QString>
 #include <QVector>
 #include <QGraphicsItem>
+#include <QPen>
 
 class ATCAbstractProcedureSymbol
 {
@@ -20,6 +21,7 @@ public:
     int getCoordsVectorSize();
 
     void setName(QString name);
+    void setColor(QColor color);
 
     void appendCoords1(ATCAirspaceFix* coord);
     void appendCoords2(ATCAirspaceFix *coord);

@@ -6,6 +6,7 @@
 #include <QGeoCoordinate>
 #include <QGraphicsItem>
 #include <QVector>
+#include <QPen>
 
 class ATCAirport : public QGeoCoordinate
 {
@@ -27,6 +28,8 @@ public:
    void setScenePosition(QPointF *position);
    void setSymbol(QGraphicsEllipseItem *ellipse);
    void setLabel(QGraphicsSimpleTextItem *text);
+   void setColor(QColor color);
+
    void appendRunway(ATCRunway *runway);
 
    bool isRunwayVectorEmpty();

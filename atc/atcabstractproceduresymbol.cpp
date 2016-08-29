@@ -61,6 +61,17 @@ void ATCAbstractProcedureSymbol::setName(QString name)
     symbolName = name;
 }
 
+void ATCAbstractProcedureSymbol::setColor(QColor color)
+{
+    for(int i = 0; i < lines.size(); i++)
+    {
+        QPen newPen(lines.at(i)->pen());
+        newPen.setColor(color);
+
+        lines.at(i)->setPen(newPen);
+    }
+}
+
 void ATCAbstractProcedureSymbol::appendCoords1(ATCAirspaceFix *coord)
 {
     coords1.append(coord);

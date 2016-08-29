@@ -66,6 +66,14 @@ void ATCAbstractBeacon::setLabel(QGraphicsSimpleTextItem *textLabel)
     label = textLabel;
 }
 
+void ATCAbstractBeacon::setColor(QColor color)
+{
+    QPen newPen(symbol->pen());
+    newPen.setColor(color);
+
+    symbol->setPen(newPen);
+}
+
 void ATCAbstractBeacon::show()
 {
     symbol->show();

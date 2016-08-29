@@ -67,25 +67,94 @@ ATCAirspace *ATCSituationalDisplay::getAirspaceData()
 
 void ATCSituationalDisplay::slotSetColorSectorARTCCLow(QColor color)
 {
-    for(int i = 0; i < visibleSectorsARTCCLow.size(); i++)
+    for(int i = 0; i < airspaceData->getSectorARTCCLowVectorSize(); i++)
     {
-        visibleSectorsARTCCLow.at(i)->setColor(color);
+        airspaceData->getSectorARTCCLow(i)->setColor(color);
     }
 }
 
 void ATCSituationalDisplay::slotSetColorSectorARTCCHigh(QColor color)
 {
-    for(int i = 0; i < visibleSectorsARTCCHigh.size(); i++)
+    for(int i = 0; i < airspaceData->getSectorARTCCHighVectorSize(); i++)
     {
-        visibleSectorsARTCCHigh.at(i)->setColor(color);
+        airspaceData->getSectorARTCCHigh(i)->setColor(color);
     }
 }
 
 void ATCSituationalDisplay::slotSetColorSectorARTCC(QColor color)
 {
-    for(int i = 0; i < visibleSectorsARTCC.size(); i++)
+    for(int i = 0; i < airspaceData->getSectorARTCCVectorSize(); i++)
     {
-        visibleSectorsARTCC.at(i)->setColor(color);
+        airspaceData->getSectorARTCC(i)->setColor(color);
+    }
+}
+
+void ATCSituationalDisplay::slotSetColorVOR(QColor color)
+{
+    for(int i = 0; i < airspaceData->getVORsVectorSize(); i++)
+    {
+        airspaceData->getVOR(i)->setColor(color);
+    }
+}
+
+void ATCSituationalDisplay::slotSetColorNDB(QColor color)
+{
+    for(int i = 0; i < airspaceData->getNDBsVectorSize(); i++)
+    {
+        airspaceData->getNDB(i)->setColor(color);
+    }
+}
+
+void ATCSituationalDisplay::slotSetColorFix(QColor color)
+{
+    for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
+    {
+        airspaceData->getFix(i)->setColor(color);
+    }
+}
+
+void ATCSituationalDisplay::slotSetColorAirport(QColor color)
+{
+    for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
+    {
+        airspaceData->getAirport(i)->setColor(color);
+    }
+}
+
+void ATCSituationalDisplay::slotSetColorRunway(QColor color)
+{
+    //runway loop
+}
+
+void ATCSituationalDisplay::slotSetColorSTAR(QColor color)
+{
+    for(int i = 0; i < airspaceData->getSTARSymbolsVectorSize(); i++)
+    {
+        airspaceData->getSTARSymbol(i)->setColor(color);
+    }
+}
+
+void ATCSituationalDisplay::slotSetColorSID(QColor color)
+{
+    for(int i = 0; i < airspaceData->getSIDSymbolsVectorSize(); i++)
+    {
+        airspaceData->getSIDSymbol(i)->setColor(color);
+    }
+}
+
+void ATCSituationalDisplay::slotSetColorAirwayLow(QColor color)
+{
+    for(int i = 0; i < airspaceData->getAirwayLowVectorSize(); i++)
+    {
+        airspaceData->getAirwayLow(i)->setColor(color);
+    }
+}
+
+void ATCSituationalDisplay::slotSetColorAirwayHigh(QColor color)
+{
+    for(int i = 0; i < airspaceData->getAirwayHighVectorSize(); i++)
+    {
+        airspaceData->getAirwayHigh(i)->setColor(color);
     }
 }
 
@@ -1722,7 +1791,7 @@ void ATCSituationalDisplay::rescaleSectorsARTCCLow()
     if(!visibleSectorsARTCCLow.empty())
     {
         QPen currentPen(visibleSectorsARTCCLow.at(0)->getPolygon(0)->pen());
-        currentPen.setWidthF(ATCConst::ARTCC_LOW_LINE_WIDTH / currentScale);
+        currentPen.setWidthF(settings->ARTCC_LOW_LINE_WIDTH / currentScale);
 
         for(int i = 0; i < visibleSectorsARTCCLow.size(); i++)
         {
@@ -1739,7 +1808,7 @@ void ATCSituationalDisplay::rescaleSectorsARTCCHigh()
     if(!visibleSectorsARTCCHigh.empty())
     {
         QPen currentPen(visibleSectorsARTCCHigh.at(0)->getPolygon(0)->pen());
-        currentPen.setWidthF(ATCConst::ARTCC_HIGH_LINE_WIDTH / currentScale);
+        currentPen.setWidthF(settings->ARTCC_HIGH_LINE_WIDTH / currentScale);
 
         for(int i = 0; i < visibleSectorsARTCCHigh.size(); i++)
         {
@@ -1756,7 +1825,7 @@ void ATCSituationalDisplay::rescaleSectorsARTCC()
     if(!visibleSectorsARTCC.empty())
     {
         QPen currentPen(visibleSectorsARTCC.at(0)->getPolygon(0)->pen());
-        currentPen.setWidthF(ATCConst::ARTCC_LINE_WIDTH / currentScale);
+        currentPen.setWidthF(settings->ARTCC_LINE_WIDTH / currentScale);
 
         for(int i = 0; i < visibleSectorsARTCC.size(); i++)
         {
@@ -1772,10 +1841,10 @@ void ATCSituationalDisplay::rescaleFixes()
 {
     if(!visibleFixes.empty())
     {
-        qreal sideLength = ATCConst::FIX_SIDE_LENGTH / currentScale;
+        qreal sideLength = settings->FIX_SIDE_LENGTH / currentScale;
 
         QPen currentPen(visibleFixes.at(0)->getSymbol()->pen());
-        currentPen.setWidthF(ATCConst::FIX_LINE_WIDTH / currentScale);
+        currentPen.setWidthF(settings->FIX_LINE_WIDTH / currentScale);
 
         for(int i = 0; i < visibleFixes.size(); i++)
         {
@@ -1806,7 +1875,7 @@ void ATCSituationalDisplay::rescaleFixLabels()
     if(!visibleFixes.empty())
     {
         QFont textFont(visibleFixes.at(0)->getLabel()->font());
-        textFont.setPointSizeF(ATCConst::FIX_LABEL_HEIGHT / currentScale);
+        textFont.setPointSizeF(settings->FIX_LABEL_HEIGHT / currentScale);
 
         for(int i = 0; i < visibleFixes.size(); i++)
         {
@@ -1818,8 +1887,8 @@ void ATCSituationalDisplay::rescaleFixLabels()
             double positionX = currentFix->getScenePosition()->x();
             double positionY = currentFix->getScenePosition()->y();
 
-            currentLabel->setPos(positionX + ATCConst::FIX_LABEL_DX / currentScale,
-                                 positionY + ATCConst::FIX_LABEL_DY / currentScale);
+            currentLabel->setPos(positionX + settings->FIX_LABEL_DX / currentScale,
+                                 positionY + settings->FIX_LABEL_DY / currentScale);
         }
     }
 }
@@ -1828,10 +1897,10 @@ void ATCSituationalDisplay::rescaleVORs()
 {
     if(!visibleVORs.empty())
     {
-        qreal sideLength = ATCConst::VOR_SIDE_LENGTH / currentScale;
+        qreal sideLength = settings->VOR_SIDE_LENGTH / currentScale;
 
         QPen currentPen(visibleVORs.at(0)->getSymbol()->pen());
-        currentPen.setWidthF(ATCConst::VOR_LINE_WIDTH / currentScale);
+        currentPen.setWidthF(settings->VOR_LINE_WIDTH / currentScale);
 
         for(int i = 0; i < visibleVORs.size(); i++)
         {
@@ -1854,7 +1923,7 @@ void ATCSituationalDisplay::rescaleVORLabels()
     if(!visibleVORs.empty())
     {
         QFont textFont(visibleVORs.at(0)->getLabel()->font());
-        textFont.setPointSizeF(ATCConst::VOR_LABEL_HEIGHT / currentScale);
+        textFont.setPointSizeF(settings->VOR_LABEL_HEIGHT / currentScale);
 
         for(int i = 0; i < visibleVORs.size(); i++)
         {
@@ -1866,8 +1935,8 @@ void ATCSituationalDisplay::rescaleVORLabels()
             double positionX = currentVOR->getScenePosition()->x();
             double positionY = currentVOR->getScenePosition()->y();
 
-            currentLabel->setPos(positionX + ATCConst::VOR_LABEL_DX / currentScale,
-                                 positionY + ATCConst::VOR_LABEL_DY / currentScale);
+            currentLabel->setPos(positionX + settings->VOR_LABEL_DX / currentScale,
+                                 positionY + settings->VOR_LABEL_DY / currentScale);
         }
     }
 }
@@ -1877,17 +1946,17 @@ void ATCSituationalDisplay::rescaleNDBs()
     if(!visibleNDBs.empty())
     {
         QPen currentPen(visibleNDBs.at(0)->getSymbol()->pen());
-        currentPen.setWidthF(ATCConst::NDB_SYMBOL_WIDTH / currentScale);
+        currentPen.setWidthF(settings->NDB_LINE_WIDTH / currentScale);
 
         for(int i = 0; i < visibleNDBs.size(); i++)
         {
             QGraphicsEllipseItem *currentSymbol = dynamic_cast<QGraphicsEllipseItem*>(visibleNDBs.at(i)->getSymbol());
             QPointF *currentPosition = visibleNDBs.at(i)->getScenePosition();
 
-            currentSymbol->setRect(currentPosition->x() - ATCConst::NDB_SYMBOL_DIA / 2 / currentScale,
-                                   currentPosition->y() - ATCConst::NDB_SYMBOL_DIA / 2 / currentScale,
-                                   ATCConst::NDB_SYMBOL_DIA / currentScale,
-                                   ATCConst::NDB_SYMBOL_DIA / currentScale);
+            currentSymbol->setRect(currentPosition->x() - settings->NDB_SYMBOL_DIA / 2 / currentScale,
+                                   currentPosition->y() - settings->NDB_SYMBOL_DIA / 2 / currentScale,
+                                   settings->NDB_SYMBOL_DIA / currentScale,
+                                   settings->NDB_SYMBOL_DIA / currentScale);
             currentSymbol->setPen(currentPen);
         }
     }
@@ -1898,7 +1967,7 @@ void ATCSituationalDisplay::rescaleNDBLabels()
     if(!visibleNDBs.empty())
     {
         QFont textFont(visibleNDBs.at(0)->getLabel()->font());
-        textFont.setPointSizeF(ATCConst::NDB_LABEL_HEIGHT / currentScale);
+        textFont.setPointSizeF(settings->NDB_LABEL_HEIGHT / currentScale);
 
         for(int i = 0; i < visibleNDBs.size(); i++)
         {
@@ -1910,8 +1979,8 @@ void ATCSituationalDisplay::rescaleNDBLabels()
             double positionX = currentNDB->getScenePosition()->x();
             double positionY = currentNDB->getScenePosition()->y();
 
-            currentLabel->setPos(positionX + ATCConst::AIRPORT_LABEL_DX / currentScale,
-                                 positionY + ATCConst::AIRPORT_LABEL_DY / currentScale);
+            currentLabel->setPos(positionX + settings->NDB_LABEL_DX / currentScale,
+                                 positionY + settings->NDB_LABEL_DY / currentScale);
         }
     }
 }
@@ -1921,17 +1990,17 @@ void ATCSituationalDisplay::rescaleAirports()
     if(!visibleAirports.empty())
     {
         QPen currentPen(visibleAirports.at(0)->getSymbol()->pen());
-        currentPen.setWidthF(ATCConst::AIRPORT_SYMBOL_WIDTH / currentScale);
+        currentPen.setWidthF(settings->AIRPORT_LINE_WIDTH / currentScale);
 
         for(int i = 0; i < visibleAirports.size(); i++)
         {
             QGraphicsEllipseItem *currentSymbol = visibleAirports.at(i)->getSymbol();
             QPointF *currentPosition = visibleAirports.at(i)->getScenePosition();
 
-            currentSymbol->setRect(currentPosition->x() - ATCConst::AIRPORT_SYMBOL_DIA / 2 / currentScale,
-                                   currentPosition->y() - ATCConst::AIRPORT_SYMBOL_DIA / 2 / currentScale,
-                                   ATCConst::AIRPORT_SYMBOL_DIA / currentScale,
-                                   ATCConst::AIRPORT_SYMBOL_DIA / currentScale);
+            currentSymbol->setRect(currentPosition->x() - settings->AIRPORT_SYMBOL_DIA / 2 / currentScale,
+                                   currentPosition->y() - settings->AIRPORT_SYMBOL_DIA / 2 / currentScale,
+                                   settings->AIRPORT_SYMBOL_DIA / currentScale,
+                                   settings->AIRPORT_SYMBOL_DIA / currentScale);
             currentSymbol->setPen(currentPen);
         }
     }
@@ -1942,7 +2011,7 @@ void ATCSituationalDisplay::rescaleAirportLabels()
     if(!visibleAirports.empty())
     {
         QFont textFont(visibleAirports.at(0)->getLabel()->font());
-        textFont.setPointSizeF(ATCConst::AIRPORT_LABEL_HEIGHT / currentScale);
+        textFont.setPointSizeF(settings->AIRPORT_LABEL_HEIGHT / currentScale);
 
         for(int i = 0; i < visibleAirports.size(); i++)
         {
@@ -1954,8 +2023,8 @@ void ATCSituationalDisplay::rescaleAirportLabels()
             double positionX = currentAirport->getScenePosition()->x();
             double positionY = currentAirport->getScenePosition()->y();
 
-            currentLabel->setPos(positionX + ATCConst::AIRPORT_LABEL_DX / currentScale,
-                                 positionY + ATCConst::AIRPORT_LABEL_DY / currentScale);
+            currentLabel->setPos(positionX + settings->AIRPORT_LABEL_DX / currentScale,
+                                 positionY + settings->AIRPORT_LABEL_DY / currentScale);
         }
     }
 }
@@ -1965,7 +2034,7 @@ void ATCSituationalDisplay::rescaleExtendedCentrelines()
     if(!visibleCentrelines.empty())
     {
         QPen currentPen(visibleCentrelines.at(0)->getCentreline()->pen());
-        currentPen.setWidthF(ATCConst::RWY_CENTRELINE_WIDTH / currentScale);
+        currentPen.setWidthF(settings->RUNWAY_LINE_WIDTH / currentScale);
 
         for(int i = 0; i < visibleCentrelines.size(); i++)
         {
@@ -1979,7 +2048,7 @@ void ATCSituationalDisplay::rescaleSTARs()
     if(!visibleSTARs.empty())
     {
         QPen currentPen(visibleSTARs.at(0)->getLine(0)->pen());
-        currentPen.setWidthF(ATCConst::STAR_LINE_WIDTH / currentScale);
+        currentPen.setWidthF(settings->STAR_LINE_WIDTH / currentScale);
 
         for(int i = 0; i < visibleSTARs.size(); i++)
         {
@@ -1996,7 +2065,7 @@ void ATCSituationalDisplay::rescaleSIDs()
     if(!visibleSIDs.empty())
     {
         QPen currentPen(visibleSIDs.at(0)->getLine(0)->pen());
-        currentPen.setWidthF(ATCConst::SID_LINE_WIDTH / currentScale);
+        currentPen.setWidthF(settings->SID_LINE_WITH / currentScale);
 
         for(int i = 0; i < visibleSIDs.size(); i++)
         {
@@ -2013,7 +2082,7 @@ void ATCSituationalDisplay::rescaleAirwayLow()
     if(!visibleLowAirways.empty())
     {
         QPen currentPen(visibleLowAirways.at(0)->getLine(0)->pen());
-        currentPen.setWidthF(ATCConst::AIRWAY_LOW_LINE_WIDTH / currentScale);
+        currentPen.setWidthF(settings->AIRWAY_LOW_LINE_WIDTH / currentScale);
 
         for(int i = 0; i < visibleLowAirways.size(); i++)
         {
@@ -2030,7 +2099,7 @@ void ATCSituationalDisplay::rescaleAirwayHigh()
     if(!visibleHighAirways.empty())
     {
         QPen currentPen(visibleHighAirways.at(0)->getLine(0)->pen());
-        currentPen.setWidthF(ATCConst::AIRWAY_HIGH_LINE_WIDTH / currentScale);
+        currentPen.setWidthF(settings->AIRWAY_HIGH_LINE_WIDTH / currentScale);
 
         for(int i = 0; i < visibleHighAirways.size(); i++)
         {
@@ -2199,7 +2268,7 @@ void ATCSituationalDisplay::displaySectorsARTCCLow()
 
 //Display ARTCC Low lines on scene
     QPen pen(settings->ARTCC_LOW_COLOR);
-    pen.setWidthF(ATCConst::ARTCC_LOW_LINE_WIDTH / currentScale);
+    pen.setWidthF(settings->ARTCC_LOW_LINE_WIDTH / currentScale);
 
     for(int i = 0; i < airspaceData->getSectorARTCCLowVectorSize(); i++)
     {
@@ -2288,7 +2357,7 @@ void ATCSituationalDisplay::displaySectorsARTCCHigh()
 
 //Display ARTCC High lines on scene
     QPen pen(settings->ARTCC_HIGH_COLOR);
-    pen.setWidthF(ATCConst::ARTCC_HIGH_LINE_WIDTH / currentScale);
+    pen.setWidthF(settings->ARTCC_HIGH_LINE_WIDTH / currentScale);
 
     for(int i = 0; i < airspaceData->getSectorARTCCHighVectorSize(); i++)
     {
@@ -2377,7 +2446,7 @@ void ATCSituationalDisplay::displaySectorsARTCC()
 
 //Display ARTCC lines on scene
     QPen pen(settings->ARTCC_COLOR);
-    pen.setWidthF(ATCConst::ARTCC_LINE_WIDTH / currentScale);
+    pen.setWidthF(settings->ARTCC_LINE_WIDTH / currentScale);
 
     for(int i = 0; i < airspaceData->getSectorARTCCVectorSize(); i++)
     {
@@ -2427,7 +2496,7 @@ void ATCSituationalDisplay::displayFixes()
 
 //Build and position symbol polygons
     int vertexNumber = 3;
-    qreal sideLength = ATCConst::FIX_SIDE_LENGTH / currentScale;
+    qreal sideLength = settings->FIX_SIDE_LENGTH / currentScale;
 
     for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
     {
@@ -2447,8 +2516,8 @@ void ATCSituationalDisplay::displayFixes()
     }
 
 //Display fix symbols on scene
-    QPen pen(Qt::green);
-    pen.setWidthF(ATCConst::FIX_LINE_WIDTH / currentScale);
+    QPen pen(settings->FIX_COLOR);
+    pen.setWidthF(settings->FIX_LINE_WIDTH / currentScale);
 
     for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
     {
@@ -2464,7 +2533,7 @@ void ATCSituationalDisplay::displayFixes()
     QBrush textBrush(Qt::white);
 
     QFont textFont("Arial");
-    textFont.setPointSizeF(ATCConst::FIX_LABEL_HEIGHT / currentScale);
+    textFont.setPointSizeF(settings->FIX_LABEL_HEIGHT / currentScale);
 
     for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
     {
@@ -2478,8 +2547,8 @@ void ATCSituationalDisplay::displayFixes()
         double positionX = currentFix->getScenePosition()->x();
         double positionY = currentFix->getScenePosition()->y();
 
-        currentLabel->setPos(positionX + ATCConst::FIX_LABEL_DX / currentScale,
-                             positionY + ATCConst::FIX_LABEL_DY / currentScale);
+        currentLabel->setPos(positionX + settings->FIX_LABEL_DX / currentScale,
+                             positionY + settings->FIX_LABEL_DY / currentScale);
 
         scene->addItem(currentLabel);
         currentFix->setFlagVisible(true);
@@ -2520,15 +2589,15 @@ void ATCSituationalDisplay::displayAirports()
 //Build and position symbol polygons
     for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
     {
-        airspaceData->getAirport(i)->setSymbol(new QGraphicsEllipseItem(tempAirports.at(i).x - ATCConst::AIRPORT_SYMBOL_DIA / 2 / currentScale,
-                                                                        tempAirports.at(i).y - ATCConst::AIRPORT_SYMBOL_DIA / 2 / currentScale,
-                                                                        ATCConst::AIRPORT_SYMBOL_DIA / currentScale,
-                                                                        ATCConst::AIRPORT_SYMBOL_DIA / currentScale));
+        airspaceData->getAirport(i)->setSymbol(new QGraphicsEllipseItem(tempAirports.at(i).x - settings->AIRPORT_SYMBOL_DIA / 2 / currentScale,
+                                                                        tempAirports.at(i).y - settings->AIRPORT_SYMBOL_DIA / 2 / currentScale,
+                                                                        settings->AIRPORT_SYMBOL_DIA / currentScale,
+                                                                        settings->AIRPORT_SYMBOL_DIA / currentScale));
     }
 
 //Display airport symbols on scene
-    QPen pen(Qt::yellow);
-    pen.setWidthF(ATCConst::AIRPORT_SYMBOL_WIDTH / currentScale);
+    QPen pen(settings->AIRPORT_COLOR);
+    pen.setWidthF(settings->AIRPORT_LINE_WIDTH / currentScale);
 
     for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
     {
@@ -2544,7 +2613,7 @@ void ATCSituationalDisplay::displayAirports()
     QBrush textBrush(Qt::white);
 
     QFont textFont("Arial");
-    textFont.setPointSizeF(ATCConst::AIRPORT_LABEL_HEIGHT / currentScale);
+    textFont.setPointSizeF(settings->AIRPORT_LABEL_HEIGHT / currentScale);
 
     for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
     {
@@ -2558,8 +2627,8 @@ void ATCSituationalDisplay::displayAirports()
         double positionX = currentAirport->getScenePosition()->x();
         double positionY = currentAirport->getScenePosition()->y();
 
-        currentLabel->setPos(positionX + ATCConst::AIRPORT_LABEL_DX / currentScale,
-                             positionY + ATCConst::AIRPORT_LABEL_DY / currentScale);
+        currentLabel->setPos(positionX + settings->AIRPORT_LABEL_DX / currentScale,
+                             positionY + settings->AIRPORT_LABEL_DY / currentScale);
 
         scene->addItem(currentLabel);
         currentAirport->setFlagVisible(true);
@@ -2597,10 +2666,10 @@ void ATCSituationalDisplay::displayExtendedCentrelines()
                 coord centreEnd1;
                 coord centreEnd2;
 
-                centreEnd1.x = rwy1.x + ATCConst::RWY_CENTRELINE_LENGTH / 60 * qSin(angle + ATCConst::PI);
-                centreEnd1.y = rwy1.y + ATCConst::RWY_CENTRELINE_LENGTH / 60 * qCos(angle + ATCConst::PI);
-                centreEnd2.x = rwy2.x + ATCConst::RWY_CENTRELINE_LENGTH / 60 * qSin(angle);
-                centreEnd2.y = rwy2.y + ATCConst::RWY_CENTRELINE_LENGTH / 60 * qCos(angle);
+                centreEnd1.x = rwy1.x + settings->RUNWAY_CENTELINE_LENGTH / 60 * qSin(angle + ATCConst::PI);
+                centreEnd1.y = rwy1.y + settings->RUNWAY_CENTELINE_LENGTH / 60 * qCos(angle + ATCConst::PI);
+                centreEnd2.x = rwy2.x + settings->RUNWAY_CENTELINE_LENGTH / 60 * qSin(angle);
+                centreEnd2.y = rwy2.y + settings->RUNWAY_CENTELINE_LENGTH / 60 * qCos(angle);
 
                 rwyCoords1.append(rwy1);
                 rwyCoords2.append(rwy2);
@@ -2689,8 +2758,8 @@ void ATCSituationalDisplay::displayExtendedCentrelines()
     }
 
 //Display extended centrelines
-    QPen pen(Qt::red);
-    pen.setWidthF(ATCConst::RWY_CENTRELINE_WIDTH / currentScale);
+    QPen pen(settings->RUNWAY_COLOR);
+    pen.setWidthF(settings->RUNWAY_LINE_WIDTH / currentScale);
 
     for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
     {
@@ -2747,7 +2816,7 @@ void ATCSituationalDisplay::displayVORs()
     }
 
 //Build and position symbol polygons
-    qreal sideLength = ATCConst::VOR_SIDE_LENGTH / currentScale;
+    qreal sideLength = settings->VOR_SIDE_LENGTH / currentScale;
 
     for(int i = 0; i < airspaceData->getVORsVectorSize(); i++)
     {
@@ -2759,8 +2828,8 @@ void ATCSituationalDisplay::displayVORs()
     }
 
 //Display VOR symbols on scene
-    QPen pen(Qt::cyan);
-    pen.setWidthF(ATCConst::VOR_LINE_WIDTH / currentScale);
+    QPen pen(settings->VOR_COLOR);
+    pen.setWidthF(settings->VOR_LINE_WIDTH / currentScale);
 
     for(int i = 0; i < airspaceData->getVORsVectorSize(); i++)
     {
@@ -2776,7 +2845,7 @@ void ATCSituationalDisplay::displayVORs()
     QBrush textBrush(Qt::white);
 
     QFont textFont("Arial");
-    textFont.setPointSizeF(ATCConst::VOR_LABEL_HEIGHT / currentScale);
+    textFont.setPointSizeF(settings->VOR_LABEL_HEIGHT / currentScale);
 
     for(int i = 0; i < airspaceData->getVORsVectorSize(); i++)
     {
@@ -2790,8 +2859,8 @@ void ATCSituationalDisplay::displayVORs()
         double positionX = currentVOR->getScenePosition()->x();
         double positionY = currentVOR->getScenePosition()->y();
 
-        currentLabel->setPos(positionX + ATCConst::VOR_LABEL_DX / currentScale,
-                             positionY + ATCConst::VOR_LABEL_DY / currentScale);
+        currentLabel->setPos(positionX + settings->VOR_LABEL_DX / currentScale,
+                             positionY + settings->VOR_LABEL_DY / currentScale);
 
         scene->addItem(currentLabel);
         currentVOR->setFlagVisible(true);
@@ -2832,15 +2901,15 @@ void ATCSituationalDisplay::displayNDBs()
 //Build and position symbol polygons
     for(int i = 0; i < airspaceData->getNDBsVectorSize(); i++)
     {
-        airspaceData->getNDB(i)->setSymbol(new QGraphicsEllipseItem(tempNDBs.at(i).x - ATCConst::NDB_SYMBOL_DIA / 2 / currentScale,
-                                                                    tempNDBs.at(i).y - ATCConst::NDB_SYMBOL_DIA / 2 / currentScale,
-                                                                    ATCConst::NDB_SYMBOL_DIA / currentScale,
-                                                                    ATCConst::NDB_SYMBOL_DIA / currentScale));
+        airspaceData->getNDB(i)->setSymbol(new QGraphicsEllipseItem(tempNDBs.at(i).x - settings->NDB_SYMBOL_DIA / 2 / currentScale,
+                                                                    tempNDBs.at(i).y - settings->NDB_SYMBOL_DIA / 2 / currentScale,
+                                                                    settings->NDB_SYMBOL_DIA / currentScale,
+                                                                    settings->NDB_SYMBOL_DIA / currentScale));
     }
 
 //Display NDB symbols on scene
-    QPen pen(Qt::magenta);
-    pen.setWidthF(ATCConst::NDB_SYMBOL_WIDTH / currentScale);
+    QPen pen(settings->NDB_COLOR);
+    pen.setWidthF(settings->NDB_LINE_WIDTH / currentScale);
 
     for(int i = 0; i < airspaceData->getNDBsVectorSize(); i++)
     {
@@ -2856,7 +2925,7 @@ void ATCSituationalDisplay::displayNDBs()
     QBrush textBrush(Qt::white);
 
     QFont textFont("Arial");
-    textFont.setPointSizeF(ATCConst::NDB_LABEL_HEIGHT / currentScale);
+    textFont.setPointSizeF(settings->NDB_LABEL_HEIGHT / currentScale);
 
     for(int i = 0; i < airspaceData->getNDBsVectorSize(); i++)
     {
@@ -2870,8 +2939,8 @@ void ATCSituationalDisplay::displayNDBs()
         double positionX = currentNDB->getScenePosition()->x();
         double positionY = currentNDB->getScenePosition()->y();
 
-        currentLabel->setPos(positionX + ATCConst::VOR_LABEL_DX / currentScale,
-                             positionY + ATCConst::VOR_LABEL_DY / currentScale);
+        currentLabel->setPos(positionX + settings->NDB_LABEL_DX / currentScale,
+                             positionY + settings->NDB_LABEL_DY / currentScale);
 
         scene->addItem(currentLabel);
         currentNDB->setFlagVisible(true);
@@ -2943,8 +3012,8 @@ void ATCSituationalDisplay::displaySTARs()
     }
 
 //Display STAR symbol lines on scene
-    QPen pen(QColor(255, 165, 0));
-    pen.setWidthF(ATCConst::STAR_LINE_WIDTH / currentScale);
+    QPen pen(settings->STAR_COLOR);
+    pen.setWidthF(settings->STAR_LINE_WIDTH / currentScale);
 
     for(int i = 0; i < airspaceData->getSTARSymbolsVectorSize(); i++)
     {
@@ -3026,8 +3095,8 @@ void ATCSituationalDisplay::displaySIDs()
     }
 
 //Display SID symbol lines on scene
-    QPen pen(QColor(0, 255, 255));
-    pen.setWidthF(ATCConst::SID_LINE_WIDTH / currentScale);
+    QPen pen(settings->SID_COLOR);
+    pen.setWidthF(settings->SID_LINE_WITH / currentScale);
 
     for(int i = 0; i < airspaceData->getSIDSymbolsVectorSize(); i++)
     {
@@ -3109,8 +3178,8 @@ void ATCSituationalDisplay::displayAirwayLow()
     }
 
 //Display Low Airway lines on scene
-    QPen pen(QColor(255, 192, 203));
-    pen.setWidthF(ATCConst::AIRWAY_LOW_LINE_WIDTH / currentScale);
+    QPen pen(settings->AIRWAY_LOW_COLOR);
+    pen.setWidthF(settings->AIRWAY_LOW_LINE_WIDTH / currentScale);
 
     for(int i = 0; i < airspaceData->getAirwayLowVectorSize(); i++)
     {
@@ -3192,8 +3261,8 @@ void ATCSituationalDisplay::displayAirwayHigh()
     }
 
 //Display High Airway lines on scene
-    QPen pen(QColor(123, 104, 238));
-    pen.setWidthF(ATCConst::AIRWAY_HIGH_LINE_WIDTH / currentScale);
+    QPen pen(settings->AIRWAY_HIGH_COLOR);
+    pen.setWidthF(settings->AIRWAY_HIGH_LINE_WIDTH / currentScale);
 
     for(int i = 0; i < airspaceData->getAirwayHighVectorSize(); i++)
     {

@@ -170,6 +170,150 @@ void ATCSettings::interpretSettingsFile(QString path)
                 flagLowAirway = false;
                 flagHighAirway = false;
             }
+            else if(textLine.contains("[VOR]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = true;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+            }
+            else if(textLine.contains("[NDB]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = true;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+            }
+            else if(textLine.contains("[FIXES]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = true;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+            }
+            else if(textLine.contains("[AIRPORT]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = true;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+            }
+            else if(textLine.contains("[RUNWAY]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = true;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+            }
+            else if(textLine.contains("[STAR]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = true;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+            }
+            else if(textLine.contains("[SID]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = true;
+                flagLowAirway = false;
+                flagHighAirway = false;
+            }
+            else if(textLine.contains("[LOW AIRWAY]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = true;
+                flagHighAirway = false;
+            }
+            else if(textLine.contains("[HIGH AIRWAY]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = true;
+            }
             else if(flagINFO)
             {
                 if(stringList.at(0).trimmed() == "NAME")
@@ -183,6 +327,10 @@ void ATCSettings::interpretSettingsFile(QString path)
                 {
                     ARTCC_LOW_COLOR = colorFromString(stringList.at(1));
                 }
+                else if(stringList.at(0).trimmed() == "LINE WIDTH")
+                {
+                    ARTCC_LOW_LINE_WIDTH = stringList.at(1).trimmed().toDouble();
+                }
             }
             else if(flagARTCCHigh)
             {
@@ -190,12 +338,187 @@ void ATCSettings::interpretSettingsFile(QString path)
                 {
                     ARTCC_HIGH_COLOR = colorFromString(stringList.at(1));
                 }
+                else if(stringList.at(0).trimmed() == "LINE WIDTH")
+                {
+                    ARTCC_HIGH_LINE_WIDTH = stringList.at(1).trimmed().toDouble();
+                }
             }
             else if(flagARTCC)
             {
                 if(stringList.at(0).trimmed() == "COLOR")
                 {
                     ARTCC_COLOR = colorFromString(stringList.at(1));
+                }
+                else if(stringList.at(0).trimmed() == "LINE WIDTH")
+                {
+                    ARTCC_LINE_WIDTH = stringList.at(1).trimmed().toDouble();
+                }
+            }
+            else if(flagVOR)
+            {
+                if(stringList.at(0).trimmed() == "COLOR")
+                {
+                    VOR_COLOR = colorFromString(stringList.at(1));
+                }
+                else if(stringList.at(0).trimmed() == "LINE WIDTH")
+                {
+                    VOR_LINE_WIDTH = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "SIDE LENGTH")
+                {
+                    VOR_SIDE_LENGTH = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "LABEL HEIGHT")
+                {
+                    VOR_LABEL_HEIGHT = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "LABEL DX")
+                {
+                    VOR_LABEL_DX = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "LABEL DY")
+                {
+                    VOR_LABEL_DY = stringList.at(1).trimmed().toDouble();
+                }
+            }
+            else if(flagNDB)
+            {
+                if(stringList.at(0).trimmed() == "COLOR")
+                {
+                    NDB_COLOR = colorFromString(stringList.at(1));
+                }
+                else if(stringList.at(0).trimmed() == "LINE WIDTH")
+                {
+                    NDB_LINE_WIDTH = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "SYMBOL DIAMETER")
+                {
+                    NDB_SYMBOL_DIA = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "LABEL HEIGHT")
+                {
+                    NDB_LABEL_HEIGHT = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "LABEL DX")
+                {
+                    NDB_LABEL_DX = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "LABEL DY")
+                {
+                    NDB_LABEL_DY = stringList.at(1).trimmed().toDouble();
+                }
+            }
+            else if(flagFixes)
+            {
+                if(stringList.at(0).trimmed() == "COLOR")
+                {
+                    FIX_COLOR = colorFromString(stringList.at(1));
+                }
+                else if(stringList.at(0).trimmed() == "LINE WIDTH")
+                {
+                    FIX_LINE_WIDTH = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "SIDE LENGTH")
+                {
+                    FIX_SIDE_LENGTH = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "LABEL HEIGHT")
+                {
+                    FIX_LABEL_HEIGHT = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "LABEL DX")
+                {
+                    FIX_LABEL_DX = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "LABEL DY")
+                {
+                    FIX_LABEL_DY = stringList.at(1).trimmed().toDouble();
+                }
+            }
+            else if(flagAirport)
+            {
+                if(stringList.at(0).trimmed() == "COLOR")
+                {
+                    AIRPORT_COLOR = colorFromString(stringList.at(1));
+                }
+                else if(stringList.at(0).trimmed() == "LINE WIDTH")
+                {
+                    AIRPORT_LINE_WIDTH = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "SYMBOL DIAMETER")
+                {
+                    AIRPORT_SYMBOL_DIA = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "LABEL HEIGHT")
+                {
+                    AIRPORT_LABEL_HEIGHT = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "LABEL DX")
+                {
+                    AIRPORT_LABEL_DX = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "LABEL DY")
+                {
+                    AIRPORT_LABEL_DY = stringList.at(1).trimmed().toDouble();
+                }
+            }
+            else if(flagRunway)
+            {
+                if(stringList.at(0).trimmed() == "COLOR")
+                {
+                    RUNWAY_COLOR = colorFromString(stringList.at(1));
+                }
+                else if(stringList.at(0).trimmed() == "LINE WIDTH")
+                {
+                    RUNWAY_LINE_WIDTH = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "CENTRELINE LENGTH")
+                {
+                    RUNWAY_CENTELINE_LENGTH = stringList.at(1).trimmed().toDouble();
+                }
+            }
+            else if(flagSTAR)
+            {
+                if(stringList.at(0).trimmed() == "COLOR")
+                {
+                    STAR_COLOR = colorFromString(stringList.at(1));
+                }
+                else if(stringList.at(0).trimmed() == "LINE WIDTH")
+                {
+                    STAR_LINE_WIDTH = stringList.at(1).trimmed().toDouble();
+                }
+            }
+            else if(flagSID)
+            {
+                if(stringList.at(0).trimmed() == "COLOR")
+                {
+                    SID_COLOR = colorFromString(stringList.at(1));
+                }
+                else if(stringList.at(0).trimmed() == "LINE WIDTH")
+                {
+                    SID_LINE_WITH = stringList.at(1).trimmed().toDouble();
+                }
+            }
+            else if(flagLowAirway)
+            {
+                if(stringList.at(0).trimmed() == "COLOR")
+                {
+                    AIRWAY_LOW_COLOR = colorFromString(stringList.at(1));
+                }
+                else if(stringList.at(0).trimmed() == "LINE WIDTH")
+                {
+                    AIRWAY_LOW_LINE_WIDTH = stringList.at(1).trimmed().toDouble();
+                }
+            }
+            else if(flagHighAirway)
+            {
+                if(stringList.at(0).trimmed() == "COLOR")
+                {
+                    AIRWAY_HIGH_COLOR = colorFromString(stringList.at(1));
+                }
+                else if(stringList.at(0).trimmed() == "LINE WIDTH")
+                {
+                    AIRWAY_HIGH_LINE_WIDTH = stringList.at(1).trimmed().toDouble();
                 }
             }
         }
@@ -245,6 +568,15 @@ void ATCSettings::loadSettings(QString path)
     emit signalColorARTCCLow(ARTCC_LOW_COLOR);
     emit signalColorARTCCHigh(ARTCC_HIGH_COLOR);
     emit signalColorARTCC(ARTCC_COLOR);
+    emit signalColorVOR(VOR_COLOR);
+    emit signalColorNDB(NDB_COLOR);
+    emit signalColorFix(FIX_COLOR);
+    emit signalColorAirport(AIRPORT_COLOR);
+    emit signalColorRunway(RUNWAY_COLOR);
+    emit signalColorSTAR(STAR_COLOR);
+    emit signalColorSID(SID_COLOR);
+    emit signalColorAirwayLow(AIRWAY_LOW_COLOR);
+    emit signalColorAirwayHigh(AIRWAY_HIGH_COLOR);
 
     SETTINGS_ACTIVE_PATH = path;
 }
