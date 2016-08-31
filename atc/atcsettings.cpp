@@ -496,7 +496,7 @@ void ATCSettings::interpretSettingsFile(QString path)
                 }
                 else if(stringList.at(0).trimmed() == "LINE WIDTH")
                 {
-                    SID_LINE_WITH = stringList.at(1).trimmed().toDouble();
+                    SID_LINE_WIDTH = stringList.at(1).trimmed().toDouble();
                 }
             }
             else if(flagLowAirway)

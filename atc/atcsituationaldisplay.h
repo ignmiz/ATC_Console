@@ -117,8 +117,21 @@ private:
     void rescaleExtendedCentrelines();
     void rescaleSTARs();
     void rescaleSIDs();
-    void rescaleAirwayLow();
-    void rescaleAirwayHigh();
+    void rescaleAirwaysLow();
+    void rescaleAirwaysHigh();
+
+    void rescaleSectorARTCCLow(ATCSectorARTCCLow *object);
+    void rescaleSectorARTCCHigh(ATCSectorARTCCHigh *object);
+    void rescaleSectorARTCC(ATCSectorARTCC *object);
+    void rescaleFix(ATCNavFix *object);
+    void rescaleVOR(ATCBeaconVOR *object);
+    void rescaleNDB(ATCBeaconNDB *object);
+    void rescaleAirport(ATCAirport *object);
+    void rescaleExtendedCentreline(ATCRunwayExtendedCentreline *object);
+    void rescaleSTAR(ATCProcedureSTARSymbol *object);
+    void rescaleSID(ATCProcedureSIDSymbol *object);
+    void rescaleAirwayLow(ATCAirwayLow *object);
+    void rescaleAirwayHigh(ATCAirwayHigh *object);
 
     void projectSectorsARTCCLow();
     void projectSectorsARTCCHigh();
@@ -145,6 +158,8 @@ private:
 
     void calculateSectorParameters();
     void connectSlots();
+
+    template<class T> void removeFromVisible(T *object, QVector<T*> &vector);
 
 protected:
     void wheelEvent(QWheelEvent *event);

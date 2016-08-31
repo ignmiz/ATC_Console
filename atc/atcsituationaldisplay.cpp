@@ -165,6 +165,7 @@ void ATCSituationalDisplay::slotHideSectorARTCCLow(QString name)
     if(current != nullptr)
     {
         current->hide();
+        removeFromVisible(current, visibleSectorsARTCCLow);
     }
 }
 
@@ -175,6 +176,7 @@ void ATCSituationalDisplay::slotHideSectorARTCCHigh(QString name)
     if(current != nullptr)
     {
         current->hide();
+        removeFromVisible(current, visibleSectorsARTCCHigh);
     }
 }
 
@@ -185,6 +187,7 @@ void ATCSituationalDisplay::slotHideSectorARTCC(QString name)
     if(current != nullptr)
     {
         current->hide();
+        removeFromVisible(current, visibleSectorsARTCC);
     }
 }
 
@@ -195,6 +198,7 @@ void ATCSituationalDisplay::slotHideFix(QString name)
     if(current != nullptr)
     {
         current->hide();
+        removeFromVisible(current, visibleFixes);
     }
 }
 
@@ -205,6 +209,7 @@ void ATCSituationalDisplay::slotHideNDB(QString name)
     if(current != nullptr)
     {
         current->hide();
+        removeFromVisible(current, visibleNDBs);
     }
 }
 
@@ -215,6 +220,7 @@ void ATCSituationalDisplay::slotHideVOR(QString name)
     if(current != nullptr)
     {
         current->hide();
+        removeFromVisible(current, visibleVORs);
     }
 }
 
@@ -225,6 +231,7 @@ void ATCSituationalDisplay::slotHideAirport(QString name)
     if(current != nullptr)
     {
         current->hide();
+        removeFromVisible(current, visibleAirports);
     }
 }
 
@@ -235,6 +242,7 @@ void ATCSituationalDisplay::slotHideSID(QString name)
     if(current != nullptr)
     {
         current->hide();
+        removeFromVisible(current, visibleSIDs);
     }
 }
 
@@ -245,6 +253,7 @@ void ATCSituationalDisplay::slotHideSTAR(QString name)
     if(current != nullptr)
     {
         current->hide();
+        removeFromVisible(current, visibleSTARs);
     }
 }
 
@@ -255,6 +264,7 @@ void ATCSituationalDisplay::slotHideAirwayLow(QString name)
     if(current != nullptr)
     {
         current->hide();
+        removeFromVisible(current, visibleLowAirways);
     }
 }
 
@@ -265,6 +275,7 @@ void ATCSituationalDisplay::slotHideAirwayHigh(QString name)
     if(current != nullptr)
     {
         current->hide();
+        removeFromVisible(current, visibleHighAirways);
     }
 }
 
@@ -275,6 +286,8 @@ void ATCSituationalDisplay::slotShowSectorARTCCLow(QString name)
     if(current != nullptr)
     {
         current->show();
+        visibleSectorsARTCCLow.append(current);
+        rescaleSectorARTCCLow(current);
     }
 }
 
@@ -285,6 +298,8 @@ void ATCSituationalDisplay::slotShowSectorARTCCHigh(QString name)
     if(current != nullptr)
     {
         current->show();
+        visibleSectorsARTCCHigh.append(current);
+        rescaleSectorARTCCHigh(current);
     }
 }
 
@@ -295,6 +310,8 @@ void ATCSituationalDisplay::slotShowSectorARTCC(QString name)
     if(current != nullptr)
     {
         current->show();
+        visibleSectorsARTCC.append(current);
+        rescaleSectorARTCC(current);
     }
 }
 
@@ -305,6 +322,8 @@ void ATCSituationalDisplay::slotShowFix(QString name)
     if(current != nullptr)
     {
         current->show();
+        visibleFixes.append(current);
+        rescaleFix(current);
     }
 }
 
@@ -315,6 +334,8 @@ void ATCSituationalDisplay::slotShowNDB(QString name)
     if(current != nullptr)
     {
         current->show();
+        visibleNDBs.append(current);
+        rescaleNDB(current);
     }
 }
 
@@ -325,6 +346,8 @@ void ATCSituationalDisplay::slotShowVOR(QString name)
     if(current != nullptr)
     {
         current->show();
+        visibleVORs.append(current);
+        rescaleVOR(current);
     }
 }
 
@@ -335,6 +358,8 @@ void ATCSituationalDisplay::slotShowAirport(QString name)
     if(current != nullptr)
     {
         current->show();
+        visibleAirports.append(current);
+        rescaleAirport(current);
     }
 }
 
@@ -345,6 +370,8 @@ void ATCSituationalDisplay::slotShowSID(QString name)
     if(current != nullptr)
     {
         current->show();
+        visibleSIDs.append(current);
+        rescaleSID(current);
     }
 }
 
@@ -355,6 +382,8 @@ void ATCSituationalDisplay::slotShowSTAR(QString name)
     if(current != nullptr)
     {
         current->show();
+        visibleSTARs.append(current);
+        rescaleSTAR(current);
     }
 }
 
@@ -365,6 +394,8 @@ void ATCSituationalDisplay::slotShowAirwayLow(QString name)
     if(current != nullptr)
     {
         current->show();
+        visibleLowAirways.append(current);
+        rescaleAirwayLow(current);
     }
 }
 
@@ -375,6 +406,8 @@ void ATCSituationalDisplay::slotShowAirwayHigh(QString name)
     if(current != nullptr)
     {
         current->show();
+        visibleHighAirways.append(current);
+        rescaleAirwayHigh(current);
     }
 }
 
@@ -2065,7 +2098,7 @@ void ATCSituationalDisplay::rescaleSIDs()
     if(!visibleSIDs.empty())
     {
         QPen currentPen(visibleSIDs.at(0)->getLine(0)->pen());
-        currentPen.setWidthF(settings->SID_LINE_WITH / currentScale);
+        currentPen.setWidthF(settings->SID_LINE_WIDTH / currentScale);
 
         for(int i = 0; i < visibleSIDs.size(); i++)
         {
@@ -2077,7 +2110,7 @@ void ATCSituationalDisplay::rescaleSIDs()
     }
 }
 
-void ATCSituationalDisplay::rescaleAirwayLow()
+void ATCSituationalDisplay::rescaleAirwaysLow()
 {
     if(!visibleLowAirways.empty())
     {
@@ -2094,7 +2127,7 @@ void ATCSituationalDisplay::rescaleAirwayLow()
     }
 }
 
-void ATCSituationalDisplay::rescaleAirwayHigh()
+void ATCSituationalDisplay::rescaleAirwaysHigh()
 {
     if(!visibleHighAirways.empty())
     {
@@ -2108,6 +2141,219 @@ void ATCSituationalDisplay::rescaleAirwayHigh()
                 visibleHighAirways.at(i)->getLine(j)->setPen(currentPen);
             }
         }
+    }
+}
+
+void ATCSituationalDisplay::rescaleSectorARTCCLow(ATCSectorARTCCLow *object)
+{
+    QPen currentPen(object->getPolygon(0)->pen());
+    currentPen.setWidthF(settings->ARTCC_LOW_LINE_WIDTH / currentScale);
+
+    for(int i = 0; i < object->getPolygonsVectorSize(); i++)
+    {
+        object->getPolygon(i)->setPen(currentPen);
+    }
+}
+
+void ATCSituationalDisplay::rescaleSectorARTCCHigh(ATCSectorARTCCHigh *object)
+{
+    QPen currentPen(object->getPolygon(0)->pen());
+    currentPen.setWidthF(settings->ARTCC_HIGH_LINE_WIDTH / currentScale);
+
+    for(int i = 0; i < object->getPolygonsVectorSize(); i++)
+    {
+        object->getPolygon(i)->setPen(currentPen);
+    }
+}
+
+void ATCSituationalDisplay::rescaleSectorARTCC(ATCSectorARTCC *object)
+{
+    QPen currentPen(object->getPolygon(0)->pen());
+    currentPen.setWidthF(settings->ARTCC_LINE_WIDTH / currentScale);
+
+    for(int i = 0; i < object->getPolygonsVectorSize(); i++)
+    {
+        object->getPolygon(i)->setPen(currentPen);
+    }
+}
+
+void ATCSituationalDisplay::rescaleFix(ATCNavFix *object)
+{
+    qreal sideLength = settings->FIX_SIDE_LENGTH / currentScale;
+
+    QPen currentPen(object->getSymbol()->pen());
+    currentPen.setWidthF(settings->FIX_LINE_WIDTH / currentScale);
+
+    QGraphicsPolygonItem *currentPolygonItem = dynamic_cast<QGraphicsPolygonItem*>(object->getSymbol());
+    QPointF *currentPosition = object->getScenePosition();
+
+    QVector<QPointF> polygonVertex(4);
+
+    QPointF upperVertex(currentPosition->x(), currentPosition->y() - sideLength * qSqrt(3) / 3);
+    QPointF lowerLeftVertex(currentPosition->x() - sideLength / 2, currentPosition->y() + sideLength * qSqrt(3) / 6);
+    QPointF lowerRightVertex(currentPosition->x() + sideLength / 2, currentPosition->y() + sideLength * qSqrt(3) / 6);
+
+    polygonVertex[0] = upperVertex;
+    polygonVertex[1] = lowerLeftVertex;
+    polygonVertex[2] = lowerRightVertex;
+    polygonVertex[3] = upperVertex;
+
+    QPolygonF symbolPolygon(polygonVertex);
+
+    currentPolygonItem->setPolygon(symbolPolygon);
+    currentPolygonItem->setPen(currentPen);
+
+    QFont textFont(object->getLabel()->font());
+    textFont.setPointSizeF(settings->FIX_LABEL_HEIGHT / currentScale);
+
+    QGraphicsSimpleTextItem *currentLabel = object->getLabel();
+
+    currentLabel->setFont(textFont);
+
+    double positionX = object->getScenePosition()->x();
+    double positionY = object->getScenePosition()->y();
+
+    currentLabel->setPos(positionX + settings->FIX_LABEL_DX / currentScale,
+                         positionY + settings->FIX_LABEL_DY / currentScale);
+}
+
+void ATCSituationalDisplay::rescaleVOR(ATCBeaconVOR *object)
+{
+    qreal sideLength = settings->VOR_SIDE_LENGTH / currentScale;
+
+    QPen currentPen(object->getSymbol()->pen());
+    currentPen.setWidthF(settings->VOR_LINE_WIDTH / currentScale);
+
+    QGraphicsRectItem *currentRectItem = dynamic_cast<QGraphicsRectItem*>(object->getSymbol());
+    QPointF *currentPosition = object->getScenePosition();
+
+    QPointF topLeft(currentPosition->x() - sideLength / 2, currentPosition->y() - sideLength / 2);
+    QPointF bottomRight(currentPosition->x() + sideLength / 2, currentPosition->y() + sideLength / 2);
+
+    QRectF rect(topLeft, bottomRight);
+
+    currentRectItem->setRect(rect);
+    currentRectItem->setPen(currentPen);
+
+    QFont textFont(object->getLabel()->font());
+    textFont.setPointSizeF(settings->VOR_LABEL_HEIGHT / currentScale);
+
+    QGraphicsSimpleTextItem *currentLabel = object->getLabel();
+
+    currentLabel->setFont(textFont);
+
+    double positionX = object->getScenePosition()->x();
+    double positionY = object->getScenePosition()->y();
+
+    currentLabel->setPos(positionX + settings->VOR_LABEL_DX / currentScale,
+                         positionY + settings->VOR_LABEL_DY / currentScale);
+}
+
+void ATCSituationalDisplay::rescaleNDB(ATCBeaconNDB *object)
+{
+    QPen currentPen(object->getSymbol()->pen());
+    currentPen.setWidthF(settings->NDB_LINE_WIDTH / currentScale);
+
+    QGraphicsEllipseItem *currentSymbol = dynamic_cast<QGraphicsEllipseItem*>(object->getSymbol());
+    QPointF *currentPosition = object->getScenePosition();
+
+    currentSymbol->setRect(currentPosition->x() - settings->NDB_SYMBOL_DIA / 2 / currentScale,
+                           currentPosition->y() - settings->NDB_SYMBOL_DIA / 2 / currentScale,
+                           settings->NDB_SYMBOL_DIA / currentScale,
+                           settings->NDB_SYMBOL_DIA / currentScale);
+    currentSymbol->setPen(currentPen);
+
+    QFont textFont(object->getLabel()->font());
+    textFont.setPointSizeF(settings->NDB_LABEL_HEIGHT / currentScale);
+
+    QGraphicsSimpleTextItem *currentLabel = object->getLabel();
+
+    currentLabel->setFont(textFont);
+
+    double positionX = object->getScenePosition()->x();
+    double positionY = object->getScenePosition()->y();
+
+    currentLabel->setPos(positionX + settings->NDB_LABEL_DX / currentScale,
+                         positionY + settings->NDB_LABEL_DY / currentScale);
+}
+
+void ATCSituationalDisplay::rescaleAirport(ATCAirport *object)
+{
+    QPen currentPen(object->getSymbol()->pen());
+    currentPen.setWidthF(settings->AIRPORT_LINE_WIDTH / currentScale);
+
+    QGraphicsEllipseItem *currentSymbol = object->getSymbol();
+    QPointF *currentPosition = object->getScenePosition();
+
+    currentSymbol->setRect(currentPosition->x() - settings->AIRPORT_SYMBOL_DIA / 2 / currentScale,
+                           currentPosition->y() - settings->AIRPORT_SYMBOL_DIA / 2 / currentScale,
+                           settings->AIRPORT_SYMBOL_DIA / currentScale,
+                           settings->AIRPORT_SYMBOL_DIA / currentScale);
+    currentSymbol->setPen(currentPen);
+
+    QFont textFont(object->getLabel()->font());
+    textFont.setPointSizeF(settings->AIRPORT_LABEL_HEIGHT / currentScale);
+
+    QGraphicsSimpleTextItem *currentLabel = object->getLabel();
+
+    currentLabel->setFont(textFont);
+
+    double positionX = object->getScenePosition()->x();
+    double positionY = object->getScenePosition()->y();
+
+    currentLabel->setPos(positionX + settings->AIRPORT_LABEL_DX / currentScale,
+                         positionY + settings->AIRPORT_LABEL_DY / currentScale);
+}
+
+void ATCSituationalDisplay::rescaleExtendedCentreline(ATCRunwayExtendedCentreline *object)
+{
+    QPen currentPen(object->getCentreline()->pen());
+    currentPen.setWidthF(settings->RUNWAY_LINE_WIDTH / currentScale);
+
+    object->getCentreline()->setPen(currentPen);
+}
+
+void ATCSituationalDisplay::rescaleSTAR(ATCProcedureSTARSymbol *object)
+{
+    QPen currentPen(object->getLine(0)->pen());
+    currentPen.setWidthF(settings->STAR_LINE_WIDTH / currentScale);
+
+    for(int i = 0; i < object->getCoordsVectorSize(); i++)
+    {
+        object->getLine(i)->setPen(currentPen);
+    }
+}
+
+void ATCSituationalDisplay::rescaleSID(ATCProcedureSIDSymbol *object)
+{
+    QPen currentPen(object->getLine(0)->pen());
+    currentPen.setWidthF(settings->SID_LINE_WIDTH / currentScale);
+
+    for(int i = 0; i < object->getCoordsVectorSize(); i++)
+    {
+        object->getLine(i)->setPen(currentPen);
+    }
+}
+
+void ATCSituationalDisplay::rescaleAirwayLow(ATCAirwayLow *object)
+{
+    QPen currentPen(object->getLine(0)->pen());
+    currentPen.setWidthF(settings->AIRWAY_LOW_LINE_WIDTH / currentScale);
+
+    for(int i = 0; i < object->getCoordsVectorSize(); i++)
+    {
+        object->getLine(i)->setPen(currentPen);
+    }
+}
+
+void ATCSituationalDisplay::rescaleAirwayHigh(ATCAirwayHigh *object)
+{
+    QPen currentPen(object->getLine(0)->pen());
+    currentPen.setWidthF(settings->AIRWAY_HIGH_LINE_WIDTH / currentScale);
+
+    for(int i = 0; i < object->getCoordsVectorSize(); i++)
+    {
+        object->getLine(i)->setPen(currentPen);
     }
 }
 
@@ -3096,7 +3342,7 @@ void ATCSituationalDisplay::displaySIDs()
 
 //Display SID symbol lines on scene
     QPen pen(settings->SID_COLOR);
-    pen.setWidthF(settings->SID_LINE_WITH / currentScale);
+    pen.setWidthF(settings->SID_LINE_WIDTH / currentScale);
 
     for(int i = 0; i < airspaceData->getSIDSymbolsVectorSize(); i++)
     {
@@ -3457,8 +3703,8 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
         rescaleNDBLabels();
         rescaleSTARs();
         rescaleSIDs();
-        rescaleAirwayLow();
-        rescaleAirwayHigh();
+        rescaleAirwaysLow();
+        rescaleAirwaysHigh();
     }
 
     event->accept();
@@ -3500,4 +3746,15 @@ void ATCSituationalDisplay::keyReleaseEvent(QKeyEvent *event)
         viewport()->setCursor(Qt::CrossCursor);        
     }
     event->accept();
+}
+
+template<class T> void ATCSituationalDisplay::removeFromVisible(T *object, QVector<T*> &vector)
+{
+    for(int i = vector.size() - 1; i >= 0; i--)
+    {
+        if(object == vector.at(i))
+        {
+            vector.remove(i);
+        }
+    }
 }

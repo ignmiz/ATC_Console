@@ -71,7 +71,7 @@ public:
     double STAR_LINE_WIDTH;
 
     QColor SID_COLOR;
-    double SID_LINE_WITH;
+    double SID_LINE_WIDTH;
 
     QColor AIRWAY_LOW_COLOR;
     double AIRWAY_LOW_LINE_WIDTH;
