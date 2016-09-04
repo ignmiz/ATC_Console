@@ -33,6 +33,8 @@ public:
     ATCSettings* getSettings();
     ATCAirspace* getAirspaceData();
 
+    void exportDisplay(QString path);
+
 public slots:
     void slotSetColorSectorARTCCLow(QColor color);
     void slotSetColorSectorARTCCHigh(QColor color);
@@ -87,7 +89,6 @@ private:
 
     QGraphicsScene *scene = nullptr;
 
-    QVector<ATCAirspaceSector*> visibleSectors;
     QVector<ATCSectorARTCCLow*> visibleSectorsARTCCLow;
     QVector<ATCSectorARTCCHigh*> visibleSectorsARTCCHigh;
     QVector<ATCSectorARTCC*> visibleSectorsARTCC;
@@ -139,18 +140,21 @@ private:
     void projectSectorsARTCCHigh();
     void projectSectorsARTCC();
 
-    void displaySectorsARTCCLow();
-    void displaySectorsARTCCHigh();
-    void displaySectorsARTCC();
-    void displayFixes();
-    void displayAirports();
-    void displayExtendedCentrelines();
-    void displayVORs();
-    void displayNDBs();
-    void displaySTARs();
-    void displaySIDs();
-    void displayAirwayLow();
-    void displayAirwayHigh();
+    void calculateSectorsARTCCLow();
+    void calculateSectorsARTCCHigh();
+    void calculateSectorsARTCC();
+    void calculateFixes();
+    void calculateAirports();
+    void calculateExtendedCentrelines();
+    void calculateVORs();
+    void calculateNDBs();
+    void calculateSTARs();
+    void calculateSIDs();
+    void calculateAirwayLow();
+    void calculateAirwayHigh();
+
+    void loadInitialDisplay(QString path);
+    void interpretDisplayFile(QString path);
 
     double mercatorProjectionLon(double longitude, double referenceLongitude = 0, double scale = ATCConst::WGS84_RADIUS);
     double mercatorProjectionLat(double latitude, double scale = ATCConst::WGS84_RADIUS);

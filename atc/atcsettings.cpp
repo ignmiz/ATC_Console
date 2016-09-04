@@ -30,23 +30,26 @@ void ATCSettings::assignPaths()
         QString textLine = stream.readLine();
         textLine = textLine.trimmed();
 
-        QStringList stringList = textLine.split("=", QString::SkipEmptyParts);
+        if(!textLine.isEmpty())
+        {
+            QStringList stringList = textLine.split("=", QString::SkipEmptyParts);
 
-        if(stringList.at(0).trimmed() == "DEFAULT SYMBOLOGY")
-        {
-            SYMBOLOGY_DFLT_PATH = stringList.at(1).trimmed();
-        }
-        else if(stringList.at(0).trimmed() == "EXPORT SYMBOLOGY")
-        {
-            SYMBOLOGY_EXPORT_PATH = stringList.at(1).trimmed();
-        }
-        else if(stringList.at(0).trimmed() == "DEFAULT DISPLAY")
-        {
-            DISPLAY_DFLT_PATH = stringList.at(1).trimmed();
-        }
-        else if(stringList.at(0).trimmed() == "EXPORT DISPLAY")
-        {
-            DISPLAY_EXPORT_PATH = stringList.at(1).trimmed();
+            if(stringList.at(0).trimmed() == "DEFAULT SYMBOLOGY")
+            {
+                SYMBOLOGY_DFLT_PATH = stringList.at(1).trimmed();
+            }
+            else if(stringList.at(0).trimmed() == "EXPORT SYMBOLOGY")
+            {
+                SYMBOLOGY_EXPORT_PATH = stringList.at(1).trimmed();
+            }
+            else if(stringList.at(0).trimmed() == "DEFAULT DISPLAY")
+            {
+                DISPLAY_DFLT_PATH = stringList.at(1).trimmed();
+            }
+            else if(stringList.at(0).trimmed() == "EXPORT DISPLAY")
+            {
+                DISPLAY_EXPORT_PATH = stringList.at(1).trimmed();
+            }
         }
     }
 

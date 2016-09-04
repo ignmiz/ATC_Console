@@ -24,18 +24,20 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
 
     calculateSectorParameters();
 
-    displaySectorsARTCCLow();
-    displaySectorsARTCCHigh();
-    displaySectorsARTCC();
-    displayAirwayLow();
-    displayAirwayHigh();
-    displaySTARs();
-    displaySIDs();
-    displayExtendedCentrelines();
-    displayNDBs();
-    displayVORs();
-    displayFixes();
-    displayAirports();
+    calculateSectorsARTCCLow();
+    calculateSectorsARTCCHigh();
+    calculateSectorsARTCC();
+    calculateAirwayLow();
+    calculateAirwayHigh();
+    calculateSTARs();
+    calculateSIDs();
+    calculateExtendedCentrelines();
+    calculateNDBs();
+    calculateVORs();
+    calculateFixes();
+    calculateAirports();
+
+    loadInitialDisplay(settings->DISPLAY_DFLT_PATH);
 }
 
 ATCSituationalDisplay::~ATCSituationalDisplay()
@@ -63,6 +65,113 @@ ATCSettings* ATCSituationalDisplay::getSettings()
 ATCAirspace *ATCSituationalDisplay::getAirspaceData()
 {
     return airspaceData;
+}
+
+void ATCSituationalDisplay::exportDisplay(QString path)
+{
+    QStringList pathElements = path.split("/", QString::KeepEmptyParts);
+    QString fileName = pathElements.at(pathElements.size() - 1).trimmed();
+    QString nameWithoutExtension = fileName.split(".", QString::KeepEmptyParts).at(0).trimmed();
+
+    QFile file(path);
+
+    if(!file.open(QFile::WriteOnly | QFile::Text))
+    {
+        qDebug() << "Error while opening file " + path;
+        return;
+    }
+
+    QTextStream out(&file);
+
+    out << "[INFO]" << endl;
+    out << "NAME = " << nameWithoutExtension << endl;
+    out << endl;
+
+    out << "[ARTCC LOW]" << endl;
+    for(int i = 0; i < visibleSectorsARTCCLow.size(); i++)
+    {
+        out << visibleSectorsARTCCLow.at(i)->getName() << endl;
+    }
+    out << endl;
+
+    out << "[ARTCC HIGH]" << endl;
+    for(int i = 0; i < visibleSectorsARTCCHigh.size(); i++)
+    {
+        out << visibleSectorsARTCCHigh.at(i)->getName() << endl;
+    }
+    out << endl;
+
+    out << "[ARTCC]" << endl;
+    for(int i = 0; i < visibleSectorsARTCC.size(); i++)
+    {
+        out << visibleSectorsARTCC.at(i)->getName() << endl;
+    }
+    out << endl;
+
+    out << "[VOR]" << endl;
+    for(int i = 0; i < visibleVORs.size(); i++)
+    {
+        out << visibleVORs.at(i)->getName() << endl;
+    }
+    out << endl;
+
+    out << "[NDB]" << endl;
+    for(int i = 0; i < visibleNDBs.size(); i++)
+    {
+        out << visibleNDBs.at(i)->getName() << endl;
+    }
+    out << endl;
+
+    out << "[FIXES]" << endl;
+    for(int i = 0; i < visibleFixes.size(); i++)
+    {
+        out << visibleFixes.at(i)->getName() << endl;
+    }
+    out << endl;
+
+    out << "[AIRPORT]" << endl;
+    for(int i = 0; i < visibleAirports.size(); i++)
+    {
+        out << visibleAirports.at(i)->getName() << endl;
+    }
+    out << endl;
+
+    out << "[RUNWAY]" << endl;
+//
+//
+//    TO BE IMPLEMENTED
+//
+//
+    out << endl;
+
+    out << "[STAR]" << endl;
+    for(int i = 0; i < visibleSTARs.size(); i++)
+    {
+        out << visibleSTARs.at(i)->getName() << endl;
+    }
+    out << endl;
+
+    out << "[SID]" << endl;
+    for(int i = 0; i < visibleSIDs.size(); i++)
+    {
+        out << visibleSIDs.at(i)->getName() << endl;
+    }
+    out << endl;
+
+    out << "[LOW AIRWAY]" << endl;
+    for(int i = 0; i < visibleLowAirways.size(); i++)
+    {
+        out << visibleLowAirways.at(i)->getName() << endl;
+    }
+    out << endl;
+
+    out << "[HIGH AIRWAY]" << endl;
+    for(int i = 0; i < visibleHighAirways.size(); i++)
+    {
+        out << visibleHighAirways.at(i)->getName() << endl;
+    }
+
+    file.close();
 }
 
 void ATCSituationalDisplay::slotSetColorSectorARTCCLow(QColor color)
@@ -760,9 +869,9 @@ void ATCSituationalDisplay::loadData()
 
                 if(iterator != 0 && coordsFound)
                 {
-                    QString name;
+                    QString name(stringList.at(0));
 
-                    for(int i = 0; i < iterator; i++)
+                    for(int i = 1; i < iterator; i++)
                     {
                         name = name + " " + stringList.at(i);
                     }
@@ -913,9 +1022,9 @@ void ATCSituationalDisplay::loadData()
 
                 if(iterator != 0 && coordsFound)
                 {
-                    QString name;
+                    QString name(stringList.at(0));
 
-                    for(int i = 0; i < iterator; i++)
+                    for(int i = 1; i < iterator; i++)
                     {
                         name = name + " " + stringList.at(i);
                     }
@@ -1066,9 +1175,9 @@ void ATCSituationalDisplay::loadData()
 
                 if(iterator != 0 && coordsFound)
                 {
-                    QString name;
+                    QString name(stringList.at(0));
 
-                    for(int i = 0; i < iterator; i++)
+                    for(int i = 1; i < iterator; i++)
                     {
                         name = name + " " + stringList.at(i);
                     }
@@ -1308,9 +1417,9 @@ void ATCSituationalDisplay::loadData()
 
                 if(iterator != 0 && coordsFound)
                 {
-                    QString name;
+                    QString name(stringList.at(0));
 
-                    for(int i = 0; i < iterator; i++)
+                    for(int i = 1; i < iterator; i++)
                     {
                         name = name + " " + stringList.at(i);
                     }
@@ -1447,9 +1556,9 @@ void ATCSituationalDisplay::loadData()
 
                 if(iterator != 0 && coordsFound)
                 {
-                    QString name;
+                    QString name(stringList.at(0));
 
-                    for(int i = 0; i < iterator; i++)
+                    for(int i = 1; i < iterator; i++)
                     {
                         name = name + " " + stringList.at(i);
                     }
@@ -1586,9 +1695,9 @@ void ATCSituationalDisplay::loadData()
 
                 if(iterator != 0 && coordsFound)
                 {
-                    QString name;
+                    QString name(stringList.at(0));
 
-                    for(int i = 0; i < iterator; i++)
+                    for(int i = 1; i < iterator; i++)
                     {
                         name = name + " " + stringList.at(i);
                     }
@@ -1683,9 +1792,9 @@ void ATCSituationalDisplay::loadData()
 
                 if(iterator != 0 && coordsFound)
                 {
-                    QString name;
+                    QString name(stringList.at(0));
 
-                    for(int i = 0; i < iterator; i++)
+                    for(int i = 1; i < iterator; i++)
                     {
                         name = name + " " + stringList.at(i);
                     }
@@ -2461,7 +2570,7 @@ void ATCSituationalDisplay::projectSectorsARTCC()
     }
 }
 
-void ATCSituationalDisplay::displaySectorsARTCCLow()
+void ATCSituationalDisplay::calculateSectorsARTCCLow()
 {
     for(int i = 0; i < airspaceData->getSectorARTCCLowVectorSize(); i++)
     {
@@ -2546,12 +2655,13 @@ void ATCSituationalDisplay::displaySectorsARTCCLow()
             scene->addItem(currentSymbol);
         }
 
-        visibleSectorsARTCCLow.append(airspaceData->getSectorARTCCLow(i));
-        airspaceData->getSectorARTCCLow(i)->setFlagVisible(true);
+//        visibleSectorsARTCCLow.append(airspaceData->getSectorARTCCLow(i));
+//        airspaceData->getSectorARTCCLow(i)->setFlagVisible(true);
+        airspaceData->getSectorARTCCLow(i)->hide();
     }
 }
 
-void ATCSituationalDisplay::displaySectorsARTCCHigh()
+void ATCSituationalDisplay::calculateSectorsARTCCHigh()
 {
     for(int i = 0; i < airspaceData->getSectorARTCCHighVectorSize(); i++)
     {
@@ -2635,12 +2745,13 @@ void ATCSituationalDisplay::displaySectorsARTCCHigh()
             scene->addItem(currentSymbol);
         }
 
-        visibleSectorsARTCCHigh.append(airspaceData->getSectorARTCCHigh(i));
-        airspaceData->getSectorARTCCHigh(i)->setFlagVisible(true);
+//        visibleSectorsARTCCHigh.append(airspaceData->getSectorARTCCHigh(i));
+//        airspaceData->getSectorARTCCHigh(i)->setFlagVisible(true);
+        airspaceData->getSectorARTCCHigh(i)->hide();
     }
 }
 
-void ATCSituationalDisplay::displaySectorsARTCC()
+void ATCSituationalDisplay::calculateSectorsARTCC()
 {
     for(int i = 0; i < airspaceData->getSectorARTCCVectorSize(); i++)
     {
@@ -2724,12 +2835,13 @@ void ATCSituationalDisplay::displaySectorsARTCC()
             scene->addItem(currentSymbol);
         }
 
-        visibleSectorsARTCC.append(airspaceData->getSectorARTCC(i));
-        airspaceData->getSectorARTCC(i)->setFlagVisible(true);
+//        visibleSectorsARTCC.append(airspaceData->getSectorARTCC(i));
+//        airspaceData->getSectorARTCC(i)->setFlagVisible(true);
+        airspaceData->getSectorARTCC(i)->hide();
     }
 }
 
-void ATCSituationalDisplay::displayFixes()
+void ATCSituationalDisplay::calculateFixes()
 {
     QVector<coord> tempFixes;
     double rotationDeg = ATCConst::AVG_DECLINATION;
@@ -2792,7 +2904,7 @@ void ATCSituationalDisplay::displayFixes()
         currentSymbol->setPen(pen);
         scene->addItem(currentSymbol);
 
-        visibleFixes.append(airspaceData->getFix(i));
+//        visibleFixes.append(airspaceData->getFix(i));
     }
 
 //Calculate labels
@@ -2817,11 +2929,12 @@ void ATCSituationalDisplay::displayFixes()
                              positionY + settings->FIX_LABEL_DY / currentScale);
 
         scene->addItem(currentLabel);
-        currentFix->setFlagVisible(true);
+//        currentFix->setFlagVisible(true);
+        currentFix->hide();
     }
 }
 
-void ATCSituationalDisplay::displayAirports()
+void ATCSituationalDisplay::calculateAirports()
 {
     QVector<coord> tempAirports;
     double rotationDeg = ATCConst::AVG_DECLINATION;
@@ -2872,7 +2985,7 @@ void ATCSituationalDisplay::displayAirports()
         currentSymbol->setPen(pen);
         scene->addItem(currentSymbol);
 
-        visibleAirports.append(airspaceData->getAirport(i));
+//        visibleAirports.append(airspaceData->getAirport(i));
     }
 
 //Calculate labels
@@ -2897,11 +3010,12 @@ void ATCSituationalDisplay::displayAirports()
                              positionY + settings->AIRPORT_LABEL_DY / currentScale);
 
         scene->addItem(currentLabel);
-        currentAirport->setFlagVisible(true);
+//        currentAirport->setFlagVisible(true);
+        currentAirport->hide();
     }
 }
 
-void ATCSituationalDisplay::displayExtendedCentrelines()
+void ATCSituationalDisplay::calculateExtendedCentrelines()
 {
     double rotationDeg = ATCConst::AVG_DECLINATION;
 
@@ -3050,7 +3164,7 @@ void ATCSituationalDisplay::displayExtendedCentrelines()
     }
 }
 
-void ATCSituationalDisplay::displayVORs()
+void ATCSituationalDisplay::calculateVORs()
 {
     QVector<coord> tempVORs;
     double rotationDeg = ATCConst::AVG_DECLINATION;
@@ -3104,7 +3218,7 @@ void ATCSituationalDisplay::displayVORs()
         currentRect->setPen(pen);
         scene->addItem(currentRect);
 
-        visibleVORs.append(airspaceData->getVOR(i));
+//        visibleVORs.append(airspaceData->getVOR(i));
     }
 
 //Calculate labels
@@ -3129,11 +3243,12 @@ void ATCSituationalDisplay::displayVORs()
                              positionY + settings->VOR_LABEL_DY / currentScale);
 
         scene->addItem(currentLabel);
-        currentVOR->setFlagVisible(true);
+//        currentVOR->setFlagVisible(true);
+        currentVOR->hide();
     }
 }
 
-void ATCSituationalDisplay::displayNDBs()
+void ATCSituationalDisplay::calculateNDBs()
 {
     QVector<coord> tempNDBs;
     double rotationDeg = ATCConst::AVG_DECLINATION;
@@ -3184,7 +3299,7 @@ void ATCSituationalDisplay::displayNDBs()
         currentSymbol->setPen(pen);
         scene->addItem(currentSymbol);
 
-        visibleNDBs.append(airspaceData->getNDB(i));
+//        visibleNDBs.append(airspaceData->getNDB(i));
     }
 
 //Calculate labels
@@ -3209,11 +3324,12 @@ void ATCSituationalDisplay::displayNDBs()
                              positionY + settings->NDB_LABEL_DY / currentScale);
 
         scene->addItem(currentLabel);
-        currentNDB->setFlagVisible(true);
+//        currentNDB->setFlagVisible(true);
+        currentNDB->hide();
     }
 }
 
-void ATCSituationalDisplay::displaySTARs()
+void ATCSituationalDisplay::calculateSTARs()
 {
     double rotationDeg = ATCConst::AVG_DECLINATION;
 
@@ -3291,12 +3407,13 @@ void ATCSituationalDisplay::displaySTARs()
             scene->addItem(currentSymbol);            
         }
 
-        visibleSTARs.append(airspaceData->getSTARSymbol(i));
-        airspaceData->getSTARSymbol(i)->setFlagVisible(true);
+//        visibleSTARs.append(airspaceData->getSTARSymbol(i));
+//        airspaceData->getSTARSymbol(i)->setFlagVisible(true);
+        airspaceData->getSTARSymbol(i)->hide();
     }
 }
 
-void ATCSituationalDisplay::displaySIDs()
+void ATCSituationalDisplay::calculateSIDs()
 {
     double rotationDeg = ATCConst::AVG_DECLINATION;
 
@@ -3374,12 +3491,13 @@ void ATCSituationalDisplay::displaySIDs()
             scene->addItem(currentSymbol);
         }
 
-        visibleSIDs.append(airspaceData->getSIDSymbol(i));
-        airspaceData->getSIDSymbol(i)->setFlagVisible(true);
+//        visibleSIDs.append(airspaceData->getSIDSymbol(i));
+//        airspaceData->getSIDSymbol(i)->setFlagVisible(true);
+        airspaceData->getSIDSymbol(i)->hide();
     }
 }
 
-void ATCSituationalDisplay::displayAirwayLow()
+void ATCSituationalDisplay::calculateAirwayLow()
 {
     double rotationDeg = ATCConst::AVG_DECLINATION;
 
@@ -3457,12 +3575,13 @@ void ATCSituationalDisplay::displayAirwayLow()
             scene->addItem(currentSymbol);            
         }
 
-        visibleLowAirways.append(airspaceData->getAirwayLow(i));
-        airspaceData->getAirwayLow(i)->setFlagVisible(true);
+//        visibleLowAirways.append(airspaceData->getAirwayLow(i));
+//        airspaceData->getAirwayLow(i)->setFlagVisible(true);
+        airspaceData->getAirwayLow(i)->hide();
     }
 }
 
-void ATCSituationalDisplay::displayAirwayHigh()
+void ATCSituationalDisplay::calculateAirwayHigh()
 {
     double rotationDeg = ATCConst::AVG_DECLINATION;
 
@@ -3540,9 +3659,320 @@ void ATCSituationalDisplay::displayAirwayHigh()
             scene->addItem(currentSymbol);            
         }
 
-        visibleHighAirways.append(airspaceData->getAirwayHigh(i));
-        airspaceData->getAirwayHigh(i)->setFlagVisible(true);
+//        visibleHighAirways.append(airspaceData->getAirwayHigh(i));
+//        airspaceData->getAirwayHigh(i)->setFlagVisible(true);
+        airspaceData->getAirwayHigh(i)->hide();
     }
+}
+
+void ATCSituationalDisplay::loadInitialDisplay(QString path)
+{
+    interpretDisplayFile(path);
+
+    settings->DISPLAY_ACTIVE_PATH = path;
+}
+
+void ATCSituationalDisplay::interpretDisplayFile(QString path)
+{
+    QFile file(path);
+
+    if(!file.open(QFile::ReadOnly | QFile::Text))
+    {
+        qDebug() << "Error while opening file " << path;
+        return;
+    }
+
+    bool flagINFO = false;
+    bool flagARTCCLow = false;
+    bool flagARTCCHigh = false;
+    bool flagARTCC = false;
+    bool flagVOR = false;
+    bool flagNDB = false;
+    bool flagFixes = false;
+    bool flagAirport = false;
+    bool flagRunway = false;
+    bool flagSTAR = false;
+    bool flagSID = false;
+    bool flagLowAirway = false;
+    bool flagHighAirway = false;
+
+    QTextStream stream(&file);
+    while(!stream.atEnd())
+    {
+        QString textLine = stream.readLine();
+        textLine = textLine.trimmed();
+
+        if(!textLine.isEmpty())
+        {
+            if(textLine.contains("[INFO]", Qt::CaseInsensitive))
+            {
+                flagINFO = true;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+            }
+            else if(textLine.contains("[ARTCC LOW]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = true;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+            }
+            else if(textLine.contains("[ARTCC HIGH]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = true;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+            }
+            else if(textLine.contains("[ARTCC]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = true;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+            }
+            else if(textLine.contains("[VOR]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = true;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+            }
+            else if(textLine.contains("[NDB]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = true;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+            }
+            else if(textLine.contains("[FIXES]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = true;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+            }
+            else if(textLine.contains("[AIRPORT]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = true;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+            }
+            else if(textLine.contains("[RUNWAY]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = true;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+            }
+            else if(textLine.contains("[STAR]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = true;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+            }
+            else if(textLine.contains("[SID]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = true;
+                flagLowAirway = false;
+                flagHighAirway = false;
+            }
+            else if(textLine.contains("[LOW AIRWAY]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = true;
+                flagHighAirway = false;
+            }
+            else if(textLine.contains("[HIGH AIRWAY]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = true;
+            }
+            else if(flagINFO)
+            {
+                QStringList stringList = textLine.split("=", QString::SkipEmptyParts);
+
+                if(stringList.at(0).trimmed() == "NAME")
+                {
+                    settings->DISPLAY_NAME = stringList.at(1).trimmed();
+                }
+            }
+            else if(flagARTCCLow)
+            {
+                slotShowSectorARTCCLow(textLine);
+            }
+            else if(flagARTCCHigh)
+            {
+                slotShowSectorARTCCHigh(textLine);
+            }
+            else if(flagARTCC)
+            {
+                slotShowSectorARTCC(textLine);
+            }
+            else if(flagVOR)
+            {
+                slotShowVOR(textLine);
+            }
+            else if(flagNDB)
+            {
+                slotShowNDB(textLine);
+            }
+            else if(flagFixes)
+            {
+                slotShowFix(textLine);
+            }
+            else if(flagAirport)
+            {
+                slotShowAirport(textLine);
+            }
+            else if(flagRunway)
+            {
+                //TO BE IMPLEMENTED
+            }
+            else if(flagSTAR)
+            {
+                slotShowSTAR(textLine);
+            }
+            else if(flagSID)
+            {
+                slotShowSID(textLine);
+            }
+            else if(flagLowAirway)
+            {
+                slotShowAirwayLow(textLine);
+            }
+            else if(flagHighAirway)
+            {
+                slotShowAirwayHigh(textLine);
+            }
+        }
+    }
+
+    file.close();
 }
 
 double ATCSituationalDisplay::mercatorProjectionLon(double longitudeDeg, double referenceLongitudeDeg, double scale)
