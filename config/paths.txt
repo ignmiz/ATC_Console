@@ -1,2 +1,4 @@
 DEFAULT SYMBOLOGY = E:/Qt/ATC_Console/ATC_Console/config/DefaultSymbology.txt
-EXPORT = ../../ATC_Console/ATC_Console/config/user
+EXPORT SYMBOLOGY = ../../ATC_Console/ATC_Console/config/user
+DEFAULT DISPLAY = E:/Qt/ATC_Console/ATC_Console/config/DefaultDisplay.txt
+EXPORT DISPLAY = ../../ATC_Console/ATC_Console/config/user

@@ -13,18 +13,23 @@ public:
     explicit ATCSettings();
     ~ATCSettings();
 
-    void setDefaultPath(QString newPath);
-    void exportSettings(QString path);
-    void loadSettings(QString path);
+    void setDefaultSymbologyPath(QString newPath);
+    void exportSymbology(QString path);
+    void loadSymbology(QString path);
 
-    bool fileExists(QString path);
+    bool fileExists(QString path);    
 
-    QString SETTINGS_NAME;
+    QString PATHS_FILE = "../../ATC_Console/ATC_Console/config/paths.txt";
 
-    QString SETTINGS_PATHS_FILE = "../../ATC_Console/ATC_Console/config/paths.txt";
-    QString SETTINGS_DFLT_PATH;
-    QString SETTINGS_EXPORT_PATH;
-    QString SETTINGS_ACTIVE_PATH;
+    QString SYMBOLOGY_NAME;
+    QString SYMBOLOGY_DFLT_PATH;
+    QString SYMBOLOGY_EXPORT_PATH;
+    QString SYMBOLOGY_ACTIVE_PATH;
+
+    QString DISPLAY_NAME;
+    QString DISPLAY_DFLT_PATH;
+    QString DISPLAY_EXPORT_PATH;
+    QString DISPLAY_ACTIVE_PATH;
 
     QColor ARTCC_LOW_COLOR;
     double ARTCC_LOW_LINE_WIDTH;
@@ -99,9 +104,9 @@ private:
     QRgb colorFromString(QString string);
 
     void assignPaths();
-    void loadInitialSettings(QString path);
+    void loadInitialSymbology(QString path);
 
-    void interpretSettingsFile(QString path);
+    void interpretSymbologyFile(QString path);
 };
 
 #endif // ATCSETTINGS_H

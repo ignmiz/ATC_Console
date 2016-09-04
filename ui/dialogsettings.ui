@@ -130,7 +130,7 @@ QScrollBar::sub-page:vertical
 }</string>
      </property>
     </widget>
-    <widget class="QLabel" name="labelDefaultSettings">
+    <widget class="QLabel" name="labelDefaultSymbology">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -146,7 +146,7 @@ QScrollBar::sub-page:vertical
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEditDefaultSettings">
+    <widget class="QLineEdit" name="lineEditDefaultSymbology">
      <property name="geometry">
       <rect>
        <x>135</x>
@@ -167,7 +167,7 @@ QScrollBar::sub-page:vertical
 }</string>
      </property>
     </widget>
-    <widget class="QLabel" name="labelActiveSettings">
+    <widget class="QLabel" name="labelActiveSymbology">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -183,7 +183,7 @@ QScrollBar::sub-page:vertical
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEditActiveSettings">
+    <widget class="QLineEdit" name="lineEditActiveSymbology">
      <property name="geometry">
       <rect>
        <x>135</x>
@@ -291,6 +291,113 @@ QScrollBar::sub-page:vertical
 	background: #1e1e1e;
 	border: none;
 }</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEditDefaultDisplay">
+     <property name="geometry">
+      <rect>
+       <x>135</x>
+       <y>525</y>
+       <width>350</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QLineEdit
+{
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	font: 13px;
+}</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEditActiveDisplay">
+     <property name="geometry">
+      <rect>
+       <x>135</x>
+       <y>560</y>
+       <width>350</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QLineEdit
+{
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	font: 13px;
+}</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="labelDefaultDisplay">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>525</y>
+       <width>110</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Default display:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="labelActiveDisplay">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>560</y>
+       <width>110</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Active display:</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="buttonSetDefaultDisplay">
+     <property name="geometry">
+      <rect>
+       <x>105</x>
+       <y>605</y>
+       <width>120</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Set as Default</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="buttonLoadDisplay">
+     <property name="geometry">
+      <rect>
+       <x>235</x>
+       <y>605</y>
+       <width>120</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Load Display</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="buttonExportDisplay">
+     <property name="geometry">
+      <rect>
+       <x>365</x>
+       <y>605</y>
+       <width>120</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Export Display</string>
      </property>
     </widget>
    </widget>

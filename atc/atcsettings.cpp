@@ -6,7 +6,7 @@
 ATCSettings::ATCSettings()
 {
     assignPaths();
-    loadInitialSettings(SETTINGS_DFLT_PATH);
+    loadInitialSymbology(SYMBOLOGY_DFLT_PATH);
 }
 
 ATCSettings::~ATCSettings()
@@ -16,7 +16,7 @@ ATCSettings::~ATCSettings()
 
 void ATCSettings::assignPaths()
 {
-    QFile pathsFile(SETTINGS_PATHS_FILE);
+    QFile pathsFile(PATHS_FILE);
 
     if(!pathsFile.open(QFile::ReadOnly | QFile::Text))
     {
@@ -34,45 +34,55 @@ void ATCSettings::assignPaths()
 
         if(stringList.at(0).trimmed() == "DEFAULT SYMBOLOGY")
         {
-            SETTINGS_DFLT_PATH = stringList.at(1).trimmed();
+            SYMBOLOGY_DFLT_PATH = stringList.at(1).trimmed();
         }
-        else if(stringList.at(0).trimmed() == "EXPORT")
+        else if(stringList.at(0).trimmed() == "EXPORT SYMBOLOGY")
         {
-            SETTINGS_EXPORT_PATH = stringList.at(1).trimmed();
+            SYMBOLOGY_EXPORT_PATH = stringList.at(1).trimmed();
+        }
+        else if(stringList.at(0).trimmed() == "DEFAULT DISPLAY")
+        {
+            DISPLAY_DFLT_PATH = stringList.at(1).trimmed();
+        }
+        else if(stringList.at(0).trimmed() == "EXPORT DISPLAY")
+        {
+            DISPLAY_EXPORT_PATH = stringList.at(1).trimmed();
         }
     }
 
     pathsFile.close();
 }
 
-void ATCSettings::setDefaultPath(QString newPath)
+void ATCSettings::setDefaultSymbologyPath(QString newPath)
 {
-    QFile pathsFile(SETTINGS_PATHS_FILE);
+    QFile pathsFile(PATHS_FILE);
 
     if(!pathsFile.open(QFile::WriteOnly | QFile::Text))
     {
-        qDebug() << "Error while opening " + SETTINGS_PATHS_FILE + " file";
+        qDebug() << "Error while opening " + PATHS_FILE + " file";
         return;
     }
 
+    SYMBOLOGY_DFLT_PATH = newPath;
+
     QTextStream out(&pathsFile);
 
-    out << "DEFAULT = " << newPath << endl;
-    out << "EXPORT = " << SETTINGS_EXPORT_PATH << endl;
+    out << "DEFAULT SYMBOLOGY = " << SYMBOLOGY_DFLT_PATH << endl;
+    out << "EXPORT SYMBOLOGY = " << SYMBOLOGY_EXPORT_PATH << endl;
+    out << "DEFAULT DISPLAY = " << DISPLAY_DFLT_PATH << endl;
+    out << "EXPORT DISPLAY = " << DISPLAY_EXPORT_PATH << endl;
 
     pathsFile.close();
-
-    SETTINGS_DFLT_PATH = newPath;
 }
 
-void ATCSettings::loadInitialSettings(QString path)
+void ATCSettings::loadInitialSymbology(QString path)
 {
-    interpretSettingsFile(path);
+    interpretSymbologyFile(path);
 
-    SETTINGS_ACTIVE_PATH = path;
+    SYMBOLOGY_ACTIVE_PATH = path;
 }
 
-void ATCSettings::interpretSettingsFile(QString path)
+void ATCSettings::interpretSymbologyFile(QString path)
 {
     QFile file(path);
 
@@ -318,7 +328,7 @@ void ATCSettings::interpretSettingsFile(QString path)
             {
                 if(stringList.at(0).trimmed() == "NAME")
                 {
-                    SETTINGS_NAME = stringList.at(1).trimmed();
+                    SYMBOLOGY_NAME = stringList.at(1).trimmed();
                 }
             }
             else if(flagARTCCLow)
@@ -527,7 +537,7 @@ void ATCSettings::interpretSettingsFile(QString path)
     file.close();
 }
 
-void ATCSettings::exportSettings(QString path)
+void ATCSettings::exportSymbology(QString path)
 {
     QStringList pathElements = path.split("/", QString::KeepEmptyParts);
     QString fileName = pathElements.at(pathElements.size() - 1).trimmed();
@@ -626,9 +636,9 @@ void ATCSettings::exportSettings(QString path)
     file.close();
 }
 
-void ATCSettings::loadSettings(QString path)
+void ATCSettings::loadSymbology(QString path)
 {
-    interpretSettingsFile(path);
+    interpretSymbologyFile(path);
 
     emit signalColorARTCCLow(ARTCC_LOW_COLOR);
     emit signalColorARTCCHigh(ARTCC_HIGH_COLOR);
@@ -645,7 +655,7 @@ void ATCSettings::loadSettings(QString path)
 
     emit signalApplySettings();
 
-    SETTINGS_ACTIVE_PATH = path;
+    SYMBOLOGY_ACTIVE_PATH = path;
 }
 
 bool ATCSettings::fileExists(QString path)
