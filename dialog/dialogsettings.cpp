@@ -610,7 +610,7 @@ void DialogSettings::slotHeaderStateChanged(QStandardItem *item)
     }
 }
 
-void DialogSettings::on_buttonExportSettings_clicked()
+void DialogSettings::on_buttonExportSymbology_clicked()
 {
     QString filePath = QFileDialog::getSaveFileName(this, tr("Export to..."), situationalDisplay->getSettings()->SETTINGS_EXPORT_PATH, tr("Text files(*.txt)"));
     if(filePath.isEmpty()) return;
@@ -622,7 +622,7 @@ void DialogSettings::on_buttonExportSettings_clicked()
     msgBox.exec();
 }
 
-void DialogSettings::on_buttonLoadSettings_clicked()
+void DialogSettings::on_buttonLoadSymbology_clicked()
 {
     QString filePath = QFileDialog::getOpenFileName(this, tr("Load settings..."), situationalDisplay->getSettings()->SETTINGS_EXPORT_PATH, tr("Text files(*.txt)"));
     if(filePath.isEmpty()) return;
@@ -632,7 +632,7 @@ void DialogSettings::on_buttonLoadSettings_clicked()
     uiInner->lineEditActiveSettings->setText(situationalDisplay->getSettings()->SETTINGS_ACTIVE_PATH);
 }
 
-void DialogSettings::on_buttonSetDefault_clicked()
+void DialogSettings::on_buttonSetDefaultSymbology_clicked()
 {
     QString filePath = QFileDialog::getOpenFileName(this, tr("Set as default config..."), situationalDisplay->getSettings()->SETTINGS_EXPORT_PATH, tr("Text files(*.txt)"));
     if(filePath.isEmpty()) return;
@@ -728,6 +728,8 @@ void DialogSettings::connectSlots()
     connect(situationalDisplay->getSettings(), SIGNAL(signalColorSID(QColor)), this, SLOT(slotUpdateTableColorSID(QColor)));
     connect(situationalDisplay->getSettings(), SIGNAL(signalColorAirwayLow(QColor)), this, SLOT(slotUpdateTableColorAirwayLow(QColor)));
     connect(situationalDisplay->getSettings(), SIGNAL(signalColorAirwayHigh(QColor)), this, SLOT(slotUpdateTableColorAirwayHigh(QColor)));
+
+    connect(situationalDisplay->getSettings(), SIGNAL(signalApplySettings()), situationalDisplay, SLOT(slotApplySettings()));
 
     connect(this, SIGNAL(signalHideSectorARTCCLow(QString)), situationalDisplay, SLOT(slotHideSectorARTCCLow(QString)));
     connect(this, SIGNAL(signalHideSectorARTCCHigh(QString)), situationalDisplay, SLOT(slotHideSectorARTCCHigh(QString)));

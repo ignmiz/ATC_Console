@@ -32,7 +32,7 @@ void ATCSettings::assignPaths()
 
         QStringList stringList = textLine.split("=", QString::SkipEmptyParts);
 
-        if(stringList.at(0).trimmed() == "DEFAULT")
+        if(stringList.at(0).trimmed() == "DEFAULT SYMBOLOGY")
         {
             SETTINGS_DFLT_PATH = stringList.at(1).trimmed();
         }
@@ -549,14 +549,79 @@ void ATCSettings::exportSettings(QString path)
 
     out << "[ARTCC LOW]" << endl;
     out << "COLOR = " << ARTCC_LOW_COLOR.red() << ", " << ARTCC_LOW_COLOR.green() << ", " << ARTCC_LOW_COLOR.blue() << endl;
+    out << "LINE WIDTH = " << ARTCC_LOW_LINE_WIDTH << endl;
     out << endl;
 
     out << "[ARTCC HIGH]" << endl;
     out << "COLOR = " << ARTCC_HIGH_COLOR.red() << ", " << ARTCC_HIGH_COLOR.green() << ", " << ARTCC_HIGH_COLOR.blue() << endl;
+    out << "LINE WIDTH = " << ARTCC_HIGH_LINE_WIDTH << endl;
     out << endl;
 
     out << "[ARTCC]" << endl;
     out << "COLOR = " << ARTCC_COLOR.red() << ", " << ARTCC_COLOR.green() << ", " << ARTCC_COLOR.blue() << endl;
+    out << "LINE WIDTH = " << ARTCC_LINE_WIDTH << endl;
+    out << endl;
+
+    out << "[VOR]" << endl;
+    out << "COLOR = " << VOR_COLOR.red() << ", " << VOR_COLOR.green() << ", " << VOR_COLOR.blue() << endl;
+    out << "LINE WIDTH = " << VOR_LINE_WIDTH << endl;
+    out << "SIDE LENGTH = " << VOR_SIDE_LENGTH << endl;
+    out << "LABEL HEIGHT = " << VOR_LABEL_HEIGHT << endl;
+    out << "LABEL DX = " << VOR_LABEL_DX << endl;
+    out << "LABEL DY = " << VOR_LABEL_DY << endl;
+    out << endl;
+
+    out << "[NDB]" << endl;
+    out << "COLOR = " << NDB_COLOR.red() << ", " << NDB_COLOR.green() << ", " << NDB_COLOR.blue() << endl;
+    out << "LINE WIDTH = " << NDB_LINE_WIDTH << endl;
+    out << "SYMBOL DIAMETER = " << NDB_SYMBOL_DIA << endl;
+    out << "LABEL HEIGHT = " << NDB_LABEL_HEIGHT << endl;
+    out << "LABEL DX = " << NDB_LABEL_DX << endl;
+    out << "LABEL DY = " << NDB_LABEL_DY << endl;
+    out << endl;
+
+    out << "[FIXES]" << endl;
+    out << "COLOR = " << FIX_COLOR.red() << ", " << FIX_COLOR.green() << ", " << FIX_COLOR.blue() << endl;
+    out << "LINE WIDTH = " << FIX_LINE_WIDTH << endl;
+    out << "SIDE LENGTH = " << FIX_SIDE_LENGTH << endl;
+    out << "LABEL HEIGHT = " << FIX_LABEL_HEIGHT << endl;
+    out << "LABEL DX = " << FIX_LABEL_DX << endl;
+    out << "LABEL DY = " << FIX_LABEL_DY << endl;
+    out << endl;
+
+    out << "[AIRPORT]" << endl;
+    out << "COLOR = " << AIRPORT_COLOR.red() << ", " << AIRPORT_COLOR.green() << ", " << AIRPORT_COLOR.blue() << endl;
+    out << "LINE WIDTH = " << AIRPORT_LINE_WIDTH << endl;
+    out << "SYMBOL DIAMETER = " << AIRPORT_SYMBOL_DIA << endl;
+    out << "LABEL HEIGHT = " << AIRPORT_LABEL_HEIGHT << endl;
+    out << "LABEL DX = " << AIRPORT_LABEL_DX << endl;
+    out << "LABEL DY = " << AIRPORT_LABEL_DY << endl;
+    out << endl;
+
+    out << "[RUNWAY]" << endl;
+    out << "COLOR = " << RUNWAY_COLOR.red() << ", " << RUNWAY_COLOR.green() << ", " << RUNWAY_COLOR.blue() << endl;
+    out << "LINE WIDTH = " << RUNWAY_LINE_WIDTH << endl;
+    out << "CENTRELINE LENGTH = " << RUNWAY_CENTELINE_LENGTH << endl;
+    out << endl;
+
+    out << "[STAR]" << endl;
+    out << "COLOR = " << STAR_COLOR.red() << ", " << STAR_COLOR.green() << ", " << STAR_COLOR.blue() << endl;
+    out << "LINE WIDTH = " << STAR_LINE_WIDTH << endl;
+    out << endl;
+
+    out << "[SID]" << endl;
+    out << "COLOR = " << SID_COLOR.red() << ", " << SID_COLOR.green() << ", " << SID_COLOR.blue() << endl;
+    out << "LINE WIDTH = " << SID_LINE_WIDTH << endl;
+    out << endl;
+
+    out << "[LOW AIRWAY]" << endl;
+    out << "COLOR = " << AIRWAY_LOW_COLOR.red() << ", " << AIRWAY_LOW_COLOR.green() << ", " << AIRWAY_LOW_COLOR.blue() << endl;
+    out << "LINE WIDTH = " << AIRWAY_LOW_LINE_WIDTH << endl;
+    out << endl;
+
+    out << "[HIGH AIRWAY]" << endl;
+    out << "COLOR = " << AIRWAY_HIGH_COLOR.red() << ", " << AIRWAY_HIGH_COLOR.green() << ", " << AIRWAY_HIGH_COLOR.blue() << endl;
+    out << "LINE WIDTH = " << AIRWAY_HIGH_LINE_WIDTH << endl;
 
     file.close();
 }
@@ -577,6 +642,8 @@ void ATCSettings::loadSettings(QString path)
     emit signalColorSID(SID_COLOR);
     emit signalColorAirwayLow(AIRWAY_LOW_COLOR);
     emit signalColorAirwayHigh(AIRWAY_HIGH_COLOR);
+
+    emit signalApplySettings();
 
     SETTINGS_ACTIVE_PATH = path;
 }

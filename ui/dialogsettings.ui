@@ -140,7 +140,7 @@ QScrollBar::sub-page:vertical
       </rect>
      </property>
      <property name="text">
-      <string>Default settings:</string>
+      <string>Default symbology:</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -177,7 +177,7 @@ QScrollBar::sub-page:vertical
       </rect>
      </property>
      <property name="text">
-      <string>Active settings:</string>
+      <string>Active symbology:</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -204,7 +204,7 @@ QScrollBar::sub-page:vertical
 }</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="buttonSetDefault">
+    <widget class="QPushButton" name="buttonSetDefaultSymbology">
      <property name="geometry">
       <rect>
        <x>105</x>
@@ -217,7 +217,7 @@ QScrollBar::sub-page:vertical
       <string>Set as Default</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="buttonLoadSettings">
+    <widget class="QPushButton" name="buttonLoadSymbology">
      <property name="geometry">
       <rect>
        <x>235</x>
@@ -227,10 +227,10 @@ QScrollBar::sub-page:vertical
       </rect>
      </property>
      <property name="text">
-      <string>Load Settings</string>
+      <string>Load Symbology</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="buttonExportSettings">
+    <widget class="QPushButton" name="buttonExportSymbology">
      <property name="geometry">
       <rect>
        <x>365</x>
@@ -240,7 +240,7 @@ QScrollBar::sub-page:vertical
       </rect>
      </property>
      <property name="text">
-      <string>Export Settings</string>
+      <string>Export Symbology</string>
      </property>
     </widget>
    </widget>

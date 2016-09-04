@@ -70,9 +70,9 @@ private slots:
 
     void slotHeaderStateChanged(QStandardItem *item);
 
-    void on_buttonExportSettings_clicked();
-    void on_buttonLoadSettings_clicked();
-    void on_buttonSetDefault_clicked();
+    void on_buttonExportSymbology_clicked();
+    void on_buttonLoadSymbology_clicked();
+    void on_buttonSetDefaultSymbology_clicked();
 
 private:
     Ui::DialogSettings *uiInner;

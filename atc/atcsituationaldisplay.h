@@ -71,6 +71,8 @@ public slots:
     void slotShowAirwayLow(QString name);
     void slotShowAirwayHigh(QString name);
 
+    void slotApplySettings();
+
 private:
     ATCAirspace *airspaceData = nullptr;
     ATCSettings *settings = nullptr;

@@ -93,6 +93,8 @@ signals:
     void signalColorAirwayLow(const QColor &color);
     void signalColorAirwayHigh(const QColor &color);
 
+    void signalApplySettings();
+
 private:
     QRgb colorFromString(QString string);
 

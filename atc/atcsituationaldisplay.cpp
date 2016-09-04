@@ -411,6 +411,26 @@ void ATCSituationalDisplay::slotShowAirwayHigh(QString name)
     }
 }
 
+void ATCSituationalDisplay::slotApplySettings()
+{
+    rescaleSectorsARTCCLow();
+    rescaleSectorsARTCCHigh();
+    rescaleSectorsARTCC();
+    rescaleFixes();
+    rescaleFixLabels();
+    rescaleVORs();
+    rescaleVORLabels();
+    rescaleNDBs();
+    rescaleNDBLabels();
+    rescaleAirports();
+    rescaleAirportLabels();
+    rescaleExtendedCentrelines();
+    rescaleSTARs();
+    rescaleSIDs();
+    rescaleAirwaysLow();
+    rescaleAirwaysHigh();
+}
+
 void ATCSituationalDisplay::situationalDisplaySetup()
 {
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
@@ -3675,6 +3695,15 @@ void ATCSituationalDisplay::connectSlots()
     connect(settings, SIGNAL(signalColorARTCCLow(QColor)), this, SLOT(slotSetColorSectorARTCCLow(QColor)));
     connect(settings, SIGNAL(signalColorARTCCHigh(QColor)), this, SLOT(slotSetColorSectorARTCCHigh(QColor)));
     connect(settings, SIGNAL(signalColorARTCC(QColor)), this, SLOT(slotSetColorSectorARTCC(QColor)));
+    connect(settings, SIGNAL(signalColorVOR(QColor)), this, SLOT(slotSetColorVOR(QColor)));
+    connect(settings, SIGNAL(signalColorNDB(QColor)), this, SLOT(slotSetColorNDB(QColor)));
+    connect(settings, SIGNAL(signalColorFix(QColor)), this, SLOT(slotSetColorFix(QColor)));
+    connect(settings, SIGNAL(signalColorAirport(QColor)), this, SLOT(slotSetColorAirport(QColor)));
+    connect(settings, SIGNAL(signalColorRunway(QColor)), this, SLOT(slotSetColorRunway(QColor)));
+    connect(settings, SIGNAL(signalColorSTAR(QColor)), this, SLOT(slotSetColorSTAR(QColor)));
+    connect(settings, SIGNAL(signalColorSID(QColor)), this, SLOT(slotSetColorSID(QColor)));
+    connect(settings, SIGNAL(signalColorAirwayLow(QColor)), this, SLOT(slotSetColorAirwayLow(QColor)));
+    connect(settings, SIGNAL(signalColorAirwayHigh(QColor)), this, SLOT(slotSetColorAirwayHigh(QColor)));
 }
 
 void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
