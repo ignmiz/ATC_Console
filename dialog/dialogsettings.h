@@ -88,6 +88,7 @@ private:
     int visibleSectorsARTCCLow = 0;
     int visibleSectorsARTCCHigh = 0;
     int visibleSectorsARTCC = 0;
+//    int visibleCentrelines = 0;
     int visibleFixes = 0;
     int visibleNDBs = 0;
     int visibleVORs = 0;

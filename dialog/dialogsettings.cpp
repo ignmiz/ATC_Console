@@ -616,13 +616,13 @@ void DialogSettings::slotHeaderStateChanged(QStandardItem *item)
 
 void DialogSettings::on_buttonSetDefaultSymbology_clicked()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, tr("Set as default config..."), situationalDisplay->getSettings()->SYMBOLOGY_EXPORT_PATH, tr("Text files(*.txt)"));
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Set as default symbology..."), situationalDisplay->getSettings()->SYMBOLOGY_EXPORT_PATH, tr("Text files(*.txt)"));
     if(filePath.isEmpty()) return;
 
     situationalDisplay->getSettings()->setDefaultSymbologyPath(filePath);
 
     QMessageBox msgBox(this);
-    msgBox.setText("Default settings set to: " + filePath);
+    msgBox.setText("Default symbology set to: " + filePath);
     msgBox.exec();
 
     uiInner->lineEditDefaultSymbology->setText(situationalDisplay->getSettings()->SYMBOLOGY_DFLT_PATH);
@@ -630,7 +630,7 @@ void DialogSettings::on_buttonSetDefaultSymbology_clicked()
 
 void DialogSettings::on_buttonLoadSymbology_clicked()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, tr("Load settings..."), situationalDisplay->getSettings()->SYMBOLOGY_EXPORT_PATH, tr("Text files(*.txt)"));
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Load symbology..."), situationalDisplay->getSettings()->SYMBOLOGY_EXPORT_PATH, tr("Text files(*.txt)"));
     if(filePath.isEmpty()) return;
 
     situationalDisplay->getSettings()->loadSymbology(filePath);
@@ -657,7 +657,28 @@ void DialogSettings::on_buttonSetDefaultDisplay_clicked()
 
 void DialogSettings::on_buttonLoadDisplay_clicked()
 {
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Load display..."), situationalDisplay->getSettings()->SYMBOLOGY_EXPORT_PATH, tr("Text files(*.txt)"));
+    if(filePath.isEmpty()) return;
 
+    visibleSectorsARTCCLow = 0;
+    visibleSectorsARTCCHigh = 0;
+    visibleSectorsARTCC = 0;
+//    visibleCentrelines = 0;
+    visibleFixes = 0;
+    visibleNDBs = 0;
+    visibleVORs = 0;
+    visibleAirports = 0;
+    visibleSIDSymbols = 0;
+    visibleSTARSymbols = 0;
+    visibleAirwaysLow = 0;
+    visibleAirwaysHigh = 0;
+
+    situationalDisplay->loadDisplay(filePath);
+
+    createModelDisplay();
+    uiInner->viewDisplay->setModel(modelDisplay);
+
+    uiInner->lineEditActiveDisplay->setText(situationalDisplay->getSettings()->DISPLAY_ACTIVE_PATH);
 }
 
 void DialogSettings::on_buttonExportDisplay_clicked()

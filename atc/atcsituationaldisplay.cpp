@@ -3665,6 +3665,90 @@ void ATCSituationalDisplay::calculateAirwayHigh()
     }
 }
 
+void ATCSituationalDisplay::hideAll()
+{
+    for(int i = 0; i < visibleSectorsARTCCLow.size(); i++)
+    {
+        visibleSectorsARTCCLow.at(i)->hide();
+    }
+
+    for(int i = 0; i < visibleSectorsARTCCHigh.size(); i++)
+    {
+        visibleSectorsARTCCHigh.at(i)->hide();
+    }
+
+    for(int i = 0; i < visibleSectorsARTCC.size(); i++)
+    {
+        visibleSectorsARTCC.at(i)->hide();
+    }
+
+    for(int i = 0; i < visibleCentrelines.size(); i++)
+    {
+        //TO BE IMPLEMENTED
+    }
+
+    for(int i = 0; i < visibleFixes.size(); i++)
+    {
+        visibleFixes.at(i)->hide();
+    }
+
+    for(int i = 0; i < visibleAirports.size(); i++)
+    {
+        visibleAirports.at(i)->hide();
+    }
+
+    for(int i = 0; i < visibleVORs.size(); i++)
+    {
+        visibleVORs.at(i)->hide();
+    }
+
+    for(int i = 0; i < visibleNDBs.size(); i++)
+    {
+        visibleNDBs.at(i)->hide();
+    }
+
+    for(int i = 0; i < visibleSTARs.size(); i++)
+    {
+        visibleSTARs.at(i)->hide();
+    }
+
+    for(int i = 0; i < visibleSIDs.size(); i++)
+    {
+        visibleSIDs.at(i)->hide();
+    }
+
+    for(int i = 0; i < visibleLowAirways.size(); i++)
+    {
+        visibleLowAirways.at(i)->hide();
+    }
+
+    for(int i = 0; i < visibleHighAirways.size(); i++)
+    {
+        visibleHighAirways.at(i)->hide();
+    }
+
+    visibleSectorsARTCCLow.clear();
+    visibleSectorsARTCCHigh.clear();
+    visibleSectorsARTCC.clear();
+//    visibleCentrelines.clear();
+    visibleFixes.clear();
+    visibleAirports.clear();
+    visibleVORs.clear();
+    visibleNDBs.clear();
+    visibleSTARs.clear();
+    visibleSIDs.clear();
+    visibleLowAirways.clear();
+    visibleHighAirways.clear();
+}
+
+void ATCSituationalDisplay::loadDisplay(QString path)
+{
+    hideAll();
+    interpretDisplayFile(path);
+
+    settings->DISPLAY_ACTIVE_PATH = path;
+}
+
 void ATCSituationalDisplay::loadInitialDisplay(QString path)
 {
     interpretDisplayFile(path);

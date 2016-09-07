@@ -33,6 +33,9 @@ public:
     ATCSettings* getSettings();
     ATCAirspace* getAirspaceData();
 
+    void hideAll();
+
+    void loadDisplay(QString path);
     void exportDisplay(QString path);
 
 public slots:
