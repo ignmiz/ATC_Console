@@ -73,6 +73,12 @@ void ATCSituationalDisplay::exportDisplay(QString path)
     QString fileName = pathElements.at(pathElements.size() - 1).trimmed();
     QString nameWithoutExtension = fileName.split(".", QString::KeepEmptyParts).at(0).trimmed();
 
+    QPointF viewportCentre = mapToScene(viewport()->rect().center());
+
+    QTransform viewportTransformation(transform());
+    double scaleX = viewportTransformation.m11();
+    double scaleY = viewportTransformation.m22();
+
     QFile file(path);
 
     if(!file.open(QFile::WriteOnly | QFile::Text))
@@ -85,6 +91,8 @@ void ATCSituationalDisplay::exportDisplay(QString path)
 
     out << "[INFO]" << endl;
     out << "NAME = " << nameWithoutExtension << endl;
+    out << "CENTRE = " << viewportCentre.x() << ", " << viewportCentre.y() << endl;
+    out << "SCALE = " << scaleX << ", " << scaleY << endl;
     out << endl;
 
     out << "[ARTCC LOW]" << endl;
@@ -1937,6 +1945,26 @@ void ATCSituationalDisplay::loadData()
     }
 
     eseFile.close();
+}
+
+void ATCSituationalDisplay::rescaleAll()
+{
+    rescaleSectorsARTCCLow();
+    rescaleSectorsARTCCHigh();
+    rescaleSectorsARTCC();
+    rescaleFixes();
+    rescaleFixLabels();
+    rescaleVORs();
+    rescaleVORLabels();
+    rescaleNDBs();
+    rescaleNDBLabels();
+    rescaleAirports();
+    rescaleAirportLabels();
+    rescaleExtendedCentrelines();
+    rescaleSTARs();
+    rescaleSIDs();
+    rescaleAirwaysLow();
+    rescaleAirwaysHigh();
 }
 
 void ATCSituationalDisplay::rescaleScene()
@@ -4004,6 +4032,42 @@ void ATCSituationalDisplay::interpretDisplayFile(QString path)
                 {
                     settings->DISPLAY_NAME = stringList.at(1).trimmed();
                 }
+                else if(stringList.at(0).trimmed() == "CENTRE")
+                {
+                    QStringList commaStringList = stringList.at(1).trimmed().split(",", QString::SkipEmptyParts);
+
+                    double centreX = commaStringList.at(0).trimmed().toDouble();
+                    double centreY = commaStringList.at(1).trimmed().toDouble();
+
+                    centerOn(centreX, centreY);
+                }
+                else if(stringList.at(0).trimmed() == "SCALE")
+                {
+                    QStringList commaStringList = stringList.at(1).trimmed().split(",", QString::SkipEmptyParts);
+
+                    double scaleX = commaStringList.at(0).trimmed().toDouble();
+                    double scaleY = commaStringList.at(1).trimmed().toDouble();
+
+                    QTransform currentTransformation(transform());
+
+                    double m11 = scaleX;
+                    double m12 = currentTransformation.m12();
+                    double m13 = currentTransformation.m13();
+                    double m21 = currentTransformation.m21();
+                    double m22 = scaleY;
+                    double m23 = currentTransformation.m23();
+                    double m31 = currentTransformation.m31();
+                    double m32 = currentTransformation.m32();
+                    double m33 = currentTransformation.m33();
+
+                    currentTransformation.setMatrix(m11, m12, m13, m21, m22, m23, m31, m32, m33);
+                    setTransform(currentTransformation);
+
+                    currentScale = m11;
+
+                    rescaleAll();
+                }
+
             }
             else if(flagARTCCLow)
             {

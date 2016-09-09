@@ -108,6 +108,8 @@ private:
     void situationalDisplaySetup();
     void loadData(); //Temp - to be moved
 
+    void rescaleAll();
+
     void rescaleScene();
     void rescaleSectorsARTCCLow();
     void rescaleSectorsARTCCHigh();
