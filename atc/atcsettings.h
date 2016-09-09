@@ -13,7 +13,8 @@ public:
     explicit ATCSettings();
     ~ATCSettings();
 
-    void setDefaultSymbologyPath(QString newPath);
+    void exportDefaultPathsFile();
+
     void exportSymbology(QString path);
     void loadSymbology(QString path);
 

@@ -56,7 +56,7 @@ void ATCSettings::assignPaths()
     pathsFile.close();
 }
 
-void ATCSettings::setDefaultSymbologyPath(QString newPath)
+void ATCSettings::exportDefaultPathsFile()
 {
     QFile pathsFile(PATHS_FILE);
 
@@ -65,8 +65,6 @@ void ATCSettings::setDefaultSymbologyPath(QString newPath)
         qDebug() << "Error while opening " + PATHS_FILE + " file";
         return;
     }
-
-    SYMBOLOGY_DFLT_PATH = newPath;
 
     QTextStream out(&pathsFile);
 
