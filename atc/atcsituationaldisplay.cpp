@@ -3069,15 +3069,13 @@ void ATCSituationalDisplay::calculateExtendedCentrelines()
                 rwy2.x = currentRunway->getEndPoit().longitude();
                 rwy2.y = currentRunway->getEndPoit().latitude();
 
-                double angle = qAcos((rwy2.y - rwy1.y) / qSqrt(qPow(rwy2.x - rwy1.x, 2) + qPow(rwy2.y - rwy1.y, 2)));
-
                 coord centreEnd1;
                 coord centreEnd2;
 
-                centreEnd1.x = rwy1.x + settings->RUNWAY_CENTELINE_LENGTH / 60 * qSin(angle + ATCConst::PI);
-                centreEnd1.y = rwy1.y + settings->RUNWAY_CENTELINE_LENGTH / 60 * qCos(angle + ATCConst::PI);
-                centreEnd2.x = rwy2.x + settings->RUNWAY_CENTELINE_LENGTH / 60 * qSin(angle);
-                centreEnd2.y = rwy2.y + settings->RUNWAY_CENTELINE_LENGTH / 60 * qCos(angle);
+                centreEnd1.x = rwy1.x + settings->RUNWAY_CENTELINE_LENGTH * ATCConst::NM_2_M / (ATCConst::WGS84_RADIUS * qCos(rwy1.y * ATCConst::DEG_2_RAD)) * ATCConst::RAD_2_DEG;
+                centreEnd1.y = rwy1.y;
+                centreEnd2.x = rwy2.x + settings->RUNWAY_CENTELINE_LENGTH * ATCConst::NM_2_M / (ATCConst::WGS84_RADIUS * qCos(rwy2.y * ATCConst::DEG_2_RAD)) * ATCConst::RAD_2_DEG;
+                centreEnd2.y = rwy2.y;
 
                 rwyCoords1.append(rwy1);
                 rwyCoords2.append(rwy2);
@@ -3090,6 +3088,7 @@ void ATCSituationalDisplay::calculateExtendedCentrelines()
 //calculate Mercator projection and rotation of points
     for(int i = 0; i < rwyCoords1.size(); i++)
     {
+        //Project to 2D
         rwyCoords1[i].x = mercatorProjectionLon(rwyCoords1.at(i).x);
         rwyCoords1[i].y = mercatorProjectionLat(rwyCoords1.at(i).y);
 
@@ -3102,6 +3101,19 @@ void ATCSituationalDisplay::calculateExtendedCentrelines()
         centrelineEnd2[i].x = mercatorProjectionLon(centrelineEnd2.at(i).x);
         centrelineEnd2[i].y = mercatorProjectionLat(centrelineEnd2.at(i).y);
 
+        //Translate to local csys and rotate extended centrelines to match runway azimuth
+        double deltaProjectedLon1 = centrelineEnd1.at(i).x - rwyCoords1.at(i).x;
+        double deltaProjectedLon2 = centrelineEnd2.at(i).x - rwyCoords2.at(i).x;
+
+        double azimuth = qAtan2(rwyCoords2.at(i).x - rwyCoords1.at(i).x, rwyCoords2.at(i).y - rwyCoords1.at(i).y);
+
+        centrelineEnd1[i].x = deltaProjectedLon1 * qCos(ATCConst::PI / 2 - azimuth + ATCConst::PI) + rwyCoords1.at(i).x;
+        centrelineEnd1[i].y = deltaProjectedLon1 * qSin(ATCConst::PI / 2 - azimuth + ATCConst::PI) + rwyCoords1.at(i).y;
+
+        centrelineEnd2[i].x = deltaProjectedLon2 * qCos(ATCConst::PI / 2 - azimuth) + rwyCoords2.at(i).x;
+        centrelineEnd2[i].y = deltaProjectedLon2 * qSin(ATCConst::PI / 2 - azimuth) + rwyCoords2.at(i).y;
+
+        //Rotate whole map so up matches magnetic north
         double rwyCoords1xRot = rotateX(rwyCoords1.at(i).x, rwyCoords1.at(i).y, rotationDeg);
         double rwyCoords1yRot = rotateY(rwyCoords1.at(i).x, rwyCoords1.at(i).y, rotationDeg);
 
