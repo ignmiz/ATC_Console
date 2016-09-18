@@ -73,6 +73,13 @@ public:
     double RUNWAY_LINE_WIDTH;
     double RUNWAY_CENTELINE_LENGTH;
 
+    double TICK_FIRST_DISTANCE;
+    double TICK_SEPARATION;
+    double TICK_FIRST_MAJOR_AT;
+    double TICK_MAJOR_SEPARATION;
+    double TICK_MINOR_LENGTH;
+    double TICK_MAJOR_LENGTH;
+
     QColor STAR_COLOR;
     double STAR_LINE_WIDTH;
 

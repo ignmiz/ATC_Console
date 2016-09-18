@@ -487,6 +487,30 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 {
                     RUNWAY_CENTELINE_LENGTH = stringList.at(1).trimmed().toDouble();
                 }
+                else if(stringList.at(0).trimmed() == "FIRST TICK DISTANCE")
+                {
+                    TICK_FIRST_DISTANCE = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "TICK SEPARATION")
+                {
+                    TICK_SEPARATION = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "FIRST MAJOR TICK AT")
+                {
+                    TICK_FIRST_MAJOR_AT = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "MAJOR TICK SEPARATION")
+                {
+                    TICK_MAJOR_SEPARATION = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "MINOR TICK LENGTH")
+                {
+                    TICK_MINOR_LENGTH = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "MAJOR TICK LENGTH")
+                {
+                    TICK_MAJOR_LENGTH = stringList.at(1).trimmed().toDouble();
+                }
             }
             else if(flagSTAR)
             {
@@ -613,6 +637,12 @@ void ATCSettings::exportSymbology(QString path)
     out << "COLOR = " << RUNWAY_COLOR.red() << ", " << RUNWAY_COLOR.green() << ", " << RUNWAY_COLOR.blue() << endl;
     out << "LINE WIDTH = " << RUNWAY_LINE_WIDTH << endl;
     out << "CENTRELINE LENGTH = " << RUNWAY_CENTELINE_LENGTH << endl;
+    out << "FIRST TICK DISTANCE = " << TICK_FIRST_DISTANCE << endl;
+    out << "TICK SEPARATION = " << TICK_SEPARATION << endl;
+    out << "FIRST MAJOR TICK AT = " << TICK_FIRST_MAJOR_AT << endl;
+    out << "MAJOR TICK SEPARATION = " << TICK_MAJOR_SEPARATION << endl;
+    out << "MINOR TICK LENGTH = " << TICK_MINOR_LENGTH << endl;
+    out << "MAJOR TICK LENGTH = " << TICK_MAJOR_LENGTH << endl;
     out << endl;
 
     out << "[STAR]" << endl;

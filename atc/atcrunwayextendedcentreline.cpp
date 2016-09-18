@@ -20,6 +20,16 @@ QGraphicsLineItem* ATCRunwayExtendedCentreline::getCentreline()
     return centreline;
 }
 
+QGraphicsLineItem* ATCRunwayExtendedCentreline::getTick(int i)
+{
+    return ticks->at(i);
+}
+
+void ATCRunwayExtendedCentreline::appendTick(QGraphicsLineItem *tick)
+{
+    ticks->append(tick);
+}
+
 void ATCRunwayExtendedCentreline::setCentreline(QGraphicsLineItem *line)
 {
     centreline = line;
