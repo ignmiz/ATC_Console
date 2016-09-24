@@ -63,7 +63,7 @@ void ATCAbstractAirway::setName(QString name)
 
 void ATCAbstractAirway::setColor(QColor color)
 {
-    for(int i =0; i < lines.size(); i++)
+    for(int i = 0; i < lines.size(); i++)
     {
         QPen newPen(lines.at(i)->pen());
         newPen.setColor(color);

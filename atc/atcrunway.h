@@ -17,7 +17,7 @@ public:
     unsigned int getMagneticHDG1();
     unsigned int getMagneticHDG2();
     QGeoCoordinate& getStartPoint();
-    QGeoCoordinate& getEndPoit();
+    QGeoCoordinate& getEndPoint();
     ATCRunwayExtendedCentreline* getExtendedCentreline1();
     ATCRunwayExtendedCentreline* getExtendedCentreline2();
 

@@ -2,6 +2,7 @@
 #define ATCRUNWAYEXTENDEDCENTRELINE_H
 
 #include <QGraphicsItem>
+#include <QPen>
 
 class ATCRunwayExtendedCentreline
 {
@@ -11,15 +12,22 @@ public:
     ~ATCRunwayExtendedCentreline();
 
     QGraphicsLineItem* getCentreline();
-    QGraphicsLineItem* getTick(int i);
+    QVector<QGraphicsLineItem*>& getTicksVector();
 
     void appendTick(QGraphicsLineItem *tick);
 
     void setCentreline(QGraphicsLineItem *line);
+    void setColor(QColor color);
+
+    void show();
+    void hide();
+    bool isVisible();
 
 private:
     QGraphicsLineItem *centreline = nullptr;
-    QVector<QGraphicsLineItem*> *ticks;
+    QVector<QGraphicsLineItem*> ticks;
+
+    bool visible = false;
 };
 
 #endif // ATCRUNWAYEXTENDEDCENTRELINE_H

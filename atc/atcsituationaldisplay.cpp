@@ -32,6 +32,7 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(pa
     calculateSTARs();
     calculateSIDs();
     calculateExtendedCentrelines();
+    calculateCentrelineTicks();
     calculateNDBs();
     calculateVORs();
     calculateFixes();
@@ -240,7 +241,14 @@ void ATCSituationalDisplay::slotSetColorAirport(QColor color)
 
 void ATCSituationalDisplay::slotSetColorRunway(QColor color)
 {
-    //runway loop
+    for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
+    {
+        for(int j = 0; j < airspaceData->getAirport(i)->getRunwayVectorSize(); j++)
+        {
+            airspaceData->getAirport(i)->getRunway(j)->getExtendedCentreline1()->setColor(color);
+            airspaceData->getAirport(i)->getRunway(j)->getExtendedCentreline2()->setColor(color);
+        }
+    }
 }
 
 void ATCSituationalDisplay::slotSetColorSTAR(QColor color)
@@ -2228,7 +2236,14 @@ void ATCSituationalDisplay::rescaleExtendedCentrelines()
 
         for(int i = 0; i < visibleCentrelines.size(); i++)
         {
-            visibleCentrelines.at(i)->getCentreline()->setPen(currentPen);
+            ATCRunwayExtendedCentreline *current(visibleCentrelines.at(i));
+            current->getCentreline()->setPen(currentPen);
+
+            QVector<QGraphicsLineItem*> ticks(current->getTicksVector());
+            for(int i = 0; i < ticks.size(); i++)
+            {
+                ticks.at(i)->setPen(currentPen);
+            }
         }
     }
 }
@@ -2468,6 +2483,12 @@ void ATCSituationalDisplay::rescaleExtendedCentreline(ATCRunwayExtendedCentrelin
     currentPen.setWidthF(settings->RUNWAY_LINE_WIDTH / currentScale);
 
     object->getCentreline()->setPen(currentPen);
+
+    QVector<QGraphicsLineItem*> ticks(object->getTicksVector());
+    for(int i = 0; i < ticks.size(); i++)
+    {
+        ticks.at(i)->setPen(currentPen);
+    }
 }
 
 void ATCSituationalDisplay::rescaleSTAR(ATCProcedureSTARSymbol *object)
@@ -2683,8 +2704,6 @@ void ATCSituationalDisplay::calculateSectorsARTCCLow()
             scene->addItem(currentSymbol);
         }
 
-//        visibleSectorsARTCCLow.append(airspaceData->getSectorARTCCLow(i));
-//        airspaceData->getSectorARTCCLow(i)->setFlagVisible(true);
         airspaceData->getSectorARTCCLow(i)->hide();
     }
 }
@@ -2773,8 +2792,6 @@ void ATCSituationalDisplay::calculateSectorsARTCCHigh()
             scene->addItem(currentSymbol);
         }
 
-//        visibleSectorsARTCCHigh.append(airspaceData->getSectorARTCCHigh(i));
-//        airspaceData->getSectorARTCCHigh(i)->setFlagVisible(true);
         airspaceData->getSectorARTCCHigh(i)->hide();
     }
 }
@@ -2863,8 +2880,6 @@ void ATCSituationalDisplay::calculateSectorsARTCC()
             scene->addItem(currentSymbol);
         }
 
-//        visibleSectorsARTCC.append(airspaceData->getSectorARTCC(i));
-//        airspaceData->getSectorARTCC(i)->setFlagVisible(true);
         airspaceData->getSectorARTCC(i)->hide();
     }
 }
@@ -2931,8 +2946,6 @@ void ATCSituationalDisplay::calculateFixes()
 
         currentSymbol->setPen(pen);
         scene->addItem(currentSymbol);
-
-//        visibleFixes.append(airspaceData->getFix(i));
     }
 
 //Calculate labels
@@ -2957,7 +2970,6 @@ void ATCSituationalDisplay::calculateFixes()
                              positionY + settings->FIX_LABEL_DY / currentScale);
 
         scene->addItem(currentLabel);
-//        currentFix->setFlagVisible(true);
         currentFix->hide();
     }
 }
@@ -3012,8 +3024,6 @@ void ATCSituationalDisplay::calculateAirports()
 
         currentSymbol->setPen(pen);
         scene->addItem(currentSymbol);
-
-//        visibleAirports.append(airspaceData->getAirport(i));
     }
 
 //Calculate labels
@@ -3038,7 +3048,6 @@ void ATCSituationalDisplay::calculateAirports()
                              positionY + settings->AIRPORT_LABEL_DY / currentScale);
 
         scene->addItem(currentLabel);
-//        currentAirport->setFlagVisible(true);
         currentAirport->hide();
     }
 }
@@ -3066,8 +3075,8 @@ void ATCSituationalDisplay::calculateExtendedCentrelines()
 
                 rwy1.x = currentRunway->getStartPoint().longitude();
                 rwy1.y = currentRunway->getStartPoint().latitude();
-                rwy2.x = currentRunway->getEndPoit().longitude();
-                rwy2.y = currentRunway->getEndPoit().latitude();
+                rwy2.x = currentRunway->getEndPoint().longitude();
+                rwy2.y = currentRunway->getEndPoint().latitude();
 
                 coord centreEnd1;
                 coord centreEnd2;
@@ -3204,6 +3213,201 @@ void ATCSituationalDisplay::calculateExtendedCentrelines()
     }
 }
 
+void ATCSituationalDisplay::calculateCentrelineTicks()
+{
+    double rotationDeg = ATCConst::AVG_DECLINATION;
+
+    for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
+    {
+        if(!airspaceData->getAirport(i)->isRunwayVectorEmpty())
+        {
+            for(int j = 0; j < airspaceData->getAirport(i)->getRunwayVectorSize(); j++)
+            {
+                ATCRunway *current(airspaceData->getAirport(i)->getRunway(j));
+
+                for(int k = 0; k < (settings->RUNWAY_CENTELINE_LENGTH - settings->TICK_FIRST_DISTANCE) / settings->TICK_SEPARATION + 1; k++)
+                {
+                    //Initialize runway tresholds
+                    coord rwy1;
+                    coord rwy2;
+
+                    rwy1.x = current->getStartPoint().longitude();
+                    rwy1.y = current->getStartPoint().latitude();
+                    rwy2.x = current->getEndPoint().longitude();
+                    rwy2.y = current->getEndPoint().latitude();
+
+                    //Calculate position of tick middle
+                    coord tick1mid;
+                    coord tick2mid;
+
+                    double localScale = qCos((rwy1.y + rwy2.y) / 2 * ATCConst::DEG_2_RAD);
+
+                    tick1mid.x = rwy1.x + (settings->TICK_FIRST_DISTANCE + k * settings->TICK_SEPARATION) * ATCConst::NM_2_M / (ATCConst::WGS84_RADIUS * qCos(rwy1.y * ATCConst::DEG_2_RAD)) * ATCConst::RAD_2_DEG;
+                    tick1mid.y = rwy1.y;
+                    tick2mid.x = rwy2.x + (settings->TICK_FIRST_DISTANCE + k * settings->TICK_SEPARATION) * ATCConst::NM_2_M / (ATCConst::WGS84_RADIUS * qCos(rwy2.y * ATCConst::DEG_2_RAD)) * ATCConst::RAD_2_DEG;
+                    tick2mid.y = rwy2.y;
+
+                    //Project to 2D
+                    rwy1.x = mercatorProjectionLon(rwy1.x);
+                    rwy1.y = mercatorProjectionLat(rwy1.y);
+
+                    rwy2.x = mercatorProjectionLon(rwy2.x);
+                    rwy2.y = mercatorProjectionLat(rwy2.y);
+
+                    tick1mid.x = mercatorProjectionLon(tick1mid.x);
+                    tick1mid.y = mercatorProjectionLat(tick1mid.y);
+
+                    tick2mid.x = mercatorProjectionLon(tick2mid.x);
+                    tick2mid.y = mercatorProjectionLat(tick2mid.y);
+
+                    //Translate to local csys and rotate to match runway azimuth
+                    double deltaTickLon1 = tick1mid.x - rwy1.x;
+                    double deltaTickLon2 = tick2mid.x - rwy2.x;
+
+                    double azimuth = qAtan2(rwy2.x - rwy1.x, rwy2.y - rwy1.y);
+
+                    tick1mid.x = deltaTickLon1 * qCos(ATCConst::PI / 2 - azimuth + ATCConst::PI) + rwy1.x;
+                    tick1mid.y = deltaTickLon1 * qSin(ATCConst::PI / 2 - azimuth + ATCConst::PI) + rwy1.y;
+
+                    tick2mid.x = deltaTickLon2 * qCos(ATCConst::PI / 2 - azimuth) + rwy2.x;
+                    tick2mid.y = deltaTickLon2 * qSin(ATCConst::PI / 2 - azimuth) + rwy2.y;
+
+                    //Calculate tick section ends using localScale
+                    coord tick1start;
+                    coord tick1end;
+                    coord tick2start;
+                    coord tick2end;
+
+                    double deltaTickLon;
+
+                    if (((k % static_cast<int>(settings->TICK_MAJOR_SEPARATION / settings->TICK_SEPARATION)) == 0) && (k >= (settings->TICK_FIRST_MAJOR_AT - settings->TICK_FIRST_DISTANCE) / settings->TICK_SEPARATION))
+                    {
+                        deltaTickLon = mercatorProjectionLon(settings->TICK_MAJOR_LENGTH * ATCConst::NM_2_M / 2 / (ATCConst::WGS84_RADIUS * localScale) * ATCConst::RAD_2_DEG);
+                    }
+                    else
+                    {
+                        deltaTickLon = mercatorProjectionLon(settings->TICK_MINOR_LENGTH * ATCConst::NM_2_M / 2 / (ATCConst::WGS84_RADIUS * localScale) * ATCConst::RAD_2_DEG);
+                    }
+
+                    tick1start.x = deltaTickLon * qCos(ATCConst::PI - azimuth + ATCConst::PI) + tick1mid.x;
+                    tick1start.y = deltaTickLon * qSin(ATCConst::PI - azimuth + ATCConst::PI) + tick1mid.y;
+
+                    tick1end.x = deltaTickLon * qCos(2 * ATCConst::PI - azimuth + ATCConst::PI) + tick1mid.x;
+                    tick1end.y = deltaTickLon * qSin(2 * ATCConst::PI - azimuth + ATCConst::PI) + tick1mid.y;
+
+                    tick2start.x = deltaTickLon * qCos(ATCConst::PI - azimuth) + tick2mid.x;
+                    tick2start.y = deltaTickLon * qSin(ATCConst::PI - azimuth) + tick2mid.y;
+
+                    tick2end.x = deltaTickLon * qCos(2 * ATCConst::PI - azimuth) + tick2mid.x;
+                    tick2end.y = deltaTickLon * qSin(2 * ATCConst::PI - azimuth) + tick2mid.y;
+
+                    //Rotate tick centre to match magnetic north
+                    coord rwy1rot;
+                    coord rwy2rot;
+                    coord tick1rot;
+                    coord tick2rot;
+
+                    rwy1rot.x = rotateX(rwy1.x, rwy1.y, rotationDeg);
+                    rwy1rot.y = rotateY(rwy1.x, rwy1.y, rotationDeg);
+
+                    rwy2rot.x = rotateX(rwy2.x, rwy2.y, rotationDeg);
+                    rwy2rot.y = rotateY(rwy2.x, rwy2.y, rotationDeg);
+
+                    tick1rot.x = rotateX(tick1mid.x, tick1mid.y, rotationDeg);
+                    tick1rot.y = rotateY(tick1mid.x, tick1mid.y, rotationDeg);
+
+                    tick2rot.x = rotateX(tick2mid.x, tick2mid.y, rotationDeg);
+                    tick2rot.y = rotateY(tick2mid.x, tick2mid.y, rotationDeg);
+
+                    rwy1.x = rwy1rot.x;
+                    rwy1.y = rwy1rot.y;
+
+                    rwy2.x = rwy2rot.x;
+                    rwy2.y = rwy2rot.y;
+
+                    tick1mid.x = tick1rot.x;
+                    tick1mid.y = tick1rot.y;
+
+                    tick2mid.x = tick2rot.x;
+                    tick2mid.y = tick2rot.y;
+
+                    //Rotate tick ends to match magnetick north
+                    coord tick1startRot;
+                    coord tick1endRot;
+                    coord tick2startRot;
+                    coord tick2endRot;
+
+                    tick1startRot.x = rotateX(tick1start.x, tick1start.y, rotationDeg);
+                    tick1startRot.y = rotateY(tick1start.x, tick1start.y, rotationDeg);
+
+                    tick1endRot.x = rotateX(tick1end.x, tick1end.y, rotationDeg);
+                    tick1endRot.y = rotateY(tick1end.x, tick1end.y, rotationDeg);
+
+                    tick2startRot.x = rotateX(tick2start.x, tick2start.y, rotationDeg);
+                    tick2startRot.y = rotateY(tick2start.x, tick2start.y, rotationDeg);
+
+                    tick2endRot.x = rotateX(tick2end.x, tick2end.y, rotationDeg);
+                    tick2endRot.y = rotateY(tick2end.x, tick2end.y, rotationDeg);
+
+                    tick1start.x = tick1startRot.x;
+                    tick1start.y = tick1startRot.y;
+
+                    tick1end.x = tick1endRot.x;
+                    tick1end.y = tick1endRot.y;
+
+                    tick2start.x = tick2startRot.x;
+                    tick2start.y = tick2startRot.y;
+
+                    tick2end.x = tick2endRot.x;
+                    tick2end.y = tick2endRot.y;
+
+                    //Translate to local scene coords
+                    rwy1.x = translateToLocalX(rwy1.x);
+                    rwy1.y = translateToLocalY(rwy1.y);
+
+                    rwy2.x = translateToLocalX(rwy2.x);
+                    rwy2.y = translateToLocalY(rwy2.y);
+
+                    tick1mid.x = translateToLocalX(tick1mid.x);
+                    tick1mid.y = translateToLocalY(tick1mid.y);
+
+                    tick2mid.x = translateToLocalX(tick2mid.x);
+                    tick2mid.y = translateToLocalY(tick2mid.y);
+
+                    tick1start.x = translateToLocalX(tick1start.x);
+                    tick1start.y = translateToLocalY(tick1start.y);
+
+                    tick1end.x = translateToLocalX(tick1end.x);
+                    tick1end.y = translateToLocalY(tick1end.y);
+
+                    tick2start.x = translateToLocalX(tick2start.x);
+                    tick2start.y = translateToLocalY(tick2start.y);
+
+                    tick2end.x = translateToLocalX(tick2end.x);
+                    tick2end.y = translateToLocalY(tick2end.y);
+
+                    //Construct tick symbols
+                    QGraphicsLineItem *tickLine1 = new QGraphicsLineItem(tick1start.x, tick1start.y, tick1end.x, tick1end.y);
+                    QGraphicsLineItem *tickLine2 = new QGraphicsLineItem(tick2start.x, tick2start.y, tick2end.x, tick2end.y);
+
+                    current->getExtendedCentreline1()->appendTick(tickLine1);
+                    current->getExtendedCentreline2()->appendTick(tickLine2);
+
+                    //Display ticks
+                    QPen pen(settings->RUNWAY_COLOR);
+                    pen.setWidthF(settings->RUNWAY_LINE_WIDTH / currentScale);
+
+                    tickLine1->setPen(pen);
+                    tickLine2->setPen(pen);
+
+                    scene->addItem(tickLine1);
+                    scene->addItem(tickLine2);
+                }
+            }
+        }
+    }
+}
+
 void ATCSituationalDisplay::calculateVORs()
 {
     QVector<coord> tempVORs;
@@ -3257,8 +3461,6 @@ void ATCSituationalDisplay::calculateVORs()
 
         currentRect->setPen(pen);
         scene->addItem(currentRect);
-
-//        visibleVORs.append(airspaceData->getVOR(i));
     }
 
 //Calculate labels
@@ -3283,7 +3485,6 @@ void ATCSituationalDisplay::calculateVORs()
                              positionY + settings->VOR_LABEL_DY / currentScale);
 
         scene->addItem(currentLabel);
-//        currentVOR->setFlagVisible(true);
         currentVOR->hide();
     }
 }
@@ -3338,8 +3539,6 @@ void ATCSituationalDisplay::calculateNDBs()
 
         currentSymbol->setPen(pen);
         scene->addItem(currentSymbol);
-
-//        visibleNDBs.append(airspaceData->getNDB(i));
     }
 
 //Calculate labels
@@ -3364,7 +3563,6 @@ void ATCSituationalDisplay::calculateNDBs()
                              positionY + settings->NDB_LABEL_DY / currentScale);
 
         scene->addItem(currentLabel);
-//        currentNDB->setFlagVisible(true);
         currentNDB->hide();
     }
 }
@@ -3447,8 +3645,6 @@ void ATCSituationalDisplay::calculateSTARs()
             scene->addItem(currentSymbol);            
         }
 
-//        visibleSTARs.append(airspaceData->getSTARSymbol(i));
-//        airspaceData->getSTARSymbol(i)->setFlagVisible(true);
         airspaceData->getSTARSymbol(i)->hide();
     }
 }
@@ -3531,8 +3727,6 @@ void ATCSituationalDisplay::calculateSIDs()
             scene->addItem(currentSymbol);
         }
 
-//        visibleSIDs.append(airspaceData->getSIDSymbol(i));
-//        airspaceData->getSIDSymbol(i)->setFlagVisible(true);
         airspaceData->getSIDSymbol(i)->hide();
     }
 }
@@ -3615,8 +3809,6 @@ void ATCSituationalDisplay::calculateAirwayLow()
             scene->addItem(currentSymbol);            
         }
 
-//        visibleLowAirways.append(airspaceData->getAirwayLow(i));
-//        airspaceData->getAirwayLow(i)->setFlagVisible(true);
         airspaceData->getAirwayLow(i)->hide();
     }
 }
@@ -3699,8 +3891,6 @@ void ATCSituationalDisplay::calculateAirwayHigh()
             scene->addItem(currentSymbol);            
         }
 
-//        visibleHighAirways.append(airspaceData->getAirwayHigh(i));
-//        airspaceData->getAirwayHigh(i)->setFlagVisible(true);
         airspaceData->getAirwayHigh(i)->hide();
     }
 }
@@ -4156,6 +4346,16 @@ double ATCSituationalDisplay::rotateX(double coordX, double coordY, double angle
 double ATCSituationalDisplay::rotateY(double coordX, double coordY, double angleDeg)
 {
     return coordX * qSin(angleDeg * ATCConst::DEG_2_RAD) + coordY * qCos(angleDeg * ATCConst::DEG_2_RAD);
+}
+
+double ATCSituationalDisplay::translateToLocalX(double coordX)
+{
+    return (coordX - sectorCentreX) * scaleFactor;
+}
+
+double ATCSituationalDisplay::translateToLocalY(double coordY)
+{
+    return (-1 * (coordY - sectorCentreY) * scaleFactor);
 }
 
 void ATCSituationalDisplay::calculateSectorParameters()

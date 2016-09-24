@@ -47,7 +47,7 @@ QGeoCoordinate& ATCRunway::getStartPoint()
     return startPoint;
 }
 
-QGeoCoordinate& ATCRunway::getEndPoit()
+QGeoCoordinate& ATCRunway::getEndPoint()
 {
     return endPoint;
 }
@@ -71,4 +71,3 @@ void ATCRunway::setExtendedCentreline2(ATCRunwayExtendedCentreline *centreline)
 {
     extendedCentreline2 = centreline;
 }
-

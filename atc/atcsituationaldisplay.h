@@ -151,6 +151,7 @@ private:
     void calculateFixes();
     void calculateAirports();
     void calculateExtendedCentrelines();
+    void calculateCentrelineTicks();
     void calculateVORs();
     void calculateNDBs();
     void calculateSTARs();
@@ -166,6 +167,9 @@ private:
 
     double rotateX(double coordX, double coordY, double angleDeg);
     double rotateY(double coordX, double coordY, double angleDeg);
+
+    double translateToLocalX(double coordX);
+    double translateToLocalY(double coordY);
 
     void calculateSectorParameters();
     void connectSlots();
