@@ -2647,10 +2647,10 @@ void ATCSituationalDisplay::calculateSectorsARTCCLow()
             currentCoords2.x = airspaceData->getSectorARTCCLow(i)->getCoordsPair(j).x2;
             currentCoords2.y = airspaceData->getSectorARTCCLow(i)->getCoordsPair(j).y2;
 
-            currentCoords1.x = (currentCoords1.x - sectorCentreX) * scaleFactor;
-            currentCoords1.y = -1 * (currentCoords1.y - sectorCentreY) * scaleFactor;
-            currentCoords2.x = (currentCoords2.x - sectorCentreX) * scaleFactor;
-            currentCoords2.y = -1 * (currentCoords2.y - sectorCentreY) * scaleFactor;
+            currentCoords1.x = translateToLocalX(currentCoords1.x);
+            currentCoords1.y = translateToLocalY(currentCoords1.y);
+            currentCoords2.x = translateToLocalX(currentCoords2.x);
+            currentCoords2.y = translateToLocalY(currentCoords2.y);
 
 //TEST FOR POLYGON DATA ARRANGEMENT
             if(flagCreateNewPolygon)
@@ -2736,10 +2736,10 @@ void ATCSituationalDisplay::calculateSectorsARTCCHigh()
             currentCoords2.x = airspaceData->getSectorARTCCHigh(i)->getCoordsPair(j).x2;
             currentCoords2.y = airspaceData->getSectorARTCCHigh(i)->getCoordsPair(j).y2;
 
-            currentCoords1.x = (currentCoords1.x - sectorCentreX) * scaleFactor;
-            currentCoords1.y = -1 * (currentCoords1.y - sectorCentreY) * scaleFactor;
-            currentCoords2.x = (currentCoords2.x - sectorCentreX) * scaleFactor;
-            currentCoords2.y = -1 * (currentCoords2.y - sectorCentreY) * scaleFactor;
+            currentCoords1.x = translateToLocalX(currentCoords1.x);
+            currentCoords1.y = translateToLocalY(currentCoords1.y);
+            currentCoords2.x = translateToLocalX(currentCoords2.x);
+            currentCoords2.y = translateToLocalY(currentCoords2.y);
 
 //TEST FOR POLYGON DATA ARRANGEMENT
             if(flagCreateNewPolygon)
@@ -2824,10 +2824,10 @@ void ATCSituationalDisplay::calculateSectorsARTCC()
             currentCoords2.x = airspaceData->getSectorARTCC(i)->getCoordsPair(j).x2;
             currentCoords2.y = airspaceData->getSectorARTCC(i)->getCoordsPair(j).y2;
 
-            currentCoords1.x = (currentCoords1.x - sectorCentreX) * scaleFactor;
-            currentCoords1.y = -1 * (currentCoords1.y - sectorCentreY) * scaleFactor;
-            currentCoords2.x = (currentCoords2.x - sectorCentreX) * scaleFactor;
-            currentCoords2.y = -1 * (currentCoords2.y - sectorCentreY) * scaleFactor;
+            currentCoords1.x = translateToLocalX(currentCoords1.x);
+            currentCoords1.y = translateToLocalY(currentCoords1.y);
+            currentCoords2.x = translateToLocalX(currentCoords2.x);
+            currentCoords2.y = translateToLocalY(currentCoords2.y);
 
 //TEST FOR POLYGON DATA ARRANGEMENT
             if(flagCreateNewPolygon)
@@ -2909,8 +2909,8 @@ void ATCSituationalDisplay::calculateFixes()
 //Translate to local & scene coords
     for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
     {
-        tempFixes[i].x = (tempFixes.at(i).x - sectorCentreX) * scaleFactor;
-        tempFixes[i].y = -1 * (tempFixes.at(i).y - sectorCentreY) * scaleFactor;
+        tempFixes[i].x = translateToLocalX(tempFixes.at(i).x);
+        tempFixes[i].y = translateToLocalY(tempFixes.at(i).y);
 
         airspaceData->getFix(i)->setScenePosition(new QPointF(tempFixes.at(i).x, tempFixes.at(i).y));
     }
@@ -2999,8 +2999,8 @@ void ATCSituationalDisplay::calculateAirports()
 //Translate to local & scene coords
     for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
     {
-        tempAirports[i].x = (tempAirports.at(i).x - sectorCentreX) * scaleFactor;
-        tempAirports[i].y = -1 * (tempAirports.at(i).y - sectorCentreY) * scaleFactor;
+        tempAirports[i].x = translateToLocalX(tempAirports.at(i).x);
+        tempAirports[i].y = translateToLocalY(tempAirports.at(i).y);
 
         airspaceData->getAirport(i)->setScenePosition(new QPointF(tempAirports.at(i).x, tempAirports.at(i).y));
     }
@@ -3151,17 +3151,17 @@ void ATCSituationalDisplay::calculateExtendedCentrelines()
 //Translate to local & scene coords
     for(int i = 0; i < rwyCoords1.size(); i++)
     {
-        rwyCoords1[i].x = (rwyCoords1.at(i).x - sectorCentreX) * scaleFactor;
-        rwyCoords1[i].y = -1 * (rwyCoords1.at(i).y - sectorCentreY) * scaleFactor;
+        rwyCoords1[i].x = translateToLocalX(rwyCoords1.at(i).x);
+        rwyCoords1[i].y = translateToLocalY(rwyCoords1.at(i).y);
 
-        rwyCoords2[i].x = (rwyCoords2.at(i).x - sectorCentreX) * scaleFactor;
-        rwyCoords2[i].y = -1 * (rwyCoords2.at(i).y - sectorCentreY) * scaleFactor;
+        rwyCoords2[i].x = translateToLocalX(rwyCoords2.at(i).x);
+        rwyCoords2[i].y = translateToLocalY(rwyCoords2.at(i).y);
 
-        centrelineEnd1[i].x = (centrelineEnd1.at(i).x - sectorCentreX) * scaleFactor;
-        centrelineEnd1[i].y = -1 * (centrelineEnd1.at(i).y - sectorCentreY) * scaleFactor;
+        centrelineEnd1[i].x = translateToLocalX(centrelineEnd1.at(i).x);
+        centrelineEnd1[i].y = translateToLocalY(centrelineEnd1.at(i).y);
 
-        centrelineEnd2[i].x = (centrelineEnd2.at(i).x - sectorCentreX) * scaleFactor;
-        centrelineEnd2[i].y = -1 * (centrelineEnd2.at(i).y - sectorCentreY) * scaleFactor;
+        centrelineEnd2[i].x = translateToLocalX(centrelineEnd2.at(i).x);
+        centrelineEnd2[i].y = translateToLocalY(centrelineEnd2.at(i).y);
     }
 
 //Construct and assign symbols
@@ -3433,8 +3433,8 @@ void ATCSituationalDisplay::calculateVORs()
 //Translate to local & scene coords
     for(int i = 0; i < airspaceData->getVORsVectorSize(); i++)
     {
-        tempVORs[i].x = (tempVORs.at(i).x - sectorCentreX) * scaleFactor;
-        tempVORs[i].y = -1 * (tempVORs.at(i).y - sectorCentreY) * scaleFactor;
+        tempVORs[i].x = translateToLocalX(tempVORs.at(i).x);
+        tempVORs[i].y = translateToLocalY(tempVORs.at(i).y);
 
         airspaceData->getVOR(i)->setScenePosition(new QPointF(tempVORs.at(i).x, tempVORs.at(i).y));
     }
@@ -3514,8 +3514,8 @@ void ATCSituationalDisplay::calculateNDBs()
 //Translate to local & scene coords
     for(int i = 0; i < airspaceData->getNDBsVectorSize(); i++)
     {
-        tempNDBs[i].x = (tempNDBs.at(i).x - sectorCentreX) * scaleFactor;
-        tempNDBs[i].y = -1 * (tempNDBs.at(i).y - sectorCentreY) * scaleFactor;
+        tempNDBs[i].x = translateToLocalX(tempNDBs.at(i).x);
+        tempNDBs[i].y = translateToLocalY(tempNDBs.at(i).y);
 
         airspaceData->getNDB(i)->setScenePosition(new QPointF(tempNDBs.at(i).x, tempNDBs.at(i).y));
     }
@@ -3621,10 +3621,10 @@ void ATCSituationalDisplay::calculateSTARs()
             coord currentCoords1 = currentSegment.coords1.at(j);
             coord currentCoords2 = currentSegment.coords2.at(j);
 
-            currentCoords1.x = (currentCoords1.x - sectorCentreX) * scaleFactor;
-            currentCoords1.y = -1 * (currentCoords1.y - sectorCentreY) * scaleFactor;
-            currentCoords2.x = (currentCoords2.x - sectorCentreX) * scaleFactor;
-            currentCoords2.y = -1 * (currentCoords2.y - sectorCentreY) * scaleFactor;
+            currentCoords1.x = translateToLocalX(currentCoords1.x);
+            currentCoords1.y = translateToLocalY(currentCoords1.y);
+            currentCoords2.x = translateToLocalX(currentCoords2.x);
+            currentCoords2.y = translateToLocalY(currentCoords2.y);
 
             airspaceData->getSTARSymbol(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
                                                                              currentCoords2.x, currentCoords2.y));
@@ -3703,10 +3703,10 @@ void ATCSituationalDisplay::calculateSIDs()
             coord currentCoords1 = currentSegment.coords1.at(j);
             coord currentCoords2 = currentSegment.coords2.at(j);
 
-            currentCoords1.x = (currentCoords1.x - sectorCentreX) * scaleFactor;
-            currentCoords1.y = -1 * (currentCoords1.y - sectorCentreY) * scaleFactor;
-            currentCoords2.x = (currentCoords2.x - sectorCentreX) * scaleFactor;
-            currentCoords2.y = -1 * (currentCoords2.y - sectorCentreY) * scaleFactor;
+            currentCoords1.x = translateToLocalX(currentCoords1.x);
+            currentCoords1.y = translateToLocalY(currentCoords1.y);
+            currentCoords2.x = translateToLocalX(currentCoords2.x);
+            currentCoords2.y = translateToLocalY(currentCoords2.y);
 
             airspaceData->getSIDSymbol(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
                                                                              currentCoords2.x, currentCoords2.y));
@@ -3785,10 +3785,10 @@ void ATCSituationalDisplay::calculateAirwayLow()
             coord currentCoords1 = currentSegment.coords1.at(j);
             coord currentCoords2 = currentSegment.coords2.at(j);
 
-            currentCoords1.x = (currentCoords1.x - sectorCentreX) * scaleFactor;
-            currentCoords1.y = -1 * (currentCoords1.y - sectorCentreY) * scaleFactor;
-            currentCoords2.x = (currentCoords2.x - sectorCentreX) * scaleFactor;
-            currentCoords2.y = -1 * (currentCoords2.y - sectorCentreY) * scaleFactor;
+            currentCoords1.x = translateToLocalX(currentCoords1.x);
+            currentCoords1.y = translateToLocalY(currentCoords1.y);
+            currentCoords2.x = translateToLocalX(currentCoords2.x);
+            currentCoords2.y = translateToLocalY(currentCoords2.y);
 
             airspaceData->getAirwayLow(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
                                                                              currentCoords2.x, currentCoords2.y));
@@ -3867,10 +3867,10 @@ void ATCSituationalDisplay::calculateAirwayHigh()
             coord currentCoords1 = currentSegment.coords1.at(j);
             coord currentCoords2 = currentSegment.coords2.at(j);
 
-            currentCoords1.x = (currentCoords1.x - sectorCentreX) * scaleFactor;
-            currentCoords1.y = -1 * (currentCoords1.y - sectorCentreY) * scaleFactor;
-            currentCoords2.x = (currentCoords2.x - sectorCentreX) * scaleFactor;
-            currentCoords2.y = -1 * (currentCoords2.y - sectorCentreY) * scaleFactor;
+            currentCoords1.x = translateToLocalX(currentCoords1.x);
+            currentCoords1.y = translateToLocalY(currentCoords1.y);
+            currentCoords2.x = translateToLocalX(currentCoords2.x);
+            currentCoords2.y = translateToLocalY(currentCoords2.y);
 
             airspaceData->getAirwayHigh(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
                                                                              currentCoords2.x, currentCoords2.y));
