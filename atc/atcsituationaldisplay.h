@@ -46,7 +46,7 @@ public slots:
     void slotSetColorNDB(QColor color);
     void slotSetColorFix(QColor color);
     void slotSetColorAirport(QColor color);
-    void slotSetColorRunway(QColor color);
+    void slotSetColorCentreline(QColor color);
     void slotSetColorSTAR(QColor color);
     void slotSetColorSID(QColor color);
     void slotSetColorAirwayLow(QColor color);
@@ -59,6 +59,7 @@ public slots:
     void slotHideNDB(QString name);
     void slotHideVOR(QString name);
     void slotHideAirport(QString name);
+    void slotHideCentreline(QString name);
     void slotHideSID(QString name);
     void slotHideSTAR(QString name);
     void slotHideAirwayLow(QString name);
@@ -71,6 +72,7 @@ public slots:
     void slotShowNDB(QString name);
     void slotShowVOR(QString name);
     void slotShowAirport(QString name);
+    void slotShowCentreline(QString name);
     void slotShowSID(QString name);
     void slotShowSTAR(QString name);
     void slotShowAirwayLow(QString name);

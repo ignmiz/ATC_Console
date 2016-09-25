@@ -146,11 +146,23 @@ void ATCSituationalDisplay::exportDisplay(QString path)
     out << endl;
 
     out << "[RUNWAY]" << endl;
-//
-//
-//    TO BE IMPLEMENTED
-//
-//
+    for(int i = 0; i < visibleCentrelines.size(); i++)
+    {
+        for(int j = 0; j < airspaceData->getAirportsVectorSize(); j++)
+        {
+            for(int k = 0; k < airspaceData->getAirport(j)->getRunwayVectorSize(); k++)
+            {
+                if(airspaceData->getAirport(j)->getRunway(k)->getExtendedCentreline1() == visibleCentrelines.at(i))
+                {
+                    out << airspaceData->getAirport(j)->getName() << " " << airspaceData->getAirport(j)->getRunway(k)->getRunwayID1() << endl;
+                }
+                else if(airspaceData->getAirport(j)->getRunway(k)->getExtendedCentreline2() == visibleCentrelines.at(i))
+                {
+                    out << airspaceData->getAirport(j)->getName() << " " << airspaceData->getAirport(j)->getRunway(k)->getRunwayID2() << endl;
+                }
+            }
+        }
+    }
     out << endl;
 
     out << "[STAR]" << endl;
@@ -239,7 +251,7 @@ void ATCSituationalDisplay::slotSetColorAirport(QColor color)
     }
 }
 
-void ATCSituationalDisplay::slotSetColorRunway(QColor color)
+void ATCSituationalDisplay::slotSetColorCentreline(QColor color)
 {
     for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
     {
@@ -357,6 +369,22 @@ void ATCSituationalDisplay::slotHideAirport(QString name)
     {
         current->hide();
         removeFromVisible(current, visibleAirports);
+    }
+}
+
+void ATCSituationalDisplay::slotHideCentreline(QString name)
+{
+    QStringList stringList = name.split(" ", QString::SkipEmptyParts);
+
+    QString airportName = stringList.at(0);
+    QString rwyID = stringList.at(1);
+
+    ATCRunwayExtendedCentreline *current = airspaceData->findCentreline(airportName, rwyID);
+
+    if(current != nullptr)
+    {
+        current->hide();
+        removeFromVisible(current, visibleCentrelines);
     }
 }
 
@@ -485,6 +513,23 @@ void ATCSituationalDisplay::slotShowAirport(QString name)
         current->show();
         visibleAirports.append(current);
         rescaleAirport(current);
+    }
+}
+
+void ATCSituationalDisplay::slotShowCentreline(QString name)
+{
+    QStringList stringList = name.split(" ", QString::SkipEmptyParts);
+
+    QString airportName = stringList.at(0);
+    QString rwyID = stringList.at(1);
+
+    ATCRunwayExtendedCentreline *current = airspaceData->findCentreline(airportName, rwyID);
+
+    if(current != nullptr)
+    {
+        current->show();
+        visibleCentrelines.append(current);
+        rescaleExtendedCentreline(current);
     }
 }
 
@@ -3205,9 +3250,6 @@ void ATCSituationalDisplay::calculateExtendedCentrelines()
 
                 scene->addItem(currentCentreline1->getCentreline());
                 scene->addItem(currentCentreline2->getCentreline());
-
-                visibleCentrelines.append(currentCentreline1);
-                visibleCentrelines.append(currentCentreline2);
             }
         }
     }
@@ -3403,6 +3445,9 @@ void ATCSituationalDisplay::calculateCentrelineTicks()
                     scene->addItem(tickLine1);
                     scene->addItem(tickLine2);
                 }
+
+                current->getExtendedCentreline1()->hide();
+                current->getExtendedCentreline2()->hide();
             }
         }
     }
@@ -3914,7 +3959,7 @@ void ATCSituationalDisplay::hideAll()
 
     for(int i = 0; i < visibleCentrelines.size(); i++)
     {
-        //TO BE IMPLEMENTED
+        visibleCentrelines.at(i)->hide();
     }
 
     for(int i = 0; i < visibleFixes.size(); i++)
@@ -3960,7 +4005,7 @@ void ATCSituationalDisplay::hideAll()
     visibleSectorsARTCCLow.clear();
     visibleSectorsARTCCHigh.clear();
     visibleSectorsARTCC.clear();
-//    visibleCentrelines.clear();
+    visibleCentrelines.clear();
     visibleFixes.clear();
     visibleAirports.clear();
     visibleVORs.clear();
@@ -4301,7 +4346,7 @@ void ATCSituationalDisplay::interpretDisplayFile(QString path)
             }
             else if(flagRunway)
             {
-                //TO BE IMPLEMENTED
+                slotShowCentreline(textLine);
             }
             else if(flagSTAR)
             {
@@ -4489,7 +4534,7 @@ void ATCSituationalDisplay::connectSlots()
     connect(settings, SIGNAL(signalColorNDB(QColor)), this, SLOT(slotSetColorNDB(QColor)));
     connect(settings, SIGNAL(signalColorFix(QColor)), this, SLOT(slotSetColorFix(QColor)));
     connect(settings, SIGNAL(signalColorAirport(QColor)), this, SLOT(slotSetColorAirport(QColor)));
-    connect(settings, SIGNAL(signalColorRunway(QColor)), this, SLOT(slotSetColorRunway(QColor)));
+    connect(settings, SIGNAL(signalColorCentreline(QColor)), this, SLOT(slotSetColorCentreline(QColor)));
     connect(settings, SIGNAL(signalColorSTAR(QColor)), this, SLOT(slotSetColorSTAR(QColor)));
     connect(settings, SIGNAL(signalColorSID(QColor)), this, SLOT(slotSetColorSID(QColor)));
     connect(settings, SIGNAL(signalColorAirwayLow(QColor)), this, SLOT(slotSetColorAirwayLow(QColor)));

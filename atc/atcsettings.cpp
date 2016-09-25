@@ -678,7 +678,7 @@ void ATCSettings::loadSymbology(QString path)
     emit signalColorNDB(NDB_COLOR);
     emit signalColorFix(FIX_COLOR);
     emit signalColorAirport(AIRPORT_COLOR);
-    emit signalColorRunway(RUNWAY_COLOR);
+    emit signalColorCentreline(RUNWAY_COLOR);
     emit signalColorSTAR(STAR_COLOR);
     emit signalColorSID(SID_COLOR);
     emit signalColorAirwayLow(AIRWAY_LOW_COLOR);

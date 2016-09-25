@@ -112,6 +112,7 @@ public:
     ATCSectorARTCCHigh* findSectorARTCCHigh(QString name);
     ATCSectorARTCC* findSectorARTCC(QString name);
     ATCAirport* findAirport(QString ICAOname);
+    ATCRunwayExtendedCentreline* findCentreline(QString airportName, QString rwyID);
     ATCNavFix* findFix(QString fixName);
     ATCBeaconVOR* findVOR(QString name);
     ATCBeaconNDB* findNDB(QString name);

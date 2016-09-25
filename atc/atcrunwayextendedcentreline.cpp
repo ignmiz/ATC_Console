@@ -74,7 +74,7 @@ void ATCRunwayExtendedCentreline::hide()
         ticks.at(i)->hide();
     }
 
-    visible = true;
+    visible = false;
 }
 
 bool ATCRunwayExtendedCentreline::isVisible()

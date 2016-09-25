@@ -106,7 +106,7 @@ void DialogSettings::slotUpdateTableColorAirport(QColor color)
     situationalDisplay->getSettings()->AIRPORT_COLOR = color;
 }
 
-void DialogSettings::slotUpdateTableColorRunway(QColor color)
+void DialogSettings::slotUpdateTableColorCentreline(QColor color)
 {
     QBrush brush(color);
     modelSymbology->item(7, 1)->setBackground(brush);
@@ -204,12 +204,12 @@ void DialogSettings::onViewSymbologyClicked(const QModelIndex &index)
         connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorAirport(QColor)));
         connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateTableColorAirport(QColor)));
     }
-    else if((value.toString() == "Runways Color") && !flagDialogColorPickerExists)
+    else if((value.toString() == "Extended Centrelines Color") && !flagDialogColorPickerExists)
     {
         constructColorPicker(situationalDisplay->getSettings()->RUNWAY_COLOR);
 
-        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorRunway(QColor)));
-        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateTableColorRunway(QColor)));
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), situationalDisplay, SLOT(slotSetColorCentreline(QColor)));
+        connect(dialogColorPicker, SIGNAL(colorSelected(QColor)), this, SLOT(slotUpdateTableColorCentreline(QColor)));
     }
     else if((value.toString() == "STARs Color") && !flagDialogColorPickerExists)
     {
@@ -302,6 +302,11 @@ void DialogSettings::onViewDisplayClicked(const QModelIndex &index)
                 emit signalHideAirport(childName);
                 decrementChildCounter(visibleAirports, nameHeaderItem, checkboxHeaderItem);
             }
+            else if(headerName == "Extended Centrelines")
+            {
+                emit signalHideCentreline(childName);
+                decrementChildCounter(visibleCentrelines, nameHeaderItem, checkboxHeaderItem);
+            }
             else if(headerName == "Procedures: SID")
             {
                 emit signalHideSID(childName);
@@ -361,6 +366,11 @@ void DialogSettings::onViewDisplayClicked(const QModelIndex &index)
             {
                 emit signalShowAirport(childName);
                 incrementChildCounter(visibleAirports, nameHeaderItem, checkboxHeaderItem);
+            }
+            else if(headerName == "Extended Centrelines")
+            {
+                emit signalShowCentreline(childName);
+                incrementChildCounter(visibleCentrelines, nameHeaderItem, checkboxHeaderItem);
             }
             else if(headerName == "Procedures: SID")
             {
@@ -441,6 +451,10 @@ void DialogSettings::slotHeaderStateChanged(QStandardItem *item)
             {
                 emit signalHideAirport(childName);
             }
+            else if(headerName == "Extended Centrelines")
+            {
+                emit signalHideCentreline(childName);
+            }
             else if(headerName == "Procedures: SID")
             {
                 emit signalHideSID(childName);
@@ -488,6 +502,10 @@ void DialogSettings::slotHeaderStateChanged(QStandardItem *item)
         else if(headerName == "Airports")
         {
             visibleAirports = 0;
+        }
+        else if(headerName == "Extended Centrelines")
+        {
+            visibleCentrelines = 0;
         }
         else if(headerName == "Procedures: SID")
         {
@@ -547,6 +565,10 @@ void DialogSettings::slotHeaderStateChanged(QStandardItem *item)
             {
                 emit signalShowAirport(childName);
             }
+            else if(headerName == "Extended Centrelines")
+            {
+                emit signalShowCentreline(childName);
+            }
             else if(headerName == "Procedures: SID")
             {
                 emit signalShowSID(childName);
@@ -594,6 +616,10 @@ void DialogSettings::slotHeaderStateChanged(QStandardItem *item)
         else if(headerName == "Airports")
         {
             visibleAirports = childrenCount;
+        }
+        else if(headerName == "Extended Centrelines")
+        {
+            visibleCentrelines = childrenCount;
         }
         else if(headerName == "Procedures: SID")
         {
@@ -674,7 +700,7 @@ void DialogSettings::on_buttonLoadDisplay_clicked()
     visibleSectorsARTCCLow = 0;
     visibleSectorsARTCCHigh = 0;
     visibleSectorsARTCC = 0;
-//    visibleCentrelines = 0;
+    visibleCentrelines = 0;
     visibleFixes = 0;
     visibleNDBs = 0;
     visibleVORs = 0;
@@ -743,7 +769,7 @@ void DialogSettings::createModelSymbology()
     modelSymbology->appendRow(createSymbologyRow("NDBs", situationalDisplay->getSettings()->NDB_COLOR));
     modelSymbology->appendRow(createSymbologyRow("Fixes", situationalDisplay->getSettings()->FIX_COLOR));
     modelSymbology->appendRow(createSymbologyRow("Airports", situationalDisplay->getSettings()->AIRPORT_COLOR));
-    modelSymbology->appendRow(createSymbologyRow("Runways", situationalDisplay->getSettings()->RUNWAY_COLOR));
+    modelSymbology->appendRow(createSymbologyRow("Extended Centrelines", situationalDisplay->getSettings()->RUNWAY_COLOR));
     modelSymbology->appendRow(createSymbologyRow("STARs", situationalDisplay->getSettings()->STAR_COLOR));
     modelSymbology->appendRow(createSymbologyRow("SIDs", situationalDisplay->getSettings()->SID_COLOR));
     modelSymbology->appendRow(createSymbologyRow("Low Airways", situationalDisplay->getSettings()->AIRWAY_LOW_COLOR));
@@ -763,6 +789,7 @@ void DialogSettings::createModelDisplay()
     populateModelDisplay("Beacons: NDB", airspaceData->getNDBsVector(), visibleNDBs, modelDisplay);
     populateModelDisplay("Beacons: VOR", airspaceData->getVORsVector(), visibleVORs, modelDisplay);
     populateModelDisplay("Airports", airspaceData->getAirportsVector(), visibleAirports, modelDisplay);
+    populateModelDisplayCentrelines("Extended Centrelines", airspaceData->getAirportsVector(), visibleCentrelines, modelDisplay);
     populateModelDisplay("Procedures: SID", airspaceData->getSIDSymbolsVector(), visibleSIDSymbols, modelDisplay);
     populateModelDisplay("Procedures: STAR", airspaceData->getSTARSymbolsVector(), visibleSTARSymbols, modelDisplay);
     populateModelDisplay("Airways: Low", airspaceData->getAirwayLowVector(), visibleAirwaysLow, modelDisplay);
@@ -781,7 +808,7 @@ void DialogSettings::connectSlots()
     connect(situationalDisplay->getSettings(), SIGNAL(signalColorNDB(QColor)), this, SLOT(slotUpdateTableColorNDB(QColor)));
     connect(situationalDisplay->getSettings(), SIGNAL(signalColorFix(QColor)), this, SLOT(slotUpdateTableColorFix(QColor)));
     connect(situationalDisplay->getSettings(), SIGNAL(signalColorAirport(QColor)), this, SLOT(slotUpdateTableColorAirport(QColor)));
-    connect(situationalDisplay->getSettings(), SIGNAL(signalColorRunway(QColor)), this, SLOT(slotUpdateTableColorRunway(QColor)));
+    connect(situationalDisplay->getSettings(), SIGNAL(signalColorCentreline(QColor)), this, SLOT(slotUpdateTableColorCentreline(QColor)));
     connect(situationalDisplay->getSettings(), SIGNAL(signalColorSTAR(QColor)), this, SLOT(slotUpdateTableColorSTAR(QColor)));
     connect(situationalDisplay->getSettings(), SIGNAL(signalColorSID(QColor)), this, SLOT(slotUpdateTableColorSID(QColor)));
     connect(situationalDisplay->getSettings(), SIGNAL(signalColorAirwayLow(QColor)), this, SLOT(slotUpdateTableColorAirwayLow(QColor)));
@@ -796,6 +823,7 @@ void DialogSettings::connectSlots()
     connect(this, SIGNAL(signalHideNDB(QString)), situationalDisplay, SLOT(slotHideNDB(QString)));
     connect(this, SIGNAL(signalHideVOR(QString)), situationalDisplay, SLOT(slotHideVOR(QString)));
     connect(this, SIGNAL(signalHideAirport(QString)), situationalDisplay, SLOT(slotHideAirport(QString)));
+    connect(this, SIGNAL(signalHideCentreline(QString)), situationalDisplay, SLOT(slotHideCentreline(QString)));
     connect(this, SIGNAL(signalHideSID(QString)), situationalDisplay, SLOT(slotHideSID(QString)));
     connect(this, SIGNAL(signalHideSTAR(QString)), situationalDisplay, SLOT(slotHideSTAR(QString)));
     connect(this, SIGNAL(signalHideAirwayLow(QString)), situationalDisplay, SLOT(slotHideAirwayLow(QString)));
@@ -808,6 +836,7 @@ void DialogSettings::connectSlots()
     connect(this, SIGNAL(signalShowNDB(QString)), situationalDisplay, SLOT(slotShowNDB(QString)));
     connect(this, SIGNAL(signalShowVOR(QString)), situationalDisplay, SLOT(slotShowVOR(QString)));
     connect(this, SIGNAL(signalShowAirport(QString)), situationalDisplay, SLOT(slotShowAirport(QString)));
+    connect(this, SIGNAL(signalShowCentreline(QString)), situationalDisplay, SLOT(slotShowCentreline(QString)));
     connect(this, SIGNAL(signalShowSID(QString)), situationalDisplay, SLOT(slotShowSID(QString)));
     connect(this, SIGNAL(signalShowSTAR(QString)), situationalDisplay, SLOT(slotShowSTAR(QString)));
     connect(this, SIGNAL(signalShowAirwayLow(QString)), situationalDisplay, SLOT(slotShowAirwayLow(QString)));
@@ -932,6 +961,46 @@ template<class T> void DialogSettings::populateModelDisplay(QString headerName, 
     }
 
     if((vector.size() == counter) && (counter != 0))
+    {
+        categoryHeader.at(1)->setCheckState(Qt::Checked);
+    }
+    else if(counter == 0)
+    {
+        categoryHeader.at(1)->setCheckState(Qt::Unchecked);
+    }
+    else
+    {
+        categoryHeader.at(1)->setCheckState(Qt::PartiallyChecked);
+    }
+
+    model->appendRow(categoryHeader);
+}
+
+void DialogSettings::populateModelDisplayCentrelines(QString headerName, const QVector<ATCAirport *> &vector, int &counter, QStandardItemModel *model)
+{
+    QList<QStandardItem*> categoryHeader(createDisplayHeader(headerName));
+
+    int centrelinesCounter = 0;
+
+    for(int i = 0; i < vector.size(); i++)
+    {
+        for(int j = 0; j < vector.at(i)->getRunwayVectorSize(); j++)
+        {
+            ATCAirport *airport(vector.at(i));
+            ATCRunway *runway(vector.at(i)->getRunway(j));
+
+            QString airportName(airport->getName());
+            QString rwyID1(runway->getRunwayID1());
+            QString rwyID2(runway->getRunwayID2());
+
+            categoryHeader.at(0)->appendRow(createDisplayRow(airportName + " " + rwyID1, runway->getExtendedCentreline1()->isVisible(), counter));
+            categoryHeader.at(0)->appendRow(createDisplayRow(airportName + " " + rwyID2, runway->getExtendedCentreline2()->isVisible(), counter));
+
+            centrelinesCounter += 2;
+        }
+    }
+
+    if((centrelinesCounter == counter) && (counter != 0))
     {
         categoryHeader.at(1)->setCheckState(Qt::Checked);
     }

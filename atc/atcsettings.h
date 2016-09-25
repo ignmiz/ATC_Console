@@ -100,7 +100,7 @@ signals:
     void signalColorNDB(const QColor &color);
     void signalColorFix(const QColor &color);
     void signalColorAirport(const QColor &color);
-    void signalColorRunway(const QColor &color);
+    void signalColorCentreline(const QColor &color);
     void signalColorSTAR(const QColor &color);
     void signalColorSID(const QColor &color);
     void signalColorAirwayLow(const QColor &color);

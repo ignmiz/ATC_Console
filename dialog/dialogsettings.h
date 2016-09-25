@@ -30,6 +30,7 @@ signals:
     void signalHideNDB(QString);
     void signalHideVOR(QString);
     void signalHideAirport(QString);
+    void signalHideCentreline(QString);
     void signalHideSID(QString);
     void signalHideSTAR(QString);
     void signalHideAirwayLow(QString);
@@ -42,6 +43,7 @@ signals:
     void signalShowNDB(QString);
     void signalShowVOR(QString);
     void signalShowAirport(QString);
+    void signalShowCentreline(QString);
     void signalShowSID(QString);
     void signalShowSTAR(QString);
     void signalShowAirwayLow(QString);
@@ -59,7 +61,7 @@ private slots:
     void slotUpdateTableColorNDB(QColor color);
     void slotUpdateTableColorFix(QColor color);
     void slotUpdateTableColorAirport(QColor color);
-    void slotUpdateTableColorRunway(QColor color);
+    void slotUpdateTableColorCentreline(QColor color);
     void slotUpdateTableColorSTAR(QColor color);
     void slotUpdateTableColorSID(QColor color);
     void slotUpdateTableColorAirwayLow(QColor color);
@@ -88,7 +90,7 @@ private:
     int visibleSectorsARTCCLow = 0;
     int visibleSectorsARTCCHigh = 0;
     int visibleSectorsARTCC = 0;
-//    int visibleCentrelines = 0;
+    int visibleCentrelines = 0;
     int visibleFixes = 0;
     int visibleNDBs = 0;
     int visibleVORs = 0;
@@ -115,6 +117,7 @@ private:
     QList<QStandardItem*> createDisplayRow(QString text, bool checked, int &counter);
 
     template<class T> void populateModelDisplay(QString headerName, QVector<T*> const &vector, int &counter, QStandardItemModel *model);
+    void populateModelDisplayCentrelines(QString headerName, QVector<ATCAirport*> const &vector, int &counter, QStandardItemModel *model);
 
     void decrementChildCounter(int &counter, QStandardItem *headerName, QStandardItem *headerCheckbox);
     void incrementChildCounter(int &counter, QStandardItem *headerName, QStandardItem *headerCheckbox);
