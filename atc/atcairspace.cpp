@@ -3,7 +3,7 @@
 
 ATCAirspace::ATCAirspace()
 {
-
+    loadData();
 }
 
 ATCAirspace::~ATCAirspace()
@@ -864,4 +864,1387 @@ void ATCAirspace::deleteAllAirwayHigh()
     {
         qDebug() << "Empty vector of high airways...";
     }
+}
+
+void ATCAirspace::loadData()
+{
+//Load sectorfiles from ESE
+    QFile eseFile("E:/Qt/ATC_Console/ATC_Console/config/EPWW_175_20160428.ese");
+
+    if(!eseFile.open(QFile::ReadOnly | QFile::Text))
+    {
+        qDebug() << "Error while opening ese file...";
+        return;
+    }
+
+    QTextStream eseStream(&eseFile);
+    while(!eseStream.atEnd())
+    {
+        QString textLine = eseStream.readLine();
+        textLine = textLine.trimmed();
+
+        if(textLine.isEmpty() || (textLine.at(0) == ';'))
+        {
+        }
+        else
+        {
+            if(textLine.contains("SECTORLINE", Qt::CaseInsensitive))
+            {
+                QStringList stringList = textLine.split(":", QString::SkipEmptyParts);
+                QString sectorName = stringList.at(1);
+
+                appendSector(new ATCAirspaceSector(sectorName));
+                qDebug() << "Sector " + sectorName + " appended...";
+            }
+            else if(textLine.contains("COORD", Qt::CaseInsensitive))
+            {
+                QStringList stringList = textLine.split(":", QString::SkipEmptyParts);
+                QString latitudeString = stringList.at(1);
+                QString longitudeString = stringList.at(2).left(14);
+
+                double latitudeDouble = coordsStringToDouble(latitudeString);
+                double longitudeDouble = coordsStringToDouble(longitudeString);
+
+                getLastSector()->appendAirspaceFix(new ATCAirspaceFix(latitudeDouble, longitudeDouble));
+            }
+        }
+    }
+
+    eseFile.close();
+
+//Load VORs, NDBs, fixes, airports and runways from SCT
+    QFile sctFile("E:/Qt/ATC_Console/ATC_Console/config/EPWW_175_20160428.sct");
+
+    if(!sctFile.open(QFile::ReadOnly | QFile::Text))
+    {
+        qDebug() << "Error opening sct file...";
+        return;
+    }
+
+    bool flagARTCCLow = false;
+    bool flagARTCCHigh = false;
+    bool flagARTCC = false;
+    bool flagVOR = false;
+    bool flagNDB = false;
+    bool flagFixes = false;
+    bool flagAirport = false;
+    bool flagRunway = false;
+    bool flagSTAR = false;
+    bool flagSID = false;
+    bool flagLowAirway = false;
+    bool flagHighAirway = false;
+
+    ATCSectorARTCCLow *tempARTCCLow;
+    ATCSectorARTCCHigh *tempARTCCHigh;
+    ATCSectorARTCC *tempARTCC;
+
+    QTextStream sctStream(&sctFile);
+    while(!sctStream.atEnd())
+    {
+        QString textLine = sctStream.readLine();
+        textLine = textLine.trimmed();
+
+        if(textLine.isEmpty() || (textLine.at(0) == ';'))
+        {
+        }
+        else
+        {
+            if(textLine.contains("[ARTCC LOW]", Qt::CaseInsensitive))
+            {
+                flagARTCCLow = true;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+
+                qDebug() << "ARTCC LOW:";
+            }
+            if(textLine.contains("[ARTCC HIGH]", Qt::CaseInsensitive))
+            {
+                flagARTCCLow = false;
+                flagARTCCHigh = true;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+
+                qDebug() << "ARTCC HIGH:";
+            }
+            if(textLine.contains("[ARTCC]", Qt::CaseInsensitive))
+            {
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = true;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+
+                qDebug() << "ARTCC:";
+            }
+            else if(textLine.contains("[VOR]", Qt::CaseInsensitive))
+            {
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = true;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+
+                qDebug() << "VORs:";
+            }
+            else if(textLine.contains("[NDB]", Qt::CaseInsensitive))
+            {
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = true;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+
+                qDebug() << "NDBs:";
+            }
+            else if(textLine.contains("[FIXES]", Qt::CaseInsensitive))
+            {
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = true;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+
+                qDebug() << "Fixes:";
+            }
+            else if(textLine.contains("[AIRPORT]", Qt::CaseInsensitive))
+            {
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = true;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+
+                qDebug() << "Airports:";
+            }
+            else if(textLine.contains("[RUNWAY]", Qt::CaseInsensitive))
+            {
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = true;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+
+                qDebug() << "Runways:";
+            }
+            else if(textLine.contains("[STAR]", Qt::CaseInsensitive))
+            {
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = true;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+
+                qDebug() << "STAR Symbols:";
+            }
+            else if(textLine.contains("[SID]", Qt::CaseInsensitive))
+            {
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = true;
+                flagLowAirway = false;
+                flagHighAirway = false;
+
+                qDebug() << "SID Symbols:";
+            }
+            else if(textLine.contains("[LOW AIRWAY]", Qt::CaseInsensitive))
+            {
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = true;
+                flagHighAirway = false;
+
+                qDebug() << "Low Airways:";
+            }
+            else if(textLine.contains("[HIGH AIRWAY]", Qt::CaseInsensitive))
+            {
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = true;
+
+                qDebug() << "High Airways:";
+            }
+            else if(flagARTCCLow)
+            {
+                textLine = textLine.split(";", QString::SkipEmptyParts).at(0);
+                textLine = textLine.trimmed();
+
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+                int size = stringList.size();
+
+                int iterator = 0;
+                bool coordsFound = false;
+
+                for(int i = 0; i < size - 3; i++)
+                {
+                    if((isValidCoordsFormat(stringList.at(i)) || isValidNavaid(stringList.at(i))) &&
+                            (isValidCoordsFormat(stringList.at(i + 1)) || isValidNavaid(stringList.at(i + 1))) &&
+                            (isValidCoordsFormat(stringList.at(i + 2)) || isValidNavaid(stringList.at(i + 2))) &&
+                            (isValidCoordsFormat(stringList.at(i + 3)) || isValidNavaid(stringList.at(i + 3))))
+                    {
+                        iterator = i;
+                        coordsFound = true;
+                    }
+                }
+
+                if(iterator != 0 && coordsFound)
+                {
+                    QString name(stringList.at(0));
+
+                    for(int i = 1; i < iterator; i++)
+                    {
+                        name = name + " " + stringList.at(i);
+                    }
+
+                    QString lat1String = stringList.at(iterator);
+                    QString lon1String = stringList.at(iterator + 1);
+                    QString lat2String = stringList.at(iterator + 2);
+                    QString lon2String = stringList.at(iterator + 3);
+
+                    double lat1;
+                    double lon1;
+                    double lat2;
+                    double lon2;
+
+                    if(isValidCoordsFormat(lat1String))
+                    {
+                        lat1 = coordsStringToDouble(lat1String);
+                    }
+                    else
+                    {
+                        lat1 = getNavaidLatitude(lat1String);
+                    }
+
+                    if(isValidCoordsFormat(lon1String))
+                    {
+                        lon1 = coordsStringToDouble(lon1String);
+                    }
+                    else
+                    {
+                        lon1 = getNavaidLongitude(lon1String);
+                    }
+
+                    if(isValidCoordsFormat(lat2String))
+                    {
+                        lat2 = coordsStringToDouble(lat2String);
+                    }
+                    else
+                    {
+                        lat2 = getNavaidLatitude(lat2String);
+                    }
+
+                    if(isValidCoordsFormat(lon2String))
+                    {
+                        lon2 = coordsStringToDouble(lon2String);
+                    }
+                    else
+                    {
+                        lon2 = getNavaidLongitude(lon2String);
+                    }
+
+                    ATCSectorARTCCLow *currentObject = findSectorARTCCLow(name);
+
+                    if(currentObject == nullptr)
+                    {
+                        currentObject = new ATCSectorARTCCLow(name);
+                        currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                        currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                        tempARTCCLow = currentObject;
+
+                        appendSectorARTCCLow(currentObject);
+
+                        qDebug() << "Sector ARTCC Low:" << currentObject->getName() << "appended...";
+                    }
+                    else
+                    {
+                        currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                        currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                        tempARTCCLow = currentObject;
+                    }
+                }
+                else if((iterator == 0) && coordsFound)
+                {
+                    QString lat1String = stringList.at(0);
+                    QString lon1String = stringList.at(1);
+                    QString lat2String = stringList.at(2);
+                    QString lon2String = stringList.at(3);
+
+                    double lat1;
+                    double lon1;
+                    double lat2;
+                    double lon2;
+
+                    if(isValidCoordsFormat(lat1String))
+                    {
+                        lat1 = coordsStringToDouble(lat1String);
+                    }
+                    else
+                    {
+                        lat1 = getNavaidLatitude(lat1String);
+                    }
+
+                    if(isValidCoordsFormat(lon1String))
+                    {
+                        lon1 = coordsStringToDouble(lon1String);
+                    }
+                    else
+                    {
+                        lon1 = getNavaidLongitude(lon1String);
+                    }
+
+                    if(isValidCoordsFormat(lat2String))
+                    {
+                        lat2 = coordsStringToDouble(lat2String);
+                    }
+                    else
+                    {
+                        lat2 = getNavaidLatitude(lat2String);
+                    }
+
+                    if(isValidCoordsFormat(lon2String))
+                    {
+                        lon2 = coordsStringToDouble(lon2String);
+                    }
+                    else
+                    {
+                        lon2 = getNavaidLongitude(lon2String);
+                    }
+
+                    tempARTCCLow->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                    tempARTCCLow->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                }
+            }
+            else if(flagARTCCHigh)
+            {
+                textLine = textLine.split(";", QString::SkipEmptyParts).at(0);
+                textLine = textLine.trimmed();
+
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+                int size = stringList.size();
+
+                int iterator = 0;
+                bool coordsFound = false;
+
+                for(int i = 0; i < size - 3; i++)
+                {
+                    if((isValidCoordsFormat(stringList.at(i)) || isValidNavaid(stringList.at(i))) &&
+                            (isValidCoordsFormat(stringList.at(i + 1)) || isValidNavaid(stringList.at(i + 1))) &&
+                            (isValidCoordsFormat(stringList.at(i + 2)) || isValidNavaid(stringList.at(i + 2))) &&
+                            (isValidCoordsFormat(stringList.at(i + 3)) || isValidNavaid(stringList.at(i + 3))))
+                    {
+                        iterator = i;
+                        coordsFound = true;
+                    }
+                }
+
+                if(iterator != 0 && coordsFound)
+                {
+                    QString name(stringList.at(0));
+
+                    for(int i = 1; i < iterator; i++)
+                    {
+                        name = name + " " + stringList.at(i);
+                    }
+
+                    QString lat1String = stringList.at(iterator);
+                    QString lon1String = stringList.at(iterator + 1);
+                    QString lat2String = stringList.at(iterator + 2);
+                    QString lon2String = stringList.at(iterator + 3);
+
+                    double lat1;
+                    double lon1;
+                    double lat2;
+                    double lon2;
+
+                    if(isValidCoordsFormat(lat1String))
+                    {
+                        lat1 = coordsStringToDouble(lat1String);
+                    }
+                    else
+                    {
+                        lat1 = getNavaidLatitude(lat1String);
+                    }
+
+                    if(isValidCoordsFormat(lon1String))
+                    {
+                        lon1 = coordsStringToDouble(lon1String);
+                    }
+                    else
+                    {
+                        lon1 = getNavaidLongitude(lon1String);
+                    }
+
+                    if(isValidCoordsFormat(lat2String))
+                    {
+                        lat2 = coordsStringToDouble(lat2String);
+                    }
+                    else
+                    {
+                        lat2 = getNavaidLatitude(lat2String);
+                    }
+
+                    if(isValidCoordsFormat(lon2String))
+                    {
+                        lon2 = coordsStringToDouble(lon2String);
+                    }
+                    else
+                    {
+                        lon2 = getNavaidLongitude(lon2String);
+                    }
+
+                    ATCSectorARTCCHigh *currentObject = findSectorARTCCHigh(name);
+
+                    if(currentObject == nullptr)
+                    {
+                        currentObject = new ATCSectorARTCCHigh(name);
+                        currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                        currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                        tempARTCCHigh = currentObject;
+
+                        appendSectorARTCCHigh(currentObject);
+
+                        qDebug() << "Sector ARTCC High:" << currentObject->getName() << "appended...";
+                    }
+                    else
+                    {
+                        currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                        currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                        tempARTCCHigh = currentObject;
+                    }
+                }
+                else if((iterator == 0) && coordsFound)
+                {
+                    QString lat1String = stringList.at(0);
+                    QString lon1String = stringList.at(1);
+                    QString lat2String = stringList.at(2);
+                    QString lon2String = stringList.at(3);
+
+                    double lat1;
+                    double lon1;
+                    double lat2;
+                    double lon2;
+
+                    if(isValidCoordsFormat(lat1String))
+                    {
+                        lat1 = coordsStringToDouble(lat1String);
+                    }
+                    else
+                    {
+                        lat1 = getNavaidLatitude(lat1String);
+                    }
+
+                    if(isValidCoordsFormat(lon1String))
+                    {
+                        lon1 = coordsStringToDouble(lon1String);
+                    }
+                    else
+                    {
+                        lon1 = getNavaidLongitude(lon1String);
+                    }
+
+                    if(isValidCoordsFormat(lat2String))
+                    {
+                        lat2 = coordsStringToDouble(lat2String);
+                    }
+                    else
+                    {
+                        lat2 = getNavaidLatitude(lat2String);
+                    }
+
+                    if(isValidCoordsFormat(lon2String))
+                    {
+                        lon2 = coordsStringToDouble(lon2String);
+                    }
+                    else
+                    {
+                        lon2 = getNavaidLongitude(lon2String);
+                    }
+
+                    tempARTCCHigh->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                    tempARTCCHigh->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                }
+            }
+            else if(flagARTCC)
+            {
+                textLine = textLine.split(";", QString::SkipEmptyParts).at(0);
+                textLine = textLine.trimmed();
+
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+                int size = stringList.size();
+
+                int iterator = 0;
+                bool coordsFound = false;
+
+                for(int i = 0; i < size - 3; i++)
+                {
+                    if((isValidCoordsFormat(stringList.at(i)) || isValidNavaid(stringList.at(i))) &&
+                            (isValidCoordsFormat(stringList.at(i + 1)) || isValidNavaid(stringList.at(i + 1))) &&
+                            (isValidCoordsFormat(stringList.at(i + 2)) || isValidNavaid(stringList.at(i + 2))) &&
+                            (isValidCoordsFormat(stringList.at(i + 3)) || isValidNavaid(stringList.at(i + 3))))
+                    {
+                        iterator = i;
+                        coordsFound = true;
+                    }
+                }
+
+                if(iterator != 0 && coordsFound)
+                {
+                    QString name(stringList.at(0));
+
+                    for(int i = 1; i < iterator; i++)
+                    {
+                        name = name + " " + stringList.at(i);
+                    }
+
+                    QString lat1String = stringList.at(iterator);
+                    QString lon1String = stringList.at(iterator + 1);
+                    QString lat2String = stringList.at(iterator + 2);
+                    QString lon2String = stringList.at(iterator + 3);
+
+                    double lat1;
+                    double lon1;
+                    double lat2;
+                    double lon2;
+
+                    if(isValidCoordsFormat(lat1String))
+                    {
+                        lat1 = coordsStringToDouble(lat1String);
+                    }
+                    else
+                    {
+                        lat1 = getNavaidLatitude(lat1String);
+                    }
+
+                    if(isValidCoordsFormat(lon1String))
+                    {
+                        lon1 = coordsStringToDouble(lon1String);
+                    }
+                    else
+                    {
+                        lon1 = getNavaidLongitude(lon1String);
+                    }
+
+                    if(isValidCoordsFormat(lat2String))
+                    {
+                        lat2 = coordsStringToDouble(lat2String);
+                    }
+                    else
+                    {
+                        lat2 = getNavaidLatitude(lat2String);
+                    }
+
+                    if(isValidCoordsFormat(lon2String))
+                    {
+                        lon2 = coordsStringToDouble(lon2String);
+                    }
+                    else
+                    {
+                        lon2 = getNavaidLongitude(lon2String);
+                    }
+
+                    ATCSectorARTCC *currentObject = findSectorARTCC(name);
+
+                    if(currentObject == nullptr)
+                    {
+                        currentObject = new ATCSectorARTCC(name);
+                        currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                        currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                        tempARTCC = currentObject;
+
+                        appendSectorARTCC(currentObject);
+
+                        qDebug() << "Sector ARTCC:" << currentObject->getName() << "appended...";
+                    }
+                    else
+                    {
+                        currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                        currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                        tempARTCC = currentObject;
+                    }
+                }
+                else if((iterator == 0) && coordsFound)
+                {
+                    QString lat1String = stringList.at(0);
+                    QString lon1String = stringList.at(1);
+                    QString lat2String = stringList.at(2);
+                    QString lon2String = stringList.at(3);
+
+                    double lat1;
+                    double lon1;
+                    double lat2;
+                    double lon2;
+
+                    if(isValidCoordsFormat(lat1String))
+                    {
+                        lat1 = coordsStringToDouble(lat1String);
+                    }
+                    else
+                    {
+                        lat1 = getNavaidLatitude(lat1String);
+                    }
+
+                    if(isValidCoordsFormat(lon1String))
+                    {
+                        lon1 = coordsStringToDouble(lon1String);
+                    }
+                    else
+                    {
+                        lon1 = getNavaidLongitude(lon1String);
+                    }
+
+                    if(isValidCoordsFormat(lat2String))
+                    {
+                        lat2 = coordsStringToDouble(lat2String);
+                    }
+                    else
+                    {
+                        lat2 = getNavaidLatitude(lat2String);
+                    }
+
+                    if(isValidCoordsFormat(lon2String))
+                    {
+                        lon2 = coordsStringToDouble(lon2String);
+                    }
+                    else
+                    {
+                        lon2 = getNavaidLongitude(lon2String);
+                    }
+
+                    tempARTCC->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                    tempARTCC->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                }
+            }
+            else if(flagFixes)
+            {
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+
+                QString fixName = stringList.at(0);
+                QString latitudeString = stringList.at(1);
+                QString longitudeString = stringList.at(2).left(14);
+
+                double latitudeDouble = coordsStringToDouble(latitudeString);
+                double longitudeDouble = coordsStringToDouble(longitudeString);
+
+                appendFix(new ATCNavFix(fixName, latitudeDouble, longitudeDouble));
+
+                qDebug() << fixName + " appended...";
+            }
+            else if(flagVOR)
+            {
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+
+                QString vorName = stringList.at(0);
+                float frequency = stringList.at(1).toFloat();
+                QString latitudeString = stringList.at(2);
+                QString longitudeString = stringList.at(3).left(14);
+
+                double latitudeDouble = coordsStringToDouble(latitudeString);
+                double longitudeDouble = coordsStringToDouble(longitudeString);
+
+                appendVOR(new ATCBeaconVOR(vorName, frequency, latitudeDouble, longitudeDouble));
+
+                qDebug() << vorName + " appended...";
+            }
+            else if(flagNDB)
+            {
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+
+                QString ndbName = stringList.at(0);
+                float frequency = stringList.at(1).toFloat();
+                QString latitudeString = stringList.at(2);
+                QString longitudeString = stringList.at(3).left(14);
+
+                double latitudeDouble = coordsStringToDouble(latitudeString);
+                double longitudeDouble = coordsStringToDouble(longitudeString);
+
+                appendNDB(new ATCBeaconNDB(ndbName, frequency, latitudeDouble, longitudeDouble));
+
+                qDebug() << ndbName + " appended...";
+            }
+            else if(flagAirport)
+            {
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+
+                QString airportName = stringList.at(0);
+                QString latitudeString = stringList.at(2);
+                QString longitudeString = stringList.at(3).left(14);
+
+                double latitudeDouble = coordsStringToDouble(latitudeString);
+                double longitudeDouble = coordsStringToDouble(longitudeString);
+
+                appendAirport(new ATCAirport(airportName, latitudeDouble, longitudeDouble));
+
+                qDebug() << airportName + " appended...";
+            }
+            else if(flagRunway)
+            {
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+
+                QString rwyID1 = stringList.at(0);
+                QString rwyID2 = stringList.at(1);
+                unsigned int magneticHDG1 = stringList.at(2).toUInt();
+                unsigned int magneticHDG2 = stringList.at(3).toUInt();
+                double startLat = coordsStringToDouble(stringList.at(4));
+                double startLon = coordsStringToDouble(stringList.at(5));
+                double endLat = coordsStringToDouble(stringList.at(6));
+                double endLon = coordsStringToDouble(stringList.at(7).left(14));
+                QString airportName = stringList.at(8).left(4);
+
+                ATCAirport *desiredAirport = findAirport(airportName);
+
+                if(desiredAirport != nullptr)
+                {
+                    desiredAirport->appendRunway(new ATCRunway(rwyID1, rwyID2, magneticHDG1, magneticHDG2, startLat, startLon, endLat, endLon));
+                    qDebug() << airportName << " rwy: " << rwyID1 << rwyID2 << " appended...";
+                }
+            }
+            else if(flagSTAR)
+            {
+                textLine = textLine.split(";", QString::SkipEmptyParts).at(0);
+                textLine = textLine.trimmed();
+
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+                int size = stringList.size();
+
+                int iterator = 0;
+                bool coordsFound = false;
+
+                for(int i = 0; i < size - 3; i++)
+                {
+                    if((isValidCoordsFormat(stringList.at(i)) || isValidNavaid(stringList.at(i))) &&
+                            (isValidCoordsFormat(stringList.at(i + 1)) || isValidNavaid(stringList.at(i + 1))) &&
+                            (isValidCoordsFormat(stringList.at(i + 2)) || isValidNavaid(stringList.at(i + 2))) &&
+                            (isValidCoordsFormat(stringList.at(i + 3)) || isValidNavaid(stringList.at(i + 3))))
+                    {
+                        iterator = i;
+                        coordsFound = true;
+                    }
+                }
+
+                if(iterator != 0 && coordsFound)
+                {
+                    QString name(stringList.at(0));
+
+                    for(int i = 1; i < iterator; i++)
+                    {
+                        name = name + " " + stringList.at(i);
+                    }
+
+                    QString lat1String = stringList.at(iterator);
+                    QString lon1String = stringList.at(iterator + 1);
+                    QString lat2String = stringList.at(iterator + 2);
+                    QString lon2String = stringList.at(iterator + 3);
+
+                    double lat1;
+                    double lon1;
+                    double lat2;
+                    double lon2;
+
+                    if(isValidCoordsFormat(lat1String))
+                    {
+                        lat1 = coordsStringToDouble(lat1String);
+                    }
+                    else
+                    {
+                        lat1 = getNavaidLatitude(lat1String);
+                    }
+
+                    if(isValidCoordsFormat(lon1String))
+                    {
+                        lon1 = coordsStringToDouble(lon1String);
+                    }
+                    else
+                    {
+                        lon1 = getNavaidLongitude(lon1String);
+                    }
+
+                    if(isValidCoordsFormat(lat2String))
+                    {
+                        lat2 = coordsStringToDouble(lat2String);
+                    }
+                    else
+                    {
+                        lat2 = getNavaidLatitude(lat2String);
+                    }
+
+                    if(isValidCoordsFormat(lon2String))
+                    {
+                        lon2 = coordsStringToDouble(lon2String);
+                    }
+                    else
+                    {
+                        lon2 = getNavaidLongitude(lon2String);
+                    }
+
+                    ATCProcedureSTARSymbol *currentObject = new ATCProcedureSTARSymbol(name);
+                    currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                    currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                    appendSTARSymbol(currentObject);
+
+                    qDebug() << currentObject->getName();
+                }
+                else if((iterator == 0) && coordsFound)
+                {
+                    QString lat1String = stringList.at(0);
+                    QString lon1String = stringList.at(1);
+                    QString lat2String = stringList.at(2);
+                    QString lon2String = stringList.at(3);
+
+                    double lat1;
+                    double lon1;
+                    double lat2;
+                    double lon2;
+
+                    if(isValidCoordsFormat(lat1String))
+                    {
+                        lat1 = coordsStringToDouble(lat1String);
+                    }
+                    else
+                    {
+                        lat1 = getNavaidLatitude(lat1String);
+                    }
+
+                    if(isValidCoordsFormat(lon1String))
+                    {
+                        lon1 = coordsStringToDouble(lon1String);
+                    }
+                    else
+                    {
+                        lon1 = getNavaidLongitude(lon1String);
+                    }
+
+                    if(isValidCoordsFormat(lat2String))
+                    {
+                        lat2 = coordsStringToDouble(lat2String);
+                    }
+                    else
+                    {
+                        lat2 = getNavaidLatitude(lat2String);
+                    }
+
+                    if(isValidCoordsFormat(lon2String))
+                    {
+                        lon2 = coordsStringToDouble(lon2String);
+                    }
+                    else
+                    {
+                        lon2 = getNavaidLongitude(lon2String);
+                    }
+
+                    getLastSTARSymbol()->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                    getLastSTARSymbol()->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                }
+            }
+            else if(flagSID)
+            {
+                textLine = textLine.split(";", QString::SkipEmptyParts).at(0);
+                textLine = textLine.trimmed();
+
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+                int size = stringList.size();
+
+                int iterator = 0;
+                bool coordsFound = false;
+
+                for(int i = 0; i < size - 3; i++)
+                {
+                    if((isValidCoordsFormat(stringList.at(i)) || isValidNavaid(stringList.at(i))) &&
+                            (isValidCoordsFormat(stringList.at(i + 1)) || isValidNavaid(stringList.at(i + 1))) &&
+                            (isValidCoordsFormat(stringList.at(i + 2)) || isValidNavaid(stringList.at(i + 2))) &&
+                            (isValidCoordsFormat(stringList.at(i + 3)) || isValidNavaid(stringList.at(i + 3))))
+                    {
+                        iterator = i;
+                        coordsFound = true;
+                    }
+                }
+
+                if(iterator != 0 && coordsFound)
+                {
+                    QString name(stringList.at(0));
+
+                    for(int i = 1; i < iterator; i++)
+                    {
+                        name = name + " " + stringList.at(i);
+                    }
+
+                    QString lat1String = stringList.at(iterator);
+                    QString lon1String = stringList.at(iterator + 1);
+                    QString lat2String = stringList.at(iterator + 2);
+                    QString lon2String = stringList.at(iterator + 3);
+
+                    double lat1;
+                    double lon1;
+                    double lat2;
+                    double lon2;
+
+                    if(isValidCoordsFormat(lat1String))
+                    {
+                        lat1 = coordsStringToDouble(lat1String);
+                    }
+                    else
+                    {
+                        lat1 = getNavaidLatitude(lat1String);
+                    }
+
+                    if(isValidCoordsFormat(lon1String))
+                    {
+                        lon1 = coordsStringToDouble(lon1String);
+                    }
+                    else
+                    {
+                        lon1 = getNavaidLongitude(lon1String);
+                    }
+
+                    if(isValidCoordsFormat(lat2String))
+                    {
+                        lat2 = coordsStringToDouble(lat2String);
+                    }
+                    else
+                    {
+                        lat2 = getNavaidLatitude(lat2String);
+                    }
+
+                    if(isValidCoordsFormat(lon2String))
+                    {
+                        lon2 = coordsStringToDouble(lon2String);
+                    }
+                    else
+                    {
+                        lon2 = getNavaidLongitude(lon2String);
+                    }
+
+                    ATCProcedureSIDSymbol *currentObject = new ATCProcedureSIDSymbol(name);
+                    currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                    currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                    appendSIDSymbol(currentObject);
+
+                    qDebug() << currentObject->getName();
+                }
+                else if((iterator == 0) && coordsFound)
+                {
+                    QString lat1String = stringList.at(0);
+                    QString lon1String = stringList.at(1);
+                    QString lat2String = stringList.at(2);
+                    QString lon2String = stringList.at(3);
+
+                    double lat1;
+                    double lon1;
+                    double lat2;
+                    double lon2;
+
+                    if(isValidCoordsFormat(lat1String))
+                    {
+                        lat1 = coordsStringToDouble(lat1String);
+                    }
+                    else
+                    {
+                        lat1 = getNavaidLatitude(lat1String);
+                    }
+
+                    if(isValidCoordsFormat(lon1String))
+                    {
+                        lon1 = coordsStringToDouble(lon1String);
+                    }
+                    else
+                    {
+                        lon1 = getNavaidLongitude(lon1String);
+                    }
+
+                    if(isValidCoordsFormat(lat2String))
+                    {
+                        lat2 = coordsStringToDouble(lat2String);
+                    }
+                    else
+                    {
+                        lat2 = getNavaidLatitude(lat2String);
+                    }
+
+                    if(isValidCoordsFormat(lon2String))
+                    {
+                        lon2 = coordsStringToDouble(lon2String);
+                    }
+                    else
+                    {
+                        lon2 = getNavaidLongitude(lon2String);
+                    }
+
+                    getLastSIDSymbol()->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                    getLastSIDSymbol()->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                }
+            }
+            else if(flagLowAirway)
+            {
+                textLine = textLine.split(";", QString::SkipEmptyParts).at(0);
+                textLine = textLine.trimmed();
+
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+                int size = stringList.size();
+
+                int iterator = 0;
+                bool coordsFound = false;
+
+                for(int i = 0; i < size - 3; i++)
+                {
+                    if((isValidCoordsFormat(stringList.at(i)) || isValidNavaid(stringList.at(i))) &&
+                            (isValidCoordsFormat(stringList.at(i + 1)) || isValidNavaid(stringList.at(i + 1))) &&
+                            (isValidCoordsFormat(stringList.at(i + 2)) || isValidNavaid(stringList.at(i + 2))) &&
+                            (isValidCoordsFormat(stringList.at(i + 3)) || isValidNavaid(stringList.at(i + 3))))
+                    {
+                        iterator = i;
+                        coordsFound = true;
+                    }
+                }
+
+                if(iterator != 0 && coordsFound)
+                {
+                    QString name(stringList.at(0));
+
+                    for(int i = 1; i < iterator; i++)
+                    {
+                        name = name + " " + stringList.at(i);
+                    }
+
+                    QString lat1String = stringList.at(iterator);
+                    QString lon1String = stringList.at(iterator + 1);
+                    QString lat2String = stringList.at(iterator + 2);
+                    QString lon2String = stringList.at(iterator + 3);
+
+                    double lat1;
+                    double lon1;
+                    double lat2;
+                    double lon2;
+
+                    if(isValidCoordsFormat(lat1String))
+                    {
+                        lat1 = coordsStringToDouble(lat1String);
+                    }
+                    else
+                    {
+                        lat1 = getNavaidLatitude(lat1String);
+                    }
+
+                    if(isValidCoordsFormat(lon1String))
+                    {
+                        lon1 = coordsStringToDouble(lon1String);
+                    }
+                    else
+                    {
+                        lon1 = getNavaidLongitude(lon1String);
+                    }
+
+                    if(isValidCoordsFormat(lat2String))
+                    {
+                        lat2 = coordsStringToDouble(lat2String);
+                    }
+                    else
+                    {
+                        lat2 = getNavaidLatitude(lat2String);
+                    }
+
+                    if(isValidCoordsFormat(lon2String))
+                    {
+                        lon2 = coordsStringToDouble(lon2String);
+                    }
+                    else
+                    {
+                        lon2 = getNavaidLongitude(lon2String);
+                    }
+
+                    if(isAirwayLow(name))
+                    {
+                        ATCAirwayLow *currentObject = findAirwayLow(name);
+                        currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                        currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                    }
+                    else
+                    {
+                        ATCAirwayLow *currentObject = new ATCAirwayLow(name);
+                        currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                        currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                        appendAirwayLow(currentObject);
+
+                        qDebug() << "Low airway: " << name << " appended...";
+                    }
+                }
+            }
+            else if(flagHighAirway)
+            {
+                textLine = textLine.split(";", QString::SkipEmptyParts).at(0);
+                textLine = textLine.trimmed();
+
+                QRegExp expression("(\\s|\\t)");
+                QStringList stringList = textLine.split(expression, QString::SkipEmptyParts);
+                int size = stringList.size();
+
+                int iterator = 0;
+                bool coordsFound = false;
+
+                for(int i = 0; i < size - 3; i++)
+                {
+                    if((isValidCoordsFormat(stringList.at(i)) || isValidNavaid(stringList.at(i))) &&
+                            (isValidCoordsFormat(stringList.at(i + 1)) || isValidNavaid(stringList.at(i + 1))) &&
+                            (isValidCoordsFormat(stringList.at(i + 2)) || isValidNavaid(stringList.at(i + 2))) &&
+                            (isValidCoordsFormat(stringList.at(i + 3)) || isValidNavaid(stringList.at(i + 3))))
+                    {
+                        iterator = i;
+                        coordsFound = true;
+                    }
+                }
+
+                if(iterator != 0 && coordsFound)
+                {
+                    QString name(stringList.at(0));
+
+                    for(int i = 1; i < iterator; i++)
+                    {
+                        name = name + " " + stringList.at(i);
+                    }
+
+                    QString lat1String = stringList.at(iterator);
+                    QString lon1String = stringList.at(iterator + 1);
+                    QString lat2String = stringList.at(iterator + 2);
+                    QString lon2String = stringList.at(iterator + 3);
+
+                    double lat1;
+                    double lon1;
+                    double lat2;
+                    double lon2;
+
+                    if(isValidCoordsFormat(lat1String))
+                    {
+                        lat1 = coordsStringToDouble(lat1String);
+                    }
+                    else
+                    {
+                        lat1 = getNavaidLatitude(lat1String);
+                    }
+
+                    if(isValidCoordsFormat(lon1String))
+                    {
+                        lon1 = coordsStringToDouble(lon1String);
+                    }
+                    else
+                    {
+                        lon1 = getNavaidLongitude(lon1String);
+                    }
+
+                    if(isValidCoordsFormat(lat2String))
+                    {
+                        lat2 = coordsStringToDouble(lat2String);
+                    }
+                    else
+                    {
+                        lat2 = getNavaidLatitude(lat2String);
+                    }
+
+                    if(isValidCoordsFormat(lon2String))
+                    {
+                        lon2 = coordsStringToDouble(lon2String);
+                    }
+                    else
+                    {
+                        lon2 = getNavaidLongitude(lon2String);
+                    }
+
+                    if(isAirwayHigh(name))
+                    {
+                        ATCAirwayHigh *currentObject = findAirwayHigh(name);
+                        currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                        currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+                    }
+                    else
+                    {
+                        ATCAirwayHigh *currentObject = new ATCAirwayHigh(name);
+                        currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
+                        currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                        appendAirwayHigh(currentObject);
+
+                        qDebug() << "High airway: " << name << " appended...";
+                    }
+                }
+            }
+        }
+    }
+
+    sctFile.close();
+
+//Load SID and STAR procedures from ESE
+    if(!eseFile.open(QFile::ReadOnly | QFile::Text))
+    {
+        qDebug() << "Error while opening ese file...";
+        return;
+    }
+
+    bool flagSidStar = false;
+    bool flagAirspace = false;
+
+    QTextStream eseStream2(&eseFile);
+    while(!eseStream2.atEnd())
+    {
+        QString textLine = eseStream2.readLine();
+        textLine = textLine.trimmed();
+
+        if(textLine.isEmpty() || (textLine.at(0) == ';'))
+        {
+        }
+        else
+        {
+            if(textLine.contains("[SIDSSTARS]", Qt::CaseInsensitive))
+            {
+                flagSidStar = true;
+                flagAirspace = false;
+
+                qDebug() << "SIDs & STARs:";
+            }
+            else if(textLine.contains("[AIRSPACE]", Qt::CaseInsensitive))
+            {
+                flagSidStar = false;
+                flagAirspace = true;
+            }
+            else if(flagSidStar)
+            {
+                QStringList stringList = textLine.split(":", QString::SkipEmptyParts);
+
+                QString procedureType = stringList.at(0);
+                QString airportCode = stringList.at(1);
+                QString runwayID = stringList.at(2);
+                QString procedureName = stringList.at(3);
+                QString fixListString = stringList.at(4);
+
+                QRegExp expression("(\\s|\\t)");
+                QStringList fixList = fixListString.split(expression, QString::SkipEmptyParts);
+
+                if(procedureType == "SID")
+                {
+                    ATCProcedureSID *currentProcedure = new ATCProcedureSID(procedureName, airportCode, runwayID);
+                    currentProcedure->setFixList(fixList);
+
+                    appendSID(currentProcedure);
+
+                    qDebug() << "SID: " << airportCode << ":" << runwayID << ":" << procedureName << " appended...";
+                }
+                else if(procedureType == "STAR")
+                {
+                    ATCProcedureSTAR *currentProcedure = new ATCProcedureSTAR(procedureName, airportCode, runwayID);
+                    currentProcedure->setFixList(fixList);
+
+                    appendSTAR(currentProcedure);
+
+                    qDebug() << "STAR: " << airportCode << ":" << runwayID << ":" << procedureName << " appended...";
+                }
+            }
+        }
+    }
+
+    eseFile.close();
 }

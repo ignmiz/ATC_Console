@@ -108,7 +108,6 @@ private:
     QVector<ATCAirwayHigh*> visibleHighAirways;
 
     void situationalDisplaySetup();
-    void loadData(); //Temp - to be moved
 
     void rescaleAll();
 

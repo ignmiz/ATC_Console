@@ -16,6 +16,7 @@
 #include "atcairwaylow.h"
 #include "atcairwayhigh.h"
 
+#include <QFile>
 #include <QString>
 #include <QVector>
 
@@ -151,6 +152,8 @@ private:
     void deleteAllSTARSymbols();
     void deleteAllAirwayLow();
     void deleteAllAirwayHigh();
+
+    void loadData();
 };
 
 #endif // ATCAIRSPACE_H
