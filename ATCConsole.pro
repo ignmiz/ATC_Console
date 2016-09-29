@@ -6,13 +6,23 @@
 
 QT       += core gui positioning
 
-VPATH += ./atc \
+VPATH += ./custom \
     ./dialog \
-    ./ui
+    ./display \
+    ./main \
+    ./nav \
+    ./settings \
+    ./ui \
+    ./utils
 
-INCLUDEPATH += ./atc \
+INCLUDEPATH += ./custom \
     ./dialog \
-    ./ui
+    ./display \
+    ./main \
+    ./nav \
+    ./settings \
+    ./ui \
+    ./utils
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
