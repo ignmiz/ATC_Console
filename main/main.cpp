@@ -2,7 +2,6 @@
 
 #include <QApplication>
 #include <QDesktopWidget>
-//#include <QDebug>
 
 int main(int argc, char *argv[])
 {

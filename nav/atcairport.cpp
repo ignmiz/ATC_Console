@@ -12,7 +12,6 @@ ATCAirport::~ATCAirport()
     if(scenePosition != nullptr) delete scenePosition;
     if(symbol != nullptr) delete symbol;
     if(label = nullptr) delete label;
-    qDebug() << "Airport: " << name << " : " << toString(QGeoCoordinate::DegreesMinutesSecondsWithHemisphere) << "deleted...";
 }
 
 void ATCAirport::deleteAllRunways()
@@ -24,10 +23,8 @@ void ATCAirport::deleteAllRunways()
             delete runways.at(i);
         }
     }
-    else
-    {
-        qDebug() << "Vector of runways empty...";
-    }
+
+    runways.clear();
 }
 
 QString ATCAirport::getName()
@@ -103,16 +100,16 @@ bool ATCAirport::isRunwayVectorEmpty()
 
 void ATCAirport::show()
 {
-    symbol->show();
-    label->show();
+    if(symbol != nullptr) symbol->show();
+    if(label != nullptr) label->show();
 
     visible = true;
 }
 
 void ATCAirport::hide()
 {
-    symbol->hide();
-    label->hide();
+    if(symbol != nullptr) symbol->hide();
+    if(label != nullptr) label->hide();
 
     visible = false;
 }
@@ -120,9 +117,4 @@ void ATCAirport::hide()
 bool ATCAirport::isVisible()
 {
     return visible;
-}
-
-void ATCAirport::setFlagVisible(bool flag)
-{
-    visible = flag;
 }

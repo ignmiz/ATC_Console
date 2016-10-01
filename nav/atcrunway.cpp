@@ -17,9 +17,6 @@ ATCRunway::~ATCRunway()
 {
     if(extendedCentreline1 != nullptr) delete extendedCentreline1;
     if(extendedCentreline2 != nullptr) delete extendedCentreline2;
-
-    qDebug() << rwyID1 << " " << rwyID2 << " " << magneticHDG1 << " " << magneticHDG2 << " "
-             << startPoint.toString() << " " << endPoint.toString() << " deleted...";
 }
 
 QString ATCRunway::getRunwayID1()
