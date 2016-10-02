@@ -8,5 +8,4 @@ ATCProcedureSIDSymbol::ATCProcedureSIDSymbol(QString name) : ATCAbstractProcedur
 
 ATCProcedureSIDSymbol::~ATCProcedureSIDSymbol()
 {
-    qDebug() << "SID symbol: " << getName() << " deleted...";
 }

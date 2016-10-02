@@ -8,5 +8,4 @@ ATCBeaconNDB::ATCBeaconNDB(QString beaconName, float beaconFrequency, double lat
 
 ATCBeaconNDB::~ATCBeaconNDB()
 {
-    qDebug() << "NDB: " << getName() << " : " << getFrequency() << " : " << toString(QGeoCoordinate::DegreesMinutesSecondsWithHemisphere) << " deleted...";
 }

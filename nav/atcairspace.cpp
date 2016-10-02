@@ -665,10 +665,6 @@ void ATCAirspace::deleteAllSectors()
             delete sectors.at(i);
         }
     }
-    else
-    {
-        qDebug() << "Empty vector of Sectors...";
-    }
 }
 
 void ATCAirspace::deleteAllSectorsARTCCLow()
@@ -679,10 +675,6 @@ void ATCAirspace::deleteAllSectorsARTCCLow()
         {
             delete sectorsARTCCLow.at(i);
         }
-    }
-    else
-    {
-        qDebug() << "Empty vector of Sectors ARTCC Low...";
     }
 }
 
@@ -695,10 +687,6 @@ void ATCAirspace::deleteAllSectorsARTCCHigh()
             delete sectorsARTCCHigh.at(i);
         }
     }
-    else
-    {
-        qDebug() << "Empty vector of Sectors ARTCC High...";
-    }
 }
 
 void ATCAirspace::deleteAllSectorsARTCC()
@@ -709,10 +697,6 @@ void ATCAirspace::deleteAllSectorsARTCC()
         {
             delete sectorsARTCC.at(i);
         }
-    }
-    else
-    {
-        qDebug() << "Empty vector of Sectors ARTCC...";
     }
 }
 
@@ -725,10 +709,6 @@ void ATCAirspace::deleteAllFixes()
             delete fixes.at(i);
         }
     }
-    else
-    {
-        qDebug() << "Empty vector of fixes...";
-    }
 }
 
 void ATCAirspace::deleteAllVORs()
@@ -739,10 +719,6 @@ void ATCAirspace::deleteAllVORs()
         {
             delete vors.at(i);
         }
-    }
-    else
-    {
-        qDebug() << "Empty vector of VORs...";
     }
 }
 
@@ -755,10 +731,6 @@ void ATCAirspace::deleteAllNDBs()
             delete ndbs.at(i);
         }
     }
-    else
-    {
-        qDebug() << "Empty vector of NDBs...";
-    }
 }
 
 void ATCAirspace::deleteAllAirports()
@@ -769,10 +741,6 @@ void ATCAirspace::deleteAllAirports()
         {
             delete airports.at(i);
         }
-    }
-    else
-    {
-        qDebug() << "Empty vector of airports...";
     }
 }
 
@@ -785,10 +753,6 @@ void ATCAirspace::deleteAllSIDs()
             delete sids.at(i);
         }
     }
-    else
-    {
-        qDebug() << "Empty vector of SIDs";
-    }
 }
 
 void ATCAirspace::deleteAllSTARs()
@@ -799,10 +763,6 @@ void ATCAirspace::deleteAllSTARs()
         {
             delete stars.at(i);
         }
-    }
-    else
-    {
-        qDebug() << "Empty vector of STARs";
     }
 }
 
@@ -815,10 +775,6 @@ void ATCAirspace::deleteAllSIDSymbols()
             delete sidSymbols.at(i);
         }
     }
-    else
-    {
-        qDebug() << "Empty vector of SID symbols...";
-    }
 }
 
 void ATCAirspace::deleteAllSTARSymbols()
@@ -829,10 +785,6 @@ void ATCAirspace::deleteAllSTARSymbols()
         {
             delete starSymbols.at(i);
         }
-    }
-    else
-    {
-        qDebug() << "Empty vector of STAR symbols...";
     }
 }
 
@@ -845,10 +797,6 @@ void ATCAirspace::deleteAllAirwayLow()
             delete lowAirways.at(i);
         }
     }
-    else
-    {
-        qDebug() << "Empty vector of low airways...";
-    }
 }
 
 void ATCAirspace::deleteAllAirwayHigh()
@@ -860,16 +808,11 @@ void ATCAirspace::deleteAllAirwayHigh()
             delete highAirways.at(i);
         }
     }
-    else
-    {
-        qDebug() << "Empty vector of high airways...";
-    }
 }
 
 void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
 {
 //Load sectorfiles from ESE
-//    QFile eseFile("E:/Qt/ATC_Console/ATC_Console/config/EPWW_175_20160428.ese");
     QFile eseFile(ESEpath);
 
     if(!eseFile.open(QFile::ReadOnly | QFile::Text))
@@ -895,7 +838,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                 QString sectorName = stringList.at(1);
 
                 appendSector(new ATCAirspaceSector(sectorName));
-                qDebug() << "Sector " + sectorName + " appended...";
             }
             else if(textLine.contains("COORD", Qt::CaseInsensitive))
             {
@@ -914,7 +856,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
     eseFile.close();
 
 //Load VORs, NDBs, fixes, airports and runways from SCT
-//    QFile sctFile("E:/Qt/ATC_Console/ATC_Console/config/EPWW_175_20160428.sct");
     QFile sctFile(SCTpath);
 
     if(!sctFile.open(QFile::ReadOnly | QFile::Text))
@@ -965,8 +906,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = false;
-
-                qDebug() << "ARTCC LOW:";
             }
             if(textLine.contains("[ARTCC HIGH]", Qt::CaseInsensitive))
             {
@@ -982,8 +921,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = false;
-
-                qDebug() << "ARTCC HIGH:";
             }
             if(textLine.contains("[ARTCC]", Qt::CaseInsensitive))
             {
@@ -999,8 +936,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = false;
-
-                qDebug() << "ARTCC:";
             }
             else if(textLine.contains("[VOR]", Qt::CaseInsensitive))
             {
@@ -1016,8 +951,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = false;
-
-                qDebug() << "VORs:";
             }
             else if(textLine.contains("[NDB]", Qt::CaseInsensitive))
             {
@@ -1033,8 +966,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = false;
-
-                qDebug() << "NDBs:";
             }
             else if(textLine.contains("[FIXES]", Qt::CaseInsensitive))
             {
@@ -1050,8 +981,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = false;
-
-                qDebug() << "Fixes:";
             }
             else if(textLine.contains("[AIRPORT]", Qt::CaseInsensitive))
             {
@@ -1067,8 +996,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = false;
-
-                qDebug() << "Airports:";
             }
             else if(textLine.contains("[RUNWAY]", Qt::CaseInsensitive))
             {
@@ -1084,8 +1011,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = false;
-
-                qDebug() << "Runways:";
             }
             else if(textLine.contains("[STAR]", Qt::CaseInsensitive))
             {
@@ -1101,8 +1026,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = false;
-
-                qDebug() << "STAR Symbols:";
             }
             else if(textLine.contains("[SID]", Qt::CaseInsensitive))
             {
@@ -1118,8 +1041,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                 flagSID = true;
                 flagLowAirway = false;
                 flagHighAirway = false;
-
-                qDebug() << "SID Symbols:";
             }
             else if(textLine.contains("[LOW AIRWAY]", Qt::CaseInsensitive))
             {
@@ -1135,8 +1056,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                 flagSID = false;
                 flagLowAirway = true;
                 flagHighAirway = false;
-
-                qDebug() << "Low Airways:";
             }
             else if(textLine.contains("[HIGH AIRWAY]", Qt::CaseInsensitive))
             {
@@ -1152,8 +1071,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = true;
-
-                qDebug() << "High Airways:";
             }
             else if(flagARTCCLow)
             {
@@ -1245,8 +1162,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                         tempARTCCLow = currentObject;
 
                         appendSectorARTCCLow(currentObject);
-
-                        qDebug() << "Sector ARTCC Low:" << currentObject->getName() << "appended...";
                     }
                     else
                     {
@@ -1398,8 +1313,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                         tempARTCCHigh = currentObject;
 
                         appendSectorARTCCHigh(currentObject);
-
-                        qDebug() << "Sector ARTCC High:" << currentObject->getName() << "appended...";
                     }
                     else
                     {
@@ -1551,8 +1464,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                         tempARTCC = currentObject;
 
                         appendSectorARTCC(currentObject);
-
-                        qDebug() << "Sector ARTCC:" << currentObject->getName() << "appended...";
                     }
                     else
                     {
@@ -1627,8 +1538,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                 double longitudeDouble = coordsStringToDouble(longitudeString);
 
                 appendFix(new ATCNavFix(fixName, latitudeDouble, longitudeDouble));
-
-                qDebug() << fixName + " appended...";
             }
             else if(flagVOR)
             {
@@ -1644,8 +1553,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                 double longitudeDouble = coordsStringToDouble(longitudeString);
 
                 appendVOR(new ATCBeaconVOR(vorName, frequency, latitudeDouble, longitudeDouble));
-
-                qDebug() << vorName + " appended...";
             }
             else if(flagNDB)
             {
@@ -1661,8 +1568,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                 double longitudeDouble = coordsStringToDouble(longitudeString);
 
                 appendNDB(new ATCBeaconNDB(ndbName, frequency, latitudeDouble, longitudeDouble));
-
-                qDebug() << ndbName + " appended...";
             }
             else if(flagAirport)
             {
@@ -1677,8 +1582,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                 double longitudeDouble = coordsStringToDouble(longitudeString);
 
                 appendAirport(new ATCAirport(airportName, latitudeDouble, longitudeDouble));
-
-                qDebug() << airportName + " appended...";
             }
             else if(flagRunway)
             {
@@ -1700,7 +1603,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                 if(desiredAirport != nullptr)
                 {
                     desiredAirport->appendRunway(new ATCRunway(rwyID1, rwyID2, magneticHDG1, magneticHDG2, startLat, startLon, endLat, endLon));
-                    qDebug() << airportName << " rwy: " << rwyID1 << rwyID2 << " appended...";
                 }
             }
             else if(flagSTAR)
@@ -1787,8 +1689,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                     currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
 
                     appendSTARSymbol(currentObject);
-
-                    qDebug() << currentObject->getName();
                 }
                 else if((iterator == 0) && coordsFound)
                 {
@@ -1926,8 +1826,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                     currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
 
                     appendSIDSymbol(currentObject);
-
-                    qDebug() << currentObject->getName();
                 }
                 else if((iterator == 0) && coordsFound)
                 {
@@ -2073,8 +1971,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                         currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
 
                         appendAirwayLow(currentObject);
-
-                        qDebug() << "Low airway: " << name << " appended...";
                     }
                 }
             }
@@ -2170,8 +2066,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                         currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
 
                         appendAirwayHigh(currentObject);
-
-                        qDebug() << "High airway: " << name << " appended...";
                     }
                 }
             }
@@ -2205,8 +2099,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
             {
                 flagSidStar = true;
                 flagAirspace = false;
-
-                qDebug() << "SIDs & STARs:";
             }
             else if(textLine.contains("[AIRSPACE]", Qt::CaseInsensitive))
             {
@@ -2232,8 +2124,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                     currentProcedure->setFixList(fixList);
 
                     appendSID(currentProcedure);
-
-                    qDebug() << "SID: " << airportCode << ":" << runwayID << ":" << procedureName << " appended...";
                 }
                 else if(procedureType == "STAR")
                 {
@@ -2241,8 +2131,6 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                     currentProcedure->setFixList(fixList);
 
                     appendSTAR(currentProcedure);
-
-                    qDebug() << "STAR: " << airportCode << ":" << runwayID << ":" << procedureName << " appended...";
                 }
             }
         }

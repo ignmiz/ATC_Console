@@ -8,5 +8,4 @@ ATCProcedureSID::ATCProcedureSID(QString procedureName, QString airportCode, QSt
 
 ATCProcedureSID::~ATCProcedureSID()
 {
-    qDebug() << "SID: " << getAirport() << ":" << getRunwayID() << ":" << getName() << " deleted...";
 }

@@ -8,5 +8,4 @@ ATCProcedureSTARSymbol::ATCProcedureSTARSymbol(QString name) : ATCAbstractProced
 
 ATCProcedureSTARSymbol::~ATCProcedureSTARSymbol()
 {
-    qDebug() << "STAR symbol: " << getName() << " deleted...";
 }

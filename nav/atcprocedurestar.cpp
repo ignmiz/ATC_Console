@@ -8,5 +8,4 @@ ATCProcedureSTAR::ATCProcedureSTAR(QString procedureName, QString airportCode, Q
 
 ATCProcedureSTAR::~ATCProcedureSTAR()
 {
-    qDebug() << "STAR: " << getAirport() << ":" << getRunwayID() << ":" << getName() << " deleted...";
 }

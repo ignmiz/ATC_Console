@@ -13,15 +13,6 @@ ATCAirspaceSector::ATCAirspaceSector(QString name)
 
 ATCAirspaceSector::~ATCAirspaceSector()
 {
-    if(!sectorName.isEmpty())
-    {
-        qDebug() << "Sector " + sectorName + " deleted...";
-    }
-    else
-    {
-        qDebug() << "Sector with no name deleted...";
-    }
-
     deleteAllAirspaceFixes();
     if(polygon != nullptr) delete polygon;
 }
@@ -70,10 +61,4 @@ void ATCAirspaceSector::deleteAllAirspaceFixes()
             delete coordinates.at(i);
         }
     }
-    else
-    {
-        qDebug() << "Empty vector of coordinates...";
-    }
 }
-
-

@@ -8,5 +8,4 @@ ATCBeaconVOR::ATCBeaconVOR(QString beaconName, float beaconFrequency, double lat
 
 ATCBeaconVOR::~ATCBeaconVOR()
 {
-    qDebug() << "VOR: " << getName() << " : " << getFrequency() << " : " << toString(QGeoCoordinate::DegreesMinutesSecondsWithHemisphere) << " deleted...";
 }
