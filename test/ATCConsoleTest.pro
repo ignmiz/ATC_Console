@@ -115,10 +115,12 @@ HEADERS  += \
     atcsettingstableview.h
 
 SOURCES += main.cpp \
-    test_atcairport.cpp
+    test_atcairport.cpp \
+    test_atcairspace.cpp
 
 HEADERS += \
-    test_atcairport.h
+    test_atcairport.h \
+    test_atcairspace.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
