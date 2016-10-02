@@ -24,7 +24,7 @@ class ATCAirspace
 {
 
 public:
-    explicit ATCAirspace();
+    explicit ATCAirspace(QString SCTpath, QString ESEpath);
     ~ATCAirspace();
 
     double coordsStringToDouble(QString coords);
@@ -153,7 +153,7 @@ private:
     void deleteAllAirwayLow();
     void deleteAllAirwayHigh();
 
-    void loadData();
+    void loadData(QString SCTpath, QString ESEpath);
 };
 
 #endif // ATCAIRSPACE_H

@@ -1,9 +1,9 @@
 #include "atcairspace.h"
 #include <QDebug>
 
-ATCAirspace::ATCAirspace()
+ATCAirspace::ATCAirspace(QString SCTpath, QString ESEpath)
 {
-    loadData();
+    loadData(SCTpath, ESEpath);
 }
 
 ATCAirspace::~ATCAirspace()
@@ -866,10 +866,11 @@ void ATCAirspace::deleteAllAirwayHigh()
     }
 }
 
-void ATCAirspace::loadData()
+void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
 {
 //Load sectorfiles from ESE
-    QFile eseFile("E:/Qt/ATC_Console/ATC_Console/config/EPWW_175_20160428.ese");
+//    QFile eseFile("E:/Qt/ATC_Console/ATC_Console/config/EPWW_175_20160428.ese");
+    QFile eseFile(ESEpath);
 
     if(!eseFile.open(QFile::ReadOnly | QFile::Text))
     {
@@ -913,7 +914,8 @@ void ATCAirspace::loadData()
     eseFile.close();
 
 //Load VORs, NDBs, fixes, airports and runways from SCT
-    QFile sctFile("E:/Qt/ATC_Console/ATC_Console/config/EPWW_175_20160428.sct");
+//    QFile sctFile("E:/Qt/ATC_Console/ATC_Console/config/EPWW_175_20160428.sct");
+    QFile sctFile(SCTpath);
 
     if(!sctFile.open(QFile::ReadOnly | QFile::Text))
     {

@@ -10,7 +10,10 @@
 #include <QTextStream>
 #include <QDebug>
 
-ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) : QGraphicsView(parent), airspaceData(new ATCAirspace), settings(new ATCSettings)
+ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) :
+    QGraphicsView(parent),
+    airspaceData(new ATCAirspace("E:/Qt/ATC_Console/ATC_Console/config/EPWW_175_20160428.sct", "E:/Qt/ATC_Console/ATC_Console/config/EPWW_175_20160428.ese")),
+    settings(new ATCSettings)
 {
     situationalDisplaySetup();
     connectSlots();
