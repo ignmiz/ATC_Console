@@ -149,7 +149,7 @@ void Test_ATCAirspace::test_appendSector()
     airspace.appendSector(sector);
 
     QVERIFY(airspace.getSectorVectorSize() == 2);
-    QVERIFY(airspace.getLastSector()->getSectorName() == "TEST");
+    QVERIFY(airspace.getLastSector()->getName() == "TEST");
 }
 
 void Test_ATCAirspace::test_appendSectorARTCCLow()
@@ -382,7 +382,7 @@ void Test_ATCAirspace::test_getAirwayHighVectorSize()
 void Test_ATCAirspace::test_getSector()
 {
     ATCAirspace airspace(testSCT, testESE);
-    QVERIFY(airspace.getSector(0)->getSectorName() == "CTA5");
+    QVERIFY(airspace.getSector(0)->getName() == "CTA5");
 }
 
 void Test_ATCAirspace::test_getSectorARTCCLow()
@@ -620,7 +620,7 @@ void Test_ATCAirspace::test_getAirwayHighVector()
 void Test_ATCAirspace::test_getLastSector()
 {
     ATCAirspace airspace(testSCT, testESE);
-    QVERIFY(airspace.getLastSector()->getSectorName() == "CTA5");
+    QVERIFY(airspace.getLastSector()->getName() == "CTA5");
 }
 
 void Test_ATCAirspace::test_getLastSectorARTCCLow()

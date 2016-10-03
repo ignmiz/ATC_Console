@@ -116,11 +116,15 @@ HEADERS  += \
 
 SOURCES += main.cpp \
     test_atcairport.cpp \
-    test_atcairspace.cpp
+    test_atcairspace.cpp \
+    test_atcairspacefix.cpp \
+    test_atcairspacesector.cpp
 
 HEADERS += \
     test_atcairport.h \
-    test_atcairspace.h
+    test_atcairspace.h \
+    test_atcairspacefix.h \
+    test_atcairspacesector.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \

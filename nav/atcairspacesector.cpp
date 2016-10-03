@@ -56,4 +56,6 @@ void ATCAirspaceSector::deleteAllAirspaceFixes()
             delete coordinates.at(i);
         }
     }
+
+    coordinates.clear();
 }
