@@ -52,7 +52,13 @@ void Test_ATCAirport::test_deleteAllRunways()
     QVERIFY(airport.getRunwayVectorSize() == 0);
 }
 
-void Test_ATCAirport::test_setGetName()
+void Test_ATCAirport::test_getName()
+{
+    ATCAirport airport("EPWA", 20, 50);
+    QVERIFY(airport.getName() == "EPWA");
+}
+
+void Test_ATCAirport::test_setName()
 {
     ATCAirport airport("EPWA", 20, 50);
 

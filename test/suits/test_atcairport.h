@@ -16,7 +16,8 @@ private slots:
     void test_constructObject_incorrectLon();
 
     void test_deleteAllRunways();
-    void test_setGetName();
+    void test_getName();
+    void test_setName();
     void test_setGetScenePosition();
     void test_setGetSymbol();
     void test_setColor();
