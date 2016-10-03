@@ -87,6 +87,15 @@ void Test_ATCAirport::test_setGetSymbol()
     QVERIFY(airport.getSymbol()->rect().height() == 10);
 }
 
+void Test_ATCAirport::test_setGetLabel()
+{
+    ATCAirport airport("EPWA", 20, 50);
+
+    QGraphicsSimpleTextItem *txt = new QGraphicsSimpleTextItem();
+    airport.setLabel(txt);
+    QVERIFY(airport.getLabel() == txt);
+}
+
 void Test_ATCAirport::test_setColor()
 {
     ATCAirport airport("EPWA", 20, 50);

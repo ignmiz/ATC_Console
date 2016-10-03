@@ -23,18 +23,11 @@ public:
 
     void appendFixName(QString fixName);
 
-    void show();
-    void hide();
-    bool isVisible();
-    void setFlagVisible(bool flag); //TEMPORARY
-
 private:
     QString name;
     QString airport;
     QString runwayID;
     QStringList fixList;
-
-    bool visible = false;
 };
 
 #endif // ATCABSTRACTPROCEDURE_H

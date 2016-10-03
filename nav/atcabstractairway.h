@@ -28,7 +28,6 @@ public:
     void show();
     void hide();
     bool isVisible();
-    void setFlagVisible(bool flag); //TEMPORARY
 
 private:
     QString airwayName;

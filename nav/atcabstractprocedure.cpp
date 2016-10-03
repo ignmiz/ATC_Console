@@ -60,23 +60,3 @@ void ATCAbstractProcedure::appendFixName(QString fixName)
 {
     fixList.append(fixName);
 }
-
-void ATCAbstractProcedure::show()
-{
-    visible = true;
-}
-
-void ATCAbstractProcedure::hide()
-{
-    visible = false;
-}
-
-bool ATCAbstractProcedure::isVisible()
-{
-    return visible;
-}
-
-void ATCAbstractProcedure::setFlagVisible(bool flag)
-{
-    visible = flag;
-}

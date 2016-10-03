@@ -111,8 +111,3 @@ bool ATCAbstractAirway::isVisible()
 {
     return visible;
 }
-
-void ATCAbstractAirway::setFlagVisible(bool flag)
-{
-    visible = flag;
-}

@@ -94,8 +94,3 @@ bool ATCAbstractBeacon::isVisible()
 {
     return visible;
 }
-
-void ATCAbstractBeacon::setFlagVisible(bool flag)
-{
-    visible = flag;
-}

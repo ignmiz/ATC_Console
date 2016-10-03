@@ -3,6 +3,7 @@ QT += core gui positioning testlib
 CONFIG += c++11
 
 VPATH += ./main \
+    ./mock \
     ./suits \
     ../custom \
     ../dialog \
@@ -14,6 +15,7 @@ VPATH += ./main \
     ../utils
 
 INCLUDEPATH += ./main \
+    ./mock \
     ./suits \
     ../custom \
     ../dialog \
@@ -31,6 +33,8 @@ CONFIG += console
 CONFIG -= app_bundle
 
 TEMPLATE = app
+
+#MAIN PROJECT HEADERS & SOURCES & FORMS GO HERE:
 
 SOURCES += \
     mainwindow.cpp \
@@ -70,7 +74,7 @@ SOURCES += \
     dialogsettings.cpp \
     dialogcolorpicker.cpp \
     atcsettings.cpp \
-    atcsettingstableview.cpp
+    atcsettingstableview.cpp \
 
 HEADERS  += \
     mainwindow.h \
@@ -112,19 +116,7 @@ HEADERS  += \
     dialogsettings.h \
     dialogcolorpicker.h \
     atcsettings.h \
-    atcsettingstableview.h
-
-SOURCES += main.cpp \
-    test_atcairport.cpp \
-    test_atcairspace.cpp \
-    test_atcairspacefix.cpp \
-    test_atcairspacesector.cpp
-
-HEADERS += \
-    test_atcairport.h \
-    test_atcairspace.h \
-    test_atcairspacefix.h \
-    test_atcairspacesector.h
+    atcsettingstableview.h \
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
@@ -132,3 +124,41 @@ FORMS    += mainwindow.ui \
     dialogsectorsetup.ui \
     dialogtextconsole.ui \
     dialogsettings.ui
+
+#MOCK SOURCES & HEADERS GO HERE:
+
+SOURCES += mock_atcabstractairway.cpp \
+    mock_atcabstractbeacon.cpp \
+    mock_atcabstractfix.cpp \
+    mock_atcabstractprocedure.cpp
+
+HEADERS += mock_atcabstractairway.h \
+    mock_atcabstractbeacon.h \
+    mock_atcabstractfix.h \
+    mock_atcabstractprocedure.h
+
+#TEST SOURCES & HEADERS GO HERE:
+
+SOURCES += main.cpp \
+    test_atcabstractairway.cpp \
+    test_atcabstractbeacon.cpp \
+    test_atcabstractfix.cpp \
+    test_atcabstractprocedure.cpp \
+    \
+    test_atcairport.cpp \
+    test_atcairspace.cpp \
+    test_atcairspacefix.cpp \
+    test_atcairspacesector.cpp \
+    test_atcairwayhigh.cpp
+
+HEADERS += \
+    test_atcabstractairway.h \
+    test_atcabstractbeacon.h \
+    test_atcabstractfix.h \
+    test_atcabstractprocedure.h \
+    \
+    test_atcairport.h \
+    test_atcairspace.h \
+    test_atcairspacefix.h \
+    test_atcairspacesector.h \
+    test_atcairwayhigh.h
