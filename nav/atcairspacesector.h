@@ -11,16 +11,15 @@ class ATCAirspaceSector
 {
 
 public:
-    explicit ATCAirspaceSector();
     explicit ATCAirspaceSector(QString name);
     ~ATCAirspaceSector();
 
-    QString getSectorName();
+    QString getName();
     ATCAirspaceFix* getCoordinates(int iterator);
     int getCoordinatesVectorSize();
     QGraphicsPolygonItem* getPolygon();
 
-    void setSectorName(QString name);
+    void setName(QString name);
     void setPolygon(QGraphicsPolygonItem *sectorPolygon);
 
     void appendAirspaceFix(ATCAirspaceFix *airspaceFix);

@@ -1,11 +1,6 @@
 #include "atcairspacesector.h"
 #include <QDebug>
 
-ATCAirspaceSector::ATCAirspaceSector()
-{
-
-}
-
 ATCAirspaceSector::ATCAirspaceSector(QString name)
 {
     sectorName = name;
@@ -17,7 +12,7 @@ ATCAirspaceSector::~ATCAirspaceSector()
     if(polygon != nullptr) delete polygon;
 }
 
-QString ATCAirspaceSector::getSectorName()
+QString ATCAirspaceSector::getName()
 {
     return sectorName;
 }
@@ -37,7 +32,7 @@ QGraphicsPolygonItem* ATCAirspaceSector::getPolygon()
     return polygon;
 }
 
-void ATCAirspaceSector::setSectorName(QString name)
+void ATCAirspaceSector::setName(QString name)
 {
     sectorName = name;
 }
