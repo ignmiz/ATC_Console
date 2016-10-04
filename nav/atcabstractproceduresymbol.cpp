@@ -111,8 +111,3 @@ bool ATCAbstractProcedureSymbol::isVisible()
 {
     return visible;
 }
-
-void ATCAbstractProcedureSymbol::setFlagVisible(bool flag)
-{
-    visible = flag;
-}

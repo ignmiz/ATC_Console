@@ -130,12 +130,16 @@ FORMS    += mainwindow.ui \
 SOURCES += mock_atcabstractairway.cpp \
     mock_atcabstractbeacon.cpp \
     mock_atcabstractfix.cpp \
-    mock_atcabstractprocedure.cpp
+    mock_atcabstractprocedure.cpp \
+    mock_atcabstractproceduresymbol.cpp \
+    mock_atcabstractsector.cpp
 
 HEADERS += mock_atcabstractairway.h \
     mock_atcabstractbeacon.h \
     mock_atcabstractfix.h \
-    mock_atcabstractprocedure.h
+    mock_atcabstractprocedure.h \
+    mock_atcabstractproceduresymbol.h \
+    mock_atcabstractsector.h
 
 #TEST SOURCES & HEADERS GO HERE:
 
@@ -144,6 +148,8 @@ SOURCES += main.cpp \
     test_atcabstractbeacon.cpp \
     test_atcabstractfix.cpp \
     test_atcabstractprocedure.cpp \
+    test_atcabstractproceduresymbol.cpp \
+    test_atcabstractsector.cpp \
     \
     test_atcairport.cpp \
     test_atcairspace.cpp \
@@ -156,6 +162,8 @@ HEADERS += \
     test_atcabstractbeacon.h \
     test_atcabstractfix.h \
     test_atcabstractprocedure.h \
+    test_atcabstractproceduresymbol.h \
+    test_atcabstractsector.h \
     \
     test_atcairport.h \
     test_atcairspace.h \

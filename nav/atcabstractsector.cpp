@@ -6,14 +6,6 @@ ATCAbstractSector::ATCAbstractSector(QString name) : sectorName(name)
 
 ATCAbstractSector::~ATCAbstractSector()
 {
-    if(!lines.empty())
-    {
-        for(int i = 0; i < lines.size(); i++)
-        {
-            delete lines.at(i);
-        }
-    }
-
     if(!coords1.empty())
     {
         for(int i = 0; i < coords1.size(); i++)
@@ -59,11 +51,6 @@ coordsPair& ATCAbstractSector::getCoordsPair(int iterator)
     return projectedCoords[iterator];
 }
 
-QGraphicsLineItem *ATCAbstractSector::getLine(int iterator)
-{
-    return lines.at(iterator);
-}
-
 QGraphicsPolygonItem *ATCAbstractSector::getPolygon(int iterator)
 {
     return polygons.at(iterator);
@@ -84,7 +71,7 @@ void ATCAbstractSector::setName(QString name)
     sectorName = name;
 }
 
-void ATCAbstractSector::setColor(QColor &color)
+void ATCAbstractSector::setColor(QColor color)
 {
     for(int i = 0; i < polygons.size(); i++)
     {
@@ -108,11 +95,6 @@ void ATCAbstractSector::appendCoords2(ATCAirspaceFix *coord)
 void ATCAbstractSector::appendCoordsPair(coordsPair &pair)
 {
     projectedCoords.append(pair);
-}
-
-void ATCAbstractSector::appendLine(QGraphicsLineItem *line)
-{
-    lines.append(line);
 }
 
 void ATCAbstractSector::appendPolygon(QGraphicsPolygonItem *polygon)
@@ -143,9 +125,4 @@ void ATCAbstractSector::hide()
 bool ATCAbstractSector::isVisible()
 {
     return visible;
-}
-
-void ATCAbstractSector::setFlagVisible(bool flag)
-{
-    visible = flag;
 }
