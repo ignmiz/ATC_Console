@@ -146,8 +146,12 @@ void Test_ATCAirport::test_show()
     QGraphicsEllipseItem *ellipse = new QGraphicsEllipseItem(5, 7, 20, 10);
     airport.setSymbol(ellipse);
 
+    QGraphicsSimpleTextItem *txt = new QGraphicsSimpleTextItem();
+    airport.setLabel(txt);
+
     airport.show();
     QVERIFY(airport.getSymbol()->isVisible());
+    QVERIFY(airport.getLabel()->isVisible());
 }
 
 void Test_ATCAirport::test_hide()
@@ -157,16 +161,17 @@ void Test_ATCAirport::test_hide()
     QGraphicsEllipseItem *ellipse = new QGraphicsEllipseItem(5, 7, 20, 10);
     airport.setSymbol(ellipse);
 
+    QGraphicsSimpleTextItem *txt = new QGraphicsSimpleTextItem();
+    airport.setLabel(txt);
+
     airport.hide();
     QVERIFY(!airport.getSymbol()->isVisible());
+    QVERIFY(!airport.getLabel()->isVisible());
 }
 
 void Test_ATCAirport::test_isVisible()
 {
     ATCAirport airport("EPWA", 20, 50);
-
-    QGraphicsEllipseItem *ellipse = new QGraphicsEllipseItem(5, 7, 20, 10);
-    airport.setSymbol(ellipse);
 
     airport.show();
     QVERIFY(airport.isVisible());

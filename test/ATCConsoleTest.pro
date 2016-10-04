@@ -155,7 +155,11 @@ SOURCES += main.cpp \
     test_atcairspace.cpp \
     test_atcairspacefix.cpp \
     test_atcairspacesector.cpp \
-    test_atcairwayhigh.cpp
+    test_atcairwayhigh.cpp \
+    test_atcairwaylow.cpp \
+    test_atcbeaconndb.cpp \
+    test_atcbeaconvor.cpp \
+    test_atcnavfix.cpp
 
 HEADERS += \
     test_atcabstractairway.h \
@@ -169,4 +173,8 @@ HEADERS += \
     test_atcairspace.h \
     test_atcairspacefix.h \
     test_atcairspacesector.h \
-    test_atcairwayhigh.h
+    test_atcairwayhigh.h \
+    test_atcairwaylow.h \
+    test_atcbeaconndb.h \
+    test_atcbeaconvor.h \
+    test_atcnavfix.h

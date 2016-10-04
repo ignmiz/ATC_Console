@@ -62,16 +62,16 @@ void ATCNavFix::setColor(QColor color)
 
 void ATCNavFix::show()
 {
-    symbol->show();
-    label->show();
+    if(symbol != nullptr) symbol->show();
+    if(label != nullptr) label->show();
 
     visible = true;
 }
 
 void ATCNavFix::hide()
 {
-    symbol->hide();
-    label->hide();
+    if(symbol != nullptr) symbol->hide();
+    if(label != nullptr) label->hide();
 
     visible = false;
 }
@@ -79,9 +79,4 @@ void ATCNavFix::hide()
 bool ATCNavFix::isVisible()
 {
     return visible;
-}
-
-void ATCNavFix::setFlagVisible(bool flag)
-{
-    visible = flag;
 }

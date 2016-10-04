@@ -10,6 +10,10 @@
 #include "test_atcairspacefix.h"
 #include "test_atcairspacesector.h"
 #include "test_atcairwayhigh.h"
+#include "test_atcairwaylow.h"
+#include "test_atcbeaconndb.h"
+#include "test_atcbeaconvor.h"
+#include "test_atcnavfix.h"
 
 #include <QThread>
 
@@ -30,6 +34,10 @@ int main(int argc, char *argv[])
     Test_ATCAirspaceFix test_ATCAirspaceFix;
     Test_ATCAirspaceSector test_ATCAirspaceSector;
     Test_ATCAirwayHigh test_ATCAirwayHigh;
+    Test_ATCAirwayLow test_ATCAirwayLow;
+    Test_ATCBeaconNDB test_ATCBeaconNDB;
+    Test_ATCBeaconVOR test_ATCBeaconVOR;
+    Test_ATCNavFix test_ATCNavFix;
 
 //Test suites are declared here
     failed = QTest::qExec(&test_ATCAbstractAirway, argc, argv);
@@ -44,6 +52,10 @@ int main(int argc, char *argv[])
     failed = QTest::qExec(&test_ATCAirspaceFix, argc, argv);
     failed = QTest::qExec(&test_ATCAirspaceSector, argc, argv);
     failed = QTest::qExec(&test_ATCAirwayHigh, argc, argv);
+    failed = QTest::qExec(&test_ATCAirwayLow, argc, argv);
+    failed = QTest::qExec(&test_ATCBeaconNDB, argc, argv);
+    failed = QTest::qExec(&test_ATCBeaconVOR, argc, argv);
+    failed = QTest::qExec(&test_ATCNavFix, argc, argv);
 
     QThread::msleep(1000);
 
