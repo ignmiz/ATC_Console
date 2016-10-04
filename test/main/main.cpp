@@ -9,8 +9,12 @@
 #include "test_atcairspacesector.h"
 #include "test_atcairwayhigh.h"
 
+#include <QThread>
+
 int main(int argc, char *argv[])
 {
+    bool failed;
+
 //Test suites are declared here
     Test_ATCAbstractAirway test_ATCAbstractAirway;
     Test_ATCAbstractBeacon test_ATCAbstractBeacon;
@@ -24,16 +28,27 @@ int main(int argc, char *argv[])
     Test_ATCAirwayHigh test_ATCAirwayHigh;
 
 //Test suites are declared here
-    QTest::qExec(&test_ATCAbstractAirway, argc, argv);
-    QTest::qExec(&test_ATCAbstractBeacon, argc, argv);
-    QTest::qExec(&test_ATCAbstractFix, argc, argv);
-    QTest::qExec(&test_ATCAbstractProcedure, argc, argv);
+    failed = QTest::qExec(&test_ATCAbstractAirway, argc, argv);
+    failed = QTest::qExec(&test_ATCAbstractBeacon, argc, argv);
+    failed = QTest::qExec(&test_ATCAbstractFix, argc, argv);
+    failed = QTest::qExec(&test_ATCAbstractProcedure, argc, argv);
 
-    QTest::qExec(&test_ATCAirport, argc, argv);
-    QTest::qExec(&test_ATCAirspace, argc, argv);
-    QTest::qExec(&test_ATCAirspaceFix, argc, argv);
-    QTest::qExec(&test_ATCAirspaceSector, argc, argv);
-    QTest::qExec(&test_ATCAirwayHigh, argc, argv);
+    failed = QTest::qExec(&test_ATCAirport, argc, argv);
+    failed = QTest::qExec(&test_ATCAirspace, argc, argv);
+    failed = QTest::qExec(&test_ATCAirspaceFix, argc, argv);
+    failed = QTest::qExec(&test_ATCAirspaceSector, argc, argv);
+    failed = QTest::qExec(&test_ATCAirwayHigh, argc, argv);
+
+    QThread::msleep(1000);
+
+    if(failed)
+    {
+        qDebug() << "At least one test FAILED!";
+    }
+    else
+    {
+        qDebug() << "All tests PASSED!";
+    }
 
     return 0;
 }
