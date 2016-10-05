@@ -14,6 +14,15 @@
 #include "test_atcbeaconndb.h"
 #include "test_atcbeaconvor.h"
 #include "test_atcnavfix.h"
+#include "test_atcproceduresid.h"
+#include "test_atcproceduresidsymbol.h"
+#include "test_atcprocedurestar.h"
+#include "test_atcprocedurestarsymbol.h"
+#include "test_atcrunway.h"
+#include "test_atcrunwayextendedcentreline.h"
+#include "test_atcsectorartcc.h"
+#include "test_atcsectorartcchigh.h"
+#include "test_atcsectorartcclow.h"
 
 #include <QThread>
 
@@ -38,6 +47,15 @@ int main(int argc, char *argv[])
     Test_ATCBeaconNDB test_ATCBeaconNDB;
     Test_ATCBeaconVOR test_ATCBeaconVOR;
     Test_ATCNavFix test_ATCNavFix;
+    Test_ATCProcedureSID test_ATCProcedureSID;
+    Test_ATCProcedureSIDSymbol test_ATCProcedureSIDSymbol;
+    Test_ATCProcedureSTAR test_ATCProcedureSTAR;
+    Test_ATCProcedureSTARSymbol test_ATCProcedureSTARSymbol;
+    Test_ATCRunway test_ATCRunway;
+    Test_ATCRunwayExtendedCentreline test_ATCRunwayExtendedCentreline;
+    Test_ATCSectorARTCC test_ATCSectorARTCC;
+    Test_ATCSectorARTCCHigh test_ATCSectorARTCCHigh;
+    Test_ATCSectorARTCCLow test_ATCSectorARTCCLow;
 
 //Test suites are declared here
     failed = QTest::qExec(&test_ATCAbstractAirway, argc, argv);
@@ -56,6 +74,15 @@ int main(int argc, char *argv[])
     failed = QTest::qExec(&test_ATCBeaconNDB, argc, argv);
     failed = QTest::qExec(&test_ATCBeaconVOR, argc, argv);
     failed = QTest::qExec(&test_ATCNavFix, argc, argv);
+    failed = QTest::qExec(&test_ATCProcedureSID, argc, argv);
+    failed = QTest::qExec(&test_ATCProcedureSIDSymbol, argc, argv);
+    failed = QTest::qExec(&test_ATCProcedureSTAR, argc, argv);
+    failed = QTest::qExec(&test_ATCProcedureSTARSymbol, argc, argv);
+    failed = QTest::qExec(&test_ATCRunway, argc, argv);
+    failed = QTest::qExec(&test_ATCRunwayExtendedCentreline, argc, argv);
+    failed = QTest::qExec(&test_ATCSectorARTCC, argc, argv);
+    failed = QTest::qExec(&test_ATCSectorARTCCHigh, argc, argv);
+    failed = QTest::qExec(&test_ATCSectorARTCCLow, argc, argv);
 
     QThread::msleep(1000);
 

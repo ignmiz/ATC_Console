@@ -1,10 +1,5 @@
 #include "atcrunwayextendedcentreline.h"
 
-ATCRunwayExtendedCentreline::ATCRunwayExtendedCentreline()
-{
-
-}
-
 ATCRunwayExtendedCentreline::ATCRunwayExtendedCentreline(QGraphicsLineItem *line) : centreline(line)
 {
 

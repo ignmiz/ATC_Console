@@ -159,7 +159,17 @@ SOURCES += main.cpp \
     test_atcairwaylow.cpp \
     test_atcbeaconndb.cpp \
     test_atcbeaconvor.cpp \
-    test_atcnavfix.cpp
+    test_atcnavfix.cpp \
+    test_atcproceduresid.cpp \
+    test_atcproceduresidsymbol.cpp \
+    test_atcprocedurestar.cpp \
+    test_atcprocedurestarsymbol.cpp \
+    test_atcrunway.cpp \
+    test_atcrunwayextendedcentreline.cpp \
+    test_atcsectorartcc.cpp \
+    test_atcsectorartcchigh.cpp \
+    test_atcsectorartcclow.cpp
+
 
 HEADERS += \
     test_atcabstractairway.h \
@@ -177,4 +187,13 @@ HEADERS += \
     test_atcairwaylow.h \
     test_atcbeaconndb.h \
     test_atcbeaconvor.h \
-    test_atcnavfix.h
+    test_atcnavfix.h \
+    test_atcproceduresid.h \
+    test_atcproceduresidsymbol.h \
+    test_atcprocedurestar.h \
+    test_atcprocedurestarsymbol.h \
+    test_atcrunway.h \
+    test_atcrunwayextendedcentreline.h \
+    test_atcsectorartcc.h \
+    test_atcsectorartcchigh.h \
+    test_atcsectorartcclow.h

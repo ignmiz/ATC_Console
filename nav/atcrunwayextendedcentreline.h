@@ -7,7 +7,6 @@
 class ATCRunwayExtendedCentreline
 {
 public:
-    explicit ATCRunwayExtendedCentreline();
     explicit ATCRunwayExtendedCentreline(QGraphicsLineItem *line);
     ~ATCRunwayExtendedCentreline();
 
