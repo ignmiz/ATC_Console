@@ -3,8 +3,9 @@ QT += core gui positioning testlib
 CONFIG += c++11
 
 VPATH += ./main \
-    ./mock \
-    ./suits \
+    ./mock/nav \
+    ./suits/flight \
+    ./suits/nav \
     ../custom \
     ../dialog \
     ../display \
@@ -16,8 +17,9 @@ VPATH += ./main \
     ../utils
 
 INCLUDEPATH += ./main \
-    ./mock \
-    ./suits \
+    ./mock/nav \
+    ./suits/flight \
+    ./suits/nav \
     ../custom \
     ../dialog \
     ../display \
@@ -78,7 +80,7 @@ SOURCES += \
     atcsettings.cpp \
     atcsettingstableview.cpp \
     atccompany.cpp \
-    suits/test_atccompany.cpp
+
 
 HEADERS  += \
     mainwindow.h \
@@ -122,7 +124,7 @@ HEADERS  += \
     atcsettings.h \
     atcsettingstableview.h \
     atccompany.h \
-    suits/test_atccompany.h
+
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
@@ -174,7 +176,9 @@ SOURCES += main.cpp \
     test_atcrunwayextendedcentreline.cpp \
     test_atcsectorartcc.cpp \
     test_atcsectorartcchigh.cpp \
-    test_atcsectorartcclow.cpp
+    test_atcsectorartcclow.cpp \
+    \
+    test_atccompany.h
 
 
 HEADERS += \
@@ -202,4 +206,6 @@ HEADERS += \
     test_atcrunwayextendedcentreline.h \
     test_atcsectorartcc.h \
     test_atcsectorartcchigh.h \
-    test_atcsectorartcclow.h
+    test_atcsectorartcclow.h \
+    \
+    test_atccompany.cpp
