@@ -9,6 +9,7 @@ QT       += core gui positioning
 VPATH += ./custom \
     ./dialog \
     ./display \
+    ./flight \
     ./main \
     ./nav \
     ./settings \
@@ -18,6 +19,7 @@ VPATH += ./custom \
 INCLUDEPATH += ./custom \
     ./dialog \
     ./display \
+    ./flight \
     ./main \
     ./nav \
     ./settings \
@@ -67,7 +69,8 @@ SOURCES += main.cpp\
     dialogsettings.cpp \
     dialogcolorpicker.cpp \
     atcsettings.cpp \
-    atcsettingstableview.cpp
+    atcsettingstableview.cpp \
+    atccompany.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -108,7 +111,8 @@ HEADERS  += mainwindow.h \
     dialogsettings.h \
     dialogcolorpicker.h \
     atcsettings.h \
-    atcsettingstableview.h
+    atcsettingstableview.h \
+    atccompany.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \

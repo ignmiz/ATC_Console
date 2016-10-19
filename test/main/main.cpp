@@ -24,6 +24,8 @@
 #include "test_atcsectorartcchigh.h"
 #include "test_atcsectorartcclow.h"
 
+#include "test_atccompany.h"
+
 #include <QThread>
 
 int main(int argc, char *argv[])
@@ -57,6 +59,8 @@ int main(int argc, char *argv[])
     Test_ATCSectorARTCCHigh test_ATCSectorARTCCHigh;
     Test_ATCSectorARTCCLow test_ATCSectorARTCCLow;
 
+    Test_ATCCompany test_ATCCompany;
+
 //Test suites are declared here
     failed = QTest::qExec(&test_ATCAbstractAirway, argc, argv);
     failed = QTest::qExec(&test_ATCAbstractBeacon, argc, argv);
@@ -83,6 +87,8 @@ int main(int argc, char *argv[])
     failed = QTest::qExec(&test_ATCSectorARTCC, argc, argv);
     failed = QTest::qExec(&test_ATCSectorARTCCHigh, argc, argv);
     failed = QTest::qExec(&test_ATCSectorARTCCLow, argc, argv);
+
+    failed = QTest::qExec(&test_ATCCompany, argc, argv);
 
     QThread::msleep(1000);
 

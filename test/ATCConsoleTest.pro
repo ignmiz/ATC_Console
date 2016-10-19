@@ -8,6 +8,7 @@ VPATH += ./main \
     ../custom \
     ../dialog \
     ../display \
+    ../flight \
     ../main \
     ../nav \
     ../settings \
@@ -20,6 +21,7 @@ INCLUDEPATH += ./main \
     ../custom \
     ../dialog \
     ../display \
+    ../flight \
     ../main \
     ../nav \
     ../settings \
@@ -75,6 +77,8 @@ SOURCES += \
     dialogcolorpicker.cpp \
     atcsettings.cpp \
     atcsettingstableview.cpp \
+    atccompany.cpp \
+    suits/test_atccompany.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -117,6 +121,8 @@ HEADERS  += \
     dialogcolorpicker.h \
     atcsettings.h \
     atcsettingstableview.h \
+    atccompany.h \
+    suits/test_atccompany.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
