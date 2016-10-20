@@ -80,7 +80,7 @@ SOURCES += \
     atcsettings.cpp \
     atcsettingstableview.cpp \
     atccompany.cpp \
-
+    atccompanyfactory.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -124,6 +124,7 @@ HEADERS  += \
     atcsettings.h \
     atcsettingstableview.h \
     atccompany.h \
+    atccompanyfactory.h
 
 
 FORMS    += mainwindow.ui \
@@ -178,7 +179,8 @@ SOURCES += main.cpp \
     test_atcsectorartcchigh.cpp \
     test_atcsectorartcclow.cpp \
     \
-    test_atccompany.h
+    test_atccompany.cpp \
+    test_atccompanyfactory.cpp
 
 
 HEADERS += \
@@ -208,4 +210,5 @@ HEADERS += \
     test_atcsectorartcchigh.h \
     test_atcsectorartcclow.h \
     \
-    test_atccompany.cpp
+    test_atccompany.h \
+    test_atccompanyfactory.h

@@ -70,7 +70,8 @@ SOURCES += main.cpp\
     dialogcolorpicker.cpp \
     atcsettings.cpp \
     atcsettingstableview.cpp \
-    atccompany.cpp
+    atccompany.cpp \
+    flight/atccompanyfactory.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -112,7 +113,8 @@ HEADERS  += mainwindow.h \
     dialogcolorpicker.h \
     atcsettings.h \
     atcsettingstableview.h \
-    atccompany.h
+    atccompany.h \
+    flight/atccompanyfactory.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \

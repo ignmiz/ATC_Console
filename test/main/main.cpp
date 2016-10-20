@@ -1,3 +1,4 @@
+//----------Submodule: nav----------
 #include "test_atcabstractairway.h"
 #include "test_atcabstractbeacon.h"
 #include "test_atcabstractfix.h"
@@ -24,7 +25,9 @@
 #include "test_atcsectorartcchigh.h"
 #include "test_atcsectorartcclow.h"
 
+//----------Submodule: flight----------
 #include "test_atccompany.h"
+#include "test_atccompanyfactory.h"
 
 #include <QThread>
 
@@ -33,6 +36,7 @@ int main(int argc, char *argv[])
     bool failed;
 
 //Test suites are declared here
+    //----------Submodule: nav----------
     Test_ATCAbstractAirway test_ATCAbstractAirway;
     Test_ATCAbstractBeacon test_ATCAbstractBeacon;
     Test_ATCAbstractFix test_ATCAbstractFix;
@@ -59,9 +63,12 @@ int main(int argc, char *argv[])
     Test_ATCSectorARTCCHigh test_ATCSectorARTCCHigh;
     Test_ATCSectorARTCCLow test_ATCSectorARTCCLow;
 
+    //----------Submodule: flight----------
     Test_ATCCompany test_ATCCompany;
+    Test_ATCCompanyFactory test_ATCCompanyFactory;
 
 //Test suites are declared here
+    //----------Submodule: nav----------
     failed = QTest::qExec(&test_ATCAbstractAirway, argc, argv);
     failed = QTest::qExec(&test_ATCAbstractBeacon, argc, argv);
     failed = QTest::qExec(&test_ATCAbstractFix, argc, argv);
@@ -88,7 +95,9 @@ int main(int argc, char *argv[])
     failed = QTest::qExec(&test_ATCSectorARTCCHigh, argc, argv);
     failed = QTest::qExec(&test_ATCSectorARTCCLow, argc, argv);
 
+    //----------Submodule: flight----------
     failed = QTest::qExec(&test_ATCCompany, argc, argv);
+    failed = QTest::qExec(&test_ATCCompanyFactory, argc, argv);
 
     QThread::msleep(1000);
 

@@ -1,0 +1,86 @@
+AAL	AMERICAN	American Airlines
+AAR	ASIANA	Asiana Airlines
+ADR	ADRIA	Adria Airways
+AEE	AEGAN	Aegan Airlines
+AFL	AEROFLOT	Aeroflot
+AFR	AIRFRANS	Air France
+AHK	AIR HONG KONG	Air Hong Kong
+AMC	AIR MALTA	Air Malta
+ANA	ALL NIPPON	All Nippon Airways
+AUA	AUSTRIAN	Austrian Airlines
+AZA	ALITALIA	Alitalia
+BAW	SPEEDBIRD	British Airways
+BCY	CITY-IRELAND	CityJet
+BEE	JERSEY	Flybe
+BER	AIR BERLIN	Air Berlin
+BRU	BELAVIA	Belavia
+BTI	AIR BALTIC	Air Baltic
+BUC	BULGARIAN CHARTER	Bulgarian Air Charter
+CCA	AIR CHINA	Air China
+CFG	CONDOR	Condor
+CLW	CENTAL WINGS	LOT Charters
+CLX	CARGOLUX	Cargolux
+CPA	CATHAY	Cathay Pacific
+CSA	CSA	Czech Airlines
+DAL	DELTA	Delta Air Lines
+DHK	WORLD EXPRESS	DHL Air UK
+DLH	LUFTHANSA	Lufthansa
+EIN	SHAMROCK	Aer Lingus
+ELY	EL AL	El Al
+ENT	ENTERAIR	Enter Air
+ETD	ETIHAD	Etihad Airways
+EWG	EUROWINGS	Eurowings
+EXN	EXIN	Exin
+EXS	CHANNEX	Jet2
+EZS	TOPSWISS	EasyJet Switzerland
+EZY	EASY	EasyJet
+FDX	FEDEX	FedEx Express
+FIN	FINNAIR	Finnair
+GEC	LUFTHANSA CARGO	Lufthansa Cargo
+GNX	AEROGENEX	Genex
+IBE	IBERIA	Iberia
+ICE	ICEAIR	Icelandair
+IGA	IGUANA	Skytaxi
+JAL	JAPAN AIR	Japan Airlines
+KLC	CITY	KLM Cityhopper
+KLM	KLM	KLM
+LGL	LUXAIR	Luxair
+LLP	SKYPOL	Small Planet Airlines (Poland)
+LOT	LOT	Lot Polish Airlines
+LZB	FLYING BULGARIA	Bulgaria Air
+MAS	MALAYSIAN	Malaysia Airlines
+MLD	AIR MOLDOVA	Air Moldova
+MON	MONARCH	Monarch Airlines
+MSC	AIR CAIRO	Air Cairo
+MSR	EGYPTAIR	EgyptAir
+NAX	NOR SHUTTLE	Norwegian Air Shuttle
+NLY	NIKI	Niki
+OAL	OLYMPIC	Olympic Air
+OAW	HELVETIC	Helvetic Airways
+PIA	PAKISTAN	Pakistan International Airlines
+QTR	QATARI	Quatar Airways
+RAM	ROYALAIR MAROC	Royal Air Maroc
+RJA	JORDANIAN	Royal Jordanian
+ROT	TAROM	TAROM
+RYR	RYANAIR	Ryanair
+SAR	SPRINTAIR CARGO	SprintAir Cargo
+SAS	SCANDINAVIAN	Scandinavian Airlines
+SIA	SINGAPORE	Singapore Airlines
+SRN	SPRINTAIR	SprintAir
+SVA	SAUDIA	Saudia
+SWR	SWISS	Swiss International Air Lines
+TAP	AIR PORTUGAL	TAP Portugal
+TAR	TUNAIR	Tunisair
+TAY	QUALITY	ASL Airlines Belgium
+TCW	THOMAS COOK	Thomas Cook Airlines Belgium
+TCX	KESTREL	Thomas Cook Airlines
+THA	THAI	Thai Airways International
+THY	TURKISH	Turkish Airlines
+TOM	TOMSON	Thomson Airlines
+TVP	JET TRAVEL	Travel Service Polska
+TVS	SKYTRAVEL	Travel Service
+UAE	EMIRATES	Emirates
+UPS	UPS	UPS Airlines
+VIR	VIRGIN	Virgin Atlantic Airways
+VKG	VIKING	Thomas Cook Airlines Scandinavia
+WZZ	WIZZ	Wizz Air
