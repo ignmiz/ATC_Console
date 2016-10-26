@@ -71,7 +71,8 @@ SOURCES += main.cpp\
     atcsettings.cpp \
     atcsettingstableview.cpp \
     atccompany.cpp \
-    flight/atccompanyfactory.cpp
+    atccompanyfactory.cpp \
+    atcaircrafttype.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -114,7 +115,8 @@ HEADERS  += mainwindow.h \
     atcsettings.h \
     atcsettingstableview.h \
     atccompany.h \
-    flight/atccompanyfactory.h
+    atccompanyfactory.h \
+    atcaircrafttype.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \

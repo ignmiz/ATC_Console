@@ -5,10 +5,23 @@ namespace ATC {
 
 enum ATCDialogType
 {
-    TextConsole,
-    Default
+    TextConsole, Default
 };
 
+enum AircraftType
+{
+    Civil, Military
+};
+
+enum EngineType
+{
+    Jet, Turboprop, Piston
+};
+
+enum WakeCategory
+{
+    J, H, M, L
+};
 }
 
 #endif // ATCFLAGS_H
