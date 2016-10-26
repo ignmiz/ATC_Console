@@ -72,7 +72,8 @@ SOURCES += main.cpp\
     atcsettingstableview.cpp \
     atccompany.cpp \
     atccompanyfactory.cpp \
-    atcaircrafttype.cpp
+    atcaircrafttype.cpp \
+    atcaircrafttypefactory.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -116,7 +117,8 @@ HEADERS  += mainwindow.h \
     atcsettingstableview.h \
     atccompany.h \
     atccompanyfactory.h \
-    atcaircrafttype.h
+    atcaircrafttype.h \
+    atcaircrafttypefactory.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \

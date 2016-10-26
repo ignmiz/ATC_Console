@@ -29,6 +29,7 @@
 #include "test_atccompany.h"
 #include "test_atccompanyfactory.h"
 #include "test_atcaircrafttype.h"
+#include "test_atcaircrafttypefactory.h"
 
 #include <QThread>
 
@@ -68,6 +69,7 @@ int main(int argc, char *argv[])
     Test_ATCCompany test_ATCCompany;
     Test_ATCCompanyFactory test_ATCCompanyFactory;
     Test_ATCAircraftType test_ATCAircraftType;
+    Test_ATCAircraftTypeFactory test_ATCAircraftTypeFactory;
 
 //Test suites are declared here
     //----------Submodule: nav----------
@@ -101,6 +103,7 @@ int main(int argc, char *argv[])
     failed = QTest::qExec(&test_ATCCompany, argc, argv);
     failed = QTest::qExec(&test_ATCCompanyFactory, argc, argv);
     failed = QTest::qExec(&test_ATCAircraftType, argc, argv);
+    failed = QTest::qExec(&test_ATCAircraftTypeFactory, argc, argv);
 
     QThread::msleep(1000);
 

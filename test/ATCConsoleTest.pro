@@ -81,7 +81,8 @@ SOURCES += \
     atcsettingstableview.cpp \
     atccompany.cpp \
     atccompanyfactory.cpp \
-    atcaircrafttype.cpp
+    atcaircrafttype.cpp \
+    atcaircrafttypefactory.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -126,8 +127,8 @@ HEADERS  += \
     atcsettingstableview.h \
     atccompany.h \
     atccompanyfactory.h \
-    atcaircrafttype.h
-
+    atcaircrafttype.h \
+    atcaircrafttypefactory.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
@@ -183,7 +184,8 @@ SOURCES += main.cpp \
     \
     test_atccompany.cpp \
     test_atccompanyfactory.cpp \
-    test_atcaircrafttype.cpp
+    test_atcaircrafttype.cpp \
+    test_atcaircrafttypefactory.cpp
 
 HEADERS += \
     test_atcabstractairway.h \
@@ -214,4 +216,5 @@ HEADERS += \
     \
     test_atccompany.h \
     test_atccompanyfactory.h \
-    test_atcaircrafttype.h
+    test_atcaircrafttype.h \
+    test_atcaircrafttypefactory.h
