@@ -15,16 +15,10 @@ public:
     explicit ATCCompanyFactory(QString path);
     ~ATCCompanyFactory();
 
-    ATCCompany* newCompany();
-
-    QString getCode(int i);
-    QString getCallsign(int i);
-    QString getName(int i);
+    ATCCompany* getCompany();
 
 private:
-    QVector<QString> codes;
-    QVector<QString> callsigns;
-    QVector<QString> names;
+    QVector<ATCCompany*> companies;
 };
 
 #endif // ATCCOMPANYFACTORY_H

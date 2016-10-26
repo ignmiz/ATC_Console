@@ -26,9 +26,8 @@ ATCCompanyFactory::ATCCompanyFactory(QString path)
             QString callsign = stringList.at(1).trimmed();
             QString name = stringList.at(2).trimmed();
 
-            codes.append(code);
-            callsigns.append(callsign);
-            names.append(name);
+            ATCCompany *company = new ATCCompany(code, callsign, name);
+            companies.append(company);
         }
     }
 
@@ -37,30 +36,20 @@ ATCCompanyFactory::ATCCompanyFactory(QString path)
 
 ATCCompanyFactory::~ATCCompanyFactory()
 {
+    for(int i = 0; i < companies.size(); i++)
+    {
+        delete companies.at(i);
+    }
 
+    companies.clear();
 }
 
-ATCCompany* ATCCompanyFactory::newCompany()
+ATCCompany* ATCCompanyFactory::getCompany()
 {
     int vectorStart = 0;
-    int vectorEnd = codes.size() - 1;
+    int vectorEnd = companies.size() - 1;
 
-    int rowNumber = vectorStart + qrand() % (vectorEnd - vectorStart);
+    int iter = vectorStart + qrand() % (vectorEnd - vectorStart);
 
-    return new ATCCompany(codes.at(rowNumber), callsigns.at(rowNumber), names.at(rowNumber));
-}
-
-QString ATCCompanyFactory::getCode(int i)
-{
-    return codes.at(i);
-}
-
-QString ATCCompanyFactory::getCallsign(int i)
-{
-    return callsigns.at(i);
-}
-
-QString ATCCompanyFactory::getName(int i)
-{
-    return names.at(i);
+    return companies.at(iter);
 }
