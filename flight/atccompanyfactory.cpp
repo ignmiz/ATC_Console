@@ -53,3 +53,8 @@ ATCCompany* ATCCompanyFactory::getCompany()
 
     return companies.at(iter);
 }
+
+ATCCompany *ATCCompanyFactory::getCompany(int i)
+{
+    return companies.at(i);
+}

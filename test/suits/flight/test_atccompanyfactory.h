@@ -12,7 +12,7 @@ class Test_ATCCompanyFactory : public QObject
     Q_OBJECT
 
 private slots:
-    void test_newCompany();
+    void test_getCompany();
 
 private:
     QString path = "E:/Qt/ATC_Console/ATC_Console/test/data/test_company.txt";

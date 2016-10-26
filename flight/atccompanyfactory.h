@@ -16,6 +16,7 @@ public:
     ~ATCCompanyFactory();
 
     ATCCompany* getCompany();
+    ATCCompany* getCompany(int i);
 
 private:
     QVector<ATCCompany*> companies;
