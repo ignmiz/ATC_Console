@@ -15,6 +15,8 @@ void Test_ATCCompanyFactory::test_getCompany()
     }
 
     ATCCompany *company = companyFactory.getCompany(0);
-
     QVERIFY(((company->getCode() == "AAA") && (company->getCallsign() == "TSTCALL1") && (company->getName() == "Test Name 1")));
+
+    company = companyFactory.getCompany("AAC");
+    QVERIFY(((company->getCode() == "AAC") && (company->getCallsign() == "TSTCALL3") && (company->getName() == "Test Name 3")));
 }

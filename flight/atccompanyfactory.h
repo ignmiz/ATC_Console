@@ -17,6 +17,7 @@ public:
 
     ATCCompany* getCompany();
     ATCCompany* getCompany(int i);
+    ATCCompany* getCompany(QString ICAOcode);
 
 private:
     QVector<ATCCompany*> companies;

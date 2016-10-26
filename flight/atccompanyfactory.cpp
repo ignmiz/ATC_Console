@@ -46,15 +46,41 @@ ATCCompanyFactory::~ATCCompanyFactory()
 
 ATCCompany* ATCCompanyFactory::getCompany()
 {
-    int vectorStart = 0;
-    int vectorEnd = companies.size() - 1;
+    if(companies.size() > 1)
+    {
+        int vectorStart = 0;
+        int vectorEnd = companies.size() - 1;
 
-    int iter = vectorStart + qrand() % (vectorEnd - vectorStart);
+        int iter = vectorStart + qrand() % (vectorEnd - vectorStart);
 
-    return companies.at(iter);
+        return companies.at(iter);
+    }
+    else if(companies.size() == 1)
+    {
+        return companies.at(0);
+    }
+    else
+    {
+        return nullptr;
+    }
 }
 
 ATCCompany *ATCCompanyFactory::getCompany(int i)
 {
     return companies.at(i);
+}
+
+ATCCompany *ATCCompanyFactory::getCompany(QString ICAOcode)
+{
+    ATCCompany *company = nullptr;
+
+    for(int i = 0; i < companies.size(); i++)
+    {
+        if(companies.at(i)->getCode() == ICAOcode)
+        {
+            company = companies.at(i);
+        }
+    }
+
+    return company;
 }
