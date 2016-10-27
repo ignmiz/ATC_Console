@@ -1,12 +1,10 @@
 #include "atcsettings.h"
 
 #include <QDir>
-#include <QDebug>
 
-ATCSettings::ATCSettings()
+ATCSettings::ATCSettings(ATCPaths *p) : paths(p)
 {
-    assignPaths();
-    loadInitialSymbology(SYMBOLOGY_DFLT_PATH);
+    loadInitialSymbology(paths->SYMBOLOGY_DFLT_PATH);
 }
 
 ATCSettings::~ATCSettings()
@@ -14,64 +12,36 @@ ATCSettings::~ATCSettings()
 
 }
 
-void ATCSettings::assignPaths()
-{
-    QFile pathsFile(PATHS_FILE);
-
-    if(!pathsFile.open(QFile::ReadOnly | QFile::Text))
-    {
-        qDebug() << "Error while opening paths.txt file...";
-        return;
-    }
-
-    QTextStream stream(&pathsFile);
-    while(!stream.atEnd())
-    {
-        QString textLine = stream.readLine();
-        textLine = textLine.trimmed();
-
-        if(!textLine.isEmpty())
-        {
-            QStringList stringList = textLine.split("=", QString::SkipEmptyParts);
-
-            if(stringList.at(0).trimmed() == "DEFAULT SYMBOLOGY")
-            {
-                SYMBOLOGY_DFLT_PATH = stringList.at(1).trimmed();
-            }
-            else if(stringList.at(0).trimmed() == "EXPORT SYMBOLOGY")
-            {
-                SYMBOLOGY_EXPORT_PATH = stringList.at(1).trimmed();
-            }
-            else if(stringList.at(0).trimmed() == "DEFAULT DISPLAY")
-            {
-                DISPLAY_DFLT_PATH = stringList.at(1).trimmed();
-            }
-            else if(stringList.at(0).trimmed() == "EXPORT DISPLAY")
-            {
-                DISPLAY_EXPORT_PATH = stringList.at(1).trimmed();
-            }
-        }
-    }
-
-    pathsFile.close();
-}
-
 void ATCSettings::exportDefaultPathsFile()
 {
-    QFile pathsFile(PATHS_FILE);
+    QFile pathsFile(paths->PATHS_FILE);
 
     if(!pathsFile.open(QFile::WriteOnly | QFile::Text))
     {
-        qDebug() << "Error while opening " + PATHS_FILE + " file";
+        QMessageBox msgBox;
+        msgBox.setText("ATCSettings: Failed to open path: " + paths->PATHS_FILE);
+        msgBox.exec();
+
         return;
     }
 
     QTextStream out(&pathsFile);
 
-    out << "DEFAULT SYMBOLOGY = " << SYMBOLOGY_DFLT_PATH << endl;
-    out << "EXPORT SYMBOLOGY = " << SYMBOLOGY_EXPORT_PATH << endl;
-    out << "DEFAULT DISPLAY = " << DISPLAY_DFLT_PATH << endl;
-    out << "EXPORT DISPLAY = " << DISPLAY_EXPORT_PATH << endl;
+    out << "DEFAULT SYMBOLOGY = " << paths->SYMBOLOGY_DFLT_PATH << endl;
+    out << "EXPORT SYMBOLOGY = " << paths->SYMBOLOGY_EXPORT_PATH << endl;
+    out << "DEFAULT DISPLAY = " << paths->DISPLAY_DFLT_PATH << endl;
+    out << "EXPORT DISPLAY = " << paths->DISPLAY_EXPORT_PATH << endl;
+    out << "" << endl;
+    out << "SCT = " << paths->SCT_PATH << endl;
+    out << "ESE = " << paths->ESE_PATH << endl;
+    out << "" << endl;
+    out << "COMPANY = " << paths->COMPANY_PATH << endl;
+    out << "COMPANY TEST = " << paths->COMPANY_TEST_PATH << endl;
+    out << "" << endl;
+    out << "BADA = " << paths->BADA_PATH << endl;
+    out << "BADA TEST = " << paths->BADA_TEST_PATH << endl;
+    out << "APF TEST = " << paths->APF_TEST_PATH << endl;
+    out << "OPF TEST = " << paths->OPF_TEST_PATH << endl;
 
     pathsFile.close();
 }
@@ -89,7 +59,10 @@ void ATCSettings::interpretSymbologyFile(QString path)
 
     if(!file.open(QFile::ReadOnly | QFile::Text))
     {
-        qDebug() << "Error while opening file " << path;
+        QMessageBox msgBox;
+        msgBox.setText("ATCSettings: Failed to open path: " + path);
+        msgBox.exec();
+
         return;
     }
 
@@ -572,7 +545,10 @@ void ATCSettings::exportSymbology(QString path)
 
     if(!file.open(QFile::WriteOnly | QFile::Text))
     {
-        qDebug() << "Error while opening file " + path;
+        QMessageBox msgBox;
+        msgBox.setText("ATCSettings: Failed to open path: " + path);
+        msgBox.exec();
+
         return;
     }
 

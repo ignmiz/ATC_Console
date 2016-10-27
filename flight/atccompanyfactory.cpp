@@ -10,6 +10,8 @@ ATCCompanyFactory::ATCCompanyFactory(QString path)
         QMessageBox msgBox;
         msgBox.setText("Failed to open path: " + path);
         msgBox.exec();
+
+        return;
     }
 
     QTextStream stream(&file);

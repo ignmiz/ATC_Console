@@ -2,6 +2,7 @@
 #define TEST_ATCCOMPANYFACTORY_H
 
 #include "atccompanyfactory.h"
+#include "atcpaths.h"
 
 #include <QTest>
 #include <QObject>
@@ -10,6 +11,9 @@
 class Test_ATCCompanyFactory : public QObject
 {
     Q_OBJECT
+public:
+    Test_ATCCompanyFactory();
+    ~Test_ATCCompanyFactory();
 
 private slots:
     void test_getCompany();

@@ -1,6 +1,18 @@
 
 #include "test_atcaircrafttype.h"
 
+Test_ATCAircraftType::Test_ATCAircraftType()
+{
+    ATCPaths paths;
+    APFpath = paths.APF_TEST_PATH;
+    OPFpath = paths.OPF_TEST_PATH;
+}
+
+Test_ATCAircraftType::~Test_ATCAircraftType()
+{
+
+}
+
 void Test_ATCAircraftType::test_constructObject()
 {
     ATCAircraftType foo(OPFpath, APFpath);

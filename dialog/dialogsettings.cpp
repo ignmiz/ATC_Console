@@ -25,9 +25,9 @@ DialogSettings::DialogSettings(ATCSituationalDisplay *display, QWidget *parent) 
     uiInner->lineEditDefaultDisplay->setReadOnly(true);
     uiInner->lineEditActiveDisplay->setReadOnly(true);
 
-    uiInner->lineEditDefaultSymbology->setText(situationalDisplay->getSettings()->SYMBOLOGY_DFLT_PATH);
+    uiInner->lineEditDefaultSymbology->setText(situationalDisplay->getPaths()->SYMBOLOGY_DFLT_PATH);
     uiInner->lineEditActiveSymbology->setText(situationalDisplay->getSettings()->SYMBOLOGY_ACTIVE_PATH);
-    uiInner->lineEditDefaultDisplay->setText(situationalDisplay->getSettings()->DISPLAY_DFLT_PATH);
+    uiInner->lineEditDefaultDisplay->setText(situationalDisplay->getPaths()->DISPLAY_DFLT_PATH);
     uiInner->lineEditActiveDisplay->setText(situationalDisplay->getSettings()->DISPLAY_ACTIVE_PATH);
 }
 
@@ -642,22 +642,22 @@ void DialogSettings::slotHeaderStateChanged(QStandardItem *item)
 
 void DialogSettings::on_buttonSetDefaultSymbology_clicked()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, tr("Set as default symbology file..."), situationalDisplay->getSettings()->SYMBOLOGY_EXPORT_PATH, tr("Text files(*.sym)"));
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Set as default symbology file..."), situationalDisplay->getPaths()->SYMBOLOGY_EXPORT_PATH, tr("Text files(*.sym)"));
     if(filePath.isEmpty()) return;
 
-    situationalDisplay->getSettings()->SYMBOLOGY_DFLT_PATH = filePath;
+    situationalDisplay->getPaths()->SYMBOLOGY_DFLT_PATH = filePath;
     situationalDisplay->getSettings()->exportDefaultPathsFile();
 
     QMessageBox msgBox(this);
     msgBox.setText("Default symbology set to: " + filePath);
     msgBox.exec();
 
-    uiInner->lineEditDefaultSymbology->setText(situationalDisplay->getSettings()->SYMBOLOGY_DFLT_PATH);
+    uiInner->lineEditDefaultSymbology->setText(situationalDisplay->getPaths()->SYMBOLOGY_DFLT_PATH);
 }
 
 void DialogSettings::on_buttonLoadSymbology_clicked()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, tr("Load symbology..."), situationalDisplay->getSettings()->SYMBOLOGY_EXPORT_PATH, tr("Text files(*.sym)"));
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Load symbology..."), situationalDisplay->getPaths()->SYMBOLOGY_EXPORT_PATH, tr("Text files(*.sym)"));
     if(filePath.isEmpty()) return;
 
     situationalDisplay->getSettings()->loadSymbology(filePath);
@@ -667,7 +667,7 @@ void DialogSettings::on_buttonLoadSymbology_clicked()
 
 void DialogSettings::on_buttonExportSymbology_clicked()
 {
-    QString filePath = QFileDialog::getSaveFileName(this, tr("Export to..."), situationalDisplay->getSettings()->SYMBOLOGY_EXPORT_PATH, tr("Text files(*.sym)"));
+    QString filePath = QFileDialog::getSaveFileName(this, tr("Export to..."), situationalDisplay->getPaths()->SYMBOLOGY_EXPORT_PATH, tr("Text files(*.sym)"));
     if(filePath.isEmpty()) return;
 
     situationalDisplay->getSettings()->exportSymbology(filePath);
@@ -679,22 +679,22 @@ void DialogSettings::on_buttonExportSymbology_clicked()
 
 void DialogSettings::on_buttonSetDefaultDisplay_clicked()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, tr("Set as default display file..."), situationalDisplay->getSettings()->DISPLAY_EXPORT_PATH, tr("Text files(*.dis)"));
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Set as default display file..."), situationalDisplay->getPaths()->DISPLAY_EXPORT_PATH, tr("Text files(*.dis)"));
     if(filePath.isEmpty()) return;
 
-    situationalDisplay->getSettings()->DISPLAY_DFLT_PATH = filePath;
+    situationalDisplay->getPaths()->DISPLAY_DFLT_PATH = filePath;
     situationalDisplay->getSettings()->exportDefaultPathsFile();
 
     QMessageBox msgBox(this);
     msgBox.setText("Default display set to: " + filePath);
     msgBox.exec();
 
-    uiInner->lineEditDefaultDisplay->setText(situationalDisplay->getSettings()->DISPLAY_DFLT_PATH);
+    uiInner->lineEditDefaultDisplay->setText(situationalDisplay->getPaths()->DISPLAY_DFLT_PATH);
 }
 
 void DialogSettings::on_buttonLoadDisplay_clicked()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, tr("Load display..."), situationalDisplay->getSettings()->SYMBOLOGY_EXPORT_PATH, tr("Text files(*.dis)"));
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Load display..."), situationalDisplay->getPaths()->DISPLAY_EXPORT_PATH, tr("Text files(*.dis)"));
     if(filePath.isEmpty()) return;
 
     visibleSectorsARTCCLow = 0;
@@ -720,7 +720,7 @@ void DialogSettings::on_buttonLoadDisplay_clicked()
 
 void DialogSettings::on_buttonExportDisplay_clicked()
 {
-    QString filePath = QFileDialog::getSaveFileName(this, tr("Export to..."), situationalDisplay->getSettings()->DISPLAY_EXPORT_PATH, tr("Text files(*.dis)"));
+    QString filePath = QFileDialog::getSaveFileName(this, tr("Export to..."), situationalDisplay->getPaths()->DISPLAY_EXPORT_PATH, tr("Text files(*.dis)"));
     if(filePath.isEmpty()) return;
 
     situationalDisplay->exportDisplay(filePath);

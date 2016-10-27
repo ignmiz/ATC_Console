@@ -2,6 +2,7 @@
 #define TEST_ATCAIRCRAFTTYPEFACTORY_H
 
 #include "atcaircrafttypefactory.h"
+#include "atcpaths.h"
 
 #include <QObject>
 #include <QString>
@@ -10,12 +11,15 @@
 class Test_ATCAircraftTypeFactory : public QObject
 {
     Q_OBJECT
+public:
+    Test_ATCAircraftTypeFactory();
+    ~Test_ATCAircraftTypeFactory();
 
 private slots:
     void test_getType();
 
 private:
-    QString DBpath = "E:/Qt/ATC_Console/ATC_Console/test/data";
+    QString DBpath;
 };
 
 #endif // TEST_ATCAIRCRAFTTYPEFACTORY_H

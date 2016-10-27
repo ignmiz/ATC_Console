@@ -96,6 +96,8 @@ void ATCAircraftType::interpretOPF(QString OPFpath)
         QMessageBox msgBox;
         msgBox.setText("ATCAircraftType: Failed to open path: " + OPFpath);
         msgBox.exec();
+
+        return;
     }
 
     QTextStream stream(&file);
@@ -255,6 +257,8 @@ void ATCAircraftType::interpretAPF(QString APFpath)
         QMessageBox msgBox;
         msgBox.setText("ATCAircraftType: Failed to open path: " + APFpath);
         msgBox.exec();
+
+        return;
     }
 
     QTextStream stream(&file);

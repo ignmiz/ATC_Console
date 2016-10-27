@@ -11,10 +11,12 @@
 #include <QDebug>
 
 ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) :
-    QGraphicsView(parent),
-    airspaceData(new ATCAirspace("E:/Qt/ATC_Console/ATC_Console/config/EPWW_175_20160428.sct", "E:/Qt/ATC_Console/ATC_Console/config/EPWW_175_20160428.ese")),
-    settings(new ATCSettings)
+    QGraphicsView(parent)
 {
+    paths = new ATCPaths();
+    airspaceData = new ATCAirspace(paths->SCT_PATH, paths->ESE_PATH);
+    settings = new ATCSettings(paths);
+
     situationalDisplaySetup();
     connectSlots();
 
@@ -40,13 +42,14 @@ ATCSituationalDisplay::ATCSituationalDisplay(QWidget *parent) :
     calculateFixes();
     calculateAirports();
 
-    loadInitialDisplay(settings->DISPLAY_DFLT_PATH);
+    loadInitialDisplay(paths->DISPLAY_DFLT_PATH);
 }
 
 ATCSituationalDisplay::~ATCSituationalDisplay()
 {
     if(airspaceData != nullptr) delete airspaceData;
     if(settings != nullptr) delete settings;
+    if(paths != nullptr) delete paths;
     scene->clear();
 }
 
@@ -68,6 +71,11 @@ ATCSettings* ATCSituationalDisplay::getSettings()
 ATCAirspace *ATCSituationalDisplay::getAirspaceData()
 {
     return airspaceData;
+}
+
+ATCPaths *ATCSituationalDisplay::getPaths()
+{
+    return paths;
 }
 
 void ATCSituationalDisplay::exportDisplay(QString path)

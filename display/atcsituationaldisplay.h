@@ -4,6 +4,7 @@
 #include "atcairspace.h"
 #include "atcconst.h"
 #include "atcsettings.h"
+#include "atcpaths.h"
 
 #include <QGraphicsView>
 #include <QVector>
@@ -32,6 +33,7 @@ public:
 
     ATCSettings* getSettings();
     ATCAirspace* getAirspaceData();
+    ATCPaths* getPaths();
 
     void hideAll();
 
@@ -83,6 +85,7 @@ public slots:
 private:
     ATCAirspace *airspaceData = nullptr;
     ATCSettings *settings = nullptr;
+    ATCPaths *paths = nullptr;
 
     qreal baseScale = 1;
     qreal scaleResolution = 0.15;

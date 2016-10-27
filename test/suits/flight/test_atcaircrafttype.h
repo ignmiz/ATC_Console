@@ -2,6 +2,7 @@
 #define TEST_ATCAIRCRAFTTYPE_H
 
 #include "atcaircrafttype.h"
+#include "atcpaths.h"
 
 #include <QObject>
 #include <QString>
@@ -11,12 +12,16 @@ class Test_ATCAircraftType : public QObject
 {
     Q_OBJECT
 
+public:
+    Test_ATCAircraftType();
+    ~Test_ATCAircraftType();
+
 private slots:
     void test_constructObject();
 
 private:
-    QString APFpath = "E:/Qt/ATC_Console/ATC_Console/test/data/test.APF";
-    QString OPFpath = "E:/Qt/ATC_Console/ATC_Console/test/data/test.OPF";
+    QString APFpath;
+    QString OPFpath;
 };
 
 #endif // TEST_ATCAIRCRAFTTYPE_H

@@ -1,4 +1,15 @@
-DEFAULT SYMBOLOGY = E:/Qt/ATC_Console/ATC_Console/config/DefaultSymbology.sym
+DEFAULT SYMBOLOGY = ../../ATC_Console/ATC_Console/config/DefaultSymbology.sym
 EXPORT SYMBOLOGY = ../../ATC_Console/ATC_Console/config/user
-DEFAULT DISPLAY = E:/Qt/ATC_Console/ATC_Console/config/DefaultDisplay.dis
+DEFAULT DISPLAY = ../../ATC_Console/ATC_Console/config/DefaultDisplay.dis
 EXPORT DISPLAY = ../../ATC_Console/ATC_Console/config/user
+
+SCT = ../../ATC_Console/ATC_Console/config/EPWW_175_20160428.sct
+ESE = ../../ATC_Console/ATC_Console/config/EPWW_175_20160428.ese
+
+COMPANY = ../../ATC_Console/ATC_Console/data/company.txt
+COMPANY TEST = ../../ATC_Console/ATC_Console/test/data/test_company.txt
+
+BADA = ../../../Magisterka/BADA_13.3.1/files
+BADA TEST = ../../ATC_Console/ATC_Console/test/data
+APF TEST = ../../ATC_Console/ATC_Console/test/data/test.APF
+OPF TEST = ../../ATC_Console/ATC_Console/test/data/test.OPF

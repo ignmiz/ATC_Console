@@ -1,6 +1,17 @@
 
 #include "test_atccompanyfactory.h"
 
+Test_ATCCompanyFactory::Test_ATCCompanyFactory()
+{
+    ATCPaths paths;
+    path = paths.COMPANY_TEST_PATH;
+}
+
+Test_ATCCompanyFactory::~Test_ATCCompanyFactory()
+{
+
+}
+
 void Test_ATCCompanyFactory::test_getCompany()
 {
     ATCCompanyFactory companyFactory(path);

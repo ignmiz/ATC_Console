@@ -1,8 +1,11 @@
 #ifndef ATCSETTINGS_H
 #define ATCSETTINGS_H
 
+#include "atcpaths.h"
+
 #include <QColor>
 #include <QFile>
+#include <QMessageBox>
 #include <QTextStream>
 
 class ATCSettings : public QObject
@@ -10,7 +13,7 @@ class ATCSettings : public QObject
     Q_OBJECT
 
 public:
-    explicit ATCSettings();
+    explicit ATCSettings(ATCPaths *p);
     ~ATCSettings();
 
     void exportDefaultPathsFile();
@@ -20,16 +23,10 @@ public:
 
     bool fileExists(QString path);    
 
-    QString PATHS_FILE = "../../ATC_Console/ATC_Console/config/paths.txt";
-
     QString SYMBOLOGY_NAME;
-    QString SYMBOLOGY_DFLT_PATH;
-    QString SYMBOLOGY_EXPORT_PATH;
     QString SYMBOLOGY_ACTIVE_PATH;
 
     QString DISPLAY_NAME;
-    QString DISPLAY_DFLT_PATH;
-    QString DISPLAY_EXPORT_PATH;
     QString DISPLAY_ACTIVE_PATH;
 
     QColor ARTCC_LOW_COLOR;
@@ -109,9 +106,10 @@ signals:
     void signalApplySettings();
 
 private:
+    ATCPaths *paths;
+
     QRgb colorFromString(QString string);
 
-    void assignPaths();
     void loadInitialSymbology(QString path);
 
     void interpretSymbologyFile(QString path);
