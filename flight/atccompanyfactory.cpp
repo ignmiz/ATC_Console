@@ -8,7 +8,7 @@ ATCCompanyFactory::ATCCompanyFactory(QString path)
     if(!file.open(QFile::ReadOnly | QFile::Text))
     {
         QMessageBox msgBox;
-        msgBox.setText("Failed to open path: " + path);
+        msgBox.setText("ATCCompanyFactory: Failed to open path: " + path);
         msgBox.exec();
 
         return;

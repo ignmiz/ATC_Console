@@ -13,3 +13,6 @@ BADA = ../../../Magisterka/BADA_13.3.1/files
 BADA TEST = ../../ATC_Console/ATC_Console/test/data
 APF TEST = ../../ATC_Console/ATC_Console/test/data/test.APF
 OPF TEST = ../../ATC_Console/ATC_Console/test/data/test.OPF
+
+ROUTE = ../../ATC_Console/ATC_Console/data/route.txt
+ROUTE TEST = ../../ATC_Console/ATC_Console/test/data/test_route.txt

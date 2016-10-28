@@ -31,6 +31,9 @@ public:
     QString APF_TEST_PATH;
     QString OPF_TEST_PATH;
 
+    QString ROUTE_PATH;
+    QString ROUTE_TEST_PATH;
+
 };
 
 #endif // ATCPATHS_H

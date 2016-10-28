@@ -72,6 +72,14 @@ ATCPaths::ATCPaths()
             {
                 OPF_TEST_PATH = stringList.at(1).trimmed();
             }
+            else if(stringList.at(0).trimmed() == "ROUTE")
+            {
+                ROUTE_PATH = stringList.at(1).trimmed();
+            }
+            else if(stringList.at(0).trimmed() == "ROUTE TEST")
+            {
+                ROUTE_TEST_PATH = stringList.at(1).trimmed();
+            }
         }
     }
 

@@ -74,7 +74,9 @@ SOURCES += main.cpp\
     atccompanyfactory.cpp \
     atcaircrafttype.cpp \
     atcaircrafttypefactory.cpp \
-    atcpaths.cpp
+    atcpaths.cpp \
+    atcroute.cpp \
+    atcroutefactory.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -120,7 +122,9 @@ HEADERS  += mainwindow.h \
     atccompanyfactory.h \
     atcaircrafttype.h \
     atcaircrafttypefactory.h \
-    atcpaths.h
+    atcpaths.h \
+    atcroute.h \
+    atcroutefactory.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \

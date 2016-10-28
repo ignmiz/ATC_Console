@@ -19,7 +19,7 @@ private slots:
     void test_getCompany();
 
 private:
-    QString path = "E:/Qt/ATC_Console/ATC_Console/test/data/test_company.txt";
+    QString path;
 };
 
 #endif // TEST_ATCCOMPANYFACTORY_H
