@@ -2,6 +2,9 @@
 
 #include "atccompanyfactory.h"
 #include "atcaircrafttypefactory.h"
+#include "atcroutefactory.h"
+
+#include "atcpaths.h"
 
 #include <QApplication>
 #include <QDesktopWidget>
@@ -13,8 +16,11 @@ int main(int argc, char *argv[])
     MainWindow mainWindow;
     mainWindow.show();
 
-    ATCCompanyFactory companyFactory("E:/Qt/ATC_Console/ATC_Console/data/company.txt");
-    ATCAircraftTypeFactory typeFactory("E:/Magisterka/BADA13.3/files");
+    ATCPaths paths;
+
+    ATCCompanyFactory companyFactory(paths.COMPANY_PATH);
+    ATCAircraftTypeFactory typeFactory(paths.BADA_PATH);
+    ATCRouteFactory routeFactory(paths.ROUTE_PATH);
 
     return a.exec();
 }
