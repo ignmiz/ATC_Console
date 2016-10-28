@@ -12,40 +12,6 @@ ATCSettings::~ATCSettings()
 
 }
 
-void ATCSettings::exportDefaultPathsFile()
-{
-    QFile pathsFile(paths->PATHS_FILE);
-
-    if(!pathsFile.open(QFile::WriteOnly | QFile::Text))
-    {
-        QMessageBox msgBox;
-        msgBox.setText("ATCSettings: Failed to open path: " + paths->PATHS_FILE);
-        msgBox.exec();
-
-        return;
-    }
-
-    QTextStream out(&pathsFile);
-
-    out << "DEFAULT SYMBOLOGY = " << paths->SYMBOLOGY_DFLT_PATH << endl;
-    out << "EXPORT SYMBOLOGY = " << paths->SYMBOLOGY_EXPORT_PATH << endl;
-    out << "DEFAULT DISPLAY = " << paths->DISPLAY_DFLT_PATH << endl;
-    out << "EXPORT DISPLAY = " << paths->DISPLAY_EXPORT_PATH << endl;
-    out << "" << endl;
-    out << "SCT = " << paths->SCT_PATH << endl;
-    out << "ESE = " << paths->ESE_PATH << endl;
-    out << "" << endl;
-    out << "COMPANY = " << paths->COMPANY_PATH << endl;
-    out << "COMPANY TEST = " << paths->COMPANY_TEST_PATH << endl;
-    out << "" << endl;
-    out << "BADA = " << paths->BADA_PATH << endl;
-    out << "BADA TEST = " << paths->BADA_TEST_PATH << endl;
-    out << "APF TEST = " << paths->APF_TEST_PATH << endl;
-    out << "OPF TEST = " << paths->OPF_TEST_PATH << endl;
-
-    pathsFile.close();
-}
-
 void ATCSettings::loadInitialSymbology(QString path)
 {
     interpretSymbologyFile(path);

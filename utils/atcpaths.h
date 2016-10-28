@@ -12,6 +12,8 @@ public:
     explicit ATCPaths();
     ~ATCPaths();
 
+    void exportPaths();
+
     QString PATHS_FILE = "../../ATC_Console/ATC_Console/config/paths.txt";
 
     QString SYMBOLOGY_DFLT_PATH;

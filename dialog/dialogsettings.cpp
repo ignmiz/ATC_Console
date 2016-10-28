@@ -646,7 +646,7 @@ void DialogSettings::on_buttonSetDefaultSymbology_clicked()
     if(filePath.isEmpty()) return;
 
     situationalDisplay->getPaths()->SYMBOLOGY_DFLT_PATH = filePath;
-    situationalDisplay->getSettings()->exportDefaultPathsFile();
+    situationalDisplay->getPaths()->exportPaths();
 
     QMessageBox msgBox(this);
     msgBox.setText("Default symbology set to: " + filePath);
@@ -683,7 +683,7 @@ void DialogSettings::on_buttonSetDefaultDisplay_clicked()
     if(filePath.isEmpty()) return;
 
     situationalDisplay->getPaths()->DISPLAY_DFLT_PATH = filePath;
-    situationalDisplay->getSettings()->exportDefaultPathsFile();
+    situationalDisplay->getPaths()->exportPaths();
 
     QMessageBox msgBox(this);
     msgBox.setText("Default display set to: " + filePath);

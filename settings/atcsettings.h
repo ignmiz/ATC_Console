@@ -16,8 +16,6 @@ public:
     explicit ATCSettings(ATCPaths *p);
     ~ATCSettings();
 
-    void exportDefaultPathsFile();
-
     void exportSymbology(QString path);
     void loadSymbology(QString path);
 
