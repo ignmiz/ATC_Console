@@ -22,6 +22,11 @@ enum WakeCategory
 {
     J, H, M, L
 };
+
+enum FlightRules
+{
+    IFR, VFR, SVFR
+};
 }
 
 #endif // ATCFLAGS_H
