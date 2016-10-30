@@ -1,6 +1,11 @@
 
 #include "atcroute.h"
 
+ATCRoute::ATCRoute()
+{
+
+}
+
 ATCRoute::ATCRoute(QString dep, QStringList route, QString des) : departure(dep), route(route), destination(des)
 {
 

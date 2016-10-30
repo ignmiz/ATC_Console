@@ -87,6 +87,7 @@ SOURCES += \
     atcroute.cpp \
     atcroutefactory.cpp \
     atcflightplan.cpp \
+    atcflightnumberfactory.cpp \
 
 
 HEADERS  += \
@@ -138,7 +139,7 @@ HEADERS  += \
     atcroute.h \
     atcroutefactory.h \
     atcflightplan.h \
-
+    atcflightnumberfactory.h \
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
@@ -198,7 +199,8 @@ SOURCES += main.cpp \
     test_atcaircrafttypefactory.cpp \
     test_atcroute.cpp \
     test_atcroutefactory.cpp \
-    test_atcflightplan.cpp
+    test_atcflightplan.cpp \
+    test_atcflightnumberfactory.cpp
 
 HEADERS += \
     test_atcabstractairway.h \
@@ -233,4 +235,5 @@ HEADERS += \
     test_atcaircrafttypefactory.h \
     test_atcroute.h \
     test_atcroutefactory.h \
-    test_atcflightplan.h
+    test_atcflightplan.h \
+    test_atcflightnumberfactory.h

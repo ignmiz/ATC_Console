@@ -33,6 +33,7 @@
 #include "test_atcroute.h"
 #include "test_atcroutefactory.h"
 #include "test_atcflightplan.h"
+#include "test_atcflightnumberfactory.h"
 
 #include <QThread>
 
@@ -76,6 +77,7 @@ int main(int argc, char *argv[])
     Test_ATCRoute test_ATCRoute;
     Test_ATCRouteFactory test_ATCRouteFactory;
     Test_ATCFlightPlan test_ATCFlightPlan;
+    Test_ATCFlightNumberFactory test_ATCFlightNumberFactory;
 
 //Test suites are declared here
     //----------Submodule: nav----------
@@ -113,6 +115,7 @@ int main(int argc, char *argv[])
     failed = QTest::qExec(&test_ATCRoute, argc, argv);
     failed = QTest::qExec(&test_ATCRouteFactory, argc, argv);
     failed = QTest::qExec(&test_ATCFlightPlan, argc, argv);
+    failed = QTest::qExec(&test_ATCFlightNumberFactory, argc, argv);
 
     QThread::msleep(1000);
 

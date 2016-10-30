@@ -2,6 +2,11 @@
 #include "atcflightplan.h"
 
 
+ATCFlightPlan::ATCFlightPlan()
+{
+
+}
+
 ATCFlightPlan::ATCFlightPlan(ATC::FlightRules fr, ATCCompany *company, QString fltNo, ATCAircraftType *type, ATCRoute *route, int tas, int altitude, QTime depTime, QTime enrTime) :
     rules(fr),
     company(company),

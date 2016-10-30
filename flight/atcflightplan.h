@@ -13,6 +13,7 @@
 class ATCFlightPlan
 {
 public:
+    explicit ATCFlightPlan();
     explicit ATCFlightPlan(ATC::FlightRules fr, ATCCompany *company, QString fltNo, ATCAircraftType *type, ATCRoute *route, int tas, int altitude, QTime depTime, QTime enrTime);
     ~ATCFlightPlan();
 
