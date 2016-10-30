@@ -8,6 +8,8 @@ class ATCRoute
 {
 public:
     explicit ATCRoute(QString dep, QStringList route, QString des);
+    explicit ATCRoute(ATCRoute *other);
+    explicit ATCRoute(ATCRoute &other);
     ~ATCRoute();
 
     QString getDeparture();

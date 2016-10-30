@@ -6,6 +6,20 @@ ATCRoute::ATCRoute(QString dep, QStringList route, QString des) : departure(dep)
 
 }
 
+ATCRoute::ATCRoute(ATCRoute *other)
+{
+    departure = other->getDeparture();
+    route = other->getRoute();
+    destination = other->getDestination();
+}
+
+ATCRoute::ATCRoute(ATCRoute &other)
+{
+    departure = other.getDeparture();
+    route = other.getRoute();
+    destination = other.getDestination();
+}
+
 ATCRoute::~ATCRoute()
 {
 
