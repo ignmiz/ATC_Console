@@ -6,6 +6,7 @@ VPATH += ./main \
     ./mock/nav \
     ./suits/flight \
     ./suits/nav \
+    ./suits/utils \
     ../custom \
     ../dialog \
     ../display \
@@ -20,6 +21,7 @@ INCLUDEPATH += ./main \
     ./mock/nav \
     ./suits/flight \
     ./suits/nav \
+    ./suits/utils \
     ../custom \
     ../dialog \
     ../display \
@@ -88,7 +90,8 @@ SOURCES += \
     atcroutefactory.cpp \
     atcflightplan.cpp \
     atcflightnumberfactory.cpp \
-
+    \
+    atcmath.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -140,6 +143,8 @@ HEADERS  += \
     atcroutefactory.h \
     atcflightplan.h \
     atcflightnumberfactory.h \
+    \
+    atcmath.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
@@ -200,7 +205,9 @@ SOURCES += main.cpp \
     test_atcroute.cpp \
     test_atcroutefactory.cpp \
     test_atcflightplan.cpp \
-    test_atcflightnumberfactory.cpp
+    test_atcflightnumberfactory.cpp \
+    \
+    test_atcmath.cpp
 
 HEADERS += \
     test_atcabstractairway.h \
@@ -236,4 +243,6 @@ HEADERS += \
     test_atcroute.h \
     test_atcroutefactory.h \
     test_atcflightplan.h \
-    test_atcflightnumberfactory.h
+    test_atcflightnumberfactory.h \
+    \
+    test_atcmath.h

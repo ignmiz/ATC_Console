@@ -78,11 +78,11 @@ ATCRoute *ATCRouteFactory::getRoute(int i)
     return routes.at(i);
 }
 
-ATCRoute *ATCRouteFactory::getRoute(QString ades, QString adep)
+ATCRoute *ATCRouteFactory::getRoute(QString adep, QString ades)
 {
     for(int i = 0; i < routes.size(); i++)
     {
-        if((routes.at(i)->getDeparture() == ades) && (routes.at(i)->getDestination() == adep))
+        if((routes.at(i)->getDeparture() == adep) && (routes.at(i)->getDestination() == ades))
         {
             return routes.at(i);
         }

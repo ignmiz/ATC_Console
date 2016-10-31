@@ -79,7 +79,8 @@ SOURCES += main.cpp\
     atcroutefactory.cpp \
     atcflightplan.cpp \
     atcflightplanfactory.cpp \
-    atcflightnumberfactory.cpp
+    atcflightnumberfactory.cpp \
+    atcmath.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -130,7 +131,8 @@ HEADERS  += mainwindow.h \
     atcroutefactory.h \
     atcflightplan.h \
     atcflightplanfactory.h \
-    atcflightnumberfactory.h
+    atcflightnumberfactory.h \
+    atcmath.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \

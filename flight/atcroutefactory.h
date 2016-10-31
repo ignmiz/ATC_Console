@@ -17,7 +17,7 @@ public:
 
     ATCRoute* getRoute();
     ATCRoute* getRoute(int i);
-    ATCRoute* getRoute(QString ades, QString adep);
+    ATCRoute* getRoute(QString adep, QString ades);
 
 private:
     QVector<ATCRoute*> routes;
