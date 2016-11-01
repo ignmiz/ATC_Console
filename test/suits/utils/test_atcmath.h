@@ -20,7 +20,18 @@ private slots:
     void test_mps2kt();
     void test_kt2mps();
 
-    void test_tempISA();
+    void test_cas2tas();
+    void test_cas2mach();
+
+    void test_tas2cas();
+    void test_tas2mach();
+
+    void test_mach2tas();
+    void test_mach2cas();
+
+    void test_compareDouble();
+
+    void test_atmosISA();
 };
 
 #endif // TEST_ATCMATH_H

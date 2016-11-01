@@ -1,6 +1,16 @@
 #ifndef ATCMATH_H
 #define ATCMATH_H
 
+#include <QtMath>
+
+struct ISA
+{
+    double a;
+    double rho;
+    double p;
+    double T;
+};
+
 class ATCMath
 {
 public:
@@ -16,16 +26,23 @@ public:
     static double mps2kt(double varMPS);
     static double kt2mps(double varKT);
 
-    static double cas2tas();
-    static double cas2mach();
+    static double cas2tas(double casMPS, double p, double rho);
+    static double cas2mach(double casMPS, double p, double rho, double a);
 
-    static double tas2cas();
-    static double tas2mach();
+    static double tas2cas(double casMPS, double p, double rho);
+    static double tas2mach(double tasMPS, double a);
 
-    static double aISA(double h);
-    static double rhoISA(double h);
-    static double pISA(double h);
-    static double tempISA(double h);
+    static double mach2tas(double mach, double a);
+    static double mach2cas(double mach, double p, double rho, double a);
+
+    static bool compareDouble(double numActual, double numModel, double allowedError);
+
+    static ISA atmosISA(double h);
+
+    static double ESF();                    //DUMMY
+    static double crossoverAltitude();      //DUMMY
+    static double normalizeAngle();         //DUMMY
+    static double projectAcftPosOnPath();   //DUMMY
 
 private:
 
