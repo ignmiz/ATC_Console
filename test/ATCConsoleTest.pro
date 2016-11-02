@@ -90,8 +90,10 @@ SOURCES += \
     atcroutefactory.cpp \
     atcflightplan.cpp \
     atcflightnumberfactory.cpp \
+    atcflightplanfactory.cpp \
+    atcflight.cpp \
     \
-    atcmath.cpp
+    atcmath.cpp \
 
 HEADERS  += \
     mainwindow.h \
@@ -143,8 +145,10 @@ HEADERS  += \
     atcroutefactory.h \
     atcflightplan.h \
     atcflightnumberfactory.h \
+    atcflightplanfactory.h \
+    atcflight.h \
     \
-    atcmath.h
+    atcmath.h \
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
@@ -206,6 +210,8 @@ SOURCES += main.cpp \
     test_atcroutefactory.cpp \
     test_atcflightplan.cpp \
     test_atcflightnumberfactory.cpp \
+    test_atcflightplanfactory.cpp \
+    test_atcflight.cpp \
     \
     test_atcmath.cpp
 
@@ -244,5 +250,7 @@ HEADERS += \
     test_atcroutefactory.h \
     test_atcflightplan.h \
     test_atcflightnumberfactory.h \
+    test_atcflightplanfactory.h \
+    test_atcflight.h \    
     \
     test_atcmath.h
