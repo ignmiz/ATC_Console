@@ -53,6 +53,7 @@ ATCCompany* ATCCompanyFactory::getCompany()
         int vectorStart = 0;
         int vectorEnd = companies.size() - 1;
 
+        qsrand(QDateTime::currentMSecsSinceEpoch());
         int iter = vectorStart + qrand() % (vectorEnd - vectorStart);
 
         return companies.at(iter);

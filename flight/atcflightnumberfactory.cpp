@@ -13,6 +13,8 @@ ATCFlightNumberFactory::~ATCFlightNumberFactory()
 
 QString ATCFlightNumberFactory::getFlightNumber()
 {
+    qsrand(QDateTime::currentMSecsSinceEpoch());
+
     int minChars = 1;
     int maxChars = 4;
 
@@ -62,6 +64,8 @@ QString ATCFlightNumberFactory::getFlightNumber()
 
 QString ATCFlightNumberFactory::getFlightNumber(int charNo)
 {
+    qsrand(QDateTime::currentMSecsSinceEpoch());
+
     int minChars = charNo;
     int maxChars = charNo;
 
@@ -111,6 +115,8 @@ QString ATCFlightNumberFactory::getFlightNumber(int charNo)
 
 QString ATCFlightNumberFactory::getFlightNumber(int digits, int letters)
 {
+    qsrand(QDateTime::currentMSecsSinceEpoch());
+
     QString flightNumber;
 
     for(int i = 0; i < digits; i++)

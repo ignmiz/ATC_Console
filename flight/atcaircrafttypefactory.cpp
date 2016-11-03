@@ -45,6 +45,7 @@ ATCAircraftType* ATCAircraftTypeFactory::getType()
         int vectorStart = 0;
         int vectorEnd = types.size() - 1;
 
+        qsrand(QDateTime::currentMSecsSinceEpoch());
         int iter = vectorStart + qrand() % (vectorEnd - vectorStart);
 
         return types.at(iter);

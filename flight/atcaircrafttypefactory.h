@@ -3,6 +3,7 @@
 
 #include "atcaircrafttype.h"
 
+#include <QDateTime>
 #include <QDir>
 #include <QFileInfoList>
 #include <QString>

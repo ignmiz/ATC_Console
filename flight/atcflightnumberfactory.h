@@ -1,6 +1,7 @@
 #ifndef ATCFLIGHTNUMBERFACTORY_H
 #define ATCFLIGHTNUMBERFACTORY_H
 
+#include <QDateTime>
 #include <QString>
 
 class ATCFlightNumberFactory

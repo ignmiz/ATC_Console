@@ -3,6 +3,7 @@
 
 #include "atccompany.h"
 
+#include <QDateTime>
 #include <QFile>
 #include <QString>
 #include <QTextStream>
