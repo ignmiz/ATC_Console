@@ -44,7 +44,7 @@
 
 int main(int argc, char *argv[])
 {
-    bool failed;
+    QVector<bool> failed;
 
 //Test suites are declared here
     //----------Submodule: nav----------
@@ -91,54 +91,61 @@ int main(int argc, char *argv[])
 
 //Test suites are declared here
     //----------Submodule: nav----------
-    failed = QTest::qExec(&test_ATCAbstractAirway, argc, argv);
-    failed = QTest::qExec(&test_ATCAbstractBeacon, argc, argv);
-    failed = QTest::qExec(&test_ATCAbstractFix, argc, argv);
-    failed = QTest::qExec(&test_ATCAbstractProcedure, argc, argv);
-    failed = QTest::qExec(&test_ATCAbstractProcedureSymbol, argc, argv);
-    failed = QTest::qExec(&test_ATCAbstractSector, argc, argv);
+    failed.append(QTest::qExec(&test_ATCAbstractAirway, argc, argv));
+    failed.append(QTest::qExec(&test_ATCAbstractBeacon, argc, argv));
+    failed.append(QTest::qExec(&test_ATCAbstractFix, argc, argv));
+    failed.append(QTest::qExec(&test_ATCAbstractProcedure, argc, argv));
+    failed.append(QTest::qExec(&test_ATCAbstractProcedureSymbol, argc, argv));
+    failed.append(QTest::qExec(&test_ATCAbstractSector, argc, argv));
 
-    failed = QTest::qExec(&test_ATCAirport, argc, argv);
-    failed = QTest::qExec(&test_ATCAirspace, argc, argv);
-    failed = QTest::qExec(&test_ATCAirspaceFix, argc, argv);
-    failed = QTest::qExec(&test_ATCAirspaceSector, argc, argv);
-    failed = QTest::qExec(&test_ATCAirwayHigh, argc, argv);
-    failed = QTest::qExec(&test_ATCAirwayLow, argc, argv);
-    failed = QTest::qExec(&test_ATCBeaconNDB, argc, argv);
-    failed = QTest::qExec(&test_ATCBeaconVOR, argc, argv);
-    failed = QTest::qExec(&test_ATCNavFix, argc, argv);
-    failed = QTest::qExec(&test_ATCProcedureSID, argc, argv);
-    failed = QTest::qExec(&test_ATCProcedureSIDSymbol, argc, argv);
-    failed = QTest::qExec(&test_ATCProcedureSTAR, argc, argv);
-    failed = QTest::qExec(&test_ATCProcedureSTARSymbol, argc, argv);
-    failed = QTest::qExec(&test_ATCRunway, argc, argv);
-    failed = QTest::qExec(&test_ATCRunwayExtendedCentreline, argc, argv);
-    failed = QTest::qExec(&test_ATCSectorARTCC, argc, argv);
-    failed = QTest::qExec(&test_ATCSectorARTCCHigh, argc, argv);
-    failed = QTest::qExec(&test_ATCSectorARTCCLow, argc, argv);
+    failed.append(QTest::qExec(&test_ATCAirport, argc, argv));
+    failed.append(QTest::qExec(&test_ATCAirspace, argc, argv));
+    failed.append(QTest::qExec(&test_ATCAirspaceFix, argc, argv));
+    failed.append(QTest::qExec(&test_ATCAirspaceSector, argc, argv));
+    failed.append(QTest::qExec(&test_ATCAirwayHigh, argc, argv));
+    failed.append(QTest::qExec(&test_ATCAirwayLow, argc, argv));
+    failed.append(QTest::qExec(&test_ATCBeaconNDB, argc, argv));
+    failed.append(QTest::qExec(&test_ATCBeaconVOR, argc, argv));
+    failed.append(QTest::qExec(&test_ATCNavFix, argc, argv));
+    failed.append(QTest::qExec(&test_ATCProcedureSID, argc, argv));
+    failed.append(QTest::qExec(&test_ATCProcedureSIDSymbol, argc, argv));
+    failed.append(QTest::qExec(&test_ATCProcedureSTAR, argc, argv));
+    failed.append(QTest::qExec(&test_ATCProcedureSTARSymbol, argc, argv));
+    failed.append(QTest::qExec(&test_ATCRunway, argc, argv));
+    failed.append(QTest::qExec(&test_ATCRunwayExtendedCentreline, argc, argv));
+    failed.append(QTest::qExec(&test_ATCSectorARTCC, argc, argv));
+    failed.append(QTest::qExec(&test_ATCSectorARTCCHigh, argc, argv));
+    failed.append(QTest::qExec(&test_ATCSectorARTCCLow, argc, argv));
 
     //----------Submodule: flight----------
-    failed = QTest::qExec(&test_ATCCompany, argc, argv);
-    failed = QTest::qExec(&test_ATCCompanyFactory, argc, argv);
-    failed = QTest::qExec(&test_ATCAircraftType, argc, argv);
-    failed = QTest::qExec(&test_ATCAircraftTypeFactory, argc, argv);
-    failed = QTest::qExec(&test_ATCRoute, argc, argv);
-    failed = QTest::qExec(&test_ATCRouteFactory, argc, argv);
-    failed = QTest::qExec(&test_ATCFlightPlan, argc, argv);
-    failed = QTest::qExec(&test_ATCFlightNumberFactory, argc, argv);
-    failed = QTest::qExec(&test_ATCFlightPlanFactory, argc, argv);
-    failed = QTest::qExec(&test_ATCFlight, argc, argv);
+    failed.append(QTest::qExec(&test_ATCCompany, argc, argv));
+    failed.append(QTest::qExec(&test_ATCCompanyFactory, argc, argv));
+    failed.append(QTest::qExec(&test_ATCAircraftType, argc, argv));
+    failed.append(QTest::qExec(&test_ATCAircraftTypeFactory, argc, argv));
+    failed.append(QTest::qExec(&test_ATCRoute, argc, argv));
+    failed.append(QTest::qExec(&test_ATCRouteFactory, argc, argv));
+    failed.append(QTest::qExec(&test_ATCFlightPlan, argc, argv));
+    failed.append(QTest::qExec(&test_ATCFlightNumberFactory, argc, argv));
+    failed.append(QTest::qExec(&test_ATCFlightPlanFactory, argc, argv));
+    failed.append(QTest::qExec(&test_ATCFlight, argc, argv));
 
     //----------Submodule: utils----------
-    failed = QTest::qExec(&test_ATCMath, argc, argv);
+    failed.append(QTest::qExec(&test_ATCMath, argc, argv));
 
     QThread::msleep(1000);
 
-    if(failed)
+    bool flag = false;
+
+    for(int i = 0; i < failed.size(); i++)
     {
-        qDebug() << "At least one test FAILED!";
+        if(failed.at(i))
+        {
+            qDebug() << "At least one test FAILED! @ Suite: " << i + 1;
+            flag = true;
+        }
     }
-    else
+
+    if(!flag)
     {
         qDebug() << "All tests PASSED!";
     }

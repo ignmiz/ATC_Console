@@ -170,12 +170,12 @@ void Test_ATCFlight::test_setState()
     newState.h = 30;
     newState.v = 40;
     newState.hdg = 50;
-    state.cm = CM_D;
-    state.fp = FP_LA;
-    state.rpm = RPM_ON;
-    state.shm = SHM_M;
-    state.trm = TRM_L;
-    state.am = AM_C;
+    newState.cm = CM_D;
+    newState.fp = FP_LA;
+    newState.rpm = RPM_ON;
+    newState.shm = SHM_M;
+    newState.trm = TRM_L;
+    newState.am = AM_C;
 
     foo.setState(newState);
     QVERIFY(foo.getState().x == 10);
