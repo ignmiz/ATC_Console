@@ -6,9 +6,7 @@ ATCFlightPlanFactory::ATCFlightPlanFactory(ATCPaths &paths) :
     typeFactory(ATCAircraftTypeFactory(paths.BADA_PATH)),
     routeFactory(ATCRouteFactory(paths.ROUTE_PATH))
 {
-//    companyFactory = ATCCompanyFactory(paths.COMPANY_PATH);
-//    typeFactory = ATCAircraftTypeFactory(paths.BADA_PATH);
-//    routeFactory = ATCRouteFactory(paths.ROUTE_PATH);
+
 }
 
 ATCFlightPlanFactory::~ATCFlightPlanFactory()
@@ -27,7 +25,10 @@ ATCFlightPlan *ATCFlightPlanFactory::getFlightPlan(ATC::FlightRules fr, QString 
     QString fltNo = ATCFlightNumberFactory::getFlightNumber();
     ATCAircraftType *type = typeFactory.getType();
     ATCRoute *route = routeFactory.getRoute(adep, ades);
-    int tas = type->getVelocity().V_CR2_AV; //DUMMY! CONVERSION IAS/CAS/MACH + ISA ATMOSPHERE NEEDS TO BE IMPLEMENTED FIRST!
+
+    ISA isa = ATCMath::atmosISA(ATCMath::ft2m(altitude));
+    int tas = qFloor(ATCMath::mps2kt(ATCMath::mach2tas(type->getVelocity().M_CR_AV, isa.a)));
+
     QTime enr(0, 0, 0, 0); //DUMMY! HERE ENROUTE DISTANCE & TIME CALCULATOR IS NEEDED
 
     if(route == nullptr)

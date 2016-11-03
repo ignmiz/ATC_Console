@@ -7,6 +7,7 @@
 #include "atcroutefactory.h"
 #include "atcflightnumberfactory.h"
 #include "atcpaths.h"
+#include "atcmath.h"
 
 class ATCFlightPlanFactory
 {
