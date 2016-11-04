@@ -92,6 +92,7 @@ SOURCES += \
     atcflightnumberfactory.cpp \
     atcflightplanfactory.cpp \
     atcflight.cpp \
+    atcflightfactory.cpp \
     \
     atcmath.cpp \
 
@@ -147,6 +148,7 @@ HEADERS  += \
     atcflightnumberfactory.h \
     atcflightplanfactory.h \
     atcflight.h \
+    atcflightfactory.h \
     \
     atcmath.h \
 
@@ -212,6 +214,7 @@ SOURCES += main.cpp \
     test_atcflightnumberfactory.cpp \
     test_atcflightplanfactory.cpp \
     test_atcflight.cpp \
+    test_atcflightfactory.cpp \
     \
     test_atcmath.cpp
 
@@ -251,6 +254,7 @@ HEADERS += \
     test_atcflightplan.h \
     test_atcflightnumberfactory.h \
     test_atcflightplanfactory.h \
-    test_atcflight.h \    
+    test_atcflight.h \
+    test_atcflightfactory.h \
     \
     test_atcmath.h

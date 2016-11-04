@@ -15,8 +15,8 @@ public:
     explicit ATCFlightPlanFactory(ATCPaths &paths);
     ~ATCFlightPlanFactory();
 
-    ATCFlightPlan* getFlightPlan();
-    ATCFlightPlan* getFlightPlan(ATC::FlightRules fr, QString adep, QString ades, int altitude, QTime dep);
+    ATCFlightPlan* newFlightPlan();
+    ATCFlightPlan* newFlightPlan(ATC::FlightRules fr, QString adep, QString ades, int altitude, QTime dep);
 
 private:
     ATCCompanyFactory companyFactory;

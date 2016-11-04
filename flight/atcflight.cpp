@@ -41,6 +41,7 @@ State& ATCFlight::getState()
 
 void ATCFlight::setFlightPlan(ATCFlightPlan *fpl)
 {
+    delete plan;
     plan = fpl;
 }
 

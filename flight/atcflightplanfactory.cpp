@@ -14,12 +14,12 @@ ATCFlightPlanFactory::~ATCFlightPlanFactory()
 
 }
 
-ATCFlightPlan *ATCFlightPlanFactory::getFlightPlan()
+ATCFlightPlan *ATCFlightPlanFactory::newFlightPlan()
 {
     return new ATCFlightPlan();
 }
 
-ATCFlightPlan *ATCFlightPlanFactory::getFlightPlan(ATC::FlightRules fr, QString adep, QString ades, int altitude, QTime dep)
+ATCFlightPlan *ATCFlightPlanFactory::newFlightPlan(ATC::FlightRules fr, QString adep, QString ades, int altitude, QTime dep)
 {
     ATCCompany *company = companyFactory.getCompany();
     QString fltNo = ATCFlightNumberFactory::getFlightNumber();

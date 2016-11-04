@@ -12,7 +12,7 @@ class Test_ATCFlightPlanFactory : public QObject
     Q_OBJECT
 
 private slots:
-    void test_getFlightPlan();
+    void test_newFlightPlan();
 };
 
 #endif // TEST_ATCFLIGHTPLANFACTORY_H

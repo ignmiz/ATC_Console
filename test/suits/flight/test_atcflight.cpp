@@ -20,7 +20,7 @@ void Test_ATCFlight::test_constructObject()
 
     ATCPaths paths;
     ATCFlightPlanFactory factory(paths);
-    ATCFlightPlan *fpl = factory.getFlightPlan(ATC::IFR, "EPWA", "EPKK", 35000, QTime(12, 30, 0, 0));
+    ATCFlightPlan *fpl = factory.newFlightPlan(ATC::IFR, "EPWA", "EPKK", 35000, QTime(12, 30, 0, 0));
 
     ATCFlight foo(state, fpl, sq);
 
@@ -59,7 +59,7 @@ void Test_ATCFlight::test_setFlightPlan()
 
     ATCPaths paths;
     ATCFlightPlanFactory factory(paths);
-    ATCFlightPlan *fpl = factory.getFlightPlan(ATC::IFR, "EPWA", "EPKK", 35000, QTime(12, 30, 0, 0));
+    ATCFlightPlan *fpl = factory.newFlightPlan(ATC::IFR, "EPWA", "EPKK", 35000, QTime(12, 30, 0, 0));
 
     ATCFlight foo(state, fpl, sq);
 
@@ -78,7 +78,7 @@ void Test_ATCFlight::test_setFlightPlan()
     QVERIFY(foo.getState().trm == TRM_H);
     QVERIFY(foo.getState().am == AM_A);
 
-    ATCFlightPlan *newFpl = factory.getFlightPlan(ATC::IFR, "EPWA", "EPPO", 35000, QTime(12, 0, 0, 0));
+    ATCFlightPlan *newFpl = factory.newFlightPlan(ATC::IFR, "EPWA", "EPPO", 35000, QTime(12, 0, 0, 0));
     foo.setFlightPlan(newFpl);
     QVERIFY(foo.getFlightPlan() == newFpl);
 }
@@ -102,7 +102,7 @@ void Test_ATCFlight::test_setSquawk()
 
     ATCPaths paths;
     ATCFlightPlanFactory factory(paths);
-    ATCFlightPlan *fpl = factory.getFlightPlan(ATC::IFR, "EPWA", "EPKK", 35000, QTime(12, 30, 0, 0));
+    ATCFlightPlan *fpl = factory.newFlightPlan(ATC::IFR, "EPWA", "EPKK", 35000, QTime(12, 30, 0, 0));
 
     ATCFlight foo(state, fpl, sq);
 
@@ -145,7 +145,7 @@ void Test_ATCFlight::test_setState()
 
     ATCPaths paths;
     ATCFlightPlanFactory factory(paths);
-    ATCFlightPlan *fpl = factory.getFlightPlan(ATC::IFR, "EPWA", "EPKK", 35000, QTime(12, 30, 0, 0));
+    ATCFlightPlan *fpl = factory.newFlightPlan(ATC::IFR, "EPWA", "EPKK", 35000, QTime(12, 30, 0, 0));
 
     ATCFlight foo(state, fpl, sq);
 

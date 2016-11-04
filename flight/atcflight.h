@@ -68,7 +68,7 @@ public:
     void setState(State st);
 
 private:
-    ATCFlightPlan *plan;
+    ATCFlightPlan *plan = nullptr;
     QString squawk;
     State state;
 
