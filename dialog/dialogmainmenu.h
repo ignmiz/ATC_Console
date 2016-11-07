@@ -2,6 +2,7 @@
 #define DIALOGMAINMENU_H
 
 #include "atcdialog.h"
+#include "dialogflight.h"
 
 namespace Ui {
 class DialogMainMenu;
@@ -15,8 +16,13 @@ public:
     explicit DialogMainMenu(QWidget *parent = 0);
     ~DialogMainMenu();
 
+signals:
+    void signalConstructDialogFlight();
+
 private slots:
     ATC_MOUSE_HANDLER
+
+    void on_buttonTest_clicked();
 
 private:
     Ui::DialogMainMenu *uiInner;

@@ -42,6 +42,8 @@ void MainWindow::on_buttonMainMenu_clicked()
 
         setFlagDialogMainMenuExists(true);
         setSituationalDisplayFocus();
+
+        connect(dialogMainMenu, SIGNAL(signalConstructDialogFlight()), this, SLOT(slotConstructDialogFlight()));
     }
 }
 
@@ -98,6 +100,8 @@ void MainWindow::dialogMainMenuClosed()
     setFlagDialogMainMenuExists(false);
     disconnect(dialogMainMenu, SIGNAL(closed()), this, SLOT(dialogMainMenuClosed()));
     disconnect(dialogMainMenu, SIGNAL(changeFocusToDisplay()), this, SLOT(changeFocusToDisplay()));
+
+    disconnect(dialogMainMenu, SIGNAL(signalConstructDialogFlight()), this, SLOT(slotConstructDialogFlight()));
 }
 
 void MainWindow::dialogSectorSetupClosed()
@@ -117,6 +121,23 @@ void MainWindow::dialogSettingsClosed()
 void MainWindow::changeFocusToDisplay()
 {
     setSituationalDisplayFocus();
+}
+
+void MainWindow::slotConstructDialogFlight()
+{
+    dialogMainMenu->hide();
+
+    dialogFlight = new DialogFlight(this);
+    dialogFlight->show();
+
+    connect(dialogFlight, SIGNAL(closed()), this, SLOT(slotCloseDialogFlight()));
+}
+
+void MainWindow::slotCloseDialogFlight()
+{
+    disconnect(dialogFlight, SIGNAL(closed()), this, SLOT(slotCloseDialogFlight()));
+
+    dialogMainMenu->show();
 }
 
 void MainWindow::on_buttonClose_clicked()

@@ -46,12 +46,17 @@ private slots:
 
     void changeFocusToDisplay();
 
+    void slotConstructDialogFlight();
+    void slotCloseDialogFlight();
+
 private:
     Ui::MainWindow *ui;
     DialogTextConsole *dialogTextConsole;
     DialogMainMenu *dialogMainMenu;
     DialogSectorSetup *dialogSectorSetup;
     DialogSettings *dialogSettings;
+
+    DialogFlight *dialogFlight;
 
     bool flagDialogMainMenuExists = false;
     bool flagDialogSectorSetupExists = false;

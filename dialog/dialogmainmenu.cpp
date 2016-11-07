@@ -13,3 +13,8 @@ DialogMainMenu::~DialogMainMenu()
 {
     delete uiInner;
 }
+
+void DialogMainMenu::on_buttonTest_clicked()
+{
+    emit signalConstructDialogFlight();
+}
