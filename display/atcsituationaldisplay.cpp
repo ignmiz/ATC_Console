@@ -78,6 +78,11 @@ ATCPaths *ATCSituationalDisplay::getPaths()
     return paths;
 }
 
+QCursor& ATCSituationalDisplay::getAcftCursor()
+{
+    return acftCursor;
+}
+
 void ATCSituationalDisplay::exportDisplay(QString path)
 {
     QStringList pathElements = path.split("/", QString::KeepEmptyParts);
@@ -625,6 +630,8 @@ void ATCSituationalDisplay::situationalDisplaySetup()
 
     scene = new QGraphicsScene(this);
     setScene(scene);
+
+    acftCursor = QCursor(QPixmap("../../ATC_Console/ATC_Console/resources/acft_cursor.png"));
 }
 
 void ATCSituationalDisplay::rescaleAll()
@@ -3204,6 +3211,9 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
 void ATCSituationalDisplay::mousePressEvent(QMouseEvent *event)
 {
     QGraphicsView::mousePressEvent(event);
+
+    QPointF point = mapToScene(event->pos());
+    emit signalClicked(point.x(), point.y());
 }
 
 void ATCSituationalDisplay::mouseMoveEvent(QMouseEvent *event)

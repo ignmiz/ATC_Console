@@ -95,6 +95,30 @@ QRadioButton
 {
 	color: #c8c8c8;
 	font: 13px;
+}
+
+QScrollBar:vertical
+{
+	background: #000000;
+	width: 8px;
+	border: none;
+	margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: #505050;
+}
+
+QScrollBar::add-page:vertical
+{
+	background: #1e1e1e;
+	border: none;
+}
+
+QScrollBar::sub-page:vertical
+{
+	background: #1e1e1e;
+	border: none;
 }</string>
    </property>
    <property name="tabPosition">
@@ -337,16 +361,6 @@ QComboBox QAbstractItemView
       </property>
      </item>
     </widget>
-    <widget class="QLineEdit" name="lineEditAcftType">
-     <property name="geometry">
-      <rect>
-       <x>470</x>
-       <y>50</y>
-       <width>80</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
     <widget class="QLineEdit" name="lineEditDeparture">
      <property name="geometry">
       <rect>
@@ -510,6 +524,61 @@ QScrollBar::sub-page:vertical
 {
 	background: #1e1e1e;
 	border: none;
+}</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="buttonGetRoute">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>550</y>
+       <width>100</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Get Route</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="buttonAutoFill">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>510</y>
+       <width>100</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Auto Fill</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="comboBoxAcftType">
+     <property name="geometry">
+      <rect>
+       <x>470</x>
+       <y>50</y>
+       <width>80</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QComboBox
+{
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	font: 13px;
+}
+
+QComboBox QAbstractItemView
+{	
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+    selection-background-color: #060064;
+	font: 13px;
 }</string>
      </property>
     </widget>
@@ -686,6 +755,19 @@ QScrollBar::sub-page:vertical
        </rect>
       </property>
      </widget>
+     <widget class="QPushButton" name="buttonGetLocation">
+      <property name="geometry">
+       <rect>
+        <x>410</x>
+        <y>100</y>
+        <width>120</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Get Location</string>
+      </property>
+     </widget>
      <zorder>labelLatitude</zorder>
      <zorder>labelTrueHDG</zorder>
      <zorder>labelTASCurrent</zorder>
@@ -699,6 +781,7 @@ QScrollBar::sub-page:vertical
      <zorder>lineEditTrueHDG</zorder>
      <zorder>labelSquawkCurrent</zorder>
      <zorder>lineEditSquawkCurrent</zorder>
+     <zorder>buttonGetLocation</zorder>
     </widget>
     <widget class="QGroupBox" name="groupBoxNavType">
      <property name="geometry">

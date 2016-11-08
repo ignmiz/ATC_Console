@@ -29,3 +29,23 @@ ATCFlight *ATCFlightFactory::newFlight(State s, ATC::FlightRules fr, QString ade
 
     return new ATCFlight(s, plan, sq);
 }
+
+ATCFlightPlanFactory &ATCFlightFactory::getFlightPlanFactory()
+{
+    return flightPlanFactory;
+}
+
+ATCAircraftTypeFactory &ATCFlightFactory::getAircraftTypeFactory()
+{
+    return flightPlanFactory.getTypeFactory();
+}
+
+ATCCompanyFactory &ATCFlightFactory::getCompanyFactory()
+{
+    return flightPlanFactory.getCompanyFactory();
+}
+
+ATCRouteFactory &ATCFlightFactory::getRouteFactory()
+{
+    return flightPlanFactory.getRouteFactory();
+}

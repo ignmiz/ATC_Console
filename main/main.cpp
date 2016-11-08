@@ -1,8 +1,6 @@
 #include "mainwindow.h"
 
-#include "atccompanyfactory.h"
-#include "atcaircrafttypefactory.h"
-#include "atcroutefactory.h"
+#include "atcflightfactory.h"
 
 #include "atcpaths.h"
 
@@ -13,14 +11,11 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    MainWindow mainWindow;
-    mainWindow.show();
-
     ATCPaths paths;
+    ATCFlightFactory *flightFactory = new ATCFlightFactory(paths);
 
-    ATCCompanyFactory companyFactory(paths.COMPANY_PATH);
-    ATCAircraftTypeFactory typeFactory(paths.BADA_PATH);
-    ATCRouteFactory routeFactory(paths.ROUTE_PATH);
+    MainWindow mainWindow(flightFactory);
+    mainWindow.show();    
 
     return a.exec();
 }

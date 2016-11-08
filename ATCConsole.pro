@@ -150,3 +150,6 @@ FORMS    += mainwindow.ui \
     dialogsettings.ui \
     dialogflight.ui \
     dialogflightcreator.ui
+
+DISTFILES += \
+    resources/acft_cursor.png

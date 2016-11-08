@@ -15,6 +15,11 @@ public:
     ATCFlight* newFlight(State s, ATC::FlightRules fr, QString adep, QString ades, int altitude, QTime dep);
     ATCFlight* newFlight(State s, ATC::FlightRules fr, QString adep, QString ades, int altitude, QTime dep, QString sq);
 
+    ATCFlightPlanFactory& getFlightPlanFactory();
+    ATCAircraftTypeFactory& getAircraftTypeFactory();
+    ATCCompanyFactory& getCompanyFactory();
+    ATCRouteFactory& getRouteFactory();
+
 private:
     ATCFlightPlanFactory flightPlanFactory;
 };

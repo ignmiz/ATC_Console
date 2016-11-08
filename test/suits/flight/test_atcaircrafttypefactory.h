@@ -17,6 +17,7 @@ public:
 
 private slots:
     void test_getType();
+    void test_getTypeVectorSize();
 
 private:
     QString DBpath;

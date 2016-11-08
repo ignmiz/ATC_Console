@@ -80,3 +80,8 @@ ATCAircraftType* ATCAircraftTypeFactory::getType(QString ICAOcode)
     return type;
 }
 
+int ATCAircraftTypeFactory::getTypeVectorSize()
+{
+    return types.size();
+}
+

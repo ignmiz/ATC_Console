@@ -16,12 +16,11 @@ public:
     ~DialogFlight();
 
 signals:
-    void signalConstructEmptyFlightCreator();
+    void signalConstructFlightCreator();
 
 private slots:
     ATC_MOUSE_HANDLER
 
-    void on_buttonCreateEmpty_clicked();
     void on_buttonCreateFlight_clicked();
     void on_buttonReady_clicked();
     void on_buttonCancel_clicked();

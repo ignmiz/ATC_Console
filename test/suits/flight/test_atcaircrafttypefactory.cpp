@@ -29,3 +29,9 @@ void Test_ATCAircraftTypeFactory::test_getType()
     QVERIFY(type == nullptr);
 }
 
+void Test_ATCAircraftTypeFactory::test_getTypeVectorSize()
+{
+    ATCAircraftTypeFactory factory(DBpath);
+    QVERIFY(factory.getTypeVectorSize() == 1);
+}
+

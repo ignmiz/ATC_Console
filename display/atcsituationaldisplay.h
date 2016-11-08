@@ -34,11 +34,15 @@ public:
     ATCSettings* getSettings();
     ATCAirspace* getAirspaceData();
     ATCPaths* getPaths();
+    QCursor& getAcftCursor();
 
     void hideAll();
 
     void loadDisplay(QString path);
     void exportDisplay(QString path);
+
+signals:
+    void signalClicked(double x, double y);
 
 public slots:
     void slotSetColorSectorARTCCLow(QColor color);
@@ -96,6 +100,8 @@ private:
     double sectorCentreY;
 
     QGraphicsScene *scene = nullptr;
+
+    QCursor acftCursor;
 
     QVector<ATCSectorARTCCLow*> visibleSectorsARTCCLow;
     QVector<ATCSectorARTCCHigh*> visibleSectorsARTCCHigh;

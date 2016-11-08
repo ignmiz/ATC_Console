@@ -2,7 +2,7 @@
 #include "ui_dialogflight.h"
 
 DialogFlight::DialogFlight(QWidget *parent) :
-    ATCDialog(parent, "Flight Creator", 300, 240),
+    ATCDialog(parent, "Flight Creator", 300, 160),
     uiInner(new Ui::DialogFlight)
 {
     uiInner->setupUi(this);
@@ -14,15 +14,9 @@ DialogFlight::~DialogFlight()
     delete uiInner;
 }
 
-void DialogFlight::on_buttonCreateEmpty_clicked()
-{
-    emit signalConstructEmptyFlightCreator();
-//    hide();
-}
-
 void DialogFlight::on_buttonCreateFlight_clicked()
 {
-    //TO BE IMPLEMENTED
+    emit signalConstructFlightCreator();
 }
 
 void DialogFlight::on_buttonReady_clicked()

@@ -18,6 +18,10 @@ public:
     ATCFlightPlan* newFlightPlan();
     ATCFlightPlan* newFlightPlan(ATC::FlightRules fr, QString adep, QString ades, int altitude, QTime dep);
 
+    ATCCompanyFactory& getCompanyFactory();
+    ATCAircraftTypeFactory& getTypeFactory();
+    ATCRouteFactory& getRouteFactory();
+
 private:
     ATCCompanyFactory companyFactory;
     ATCAircraftTypeFactory typeFactory;

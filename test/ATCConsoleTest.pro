@@ -93,7 +93,8 @@ SOURCES += \
     atcflightplanfactory.cpp \
     atcflight.cpp \
     atcflightfactory.cpp \
-    \
+    dialogflight.cpp \
+    dialogflightcreator.cpp \
     atcmath.cpp \
 
 HEADERS  += \
@@ -149,7 +150,8 @@ HEADERS  += \
     atcflightplanfactory.h \
     atcflight.h \
     atcflightfactory.h \
-    \
+    dialogflight.h \
+    dialogflightcreator.h \
     atcmath.h \
 
 FORMS    += mainwindow.ui \
@@ -157,7 +159,9 @@ FORMS    += mainwindow.ui \
     dialogmainmenu.ui \
     dialogsectorsetup.ui \
     dialogtextconsole.ui \
-    dialogsettings.ui
+    dialogsettings.ui \
+    dialogflight.ui \
+    dialogflightcreator.ui
 
 #MOCK SOURCES & HEADERS GO HERE:
 
@@ -258,3 +262,6 @@ HEADERS += \
     test_atcflightfactory.h \
     \
     test_atcmath.h
+
+DISTFILES += \
+    ../resources/acft_cursor.png

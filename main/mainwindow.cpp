@@ -6,9 +6,10 @@
 #include <QTimer>
 #include <QDebug>
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(ATCFlightFactory *flightFactory, QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    flightFactory(flightFactory)
 {
     ui->setupUi(this);
     dialogTextConsole = new DialogTextConsole(this);
@@ -20,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete flightFactory;
 }
 
 bool MainWindow::isDialogTextConsoleVisible() const
@@ -128,30 +130,25 @@ void MainWindow::slotConstructDialogFlight()
     dialogFlight->show();
 
     connect(dialogFlight, SIGNAL(closed()), this, SLOT(slotCloseDialogFlight()));
-    connect(dialogFlight, SIGNAL(signalConstructEmptyFlightCreator()), this, SLOT(slotConstructEmptyFlightCreator()));
+    connect(dialogFlight, SIGNAL(signalConstructFlightCreator()), this, SLOT(slotConstructFlightCreator()));
 }
 
 void MainWindow::slotCloseDialogFlight()
 {
     disconnect(dialogFlight, SIGNAL(closed()), this, SLOT(slotCloseDialogFlight()));
-    disconnect(dialogFlight, SIGNAL(signalConstructEmptyFlightCreator()), this, SLOT(slotConstructEmptyFlightCreator()));
+    disconnect(dialogFlight, SIGNAL(signalConstructFlightCreator()), this, SLOT(slotConstructFlightCreator()));
 
     dialogMainMenu->show();
 }
 
-void MainWindow::slotConstructEmptyFlightCreator()
+void MainWindow::slotConstructFlightCreator()
 {
     dialogFlight->hide();
 
-    dialogFlightCreator = new DialogFlightCreator(this);
+    dialogFlightCreator = new DialogFlightCreator(flightFactory, this);
     dialogFlightCreator->show();
 
     connect(dialogFlightCreator, SIGNAL(closed()), this, SLOT(slotCloseFlightCreator()));
-}
-
-void MainWindow::slotConstructFlightCreator()
-{
-
 }
 
 void MainWindow::slotCloseFlightCreator()

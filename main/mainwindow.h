@@ -11,6 +11,8 @@
 #include "dialogflight.h"
 #include "dialogflightcreator.h"
 
+#include "atcflightfactory.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -20,7 +22,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(ATCFlightFactory *flightFactory, QWidget *parent = 0);
     ~MainWindow();
 
     bool isDialogTextConsoleVisible() const;
@@ -51,7 +53,6 @@ private slots:
     void slotConstructDialogFlight();
     void slotCloseDialogFlight();
 
-    void slotConstructEmptyFlightCreator();
     void slotConstructFlightCreator();
     void slotCloseFlightCreator();
 
@@ -64,6 +65,8 @@ private:
 
     DialogFlight *dialogFlight;
     DialogFlightCreator *dialogFlightCreator;
+
+    ATCFlightFactory *flightFactory;
 
     bool flagDialogMainMenuExists = false;
     bool flagDialogSectorSetupExists = false;

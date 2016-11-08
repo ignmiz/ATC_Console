@@ -18,6 +18,8 @@ public:
     ATCAircraftType* getType(int i);
     ATCAircraftType* getType(QString ICAOcode);
 
+    int getTypeVectorSize();
+
 private:
     QVector<ATCAircraftType*> types;
 };

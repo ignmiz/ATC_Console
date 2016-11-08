@@ -7,30 +7,17 @@
     <x>0</x>
     <y>0</y>
     <width>300</width>
-    <height>240</height>
+    <height>160</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="buttonCreateEmpty">
-   <property name="geometry">
-    <rect>
-     <x>50</x>
-     <y>80</y>
-     <width>200</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Create Empty Flight</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="buttonCreateFlight">
    <property name="geometry">
     <rect>
      <x>50</x>
-     <y>110</y>
+     <y>60</y>
      <width>200</width>
      <height>25</height>
     </rect>
@@ -43,7 +30,7 @@
    <property name="geometry">
     <rect>
      <x>50</x>
-     <y>190</y>
+     <y>110</y>
      <width>95</width>
      <height>25</height>
     </rect>
@@ -56,7 +43,7 @@
    <property name="geometry">
     <rect>
      <x>155</x>
-     <y>190</y>
+     <y>110</y>
      <width>95</width>
      <height>25</height>
     </rect>

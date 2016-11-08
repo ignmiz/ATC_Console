@@ -41,3 +41,18 @@ ATCFlightPlan *ATCFlightPlanFactory::newFlightPlan(ATC::FlightRules fr, QString 
     }
 }
 
+ATCCompanyFactory &ATCFlightPlanFactory::getCompanyFactory()
+{
+    return companyFactory;
+}
+
+ATCAircraftTypeFactory &ATCFlightPlanFactory::getTypeFactory()
+{
+    return typeFactory;
+}
+
+ATCRouteFactory &ATCFlightPlanFactory::getRouteFactory()
+{
+    return routeFactory;
+}
+
