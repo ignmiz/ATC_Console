@@ -15,6 +15,9 @@ public:
     explicit DialogFlight(QWidget *parent = 0);
     ~DialogFlight();
 
+signals:
+    void signalConstructEmptyFlightCreator();
+
 private slots:
     ATC_MOUSE_HANDLER
 

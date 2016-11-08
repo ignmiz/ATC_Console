@@ -2,7 +2,6 @@
 #define DIALOGMAINMENU_H
 
 #include "atcdialog.h"
-#include "dialogflight.h"
 
 namespace Ui {
 class DialogMainMenu;
@@ -22,7 +21,9 @@ signals:
 private slots:
     ATC_MOUSE_HANDLER
 
-    void on_buttonTest_clicked();
+    void on_buttonNewSimulation_clicked();
+    void on_buttonLoadSimulaiton_clicked();
+    void on_buttonEditSimulation_clicked();
 
 private:
     Ui::DialogMainMenu *uiInner;

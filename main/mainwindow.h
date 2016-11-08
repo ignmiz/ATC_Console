@@ -8,6 +8,8 @@
 #include "dialogmainmenu.h"
 #include "dialogsectorsetup.h"
 #include "dialogsettings.h"
+#include "dialogflight.h"
+#include "dialogflightcreator.h"
 
 namespace Ui {
 class MainWindow;
@@ -49,6 +51,10 @@ private slots:
     void slotConstructDialogFlight();
     void slotCloseDialogFlight();
 
+    void slotConstructEmptyFlightCreator();
+    void slotConstructFlightCreator();
+    void slotCloseFlightCreator();
+
 private:
     Ui::MainWindow *ui;
     DialogTextConsole *dialogTextConsole;
@@ -57,6 +63,7 @@ private:
     DialogSettings *dialogSettings;
 
     DialogFlight *dialogFlight;
+    DialogFlightCreator *dialogFlightCreator;
 
     bool flagDialogMainMenuExists = false;
     bool flagDialogSectorSetupExists = false;

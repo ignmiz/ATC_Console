@@ -14,7 +14,17 @@ DialogMainMenu::~DialogMainMenu()
     delete uiInner;
 }
 
-void DialogMainMenu::on_buttonTest_clicked()
+void DialogMainMenu::on_buttonNewSimulation_clicked()
 {
     emit signalConstructDialogFlight();
+}
+
+void DialogMainMenu::on_buttonLoadSimulaiton_clicked()
+{
+    //TO BE IMPLEMENTED
+}
+
+void DialogMainMenu::on_buttonEditSimulation_clicked()
+{
+    //TO BE IMPLEMENTED
 }

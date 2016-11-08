@@ -1,8 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "dialogmainmenu.h"
-#include "dialogsectorsetup.h"
-#include "dialogtextconsole.h"
 
 #include <QDesktopWidget>
 #include <QGraphicsRectItem>
@@ -43,7 +40,7 @@ void MainWindow::on_buttonMainMenu_clicked()
         setFlagDialogMainMenuExists(true);
         setSituationalDisplayFocus();
 
-        connect(dialogMainMenu, SIGNAL(signalConstructDialogFlight()), this, SLOT(slotConstructDialogFlight()));
+        connect(dialogMainMenu, SIGNAL(signalConstructDialogFlight()), this, SLOT(slotConstructDialogFlight()));        
     }
 }
 
@@ -131,13 +128,37 @@ void MainWindow::slotConstructDialogFlight()
     dialogFlight->show();
 
     connect(dialogFlight, SIGNAL(closed()), this, SLOT(slotCloseDialogFlight()));
+    connect(dialogFlight, SIGNAL(signalConstructEmptyFlightCreator()), this, SLOT(slotConstructEmptyFlightCreator()));
 }
 
 void MainWindow::slotCloseDialogFlight()
 {
     disconnect(dialogFlight, SIGNAL(closed()), this, SLOT(slotCloseDialogFlight()));
+    disconnect(dialogFlight, SIGNAL(signalConstructEmptyFlightCreator()), this, SLOT(slotConstructEmptyFlightCreator()));
 
     dialogMainMenu->show();
+}
+
+void MainWindow::slotConstructEmptyFlightCreator()
+{
+    dialogFlight->hide();
+
+    dialogFlightCreator = new DialogFlightCreator(this);
+    dialogFlightCreator->show();
+
+    connect(dialogFlightCreator, SIGNAL(closed()), this, SLOT(slotCloseFlightCreator()));
+}
+
+void MainWindow::slotConstructFlightCreator()
+{
+
+}
+
+void MainWindow::slotCloseFlightCreator()
+{
+    disconnect(dialogFlightCreator, SIGNAL(closed()), this, SLOT(slotCloseFlightCreator()));
+
+    dialogFlight->show();
 }
 
 void MainWindow::on_buttonClose_clicked()
