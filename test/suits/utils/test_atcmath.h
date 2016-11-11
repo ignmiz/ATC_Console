@@ -32,6 +32,8 @@ private slots:
     void test_compareDouble();
 
     void test_atmosISA();
+
+    void test_crossoverAltitude();
 };
 
 #endif // TEST_ATCMATH_H

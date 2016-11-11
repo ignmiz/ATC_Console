@@ -1,6 +1,5 @@
 
 #include "test_atcmath.h"
-#include <QDebug>
 
 void Test_ATCMath::test_m2nm()
 {
@@ -14,12 +13,12 @@ void Test_ATCMath::test_nm2m()
 
 void Test_ATCMath::test_m2ft()
 {
-    QVERIFY(ATCMath::m2ft(1) == 2.9342723);
+    QVERIFY(ATCMath::m2ft(1) == (1/0.3048));
 }
 
 void Test_ATCMath::test_ft2m()
 {
-    QVERIFY(ATCMath::ft2m(1) == 0.3408);
+    QVERIFY(ATCMath::ft2m(1) == 0.3048);
 }
 
 void Test_ATCMath::test_mps2kt()
@@ -213,4 +212,10 @@ void Test_ATCMath::test_atmosISA()
     QVERIFY(ATCMath::compareDouble(ATCMath::atmosISA(50000).rho, 0.000977525, errorRHO));
     QVERIFY(ATCMath::compareDouble(ATCMath::atmosISA(60000).rho, 0.000288321, errorRHO));
     QVERIFY(ATCMath::compareDouble(ATCMath::atmosISA(75000).rho, 0.0000348607, errorRHO));
+}
+
+void Test_ATCMath::test_crossoverAltitude()
+{
+    double error = 1E-5;
+    QVERIFY(ATCMath::compareDouble(ATCMath::crossoverAltitude(ATCMath::kt2mps(280), 0.78), 9895.14388, error));
 }

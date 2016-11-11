@@ -13,12 +13,12 @@ double ATCMath::nm2m(double varNM)
 
 double ATCMath::m2ft(double varM)
 {
-    return varM * 2.9342723;
+    return varM / 0.3048;
 }
 
 double ATCMath::ft2m(double varFT)
 {
-    return varFT * 0.3408;
+    return varFT * 0.3048;
 }
 
 double ATCMath::mps2kt(double varMPS)
@@ -203,4 +203,23 @@ ISA ATCMath::atmosISA(double h)
     }
 
     return isa;
+}
+
+double ATCMath::crossoverAltitude(double CAS, double M)
+{
+    ISA isa = atmosISA(0);
+
+    double kappa = 1.4;
+    double a0 = isa.a;
+    double t0 = isa.T;
+    double R = 287.05287;
+    double betaTrop = -0.0065;
+    double g0 = 9.80665;
+
+    double deltaTrans = (qPow((1 + (kappa-1)/2 * qPow(CAS/a0, 2)), kappa/(kappa - 1)) - 1) / (qPow((1 + (kappa-1)/2 * qPow(M, 2)), kappa/(kappa-1)) - 1);
+    double thetaTrans = qPow(deltaTrans, -1 * betaTrop * R / g0);
+//    double HpTrans = 1000 / (0.3048 * 6.5) * t0 * (1 - thetaTrans);
+    double HpTrans = 1000 / 6.5 * t0 * (1 - thetaTrans);
+
+    return HpTrans;
 }

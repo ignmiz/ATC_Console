@@ -40,7 +40,7 @@ public:
     static ISA atmosISA(double h);
 
     static double ESF();                    //DUMMY
-    static double crossoverAltitude();      //DUMMY
+    static double crossoverAltitude(double CAS, double M);      //DUMMY
     static double normalizeAngle();         //DUMMY
     static double projectAcftPosOnPath();   //DUMMY
 
