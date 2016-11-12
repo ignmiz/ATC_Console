@@ -96,6 +96,7 @@ SOURCES += \
     dialogflight.cpp \
     dialogflightcreator.cpp \
     atcmath.cpp \
+    atcsimulation.cpp \
 
 HEADERS  += \
     mainwindow.h \
@@ -153,6 +154,7 @@ HEADERS  += \
     dialogflight.h \
     dialogflightcreator.h \
     atcmath.h \
+    atcsimulation.h \
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
@@ -219,6 +221,7 @@ SOURCES += main.cpp \
     test_atcflightplanfactory.cpp \
     test_atcflight.cpp \
     test_atcflightfactory.cpp \
+    test_atcsimulation.cpp \
     \
     test_atcmath.cpp
 
@@ -260,6 +263,7 @@ HEADERS += \
     test_atcflightplanfactory.h \
     test_atcflight.h \
     test_atcflightfactory.h \
+    test_atcsimulation.h \
     \
     test_atcmath.h
 

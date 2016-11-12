@@ -37,6 +37,7 @@
 #include "test_atcflightplanfactory.h"
 #include "test_atcflight.h"
 #include "test_atcflightfactory.h"
+#include "test_atcsimulation.h"
 
 //----------Submodule: utils----------
 #include "test_atcmath.h"
@@ -87,6 +88,7 @@ int main(int argc, char *argv[])
     Test_ATCFlightPlanFactory test_ATCFlightPlanFactory;
     Test_ATCFlight test_ATCFlight;
     Test_ATCFlightFactory test_ATCFlightFactory;
+    Test_ATCSimulation test_ATCSimulation;
 
     //----------Submodule: utils----------
     Test_ATCMath test_ATCMath;
@@ -131,6 +133,7 @@ int main(int argc, char *argv[])
     failed.append(QTest::qExec(&test_ATCFlightPlanFactory, argc, argv));
     failed.append(QTest::qExec(&test_ATCFlight, argc, argv));
     failed.append(QTest::qExec(&test_ATCFlightFactory, argc, argv));
+    failed.append(QTest::qExec(&test_ATCSimulation, argc, argv));
 
     //----------Submodule: utils----------
     failed.append(QTest::qExec(&test_ATCMath, argc, argv));
