@@ -9,8 +9,6 @@
 #include <QGraphicsView>
 #include <QVector>
 
-#include <QDebug>
-
 struct coord
 {
     double x;

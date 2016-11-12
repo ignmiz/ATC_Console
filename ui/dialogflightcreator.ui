@@ -72,13 +72,23 @@ QTabBar::tab:!selected:hover
 	background: #282828;
 }
 
-QLineEdit
+QLineEdit:enabled
 {
 	color: #c8c8c8;
 	background-color: #1e1e1e;
 	border-style: inset;
 	border-width: 2px;
 	border-color: #141414;
+	font: 13px;
+}
+
+QLineEdit
+{
+	color: #323232;
+	background-color: #050505;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #0a0a0a;
 	font: 13px;
 }
 
@@ -119,13 +129,55 @@ QScrollBar::sub-page:vertical
 {
 	background: #1e1e1e;
 	border: none;
+}
+
+QTimeEdit:enabled
+{
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	selection-background-color: #060064;
+	font: 13px;
+}
+
+QTimeEdit
+{
+	color: #323232;
+	background-color: #050505;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #0a0a0a;
+	font: 13px;
+}
+
+QSpinBox:enabled
+{
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	selection-background-color: #060064;
+	font: 13px;
+}
+
+QSpinBox
+{
+	color: #323232;
+	background-color: #050505;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #0a0a0a;
+	font: 13px;
 }</string>
    </property>
    <property name="tabPosition">
     <enum>QTabWidget::North</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tabFlightPlan">
     <attribute name="title">
@@ -437,26 +489,6 @@ QComboBox QAbstractItemView
       </rect>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEditDepTime">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>200</y>
-       <width>80</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEditEnrTime">
-     <property name="geometry">
-      <rect>
-       <x>280</x>
-       <y>200</y>
-       <width>80</width>
-       <height>25</height>
-      </rect>
-     </property>
-    </widget>
     <widget class="QLabel" name="labelFuelTime">
      <property name="geometry">
       <rect>
@@ -471,16 +503,6 @@ QComboBox QAbstractItemView
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEditFuelTime">
-     <property name="geometry">
-      <rect>
-       <x>470</x>
-       <y>200</y>
-       <width>80</width>
-       <height>25</height>
-      </rect>
      </property>
     </widget>
     <widget class="QTextEdit" name="textEditRoute">
@@ -621,6 +643,36 @@ QComboBox QAbstractItemView
       <string>Set TAS</string>
      </property>
     </widget>
+    <widget class="QTimeEdit" name="timeEditDepTime">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>200</y>
+       <width>80</width>
+       <height>25</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QTimeEdit" name="timeEditEnrTime">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>200</y>
+       <width>80</width>
+       <height>25</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QTimeEdit" name="timeEditFuelTime">
+     <property name="geometry">
+      <rect>
+       <x>470</x>
+       <y>200</y>
+       <width>80</width>
+       <height>25</height>
+      </rect>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="tabDynamicState">
     <attribute name="title">
@@ -758,16 +810,6 @@ QComboBox QAbstractItemView
        </rect>
       </property>
      </widget>
-     <widget class="QLineEdit" name="lineEditTrueHDG">
-      <property name="geometry">
-       <rect>
-        <x>190</x>
-        <y>180</y>
-        <width>120</width>
-        <height>25</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QLabel" name="labelSquawkCurrent">
       <property name="geometry">
        <rect>
@@ -805,6 +847,19 @@ QComboBox QAbstractItemView
       </property>
       <property name="text">
        <string>Get Location</string>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="spinBoxTrueHDG">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>180</y>
+        <width>120</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="maximum">
+       <number>359</number>
       </property>
      </widget>
     </widget>
@@ -932,22 +987,15 @@ QComboBox QAbstractItemView
         <height>25</height>
        </rect>
       </property>
+      <property name="cursorPosition">
+       <number>0</number>
+      </property>
      </widget>
      <widget class="QLineEdit" name="lineEditSpeedRes">
       <property name="geometry">
        <rect>
         <x>190</x>
         <y>60</y>
-        <width>120</width>
-        <height>25</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="lineEditHeadingRes">
-      <property name="geometry">
-       <rect>
-        <x>190</x>
-        <y>100</y>
         <width>120</width>
         <height>25</height>
        </rect>
@@ -961,6 +1009,70 @@ QComboBox QAbstractItemView
         <width>120</width>
         <height>25</height>
        </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="labelSimulationStart">
+      <property name="geometry">
+       <rect>
+        <x>410</x>
+        <y>110</y>
+        <width>140</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Simulation start time:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="labelTime">
+      <property name="geometry">
+       <rect>
+        <x>370</x>
+        <y>140</y>
+        <width>40</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>T + </string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QTimeEdit" name="timeEditSimulationStart">
+      <property name="geometry">
+       <rect>
+        <x>410</x>
+        <y>140</y>
+        <width>120</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="displayFormat">
+       <string>HH:mm:ss</string>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="spinBoxHeadingRes">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>100</y>
+        <width>120</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <number>5</number>
+      </property>
+      <property name="maximum">
+       <number>360</number>
+      </property>
+      <property name="singleStep">
+       <number>5</number>
       </property>
      </widget>
     </widget>

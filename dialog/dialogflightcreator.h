@@ -31,6 +31,9 @@ private slots:
     void on_buttonSetSquawk_clicked();
     void on_buttonSetTAS_clicked();
 
+    void on_radioButtonOwnNav_clicked();
+    void on_radioButtonHDG_clicked();
+
     void slotShowFlightCreator();
     void slotDisplayClicked(double x, double y);
 

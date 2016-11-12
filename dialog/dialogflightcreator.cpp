@@ -14,6 +14,29 @@ DialogFlightCreator::DialogFlightCreator(ATCFlightFactory *flightFactory, QWidge
         QString type = flightFactory->getAircraftTypeFactory().getType(i)->getAcType().ICAOcode;
         uiInner->comboBoxAcftType->addItem(type, Qt::DisplayRole);
     }
+    uiInner->spinBoxHeadingRes->clear();
+    uiInner->spinBoxTrueHDG->clear();
+
+    uiInner->spinBoxHeadingRes->setEnabled(false);
+    uiInner->lineEditNextFix->setEnabled(false);
+
+    uiInner->timeEditDepTime->setEnabled(false);
+    uiInner->timeEditEnrTime->setEnabled(false);
+    uiInner->timeEditFuelTime->setEnabled(false);
+
+    uiInner->lineEditCallsign->setInputMask(">AAAxxxx");
+    uiInner->lineEditDeparture->setInputMask(">AAAA");
+    uiInner->lineEditDestination->setInputMask(">AAAA");
+    uiInner->lineEditAlternate->setInputMask(">AAAA");
+    uiInner->lineEditAltitude->setInputMask(">xx999");
+    uiInner->lineEditTAS->setInputMask("9990");
+    uiInner->lineEditSquawk->setInputMask("9999");
+
+    uiInner->lineEditSquawkCurrent->setInputMask("9999");
+    uiInner->lineEditAltitudeCurrent->setInputMask(">xx999");
+    uiInner->lineEditTASCurrent->setInputMask("9990");
+
+    uiInner->lineEditAltitudeRes->setInputMask(">xx999");
 }
 
 DialogFlightCreator::~DialogFlightCreator()
@@ -158,8 +181,22 @@ void DialogFlightCreator::slotShowFlightCreator()
 
 void DialogFlightCreator::slotDisplayClicked(double x, double y)
 {
-    //INVERSE FROM MERCATOR PROJECTION CALCULATION HERE
-
     uiInner->lineEditLongitude->setText(QString::number(x));
     uiInner->lineEditLatitude->setText(QString::number(y));
+}
+
+void DialogFlightCreator::on_radioButtonOwnNav_clicked()
+{
+    uiInner->spinBoxHeadingRes->setEnabled(false);
+    uiInner->spinBoxHeadingRes->clear();
+
+    uiInner->lineEditNextFix->setEnabled(true);
+}
+
+void DialogFlightCreator::on_radioButtonHDG_clicked()
+{
+    uiInner->spinBoxHeadingRes->setEnabled(true);
+
+    uiInner->lineEditNextFix->setEnabled(false);
+    uiInner->lineEditNextFix->setText(QString());
 }
