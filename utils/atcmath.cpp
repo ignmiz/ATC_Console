@@ -1,6 +1,16 @@
 
 #include "atcmath.h"
 
+double ATCMath::rad2deg(double varRAD)
+{
+    return varRAD * 180 / ATCConst::PI;
+}
+
+double ATCMath::deg2rad(double varDEG)
+{
+    return varDEG * ATCConst::PI / 180;
+}
+
 double ATCMath::m2nm(double varM)
 {
     return varM / 1852;

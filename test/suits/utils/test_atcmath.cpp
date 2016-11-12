@@ -1,6 +1,16 @@
 
 #include "test_atcmath.h"
 
+void Test_ATCMath::test_rad2deg()
+{
+    QVERIFY(ATCMath::rad2deg(ATCConst::PI/2) == ATCConst::PI/2 * 180/ATCConst::PI);
+}
+
+void Test_ATCMath::test_deg2rad()
+{
+    QVERIFY(ATCMath::deg2rad(45) == 45 * ATCConst::PI/180);
+}
+
 void Test_ATCMath::test_m2nm()
 {
     QVERIFY(ATCMath::m2nm(1852) == 1);

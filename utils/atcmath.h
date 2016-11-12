@@ -1,6 +1,8 @@
 #ifndef ATCMATH_H
 #define ATCMATH_H
 
+#include "atcconst.h"
+
 #include <QtMath>
 
 struct ISA
@@ -16,6 +18,9 @@ class ATCMath
 public:
     explicit ATCMath();
     ~ATCMath();
+
+    static double rad2deg(double varRAD);
+    static double deg2rad(double varDEG);
 
     static double m2nm(double varM);
     static double nm2m(double varNM);

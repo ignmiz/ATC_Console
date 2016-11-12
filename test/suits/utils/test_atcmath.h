@@ -11,6 +11,9 @@ class Test_ATCMath : public QObject
     Q_OBJECT
 
 private slots:
+    void test_rad2deg();
+    void test_deg2rad();
+
     void test_m2nm();
     void test_nm2m();
 
