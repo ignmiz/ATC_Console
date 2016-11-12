@@ -49,3 +49,23 @@ ATCRouteFactory &ATCFlightFactory::getRouteFactory()
 {
     return flightPlanFactory.getRouteFactory();
 }
+
+QString ATCFlightFactory::generateSquawk()
+{
+    qsrand(QDateTime::currentMSecsSinceEpoch());
+
+    QString squawk;
+
+    for(int i = 0; i < 4; i++)
+    {
+        int asciiNumMin = 48;
+        int asciiNumMax = 55;
+
+        char ch = asciiNumMin + qrand() % (asciiNumMax - asciiNumMin + 1);
+
+
+        squawk.append(ch);
+    }
+
+    return squawk;
+}

@@ -73,3 +73,17 @@ void Test_ATCFlightFactory::test_newFlight()
 
     delete flight;
 }
+
+void Test_ATCFlightFactory::test_generateSquawk()
+{
+    for(int i = 0; i < 1000; i++)
+    {
+        QString squawk = ATCFlightFactory::generateSquawk();
+
+        for(int j = 0; j < 4; j++)
+        {
+            QVERIFY(squawk.at(j).digitValue() >= 0);
+            QVERIFY(squawk.at(j).digitValue() <= 7);
+        }
+    }
+}

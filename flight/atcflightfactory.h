@@ -20,6 +20,8 @@ public:
     ATCCompanyFactory& getCompanyFactory();
     ATCRouteFactory& getRouteFactory();
 
+    static QString generateSquawk();
+
 private:
     ATCFlightPlanFactory flightPlanFactory;
 };

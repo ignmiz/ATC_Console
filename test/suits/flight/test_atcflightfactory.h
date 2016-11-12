@@ -13,6 +13,7 @@ class Test_ATCFlightFactory : public QObject
 
 private slots:
     void test_newFlight();
+    void test_generateSquawk();
 };
 
 #endif // TEST_ATCFLIGHTFACTORY_H
