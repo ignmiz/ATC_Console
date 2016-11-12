@@ -16,18 +16,32 @@ public:
     explicit DialogFlightCreator(ATCFlightFactory *flightFactory, QWidget *parent = 0);
     ~DialogFlightCreator();
 
+signals:
+    void signalGetLocation();
+
 private slots:
     ATC_MOUSE_HANDLER
 
     void on_buttonOK_clicked();
     void on_buttonCancel_clicked();
-    void on_buttonGetRoute_clicked();
+    void on_buttonSetRoute_clicked();
     void on_buttonGetLocation_clicked();
-    void on_buttonAutoFill_clicked();
+    void on_buttonFillAll_clicked();
+    void on_buttonSetCallsign_clicked();
+    void on_buttonSetSquawk_clicked();
+    void on_buttonSetTAS_clicked();
+
+    void slotShowFlightCreator();
+    void slotDisplayClicked(double x, double y);
 
 private:
     Ui::DialogFlightCreator *uiInner;
     ATCFlightFactory *flightFactory;
+
+    void setRoute();
+    void setCallsign();
+    void setSquawk();
+    void setTAS();
 };
 
 #endif // DIALOGFLIGHTCREATOR_H

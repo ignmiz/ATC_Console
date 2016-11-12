@@ -616,6 +616,12 @@ void ATCSituationalDisplay::slotApplySettings()
     rescaleAirwaysHigh();
 }
 
+void ATCSituationalDisplay::slotGetLocation()
+{
+    flagGetLocation = true;
+    viewport()->setCursor(acftCursor);
+}
+
 void ATCSituationalDisplay::situationalDisplaySetup()
 {
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
@@ -3017,6 +3023,46 @@ double ATCSituationalDisplay::mercatorProjectionLat(double latitudeDeg, double s
                       ATCConst::WGS84_FIRST_ECCENTRICITY / 2)) * ATCConst::RAD_2_DEG;
 }
 
+double ATCSituationalDisplay::inverseMercatorLon(double mercatorX, double referenceLongitude, double scale)
+{
+    return mercatorX / scale + referenceLongitude;
+}
+
+double ATCSituationalDisplay::inverseMercatorLat(double mercatorY, double error, double scale)
+{
+    double t = qExp(-1 * mercatorY * ATCConst::DEG_2_RAD / scale);
+    double lat = ATCConst::PI / 2 - 2 * qAtan(t);
+    double lat1;
+
+    double change = error + 1;
+
+    int k = 0;
+
+    while(change > error)
+    {
+        lat1 = ATCConst::PI/2 - 2 * qAtan(t * qPow((1 - ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(lat)) / (1 + ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(lat)), ATCConst::WGS84_FIRST_ECCENTRICITY / 2));
+        change = qFabs(lat1 - lat) / lat;
+
+        lat = lat1;
+
+        k++;
+
+        qDebug() << "Lat : " << lat * ATCConst::RAD_2_DEG;
+        qDebug() << "Change: " << change;
+    }
+
+    qDebug() << "k: " << k;
+
+//    for(int i = 0; i < 1000; i++)
+//    {
+//        lat1 = ATCConst::PI/2 - 2 * qAtan(t * qPow((1 - ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(lat)) / (1 + ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(lat)), ATCConst::WGS84_FIRST_ECCENTRICITY / 2));
+
+//        lat = lat1;
+//    }
+
+    return lat * ATCConst::RAD_2_DEG;
+}
+
 double ATCSituationalDisplay::rotateX(double coordX, double coordY, double angleDeg)
 {
     return coordX * qCos(angleDeg * ATCConst::DEG_2_RAD) - coordY * qSin(angleDeg * ATCConst::DEG_2_RAD);
@@ -3035,6 +3081,16 @@ double ATCSituationalDisplay::translateToLocalX(double coordX)
 double ATCSituationalDisplay::translateToLocalY(double coordY)
 {
     return (-1 * (coordY - sectorCentreY) * scaleFactor);
+}
+
+double ATCSituationalDisplay::translateFromLocalX(double localX)
+{
+    return localX / scaleFactor + sectorCentreX;
+}
+
+double ATCSituationalDisplay::translateFromLocalY(double localY)
+{
+    return -1 * localY / scaleFactor + sectorCentreY;
 }
 
 void ATCSituationalDisplay::calculateSectorParameters()
@@ -3212,8 +3268,26 @@ void ATCSituationalDisplay::mousePressEvent(QMouseEvent *event)
 {
     QGraphicsView::mousePressEvent(event);
 
-    QPointF point = mapToScene(event->pos());
-    emit signalClicked(point.x(), point.y());
+    if(flagGetLocation)
+    {
+        emit signalShowFlightCreator();
+        viewport()->setCursor(Qt::CrossCursor);
+
+        QPointF point = mapToScene(event->pos());
+
+        double mercatorXrot = translateFromLocalX(point.x());
+        double mercatorYrot = translateFromLocalY(point.y());
+
+        double mercatorX = rotateX(mercatorXrot, mercatorYrot, -1 * ATCConst::AVG_DECLINATION);
+        double mercatorY = rotateY(mercatorXrot, mercatorYrot, -1 * ATCConst::AVG_DECLINATION);
+
+        double lon = inverseMercatorLon(mercatorX);
+        double lat = inverseMercatorLat(mercatorY, 1E-8);
+
+        emit signalDisplayClicked(lon, lat);
+
+        flagGetLocation = false;
+    }
 }
 
 void ATCSituationalDisplay::mouseMoveEvent(QMouseEvent *event)

@@ -9,6 +9,8 @@
 #include <QGraphicsView>
 #include <QVector>
 
+#include <QDebug>
+
 struct coord
 {
     double x;
@@ -42,7 +44,8 @@ public:
     void exportDisplay(QString path);
 
 signals:
-    void signalClicked(double x, double y);
+    void signalDisplayClicked(double x, double y);
+    void signalShowFlightCreator();
 
 public slots:
     void slotSetColorSectorARTCCLow(QColor color);
@@ -86,6 +89,9 @@ public slots:
 
     void slotApplySettings();
 
+private slots:
+    void slotGetLocation();
+
 private:
     ATCAirspace *airspaceData = nullptr;
     ATCSettings *settings = nullptr;
@@ -102,6 +108,8 @@ private:
     QGraphicsScene *scene = nullptr;
 
     QCursor acftCursor;
+
+    bool flagGetLocation = false;
 
     QVector<ATCSectorARTCCLow*> visibleSectorsARTCCLow;
     QVector<ATCSectorARTCCHigh*> visibleSectorsARTCCHigh;
@@ -175,11 +183,17 @@ private:
     double mercatorProjectionLon(double longitude, double referenceLongitude = 0, double scale = ATCConst::WGS84_RADIUS);
     double mercatorProjectionLat(double latitude, double scale = ATCConst::WGS84_RADIUS);
 
+    double inverseMercatorLon(double mercatorX, double referenceLongitude = 0, double scale = ATCConst::WGS84_RADIUS);
+    double inverseMercatorLat(double mercatorY, double error, double scale = ATCConst::WGS84_RADIUS);
+
     double rotateX(double coordX, double coordY, double angleDeg);
     double rotateY(double coordX, double coordY, double angleDeg);
 
     double translateToLocalX(double coordX);
     double translateToLocalY(double coordY);
+
+    double translateFromLocalX(double localX);
+    double translateFromLocalY(double localY);
 
     void calculateSectorParameters();
     void connectSlots();

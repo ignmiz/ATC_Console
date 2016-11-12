@@ -527,7 +527,7 @@ QScrollBar::sub-page:vertical
 }</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="buttonGetRoute">
+    <widget class="QPushButton" name="buttonSetRoute">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -537,20 +537,20 @@ QScrollBar::sub-page:vertical
       </rect>
      </property>
      <property name="text">
-      <string>Get Route</string>
+      <string>Set Route</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="buttonAutoFill">
+    <widget class="QPushButton" name="buttonFillAll">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>510</y>
+       <y>400</y>
        <width>100</width>
        <height>25</height>
       </rect>
      </property>
      <property name="text">
-      <string>Auto Fill</string>
+      <string>Fill All</string>
      </property>
     </widget>
     <widget class="QComboBox" name="comboBoxAcftType">
@@ -580,6 +580,45 @@ QComboBox QAbstractItemView
     selection-background-color: #060064;
 	font: 13px;
 }</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="buttonSetCallsign">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>460</y>
+       <width>100</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Set Callsign</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="buttonSetSquawk">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>520</y>
+       <width>100</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Set Squawk</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="buttonSetTAS">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>490</y>
+       <width>100</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Set TAS</string>
      </property>
     </widget>
    </widget>
@@ -768,20 +807,6 @@ QComboBox QAbstractItemView
        <string>Get Location</string>
       </property>
      </widget>
-     <zorder>labelLatitude</zorder>
-     <zorder>labelTrueHDG</zorder>
-     <zorder>labelTASCurrent</zorder>
-     <zorder>labelAltitudeCurrent</zorder>
-     <zorder>labelLongitude</zorder>
-     <zorder>groupBoxNavType</zorder>
-     <zorder>lineEditLatitude</zorder>
-     <zorder>lineEditLongitude</zorder>
-     <zorder>lineEditAltitudeCurrent</zorder>
-     <zorder>lineEditTASCurrent</zorder>
-     <zorder>lineEditTrueHDG</zorder>
-     <zorder>labelSquawkCurrent</zorder>
-     <zorder>lineEditSquawkCurrent</zorder>
-     <zorder>buttonGetLocation</zorder>
     </widget>
     <widget class="QGroupBox" name="groupBoxNavType">
      <property name="geometry">
@@ -938,29 +963,7 @@ QComboBox QAbstractItemView
        </rect>
       </property>
      </widget>
-     <zorder>labelAltitudeRes</zorder>
-     <zorder>labelSpeedRes</zorder>
-     <zorder>labelHeadingRes</zorder>
-     <zorder>labelNextFix</zorder>
-     <zorder>lineEditAltitudeRes</zorder>
-     <zorder>lineEditSpeedRes</zorder>
-     <zorder>lineEditHeadingRes</zorder>
-     <zorder>lineEditNextFix</zorder>
-     <zorder>lineEditTrueHDG</zorder>
-     <zorder>lineEditLatitude</zorder>
-     <zorder>lineEditTASCurrent</zorder>
-     <zorder>labelLatitude</zorder>
-     <zorder>lineEditAltitudeCurrent</zorder>
-     <zorder>labelTASCurrent</zorder>
-     <zorder>labelAltitudeCurrent</zorder>
-     <zorder>labelTrueHDG</zorder>
-     <zorder>lineEditLongitude</zorder>
     </widget>
-    <zorder>buttonCancel</zorder>
-    <zorder>buttonOK</zorder>
-    <zorder>groupBoxAcftState</zorder>
-    <zorder>groupBoxNavType</zorder>
-    <zorder>groupBoxFlightRes</zorder>
    </widget>
   </widget>
   <widget class="QPushButton" name="buttonOK">
