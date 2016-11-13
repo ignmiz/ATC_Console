@@ -187,6 +187,17 @@ void DialogFlightCreator::setTAS()
 
 bool DialogFlightCreator::verifyForm()
 {
+    if(!uiInner->lineEditCallsign->text().isEmpty())
+    {
+        ATCFlight *flight = simulation->getFlight(uiInner->lineEditCallsign->text());
+
+        if(flight != nullptr)
+        {
+            errorMessage("ERROR: Callsign already in use!");
+            return false;
+        }
+    }
+
     if(uiInner->lineEditCallsign->text().isEmpty())
     {
         errorMessage("ERROR: Callsign not specified!");
