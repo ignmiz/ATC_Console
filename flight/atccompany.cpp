@@ -3,7 +3,7 @@
 
 
 ATCCompany::ATCCompany(QString code, QString callsign, QString name) :
-    code(code.left(3).toUpper()),
+    code(code.toUpper()),
     callsign(callsign.toUpper()),
     name(name)
 {
@@ -32,7 +32,7 @@ QString ATCCompany::getName()
 
 void ATCCompany::setCode(QString string)
 {
-    code = string.left(3).toUpper();
+    code = string.toUpper();
 }
 
 void ATCCompany::setCallsign(QString string)

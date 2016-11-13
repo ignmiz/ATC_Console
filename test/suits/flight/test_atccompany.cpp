@@ -37,13 +37,13 @@ void Test_ATCCompany::test_setCode()
     QVERIFY(foo.getCode() == "ABC");
 
     foo.setCode("KSFGA");
-    QVERIFY(foo.getCode() == "KSF");
+    QVERIFY(foo.getCode() == "KSFGA");
 
     foo.setCode("abc");
     QVERIFY(foo.getCode() == "ABC");
 
     foo.setCode("aBcDe");
-    QVERIFY(foo.getCode() == "ABC");
+    QVERIFY(foo.getCode() == "ABCDE");
 }
 
 void Test_ATCCompany::test_setCallsign()
