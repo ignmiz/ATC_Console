@@ -35,6 +35,10 @@ ATCFlight* ATCSimulation::getFlight(QString callsign)
         {
             flight = flights.at(i);
         }
+        else if(callsign == flights.at(i)->getFlightPlan()->getCompany()->getCode())
+        {
+            flight = flights.at(i);
+        }
     }
 
     return flight;
