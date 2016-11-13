@@ -3036,29 +3036,13 @@ double ATCSituationalDisplay::inverseMercatorLat(double mercatorY, double error,
 
     double change = error + 1;
 
-    int k = 0;
-
     while(change > error)
     {
         lat1 = ATCConst::PI/2 - 2 * qAtan(t * qPow((1 - ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(lat)) / (1 + ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(lat)), ATCConst::WGS84_FIRST_ECCENTRICITY / 2));
         change = qFabs(lat1 - lat) / lat;
 
         lat = lat1;
-
-        k++;
-
-        qDebug() << "Lat : " << lat * ATCConst::RAD_2_DEG;
-        qDebug() << "Change: " << change;
     }
-
-    qDebug() << "k: " << k;
-
-//    for(int i = 0; i < 1000; i++)
-//    {
-//        lat1 = ATCConst::PI/2 - 2 * qAtan(t * qPow((1 - ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(lat)) / (1 + ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(lat)), ATCConst::WGS84_FIRST_ECCENTRICITY / 2));
-
-//        lat = lat1;
-//    }
 
     return lat * ATCConst::RAD_2_DEG;
 }

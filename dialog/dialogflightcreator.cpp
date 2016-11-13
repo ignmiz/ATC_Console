@@ -1,10 +1,11 @@
 #include "dialogflightcreator.h"
 #include "ui_dialogflightcreator.h"
 
-DialogFlightCreator::DialogFlightCreator(ATCFlightFactory *flightFactory, QWidget *parent) :
+DialogFlightCreator::DialogFlightCreator(ATCFlightFactory *flightFactory, ATCSimulation *simulation, QWidget *parent) :
     ATCDialog(parent, "Flight Creator", 600, 700),
     uiInner(new Ui::DialogFlightCreator),
-    flightFactory(flightFactory)
+    flightFactory(flightFactory),
+    simulation(simulation)
 {
     uiInner->setupUi(this);
     windowSetup();
@@ -24,19 +25,23 @@ DialogFlightCreator::DialogFlightCreator(ATCFlightFactory *flightFactory, QWidge
     uiInner->timeEditEnrTime->setEnabled(false);
     uiInner->timeEditFuelTime->setEnabled(false);
 
-    uiInner->lineEditCallsign->setInputMask(">AAAxxxx");
+    uiInner->lineEditCallsign->setInputMask(">AAAxxxxxxx");
     uiInner->lineEditDeparture->setInputMask(">AAAA");
     uiInner->lineEditDestination->setInputMask(">AAAA");
     uiInner->lineEditAlternate->setInputMask(">AAAA");
-    uiInner->lineEditAltitude->setInputMask(">xx999");
+    uiInner->lineEditAltitude->setInputMask(">A999");
     uiInner->lineEditTAS->setInputMask("9990");
     uiInner->lineEditSquawk->setInputMask("9999");
 
     uiInner->lineEditSquawkCurrent->setInputMask("9999");
-    uiInner->lineEditAltitudeCurrent->setInputMask(">xx999");
+    uiInner->lineEditAltitudeCurrent->setInputMask(">A999");
     uiInner->lineEditTASCurrent->setInputMask("9990");
 
-    uiInner->lineEditAltitudeRes->setInputMask(">xx999");
+    uiInner->lineEditAltitudeRes->setInputMask(">A999");
+    uiInner->lineEditSpeedRes->setInputMask("9X90");
+    uiInner->lineEditNextFix->setInputMask("aaaaa");
+
+    uiInner->labelError->setVisible(false);
 }
 
 DialogFlightCreator::~DialogFlightCreator()
@@ -47,6 +52,37 @@ DialogFlightCreator::~DialogFlightCreator()
 void DialogFlightCreator::on_buttonOK_clicked()
 {
     //TO BE IMPLEMENTED
+
+//    State state;
+
+//    state.x = uiInner->lineEditLongitude->text().toDouble();
+//    state.y = uiInner->lineEditLatitude->text().toDouble();
+
+//    if(uiInner->lineEditAltitudeCurrent->text().left(2) == "FL")
+//    {
+//        state.h = ATCMath::ft2m(uiInner->lineEditAltitudeCurrent->text().right(altitude.size() - 2).toDouble() * 100);
+//    }
+//    else
+//    {
+//        state.h = ATCMath::ft2m(uiInner->lineEditAltitudeCurrent->text().toDouble());
+//    }
+
+//    state.v = ATCMath::kt2mps(uiInner->lineEditTASCurrent->text().toDouble());
+//    state.hdg = ATCMath::deg2rad(uiInner->spinBoxTrueHDG->text().toDouble());
+
+
+//    ATCFlight *flight = flightFactory->newFlight(state);
+//    simulation->appendFlight(flight);
+
+    //HERE CREATE NEW FLIGHT TAG ON SITUATIONAL DISPLAY
+
+    bool filledOK = verifyForm();
+
+    if(filledOK)
+    {
+        emit closed();
+        close();
+    }
 }
 
 void DialogFlightCreator::on_buttonCancel_clicked()
@@ -90,11 +126,11 @@ void DialogFlightCreator::setRoute()
             strRoute = strRoute + " " + route->getRoute().at(i);
         }
 
-        uiInner->textEditRoute->setText(strRoute);
+        uiInner->plainTextEditRoute->setPlainText(strRoute);
     }
     else
     {
-        uiInner->textEditRoute->setText("ROUTE NOT FOUND!");
+        errorMessage("ERROR: Route not found!");
     }
 }
 
@@ -121,17 +157,7 @@ void DialogFlightCreator::setTAS()
 {
     QString altitude = uiInner->lineEditAltitude->text();
 
-    double alt;
-
-    if(altitude.left(2) == "FL")
-    {
-        alt = altitude.right(altitude.size() - 2).toDouble() * 100;
-    }
-    else
-    {
-        alt = altitude.toDouble();
-    }
-
+    double alt = altitude.right(altitude.size() - 1).toDouble() * 100;
     alt = ATCMath::ft2m(alt);
 
     ISA isa = ATCMath::atmosISA(alt);
@@ -157,6 +183,155 @@ void DialogFlightCreator::setTAS()
     }
 
     uiInner->lineEditTAS->setText(QString::number(tas));
+}
+
+bool DialogFlightCreator::verifyForm()
+{
+    if(uiInner->lineEditCallsign->text().isEmpty())
+    {
+        errorMessage("ERROR: Callsign not specified!");
+        return false;
+    }
+    else if(uiInner->lineEditDeparture->text().isEmpty())
+    {
+        errorMessage("ERROR: Departure airfield not specified!");
+        return false;
+    }
+    else if(uiInner->lineEditDeparture->text().size() != 4)
+    {
+        errorMessage("ERROR: Departure ICAO code not correct!");
+        return false;
+    }
+    else if(uiInner->lineEditDestination->text().isEmpty())
+    {
+        errorMessage("ERROR: Destination airfield not specified!");
+        return false;
+    }
+    else if(uiInner->lineEditDestination->text().size() != 4)
+    {
+        errorMessage("ERROR: Destination ICAO code not correct!");
+        return false;
+    }
+    else if(uiInner->lineEditTAS->text().isEmpty())
+    {
+        errorMessage("ERROR: TAS not specified!");
+        return false;
+    }
+    else if(uiInner->lineEditAltitude->text().isEmpty())
+    {
+        errorMessage("ERROR: Altitude not specified!");
+        return false;
+    }
+    else if((uiInner->lineEditAltitude->text().left(1) != "A") &&
+            (uiInner->lineEditAltitude->text().left(1) != "F"))
+    {
+        errorMessage("ERROR: Incorrect altitude fomat!");
+        return false;
+    }
+    else if((uiInner->lineEditSquawk->text().at(0) == '8') ||
+            (uiInner->lineEditSquawk->text().at(1) == '8') ||
+            (uiInner->lineEditSquawk->text().at(2) == '8') ||
+            (uiInner->lineEditSquawk->text().at(3) == '8') ||
+            (uiInner->lineEditSquawk->text().at(0) == '9') ||
+            (uiInner->lineEditSquawk->text().at(1) == '9') ||
+            (uiInner->lineEditSquawk->text().at(2) == '9') ||
+            (uiInner->lineEditSquawk->text().at(3) == '9'))
+    {
+        errorMessage("ERROR: Incorrect squawk format!");
+        return false;
+    }
+    else if(uiInner->lineEditLatitude->text().isEmpty())
+    {
+        errorMessage("ERROR: Initial latitude not specified!");
+        return false;
+    }
+    else if((uiInner->lineEditLatitude->text().toDouble() < -90) ||
+            (uiInner->lineEditLatitude->text().toDouble() > 90))
+    {
+        errorMessage("ERROR: Initial latitude incorrect value!");
+        return false;
+    }
+    else if(uiInner->lineEditLongitude->text().isEmpty())
+    {
+        errorMessage("ERROR: Initial longitude not specified!");
+        return false;
+    }
+    else if((uiInner->lineEditLongitude->text().toDouble() < -180) ||
+            (uiInner->lineEditLongitude->text().toDouble() > 180))
+    {
+        errorMessage("ERROR: Initial longitude incorrect value!");
+        return false;
+    }
+    else if(uiInner->lineEditAltitudeCurrent->text().isEmpty())
+    {
+        errorMessage("ERROR: Initial altitude not specified!");
+        return false;
+    }
+    else if((uiInner->lineEditAltitudeCurrent->text().left(1) != "A") &&
+            (uiInner->lineEditAltitudeCurrent->text().left(1) != "F"))
+    {
+        errorMessage("ERROR: Incorrect initial altitude fomat!");
+        return false;
+    }
+    else if(uiInner->lineEditTASCurrent->text().isEmpty())
+    {
+        errorMessage("ERROR: Initial TAS not specified!");
+        return false;
+    }
+    else if(uiInner->spinBoxTrueHDG->text().isEmpty())
+    {
+        errorMessage("ERROR: Initial true heading not specified!");
+        return false;
+    }
+    else if((uiInner->lineEditSquawkCurrent->text().at(0) == '8') ||
+            (uiInner->lineEditSquawkCurrent->text().at(1) == '8') ||
+            (uiInner->lineEditSquawkCurrent->text().at(2) == '8') ||
+            (uiInner->lineEditSquawkCurrent->text().at(3) == '8') ||
+            (uiInner->lineEditSquawkCurrent->text().at(0) == '9') ||
+            (uiInner->lineEditSquawkCurrent->text().at(1) == '9') ||
+            (uiInner->lineEditSquawkCurrent->text().at(2) == '9') ||
+            (uiInner->lineEditSquawkCurrent->text().at(3) == '9'))
+    {
+        errorMessage("ERROR: Incorrect selected squawk format!");
+        return false;
+    }
+    else if(!uiInner->radioButtonHDG->isChecked() && !uiInner->radioButtonOwnNav->isChecked())
+    {
+        errorMessage("ERROR: Navigation type not specified!");
+        return false;
+    }
+    else if(!uiInner->lineEditAltitudeRes->text().isEmpty() &&
+            (uiInner->lineEditAltitudeRes->text().left(1) != "A") &&
+            (uiInner->lineEditAltitudeRes->text().left(1) != "F"))
+    {
+        errorMessage("ERROR: Incorrect altitude restriction fomat!");
+        return false;
+    }
+    else if(!uiInner->lineEditSpeedRes->text().isEmpty() &&
+            (uiInner->lineEditSpeedRes->text().at(1) != '.') &&
+            (!uiInner->lineEditSpeedRes->text().at(1).isNumber()))
+    {
+        errorMessage("ERROR: Incorrect speed restriction format!");
+        return false;
+    }
+    else if((uiInner->radioButtonOwnNav->isChecked()) &&
+            (uiInner->lineEditNextFix->text().isEmpty()))
+    {
+        errorMessage("ERROR: Next fix not specified!");
+        return false;
+    }
+    else
+    {
+        uiInner->labelError->setVisible(false);
+
+        return true;
+    }
+}
+
+void DialogFlightCreator::errorMessage(QString msg)
+{
+    uiInner->labelError->setText(msg);
+    uiInner->labelError->setVisible(true);
 }
 
 void DialogFlightCreator::on_buttonSetCallsign_clicked()

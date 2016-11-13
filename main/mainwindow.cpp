@@ -6,10 +6,11 @@
 #include <QTimer>
 #include <QDebug>
 
-MainWindow::MainWindow(ATCFlightFactory *flightFactory, QWidget *parent) :
+MainWindow::MainWindow(ATCFlightFactory *flightFactory, ATCSimulation *simulation, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    flightFactory(flightFactory)
+    flightFactory(flightFactory),
+    simulation(simulation)
 {
     ui->setupUi(this);
     dialogTextConsole = new DialogTextConsole(this);
@@ -22,6 +23,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete flightFactory;
+    delete simulation;
 }
 
 bool MainWindow::isDialogTextConsoleVisible() const
@@ -145,7 +147,7 @@ void MainWindow::slotConstructFlightCreator()
 {
     dialogFlight->hide();
 
-    dialogFlightCreator = new DialogFlightCreator(flightFactory, this);
+    dialogFlightCreator = new DialogFlightCreator(flightFactory, simulation, this);
     dialogFlightCreator->show();
 
     connect(dialogFlightCreator, SIGNAL(closed()), this, SLOT(slotCloseFlightCreator()));

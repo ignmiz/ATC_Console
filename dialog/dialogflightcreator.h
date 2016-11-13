@@ -3,6 +3,7 @@
 
 #include "atcdialog.h"
 #include "atcflightfactory.h"
+#include "atcsimulation.h"
 
 namespace Ui {
 class DialogFlightCreator;
@@ -13,7 +14,7 @@ class DialogFlightCreator : public ATCDialog
     Q_OBJECT
 
 public:
-    explicit DialogFlightCreator(ATCFlightFactory *flightFactory, QWidget *parent = 0);
+    explicit DialogFlightCreator(ATCFlightFactory *flightFactory, ATCSimulation *simulation, QWidget *parent = 0);
     ~DialogFlightCreator();
 
 signals:
@@ -40,11 +41,15 @@ private slots:
 private:
     Ui::DialogFlightCreator *uiInner;
     ATCFlightFactory *flightFactory;
+    ATCSimulation *simulation;
 
     void setRoute();
     void setCallsign();
     void setSquawk();
     void setTAS();
+
+    bool verifyForm();
+    void errorMessage(QString msg);
 };
 
 #endif // DIALOGFLIGHTCREATOR_H

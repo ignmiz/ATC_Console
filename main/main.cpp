@@ -1,8 +1,8 @@
 #include "mainwindow.h"
 
 #include "atcflightfactory.h"
-
 #include "atcpaths.h"
+#include "atcsimulation.h"
 
 #include <QApplication>
 #include <QDesktopWidget>
@@ -14,7 +14,9 @@ int main(int argc, char *argv[])
     ATCPaths paths;
     ATCFlightFactory *flightFactory = new ATCFlightFactory(paths);
 
-    MainWindow mainWindow(flightFactory);
+    ATCSimulation *simulation = new ATCSimulation();
+
+    MainWindow mainWindow(flightFactory, simulation);
     mainWindow.show();    
 
     return a.exec();

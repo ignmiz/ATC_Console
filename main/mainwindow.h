@@ -12,6 +12,7 @@
 #include "dialogflightcreator.h"
 
 #include "atcflightfactory.h"
+#include "atcsimulation.h"
 
 namespace Ui {
 class MainWindow;
@@ -22,7 +23,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(ATCFlightFactory *flightFactory, QWidget *parent = 0);
+    explicit MainWindow(ATCFlightFactory *flightFactory, ATCSimulation *simulation, QWidget *parent = 0);
     ~MainWindow();
 
     bool isDialogTextConsoleVisible() const;
@@ -67,6 +68,7 @@ private:
     DialogFlightCreator *dialogFlightCreator;
 
     ATCFlightFactory *flightFactory;
+    ATCSimulation *simulation;
 
     bool flagDialogMainMenuExists = false;
     bool flagDialogSectorSetupExists = false;

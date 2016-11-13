@@ -505,50 +505,6 @@ QComboBox QAbstractItemView
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QTextEdit" name="textEditRoute">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>250</y>
-       <width>461</width>
-       <height>111</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QTextEdit
-{
-	color: #c8c8c8;
-	background-color: #1e1e1e;
-	border-style: inset;
-	border-width: 2px;
-	border-color: #141414;
-}
-
-QScrollBar:vertical
-{
-	background: #000000;
-	width: 5px;
-	border: none;
-	margin: 0px 0px 0px 0px;
-}
-
-QScrollBar::handle:vertical {
-    background: #323232;
-}
-
-QScrollBar::add-page:vertical
-{
-	background: #1e1e1e;
-	border: none;
-}
-
-QScrollBar::sub-page:vertical
-{
-	background: #1e1e1e;
-	border: none;
-}</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="buttonSetRoute">
      <property name="geometry">
       <rect>
@@ -671,6 +627,50 @@ QComboBox QAbstractItemView
        <width>80</width>
        <height>25</height>
       </rect>
+     </property>
+    </widget>
+    <widget class="QPlainTextEdit" name="plainTextEditRoute">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>250</y>
+       <width>460</width>
+       <height>110</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPlainTextEdit
+{
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+}
+
+QScrollBar:vertical
+{
+	background: #000000;
+	width: 5px;
+	border: none;
+	margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: #323232;
+}
+
+QScrollBar::add-page:vertical
+{
+	background: #1e1e1e;
+	border: none;
+}
+
+QScrollBar::sub-page:vertical
+{
+	background: #1e1e1e;
+	border: none;
+}</string>
      </property>
     </widget>
    </widget>
@@ -1102,6 +1102,25 @@ QComboBox QAbstractItemView
    </property>
    <property name="text">
     <string>Cancel</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelError">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>660</y>
+     <width>300</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel
+{	
+	color: #ff0000;
+}</string>
+   </property>
+   <property name="text">
+    <string>TextLabel</string>
    </property>
   </widget>
  </widget>
