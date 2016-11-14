@@ -31,3 +31,13 @@ void Test_ATCCompanyFactory::test_getCompany()
     company = companyFactory.getCompany("AAC");
     QVERIFY(((company->getCode() == "AAC") && (company->getCallsign() == "TSTCALL3") && (company->getName() == "Test Name 3")));
 }
+
+void Test_ATCCompanyFactory::test_appendCompany()
+{
+    ATCCompanyFactory companyFactory(path);
+
+    ATCCompany *company = new ATCCompany("ABC", "CALLSIGN", "Description");
+    companyFactory.appendCompany(company);
+
+    QVERIFY(companyFactory.getCompany("ABC") == company);
+}

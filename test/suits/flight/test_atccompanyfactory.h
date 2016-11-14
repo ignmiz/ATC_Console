@@ -17,6 +17,7 @@ public:
 
 private slots:
     void test_getCompany();
+    void test_appendCompany();
 
 private:
     QString path;

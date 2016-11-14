@@ -87,3 +87,8 @@ ATCCompany *ATCCompanyFactory::getCompany(QString ICAOcode)
 
     return company;
 }
+
+void ATCCompanyFactory::appendCompany(ATCCompany *company)
+{
+    companies.append(company);
+}
