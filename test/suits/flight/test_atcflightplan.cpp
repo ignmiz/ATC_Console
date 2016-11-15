@@ -24,11 +24,12 @@ void Test_ATCFlightPlan::test_constructObject()
     ATCRoute route("EPWA", list, "EPKK");
 
     int tas = 450;
-    int altitude = 35000;
+    QString altitude = "F350";
     QTime depTime(12, 30, 0, 0);
     QTime enrTime(4, 50, 0, 0);
+    QTime fuelTime(5, 0, 0, 0);
 
-    ATCFlightPlan foo(ATC::IFR, &company, flightNo, &aircraftType, &route, tas, altitude, depTime, enrTime);
+    ATCFlightPlan foo(ATC::IFR, &company, flightNo, &aircraftType, &route, tas, altitude, depTime, enrTime, fuelTime);
 
     QVERIFY(foo.getFlightRules() == ATC::IFR);
     QVERIFY(foo.getCompany() == &company);
@@ -41,6 +42,7 @@ void Test_ATCFlightPlan::test_constructObject()
     QVERIFY(foo.getAltitude() == altitude);
     QVERIFY(foo.getDepartureTime() == depTime);
     QVERIFY(foo.getEnrouteTime() == enrTime);
+    QVERIFY(foo.getFuelTime() == fuelTime);
 }
 
 void Test_ATCFlightPlan::test_setFlightRules()
@@ -54,11 +56,12 @@ void Test_ATCFlightPlan::test_setFlightRules()
     ATCRoute route("EPWA", list, "EPKK");
 
     int tas = 450;
-    int altitude = 35000;
+    QString altitude = "F350";
     QTime depTime(12, 30, 0, 0);
     QTime enrTime(4, 50, 0, 0);
+    QTime fuelTime(5, 0, 0, 0);
 
-    ATCFlightPlan foo(ATC::IFR, &company, flightNo, &aircraftType, &route, tas, altitude, depTime, enrTime);
+    ATCFlightPlan foo(ATC::IFR, &company, flightNo, &aircraftType, &route, tas, altitude, depTime, enrTime, fuelTime);
     QVERIFY(foo.getFlightRules() == ATC::IFR);
 
     foo.setFlightRules(ATC::VFR);
@@ -79,11 +82,12 @@ void Test_ATCFlightPlan::test_setCompany()
     ATCRoute route("EPWA", list, "EPKK");
 
     int tas = 450;
-    int altitude = 35000;
+    QString altitude = "F350";
     QTime depTime(12, 30, 0, 0);
     QTime enrTime(4, 50, 0, 0);
+    QTime fuelTime(5, 0, 0, 0);
 
-    ATCFlightPlan foo(ATC::IFR, &company, flightNo, &aircraftType, &route, tas, altitude, depTime, enrTime);
+    ATCFlightPlan foo(ATC::IFR, &company, flightNo, &aircraftType, &route, tas, altitude, depTime, enrTime, fuelTime);
     QVERIFY(foo.getCompany() == &company);
 
     ATCCompany newCompany("TET", "TESTING", "New Test");
@@ -102,11 +106,12 @@ void Test_ATCFlightPlan::test_setType()
     ATCRoute route("EPWA", list, "EPKK");
 
     int tas = 450;
-    int altitude = 35000;
+    QString altitude = "F350";
     QTime depTime(12, 30, 0, 0);
     QTime enrTime(4, 50, 0, 0);
+    QTime fuelTime(5, 0, 0, 0);
 
-    ATCFlightPlan foo(ATC::IFR, &company, flightNo, &aircraftType, &route, tas, altitude, depTime, enrTime);
+    ATCFlightPlan foo(ATC::IFR, &company, flightNo, &aircraftType, &route, tas, altitude, depTime, enrTime, fuelTime);
     QVERIFY(foo.getType() == &aircraftType);
 
     ATCAircraftType newType(opf, apf);
@@ -125,11 +130,12 @@ void Test_ATCFlightPlan::test_setRoute()
     ATCRoute route("EPWA", list, "EPKK");
 
     int tas = 450;
-    int altitude = 35000;
+    QString altitude = "F350";
     QTime depTime(12, 30, 0, 0);
     QTime enrTime(4, 50, 0, 0);
+    QTime fuelTime(5, 0, 0, 0);
 
-    ATCFlightPlan foo(ATC::IFR, &company, flightNo, &aircraftType, &route, tas, altitude, depTime, enrTime);
+    ATCFlightPlan foo(ATC::IFR, &company, flightNo, &aircraftType, &route, tas, altitude, depTime, enrTime, fuelTime);
     QVERIFY(foo.getRoute().getDeparture() == route.getDeparture());
     QVERIFY(foo.getRoute().getDestination() == route.getDestination());
     QVERIFY(foo.getRoute().getRoute() == route.getRoute());
@@ -154,11 +160,12 @@ void Test_ATCFlightPlan::test_setTAS()
     ATCRoute route("EPWA", list, "EPKK");
 
     int tas = 450;
-    int altitude = 35000;
+    QString altitude = "F350";
     QTime depTime(12, 30, 0, 0);
     QTime enrTime(4, 50, 0, 0);
+    QTime fuelTime(5, 0, 0, 0);
 
-    ATCFlightPlan foo(ATC::IFR, &company, flightNo, &aircraftType, &route, tas, altitude, depTime, enrTime);
+    ATCFlightPlan foo(ATC::IFR, &company, flightNo, &aircraftType, &route, tas, altitude, depTime, enrTime, fuelTime);
     QVERIFY(foo.getTAS() == tas);
 
     int newTAS = 425;
@@ -177,14 +184,15 @@ void Test_ATCFlightPlan::test_setAltitude()
     ATCRoute route("EPWA", list, "EPKK");
 
     int tas = 450;
-    int altitude = 35000;
+    QString altitude = "F350";
     QTime depTime(12, 30, 0, 0);
     QTime enrTime(4, 50, 0, 0);
+    QTime fuelTime(5, 0, 0, 0);
 
-    ATCFlightPlan foo(ATC::IFR, &company, flightNo, &aircraftType, &route, tas, altitude, depTime, enrTime);
+    ATCFlightPlan foo(ATC::IFR, &company, flightNo, &aircraftType, &route, tas, altitude, depTime, enrTime, fuelTime);
     QVERIFY(foo.getAltitude() == altitude);
 
-    altitude = 33000;
+    altitude = "F330";
     foo.setAltitude(altitude);
     QVERIFY(foo.getAltitude() == altitude);
 }
@@ -200,11 +208,12 @@ void Test_ATCFlightPlan::test_setDepartureTime()
     ATCRoute route("EPWA", list, "EPKK");
 
     int tas = 450;
-    int altitude = 35000;
+    QString altitude = "F350";
     QTime depTime(12, 30, 0, 0);
     QTime enrTime(4, 50, 0, 0);
+    QTime fuelTime(5, 0, 0, 0);
 
-    ATCFlightPlan foo(ATC::IFR, &company, flightNo, &aircraftType, &route, tas, altitude, depTime, enrTime);
+    ATCFlightPlan foo(ATC::IFR, &company, flightNo, &aircraftType, &route, tas, altitude, depTime, enrTime, fuelTime);
     QVERIFY(foo.getDepartureTime() == depTime);
 
     depTime = QTime(11, 15, 0, 0);
@@ -223,15 +232,40 @@ void Test_ATCFlightPlan::test_setEnrouteTime()
     ATCRoute route("EPWA", list, "EPKK");
 
     int tas = 450;
-    int altitude = 35000;
+    QString altitude = "F350";
     QTime depTime(12, 30, 0, 0);
     QTime enrTime(4, 50, 0, 0);
+    QTime fuelTime(5, 0, 0, 0);
 
-    ATCFlightPlan foo(ATC::IFR, &company, flightNo, &aircraftType, &route, tas, altitude, depTime, enrTime);
+    ATCFlightPlan foo(ATC::IFR, &company, flightNo, &aircraftType, &route, tas, altitude, depTime, enrTime, fuelTime);
     QVERIFY(foo.getEnrouteTime() == enrTime);
 
     enrTime = QTime(2, 35, 0, 0);
     foo.setEnrouteTime(enrTime);
     QVERIFY(foo.getEnrouteTime() == enrTime);
+}
+
+void Test_ATCFlightPlan::test_setFuelTime()
+{
+    ATCCompany company("TST", "TEST", "Test Company");
+    QString flightNo("123X");
+    ATCAircraftType aircraftType(opf, apf);
+
+    QStringList list;
+    list << "EVINA" << "M985" << "POBOK";
+    ATCRoute route("EPWA", list, "EPKK");
+
+    int tas = 450;
+    QString altitude = "F350";
+    QTime depTime(12, 30, 0, 0);
+    QTime enrTime(4, 50, 0, 0);
+    QTime fuelTime(5, 0, 0, 0);
+
+    ATCFlightPlan foo(ATC::IFR, &company, flightNo, &aircraftType, &route, tas, altitude, depTime, enrTime, fuelTime);
+    QVERIFY(foo.getEnrouteTime() == enrTime);
+
+    fuelTime = QTime(2, 35, 0, 0);
+    foo.setFuelTime(fuelTime);
+    QVERIFY(foo.getFuelTime() == fuelTime);
 }
 

@@ -7,7 +7,7 @@ ATCFlightPlan::ATCFlightPlan()
 
 }
 
-ATCFlightPlan::ATCFlightPlan(ATC::FlightRules fr, ATCCompany *company, QString fltNo, ATCAircraftType *type, ATCRoute *route, int tas, int altitude, QTime depTime, QTime enrTime) :
+ATCFlightPlan::ATCFlightPlan(ATC::FlightRules fr, ATCCompany *company, QString fltNo, ATCAircraftType *type, ATCRoute *route, int tas, QString altitude, QTime depTime, QTime enrTime, QTime fuelTime) :
     rules(fr),
     company(company),
     flightNumber(fltNo),
@@ -16,7 +16,8 @@ ATCFlightPlan::ATCFlightPlan(ATC::FlightRules fr, ATCCompany *company, QString f
     TAS(tas),
     altitude(altitude),
     departureTime(depTime),
-    enrouteTime(enrTime)
+    enrouteTime(enrTime),
+    fuelTime(fuelTime)
 {
 
 }
@@ -56,7 +57,7 @@ int ATCFlightPlan::getTAS()
     return TAS;
 }
 
-int ATCFlightPlan::getAltitude()
+QString ATCFlightPlan::getAltitude()
 {
     return altitude;
 }
@@ -69,6 +70,11 @@ QTime ATCFlightPlan::getDepartureTime()
 QTime ATCFlightPlan::getEnrouteTime()
 {
     return enrouteTime;
+}
+
+QTime ATCFlightPlan::getFuelTime()
+{
+    return fuelTime;
 }
 
 void ATCFlightPlan::setFlightRules(ATC::FlightRules newRules)
@@ -101,7 +107,7 @@ void ATCFlightPlan::setTAS(int tas)
     TAS = tas;
 }
 
-void ATCFlightPlan::setAltitude(int alt)
+void ATCFlightPlan::setAltitude(QString alt)
 {
     altitude = alt;
 }
@@ -114,4 +120,9 @@ void ATCFlightPlan::setDepartureTime(QTime newDepTime)
 void ATCFlightPlan::setEnrouteTime(QTime newEnrTime)
 {
     enrouteTime = newEnrTime;
+}
+
+void ATCFlightPlan::setFuelTime(QTime newFuelTime)
+{
+    fuelTime = newFuelTime;
 }

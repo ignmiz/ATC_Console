@@ -25,6 +25,7 @@ private slots:
     void test_setAltitude();
     void test_setDepartureTime();
     void test_setEnrouteTime();
+    void test_setFuelTime();
 
 private:
     QString opf;

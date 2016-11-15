@@ -14,7 +14,7 @@ class ATCFlightPlan
 {
 public:
     explicit ATCFlightPlan();
-    explicit ATCFlightPlan(ATC::FlightRules fr, ATCCompany *company, QString fltNo, ATCAircraftType *type, ATCRoute *route, int tas, int altitude, QTime depTime, QTime enrTime);
+    explicit ATCFlightPlan(ATC::FlightRules fr, ATCCompany *company, QString fltNo, ATCAircraftType *type, ATCRoute *route, int tas, QString altitude, QTime depTime, QTime enrTime, QTime fuelTime);
     ~ATCFlightPlan();
 
     ATC::FlightRules getFlightRules();
@@ -23,9 +23,10 @@ public:
     ATCAircraftType* getType();
     ATCRoute& getRoute();
     int getTAS();
-    int getAltitude();
+    QString getAltitude();
     QTime getDepartureTime();
     QTime getEnrouteTime();
+    QTime getFuelTime();
 
     void setFlightRules(ATC::FlightRules newRules);
     void setCompany(ATCCompany *newCompany);
@@ -33,9 +34,10 @@ public:
     void setType(ATCAircraftType *newType);
     void setRoute(ATCRoute &newRoute);
     void setTAS(int tas);
-    void setAltitude(int alt);
+    void setAltitude(QString alt);
     void setDepartureTime(QTime newDepTime);
     void setEnrouteTime(QTime newEnrTime);
+    void setFuelTime(QTime newFuelTime);
 
 private:
     ATC::FlightRules rules;
@@ -45,9 +47,10 @@ private:
     ATCRoute route;
 
     int TAS;
-    int altitude;
+    QString altitude;
     QTime departureTime;
     QTime enrouteTime;
+    QTime fuelTime;
 };
 
 #endif // ATCFLIGHTPLAN_H

@@ -12,8 +12,8 @@ public:
     ~ATCFlightFactory();
 
     ATCFlight* newFlight(State s);
-    ATCFlight* newFlight(State s, ATC::FlightRules fr, QString adep, QString ades, int altitude, QTime dep);
-    ATCFlight* newFlight(State s, ATC::FlightRules fr, QString adep, QString ades, int altitude, QTime dep, QString sq);
+    ATCFlight* newFlight(State s, ATC::FlightRules fr, QString adep, QString ades, QString altitude, QTime dep);
+    ATCFlight* newFlight(State s, ATC::FlightRules fr, QString adep, QString ades, QString altitude, QTime dep, QString sq);
 
     ATCFlightPlanFactory& getFlightPlanFactory();
     ATCAircraftTypeFactory& getAircraftTypeFactory();

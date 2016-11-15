@@ -16,7 +16,7 @@ public:
     ~ATCFlightPlanFactory();
 
     ATCFlightPlan* newFlightPlan();
-    ATCFlightPlan* newFlightPlan(ATC::FlightRules fr, QString adep, QString ades, int altitude, QTime dep);
+    ATCFlightPlan* newFlightPlan(ATC::FlightRules fr, QString adep, QString ades, QString altitude, QTime dep);
 
     ATCCompanyFactory& getCompanyFactory();
     ATCAircraftTypeFactory& getTypeFactory();

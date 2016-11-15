@@ -34,10 +34,10 @@ void Test_ATCFlightFactory::test_newFlight()
 
     delete flight;
 
-    flight = factory.newFlight(state, ATC::IFR, "EPWA", "EPKK", 35000, QTime(12, 30, 0, 0));
+    flight = factory.newFlight(state, ATC::IFR, "EPWA", "EPKK", "F350", QTime(12, 30, 0, 0));
     QVERIFY(flight->getFlightPlan()->getRoute().getDeparture() == "EPWA");
     QVERIFY(flight->getFlightPlan()->getRoute().getDestination() == "EPKK");
-    QVERIFY(flight->getFlightPlan()->getAltitude() == 35000);
+    QVERIFY(flight->getFlightPlan()->getAltitude() == "F350");
     QVERIFY(flight->getFlightPlan()->getDepartureTime() == QTime(12, 30, 0, 0));
     QVERIFY(flight->getState().x == 1);
     QVERIFY(flight->getState().y == 2);
@@ -53,12 +53,12 @@ void Test_ATCFlightFactory::test_newFlight()
 
     delete flight;
 
-    flight = factory.newFlight(state, ATC::IFR, "EPWA", "EPKK", 35000, QTime(12, 30, 0, 0), "1234");
+    flight = factory.newFlight(state, ATC::IFR, "EPWA", "EPKK", "F350", QTime(12, 30, 0, 0), "1234");
     QVERIFY(flight->getFlightPlan()->getRoute().getDeparture() == "EPWA");
     QVERIFY(flight->getFlightPlan()->getRoute().getDestination() == "EPKK");
-    QVERIFY(flight->getFlightPlan()->getAltitude() == 35000);
+    QVERIFY(flight->getFlightPlan()->getAltitude() == "F350");
     QVERIFY(flight->getFlightPlan()->getDepartureTime() == QTime(12, 30, 0, 0));
-    QVERIFY(flight->getSquawk() == "1234");
+    QVERIFY(flight->getAssignedSquawk() == "1234");
     QVERIFY(flight->getState().x == 1);
     QVERIFY(flight->getState().y == 2);
     QVERIFY(flight->getState().h == 3);
