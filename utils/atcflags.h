@@ -27,6 +27,11 @@ enum FlightRules
 {
     IFR, VFR, SVFR
 };
+
+enum NavMode
+{
+    Nav, Hdg
+};
 }
 
 #endif // ATCFLAGS_H
