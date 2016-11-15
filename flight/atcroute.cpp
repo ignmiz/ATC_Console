@@ -30,6 +30,11 @@ ATCRoute::~ATCRoute()
 
 }
 
+void ATCRoute::setAlternate(QString alt)
+{
+    alternate = alt;
+}
+
 QString ATCRoute::getDeparture()
 {
     return departure;
@@ -38,6 +43,11 @@ QString ATCRoute::getDeparture()
 QString ATCRoute::getDestination()
 {
     return destination;
+}
+
+QString ATCRoute::getAlternate()
+{
+    return alternate;
 }
 
 QStringList ATCRoute::getRoute()

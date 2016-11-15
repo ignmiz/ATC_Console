@@ -28,3 +28,14 @@ void Test_ATCRoute::test_constructObject()
     QVERIFY(foo.getDestination() == "EPKK");
     QVERIFY(foo.getRoute() == route);
 }
+
+void Test_ATCRoute::test_setGetAlternate()
+{
+    QStringList route;
+    route << "EVINA" << "M985" << "POBOK";
+
+    ATCRoute foo("EPWA", route, "EPKK");
+
+    foo.setAlternate("EPKT");
+    QVERIFY(foo.getAlternate() == "EPKT");
+}

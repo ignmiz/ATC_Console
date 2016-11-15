@@ -12,6 +12,7 @@ class Test_ATCRoute : public QObject
 
 private slots:
     void test_constructObject();
+    void test_setGetAlternate();
 };
 
 #endif // TEST_ATCROUTE_H

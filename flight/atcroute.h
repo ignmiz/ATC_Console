@@ -13,14 +13,18 @@ public:
     explicit ATCRoute(ATCRoute &other);
     ~ATCRoute();
 
+    void setAlternate(QString alt);
+
     QString getDeparture();
     QString getDestination();
+    QString getAlternate();
     QStringList getRoute();
 
 private:
     QString departure;
     QStringList route;
     QString destination;
+    QString alternate;
 
 };
 
