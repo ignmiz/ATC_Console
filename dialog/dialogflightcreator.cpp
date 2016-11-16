@@ -21,10 +21,6 @@ DialogFlightCreator::DialogFlightCreator(ATCFlightFactory *flightFactory, ATCSim
     uiInner->spinBoxHeadingRes->setEnabled(false);
     uiInner->lineEditNextFix->setEnabled(false);
 
-    uiInner->timeEditDepTime->setEnabled(false);
-    uiInner->timeEditEnrTime->setEnabled(false);
-    uiInner->timeEditFuelTime->setEnabled(false);
-
     uiInner->lineEditCallsign->setInputMask(">AAAxxxxxxx");
     uiInner->lineEditDeparture->setInputMask(">AAAA");
     uiInner->lineEditDestination->setInputMask(">AAAA");
@@ -42,6 +38,10 @@ DialogFlightCreator::DialogFlightCreator(ATCFlightFactory *flightFactory, ATCSim
     uiInner->lineEditNextFix->setInputMask("aaaaa");
 
     uiInner->labelError->setVisible(false);
+
+    uiInner->timeEditDepTime->setEnabled(false);
+    uiInner->timeEditEnrTime->setEnabled(false);
+    uiInner->timeEditFuelTime->setEnabled(false);
 }
 
 DialogFlightCreator::~DialogFlightCreator()
@@ -53,33 +53,169 @@ void DialogFlightCreator::on_buttonOK_clicked()
 {
     //TO BE IMPLEMENTED
 
-//    State state;
-
-//    state.x = uiInner->lineEditLongitude->text().toDouble();
-//    state.y = uiInner->lineEditLatitude->text().toDouble();
-
-//    if(uiInner->lineEditAltitudeCurrent->text().left(2) == "FL")
-//    {
-//        state.h = ATCMath::ft2m(uiInner->lineEditAltitudeCurrent->text().right(altitude.size() - 2).toDouble() * 100);
-//    }
-//    else
-//    {
-//        state.h = ATCMath::ft2m(uiInner->lineEditAltitudeCurrent->text().toDouble());
-//    }
-
-//    state.v = ATCMath::kt2mps(uiInner->lineEditTASCurrent->text().toDouble());
-//    state.hdg = ATCMath::deg2rad(uiInner->spinBoxTrueHDG->text().toDouble());
-
-
-//    ATCFlight *flight = flightFactory->newFlight(state);
-//    simulation->appendFlight(flight);
-
-    //HERE CREATE NEW FLIGHT TAG ON SITUATIONAL DISPLAY
-
     bool filledOK = verifyForm();
 
     if(filledOK)
     {
+        //Initial state assignment
+        State state;
+
+        state.x = uiInner->lineEditLongitude->text().toDouble();
+        state.y = uiInner->lineEditLatitude->text().toDouble();
+
+        state.h = ATCMath::ft2m(uiInner->lineEditAltitudeCurrent->text().right(3).toDouble() * 100);
+
+        state.v = ATCMath::kt2mps(uiInner->lineEditTASCurrent->text().toDouble());
+        state.hdg = ATCMath::deg2rad(uiInner->spinBoxTrueHDG->text().toDouble());
+
+        //Flight plan
+        ATCFlightPlan *fpl = flightFactory->getFlightPlanFactory().newFlightPlan();
+
+        //Flight plan - Flight rules
+        QString rulesStr = uiInner->comboBoxFlightRules->currentText();
+        ATC::FlightRules rules;
+
+        if(rulesStr == "IFR")
+        {
+            rules = ATC::IFR;
+        }
+        else if(rulesStr == "VFR")
+        {
+            rules = ATC::VFR;
+        }
+        else if(rulesStr == "SVFR")
+        {
+            rules = ATC::SVFR;
+        }
+
+        fpl->setFlightRules(rules);
+
+        //Flight plan - company & flight number
+        QString callsign = uiInner->lineEditCallsign->text();
+
+        ATCCompany *company;
+        QString flightNo;
+
+        if(callsign.at(3).isLetter())
+        {
+            company = new ATCCompany(callsign, "UNKNOWN", "Unknown Airline");
+            flightFactory->getCompanyFactory().appendCompany(company);
+            flightNo = "";
+        }
+        else
+        {
+            if(flightFactory->getCompanyFactory().getCompany(callsign.left(3)) != nullptr)
+            {
+                company = flightFactory->getCompanyFactory().getCompany(callsign.left(3));
+                flightNo = callsign.right(callsign.size() - 3);
+            }
+            else
+            {
+                company = new ATCCompany(callsign.left(3), "UNKNOWN", "Unknown Airline");
+                flightNo = callsign.right(callsign.size() - 3);
+            }
+        }
+
+        fpl->setCompany(company);
+        fpl->setFlightNumber(flightNo);
+
+        //Flight plan - aircraft type
+        QString typeStr = uiInner->comboBoxAcftType->currentText();
+        ATCAircraftType *type = flightFactory->getAircraftTypeFactory().getType(typeStr);
+
+        fpl->setType(type);
+
+        //Flight plan - route
+        QString departure = uiInner->lineEditDeparture->text();
+        QString destination = uiInner->lineEditDestination->text();
+        QStringList routeStr = uiInner->plainTextEditRoute->toPlainText().toUpper().split(" ", QString::SkipEmptyParts);
+        QString alternate = uiInner->lineEditAlternate->text();
+
+        ATCRoute route(departure, routeStr, destination);
+        route.setAlternate(alternate);
+
+        fpl->setRoute(route);
+
+        //Flight plan - tas
+        int tas = uiInner->lineEditTAS->text().toInt();
+        fpl->setTAS(tas);
+
+        //Flight plan - altitude
+        QString altitude = uiInner->lineEditAltitude->text();
+        fpl->setAltitude(altitude);
+
+        //Flight plan - departure time
+        QTime depTime = uiInner->timeEditDepTime->time();
+        fpl->setDepartureTime(depTime);
+
+        //Flight plan - enroute time
+        QTime enrTime = uiInner->timeEditEnrTime->time();
+        fpl->setEnrouteTime(enrTime);
+
+        //Flight plan - fuel time
+        QTime fuelTime = uiInner->timeEditFuelTime->time();
+        fpl->setFuelTime(fuelTime);
+
+        //Create flight
+        ATCFlight *flight = flightFactory->newFlight(state);
+        flight->setFlightPlan(fpl);
+
+        //Assign selected SSR
+        flight->setSquawk(uiInner->lineEditSquawkCurrent->text());
+
+        //Assign assigned SSR
+        flight->setAssignedSquawk(uiInner->lineEditSquawk->text());
+
+        //Set initial navigation type
+        if(uiInner->radioButtonOwnNav->isChecked())
+        {
+            flight->setNavMode(ATC::Nav);
+        }
+        else if(uiInner->radioButtonHDG->isChecked())
+        {
+            flight->setNavMode(ATC::Hdg);
+        }
+
+        //Set altitude restrictions
+        if(!uiInner->lineEditAltitudeRes->text().isEmpty())
+        {
+            flight->setTargetAltitude(uiInner->lineEditAltitudeCurrent->text());
+        }
+        else
+        {
+            flight->setTargetAltitude(uiInner->lineEditAltitude->text());
+        }
+
+        //Set speed restrictions
+        if(!uiInner->lineEditSpeedRes->text().isEmpty())
+        {
+            flight->setTargetSpeed(uiInner->lineEditSpeedRes->text());
+        }
+
+        //Set heading restrictions
+        if(uiInner->radioButtonHDG->isChecked())
+        {
+            if(!uiInner->spinBoxHeadingRes->text().isEmpty())
+            {
+                flight->setHdgRestriction(uiInner->spinBoxHeadingRes->text().toInt());
+            }
+            else
+            {
+                flight->setHdgRestriction(uiInner->spinBoxTrueHDG->text().toInt() - qFloor(ATCConst::AVG_DECLINATION));
+            }
+        }
+
+        //Set next fix
+        if(uiInner->radioButtonOwnNav->isChecked())
+        {
+            flight->setNextFix(uiInner->lineEditNextFix->text());
+        }
+
+        //Append flight to simulation
+        simulation->appendFlight(flight);
+
+        //CREATE NEW FLIGHT TAG ON SITUATIONAL DISPLAY - TO BE IMPLEMENTED
+
         emit closed();
         close();
     }
