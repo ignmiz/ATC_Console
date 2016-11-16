@@ -20,13 +20,13 @@ void Test_ATCFlight::test_constructObject()
 
     ATCPaths paths;
     ATCFlightPlanFactory factory(paths);
-    ATCFlightPlan *fpl = factory.newFlightPlan(ATC::IFR, "EPWA", "EPKK", 35000, QTime(12, 30, 0, 0));
+    ATCFlightPlan *fpl = factory.newFlightPlan(ATC::IFR, "EPWA", "EPKK", "F350", QTime(12, 30, 0, 0));
 
     ATCFlight foo(state, fpl, sq);
 
     QVERIFY(foo.getFlightPlan() == fpl);
     QVERIFY(foo.getFlightPlan()->getRoute().getDeparture() == "EPWA");
-    QVERIFY(foo.getSquawk() == "1234");
+    QVERIFY(foo.getAssignedSquawk() == "1234");
     QVERIFY(foo.getState().x == 1);
     QVERIFY(foo.getState().y == 2);
     QVERIFY(foo.getState().h == 3);
@@ -59,13 +59,13 @@ void Test_ATCFlight::test_setFlightPlan()
 
     ATCPaths paths;
     ATCFlightPlanFactory factory(paths);
-    ATCFlightPlan *fpl = factory.newFlightPlan(ATC::IFR, "EPWA", "EPKK", 35000, QTime(12, 30, 0, 0));
+    ATCFlightPlan *fpl = factory.newFlightPlan(ATC::IFR, "EPWA", "EPKK", "F350", QTime(12, 30, 0, 0));
 
     ATCFlight foo(state, fpl, sq);
 
     QVERIFY(foo.getFlightPlan() == fpl);
     QVERIFY(foo.getFlightPlan()->getRoute().getDeparture() == "EPWA");
-    QVERIFY(foo.getSquawk() == "1234");
+    QVERIFY(foo.getAssignedSquawk() == "1234");
     QVERIFY(foo.getState().x == 1);
     QVERIFY(foo.getState().y == 2);
     QVERIFY(foo.getState().h == 3);
@@ -78,7 +78,7 @@ void Test_ATCFlight::test_setFlightPlan()
     QVERIFY(foo.getState().trm == TRM_H);
     QVERIFY(foo.getState().am == AM_A);
 
-    ATCFlightPlan *newFpl = factory.newFlightPlan(ATC::IFR, "EPWA", "EPPO", 35000, QTime(12, 0, 0, 0));
+    ATCFlightPlan *newFpl = factory.newFlightPlan(ATC::IFR, "EPWA", "EPPO", "F350", QTime(12, 0, 0, 0));
     foo.setFlightPlan(newFpl);
     QVERIFY(foo.getFlightPlan() == newFpl);
 }
@@ -102,13 +102,13 @@ void Test_ATCFlight::test_setSquawk()
 
     ATCPaths paths;
     ATCFlightPlanFactory factory(paths);
-    ATCFlightPlan *fpl = factory.newFlightPlan(ATC::IFR, "EPWA", "EPKK", 35000, QTime(12, 30, 0, 0));
+    ATCFlightPlan *fpl = factory.newFlightPlan(ATC::IFR, "EPWA", "EPKK", "F350", QTime(12, 30, 0, 0));
 
     ATCFlight foo(state, fpl, sq);
 
     QVERIFY(foo.getFlightPlan() == fpl);
     QVERIFY(foo.getFlightPlan()->getRoute().getDeparture() == "EPWA");
-    QVERIFY(foo.getSquawk() == "1234");
+    QVERIFY(foo.getAssignedSquawk() == "1234");
     QVERIFY(foo.getState().x == 1);
     QVERIFY(foo.getState().y == 2);
     QVERIFY(foo.getState().h == 3);
@@ -124,6 +124,17 @@ void Test_ATCFlight::test_setSquawk()
     QString newSq = "3456";
     foo.setSquawk(newSq);
     QVERIFY(foo.getSquawk() == newSq);
+}
+
+void Test_ATCFlight::test_setAssignedSquawk()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+
+    foo.setAssignedSquawk("1234");
+    QVERIFY(foo.getAssignedSquawk() == "1234");
 }
 
 void Test_ATCFlight::test_setState()
@@ -145,13 +156,13 @@ void Test_ATCFlight::test_setState()
 
     ATCPaths paths;
     ATCFlightPlanFactory factory(paths);
-    ATCFlightPlan *fpl = factory.newFlightPlan(ATC::IFR, "EPWA", "EPKK", 35000, QTime(12, 30, 0, 0));
+    ATCFlightPlan *fpl = factory.newFlightPlan(ATC::IFR, "EPWA", "EPKK", "F350", QTime(12, 30, 0, 0));
 
     ATCFlight foo(state, fpl, sq);
 
     QVERIFY(foo.getFlightPlan() == fpl);
     QVERIFY(foo.getFlightPlan()->getRoute().getDeparture() == "EPWA");
-    QVERIFY(foo.getSquawk() == "1234");
+    QVERIFY(foo.getAssignedSquawk() == "1234");
     QVERIFY(foo.getState().x == 1);
     QVERIFY(foo.getState().y == 2);
     QVERIFY(foo.getState().h == 3);
@@ -189,5 +200,71 @@ void Test_ATCFlight::test_setState()
     QVERIFY(foo.getState().shm == SHM_M);
     QVERIFY(foo.getState().trm == TRM_L);
     QVERIFY(foo.getState().am == AM_C);
+}
+
+void Test_ATCFlight::test_setNavMode()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+
+    foo.setNavMode(ATC::Nav);
+    QVERIFY(foo.getNavMode() == ATC::Nav);
+}
+
+void Test_ATCFlight::test_setTargetAltitude()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+
+    foo.setTargetAltitude("F350");
+    QVERIFY(foo.getTargetAltitude() == "F350");
+}
+
+void Test_ATCFlight::test_setTargetSpeed()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+
+    foo.setTargetSpeed("447");
+    QVERIFY(foo.getTargetSpeed() == "447");
+}
+
+void Test_ATCFlight::test_setHdgRestriction()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+
+    foo.setHdgRestriction(182);
+    QVERIFY(foo.getHdgRestriction() == 182);
+}
+
+void Test_ATCFlight::test_setNextFix()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+
+    foo.setNextFix("EVINA");
+    QVERIFY(foo.getNextFix() == "EVINA");
+}
+
+void Test_ATCFlight::test_setSimStartTime()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+
+    foo.setSimStartTime(QTime(0, 1, 20, 0));
+    QVERIFY(foo.getSimStartTime() == QTime(0, 1, 20, 0));
 }
 

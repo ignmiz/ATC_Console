@@ -61,16 +61,40 @@ public:
 
     ATCFlightPlan* getFlightPlan();
     QString getSquawk();
+    QString getAssignedSquawk();
     State& getState();
+    ATC::NavMode getNavMode();
+    QString getTargetAltitude();
+    QString getTargetSpeed();
+    int getHdgRestriction();
+    QString getNextFix();
+    QTime getSimStartTime();
 
     void setFlightPlan(ATCFlightPlan *fpl);
     void setSquawk(QString sq);
+    void setAssignedSquawk(QString sq);
     void setState(State st);
+    void setNavMode(ATC::NavMode m);
+    void setTargetAltitude(QString altitude);
+    void setTargetSpeed(QString speed);
+    void setHdgRestriction(int hdg);
+    void setNextFix(QString fix);
+    void setSimStartTime(QTime time);
 
 private:
     ATCFlightPlan *plan = nullptr;
     QString squawk;
+    QString assignedSquawk;
     State state;
+
+    ATC::NavMode mode;
+    QString targetAltitude;
+    QString targetSpeed;
+
+    int hdgRestriction;
+    QString nextFix;
+
+    QTime simStart;
 
 };
 

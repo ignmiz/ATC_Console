@@ -16,7 +16,14 @@ private slots:
     void test_constructObject();
     void test_setFlightPlan();
     void test_setSquawk();
+    void test_setAssignedSquawk();
     void test_setState();
+    void test_setNavMode();
+    void test_setTargetAltitude();
+    void test_setTargetSpeed();
+    void test_setHdgRestriction();
+    void test_setNextFix();
+    void test_setSimStartTime();
 };
 
 #endif // TEST_ATCFLIGHT_H
