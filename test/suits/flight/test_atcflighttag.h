@@ -12,6 +12,9 @@ class Test_ATCFlightTag : public QObject
 
 private slots:
     void test_setDiamond();
+    void test_setDiamondPosition();
+    void test_setLeader();
+    void test_setLeaderEndPosition();
 };
 
 #endif // TEST_ATCFLIGHTTAG_H

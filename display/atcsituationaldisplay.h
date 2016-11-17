@@ -5,6 +5,7 @@
 #include "atcconst.h"
 #include "atcsettings.h"
 #include "atcpaths.h"
+#include "atcflight.h"
 
 #include <QGraphicsView>
 #include <QVector>
@@ -89,6 +90,7 @@ public slots:
 
 private slots:
     void slotGetLocation();
+    void slotCreateFlightTag(ATCFlight *flight);
 
 private:
     ATCAirspace *airspaceData = nullptr;
@@ -122,6 +124,8 @@ private:
     QVector<ATCAirwayLow*> visibleLowAirways;
     QVector<ATCAirwayHigh*> visibleHighAirways;
 
+    QVector<ATCFlightTag*> visibleTags;
+
     void situationalDisplaySetup();
 
     void rescaleAll();
@@ -143,6 +147,7 @@ private:
     void rescaleSIDs();
     void rescaleAirwaysLow();
     void rescaleAirwaysHigh();
+    void rescaleTags();
 
     void rescaleSectorARTCCLow(ATCSectorARTCCLow *object);
     void rescaleSectorARTCCHigh(ATCSectorARTCCHigh *object);
@@ -174,6 +179,9 @@ private:
     void calculateSIDs();
     void calculateAirwayLow();
     void calculateAirwayHigh();
+
+    QGraphicsRectItem* createDiamond(ATCFlightTag *tag, double lon, double lat);
+    QGraphicsLineItem* createLeader(ATCFlightTag* tag, double lon, double lat, double trueHdg);
 
     void loadInitialDisplay(QString path);
     void interpretDisplayFile(QString path);

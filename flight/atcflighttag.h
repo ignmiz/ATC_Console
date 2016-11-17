@@ -10,11 +10,21 @@ public:
     ~ATCFlightTag();
 
     QGraphicsRectItem* getDiamond();
+    QPointF& getDiamondPosition();
+    QGraphicsLineItem* getLeader();
+    QPointF& getLeaderEndPosition();
 
     void setDiamond(QGraphicsRectItem *rect);
+    void setDiamondPosition(QPointF &pos);
+    void setLeader(QGraphicsLineItem *line);
+    void setLeaderEndPosition(QPointF &pos);
 
 private:
     QGraphicsRectItem *diamond = nullptr;
+    QPointF diamondPos;
+
+    QGraphicsLineItem *leader = nullptr;
+    QPointF leaderEnd;
 };
 
 #endif // ATCFLIGHTTAG_H

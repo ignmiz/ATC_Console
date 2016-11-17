@@ -215,6 +215,7 @@ void DialogFlightCreator::on_buttonOK_clicked()
         simulation->appendFlight(flight);
 
         //CREATE NEW FLIGHT TAG ON SITUATIONAL DISPLAY - TO BE IMPLEMENTED
+        emit signalCreateFlightTag(flight);
 
         emit closed();
         close();

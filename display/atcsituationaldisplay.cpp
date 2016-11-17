@@ -622,6 +622,20 @@ void ATCSituationalDisplay::slotGetLocation()
     viewport()->setCursor(acftCursor);
 }
 
+void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
+{
+    ATCFlightTag *tag = new ATCFlightTag();
+
+    QGraphicsRectItem *diamond = createDiamond(tag, flight->getState().x, flight->getState().y);
+    QGraphicsLineItem *leader = createLeader(tag, flight->getState().x, flight->getState().y, flight->getState().hdg);
+
+    flight->setFlightTag(tag);
+
+    scene->addItem(diamond);
+    scene->addItem(leader);
+    visibleTags.append(tag);
+}
+
 void ATCSituationalDisplay::situationalDisplaySetup()
 {
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
@@ -658,6 +672,8 @@ void ATCSituationalDisplay::rescaleAll()
     rescaleSIDs();
     rescaleAirwaysLow();
     rescaleAirwaysHigh();
+
+    rescaleTags();
 }
 
 void ATCSituationalDisplay::rescaleScene()
@@ -997,6 +1013,30 @@ void ATCSituationalDisplay::rescaleAirwaysHigh()
             {
                 visibleHighAirways.at(i)->getLine(j)->setPen(currentPen);
             }
+        }
+    }
+}
+
+void ATCSituationalDisplay::rescaleTags()
+{
+    if(!visibleTags.empty())
+    {
+        double sideLength = settings->TAG_DIAMOND_WIDTH / currentScale;
+        double leaderWidth = settings->TAG_LEADER_WIDTH / currentScale;
+
+        QPen leaderPen = visibleTags.at(0)->getLeader()->pen();
+        leaderPen.setWidthF(leaderWidth);
+
+        for(int i = 0; i < visibleTags.size(); i++)
+        {
+            QGraphicsRectItem *rectItem = visibleTags.at(i)->getDiamond();
+            QPointF currentPosition = visibleTags.at(i)->getDiamondPosition();
+
+            QRectF rect(currentPosition.x() - sideLength/2, currentPosition.y() - sideLength/2, sideLength, sideLength);
+
+            rectItem->setRect(rect);
+
+            visibleTags.at(i)->getLeader()->setPen(leaderPen);
         }
     }
 }
@@ -2580,6 +2620,71 @@ void ATCSituationalDisplay::calculateAirwayHigh()
     }
 }
 
+QGraphicsRectItem* ATCSituationalDisplay::createDiamond(ATCFlightTag *tag, double lon, double lat)
+{
+    double x = mercatorProjectionLon(lon);
+    double y = mercatorProjectionLat(lat);
+
+    double xRot = rotateX(x, y, ATCConst::AVG_DECLINATION);
+    double yRot = rotateY(x, y, ATCConst::AVG_DECLINATION);
+
+    x = translateToLocalX(xRot);
+    y = translateToLocalY(yRot);
+
+    double width = settings->TAG_DIAMOND_WIDTH / currentScale;
+
+    QPen pen(Qt::green);
+    QBrush brush(Qt::green);
+
+    QGraphicsRectItem *diamond = new QGraphicsRectItem(x - width/2, y - width/2, width, width);
+    diamond->setPen(pen);
+    diamond->setBrush(brush);
+
+    tag->setDiamond(diamond);
+    tag->setDiamondPosition(QPointF(x, y));
+
+    return diamond;
+}
+
+QGraphicsLineItem *ATCSituationalDisplay::createLeader(ATCFlightTag *tag, double lon, double lat, double trueHdg)
+{
+    double leaderStartLon = lon;
+    double leaderStartLat = lat;
+    double leaderEndLon = lon + ATCMath::rad2deg(ATCMath::nm2m(settings->TAG_LEADER_LENGTH) / (ATCConst::WGS84_RADIUS * qCos(ATCMath::deg2rad(lat))));
+    double leaderEndLat = lat;
+
+    leaderStartLon = mercatorProjectionLon(leaderStartLon);
+    leaderStartLat = mercatorProjectionLat(leaderStartLat);
+    leaderEndLon = mercatorProjectionLon(leaderEndLon);
+    leaderEndLat = mercatorProjectionLat(leaderEndLat);
+
+    double delta = qFabs(leaderEndLon - leaderStartLon);
+
+    leaderEndLon = leaderStartLon + delta * qSin(trueHdg);
+    leaderEndLat = leaderStartLat + delta * qCos(trueHdg);
+
+    double xStart = rotateX(leaderStartLon, leaderStartLat, ATCConst::AVG_DECLINATION);
+    double yStart = rotateY(leaderStartLon, leaderStartLat, ATCConst::AVG_DECLINATION);
+    double xEnd = rotateX(leaderEndLon, leaderEndLat, ATCConst::AVG_DECLINATION);
+    double yEnd = rotateY(leaderEndLon, leaderEndLat, ATCConst::AVG_DECLINATION);
+
+    xStart = translateToLocalX(xStart);
+    yStart = translateToLocalY(yStart);
+    xEnd = translateToLocalX(xEnd);
+    yEnd = translateToLocalY(yEnd);
+
+    QPen pen(Qt::green);
+    pen.setWidthF(settings->TAG_LEADER_WIDTH / currentScale);
+
+    QGraphicsLineItem *leader = new QGraphicsLineItem(xStart, yStart, xEnd, yEnd);
+    leader->setPen(pen);
+
+    tag->setLeader(leader);
+    tag->setLeaderEndPosition(QPointF(xEnd, yEnd));
+
+    return leader;
+}
+
 void ATCSituationalDisplay::hideAll()
 {
     for(int i = 0; i < visibleSectorsARTCCLow.size(); i++)
@@ -3243,6 +3348,8 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
         rescaleSIDs();
         rescaleAirwaysLow();
         rescaleAirwaysHigh();
+
+        rescaleTags();
     }
 
     event->accept();
