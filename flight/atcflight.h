@@ -2,6 +2,7 @@
 #define ATCFLIGHT_H
 
 #include "atcflightplan.h"
+#include "atcflighttag.h"
 
 #include <QString>
 
@@ -70,6 +71,8 @@ public:
     QString getNextFix();
     QTime getSimStartTime();
 
+    ATCFlightTag* getFlightTag();
+
     void setFlightPlan(ATCFlightPlan *fpl);
     void setSquawk(QString sq);
     void setAssignedSquawk(QString sq);
@@ -81,11 +84,15 @@ public:
     void setNextFix(QString fix);
     void setSimStartTime(QTime time);
 
+    void setFlightTag(ATCFlightTag *t);
+
 private:
     ATCFlightPlan *plan = nullptr;
     QString squawk;
     QString assignedSquawk;
     State state;
+
+    ATCFlightTag *tag = nullptr;
 
     ATC::NavMode mode;
     QString targetAltitude;

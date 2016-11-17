@@ -268,3 +268,18 @@ void Test_ATCFlight::test_setSimStartTime()
     QVERIFY(foo.getSimStartTime() == QTime(0, 1, 20, 0));
 }
 
+void Test_ATCFlight::test_setTag()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+
+    ATCFlightTag *tag = new ATCFlightTag();
+
+    QVERIFY(foo.getFlightTag() == nullptr);
+
+    foo.setFlightTag(tag);
+    QVERIFY(foo.getFlightTag() == tag);
+}
+

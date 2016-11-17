@@ -22,6 +22,11 @@ ATCFlight::~ATCFlight()
     {
         delete plan;
     }
+
+    if(tag != nullptr)
+    {
+        delete tag;
+    }
 }
 
 ATCFlightPlan *ATCFlight::getFlightPlan()
@@ -74,6 +79,11 @@ QTime ATCFlight::getSimStartTime()
     return simStart;
 }
 
+ATCFlightTag *ATCFlight::getFlightTag()
+{
+    return tag;
+}
+
 void ATCFlight::setFlightPlan(ATCFlightPlan *fpl)
 {
     delete plan;
@@ -123,4 +133,9 @@ void ATCFlight::setNextFix(QString fix)
 void ATCFlight::setSimStartTime(QTime time)
 {
     simStart = time;
+}
+
+void ATCFlight::setFlightTag(ATCFlightTag *t)
+{
+    tag = t;
 }
