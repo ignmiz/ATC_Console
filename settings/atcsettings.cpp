@@ -536,6 +536,10 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 {
                     TAG_DIAMOND_DIA = stringList.at(1).trimmed().toDouble();
                 }
+                else if(stringList.at(0).trimmed() == "DIAMOND LINE")
+                {
+                    TAG_DIAMOND_LINE = stringList.at(1).trimmed().toDouble();
+                }
                 else if(stringList.at(0).trimmed() == "LEADER LENGTH")
                 {
                     TAG_LEADER_LENGTH = stringList.at(1).trimmed().toDouble();

@@ -89,6 +89,7 @@ public:
 
     double TAG_DIAMOND_WIDTH;
     double TAG_DIAMOND_DIA;
+    double TAG_DIAMOND_LINE;
     double TAG_LEADER_LENGTH;
     double TAG_LEADER_WIDTH;
 
