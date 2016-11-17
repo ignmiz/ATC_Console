@@ -85,7 +85,8 @@ SOURCES += main.cpp\
     atcflightfactory.cpp \
     dialogflight.cpp \
     dialogflightcreator.cpp \
-    atcsimulation.cpp
+    atcsimulation.cpp \
+    atcflighttag.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -142,7 +143,8 @@ HEADERS  += mainwindow.h \
     atcflightfactory.h \
     dialogflight.h \
     dialogflightcreator.h \
-    atcsimulation.h
+    atcsimulation.h \
+    atcflighttag.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
