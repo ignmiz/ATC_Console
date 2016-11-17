@@ -45,6 +45,7 @@ void ATCSettings::interpretSymbologyFile(QString path)
     bool flagSID = false;
     bool flagLowAirway = false;
     bool flagHighAirway = false;
+    bool flagTag = false;
 
     QTextStream stream(&file);
     while(!stream.atEnd())
@@ -71,6 +72,7 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = false;
+                flagTag = false;
             }
             else if(textLine.contains("[ARTCC LOW]", Qt::CaseInsensitive))
             {
@@ -87,6 +89,7 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = false;
+                flagTag = false;
             }
             else if(textLine.contains("[ARTCC HIGH]", Qt::CaseInsensitive))
             {
@@ -103,6 +106,7 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = false;
+                flagTag = false;
             }
             else if(textLine.contains("[ARTCC]", Qt::CaseInsensitive))
             {
@@ -119,6 +123,7 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = false;
+                flagTag = false;
             }
             else if(textLine.contains("[VOR]", Qt::CaseInsensitive))
             {
@@ -135,6 +140,7 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = false;
+                flagTag = false;
             }
             else if(textLine.contains("[NDB]", Qt::CaseInsensitive))
             {
@@ -151,6 +157,7 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = false;
+                flagTag = false;
             }
             else if(textLine.contains("[FIXES]", Qt::CaseInsensitive))
             {
@@ -167,6 +174,7 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = false;
+                flagTag = false;
             }
             else if(textLine.contains("[AIRPORT]", Qt::CaseInsensitive))
             {
@@ -183,6 +191,7 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = false;
+                flagTag = false;
             }
             else if(textLine.contains("[RUNWAY]", Qt::CaseInsensitive))
             {
@@ -199,6 +208,7 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = false;
+                flagTag = false;
             }
             else if(textLine.contains("[STAR]", Qt::CaseInsensitive))
             {
@@ -215,6 +225,7 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = false;
+                flagTag = false;
             }
             else if(textLine.contains("[SID]", Qt::CaseInsensitive))
             {
@@ -231,6 +242,7 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 flagSID = true;
                 flagLowAirway = false;
                 flagHighAirway = false;
+                flagTag = false;
             }
             else if(textLine.contains("[LOW AIRWAY]", Qt::CaseInsensitive))
             {
@@ -247,6 +259,7 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 flagSID = false;
                 flagLowAirway = true;
                 flagHighAirway = false;
+                flagTag = false;
             }
             else if(textLine.contains("[HIGH AIRWAY]", Qt::CaseInsensitive))
             {
@@ -263,6 +276,24 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 flagSID = false;
                 flagLowAirway = false;
                 flagHighAirway = true;
+                flagTag = false;
+            }
+            else if(textLine.contains("[TAG]", Qt::CaseInsensitive))
+            {
+                flagINFO = false;
+                flagARTCCLow = false;
+                flagARTCCHigh = false;
+                flagARTCC = false;
+                flagVOR = false;
+                flagNDB = false;
+                flagFixes = false;
+                flagAirport = false;
+                flagRunway = false;
+                flagSTAR = false;
+                flagSID = false;
+                flagLowAirway = false;
+                flagHighAirway = false;
+                flagTag = true;
             }
             else if(flagINFO)
             {
@@ -495,6 +526,25 @@ void ATCSettings::interpretSymbologyFile(QString path)
                     AIRWAY_HIGH_LINE_WIDTH = stringList.at(1).trimmed().toDouble();
                 }
             }
+            else if(flagTag)
+            {
+                if(stringList.at(0).trimmed() == "DIAMOND WIDTH")
+                {
+                    TAG_DIAMOND_WIDTH = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "DIAMOND DIAMETER")
+                {
+                    TAG_DIAMOND_DIA = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "LEADER LENGTH")
+                {
+                    TAG_LEADER_LENGTH = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "LEADER WIDTH")
+                {
+                    TAG_LEADER_WIDTH = stringList.at(1).trimmed().toDouble();
+                }
+            }
         }
     }
 
@@ -605,6 +655,13 @@ void ATCSettings::exportSymbology(QString path)
     out << "[HIGH AIRWAY]" << endl;
     out << "COLOR = " << AIRWAY_HIGH_COLOR.red() << ", " << AIRWAY_HIGH_COLOR.green() << ", " << AIRWAY_HIGH_COLOR.blue() << endl;
     out << "LINE WIDTH = " << AIRWAY_HIGH_LINE_WIDTH << endl;
+    out << endl;
+
+    out << "[TAG]" << endl;
+    out << "DIAMOND WIDTH = " << TAG_DIAMOND_WIDTH << endl;
+    out << "DIAMOND DIAMETER = " << TAG_DIAMOND_DIA << endl;
+    out << "LEADER LENGTH = " << TAG_LEADER_LENGTH << endl;
+    out << "LEADER WIDTH = " << TAG_LEADER_WIDTH << endl;
 
     file.close();
 }

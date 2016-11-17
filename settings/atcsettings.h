@@ -87,6 +87,11 @@ public:
     QColor AIRWAY_HIGH_COLOR;
     double AIRWAY_HIGH_LINE_WIDTH;
 
+    double TAG_DIAMOND_WIDTH;
+    double TAG_DIAMOND_DIA;
+    double TAG_LEADER_LENGTH;
+    double TAG_LEADER_WIDTH;
+
 signals:
     void signalColorARTCCLow(const QColor &color);
     void signalColorARTCCHigh(const QColor &color);
