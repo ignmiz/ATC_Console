@@ -182,6 +182,11 @@ private:
 
     QGraphicsRectItem* createDiamond(ATCFlightTag *tag, double lon, double lat);
     QGraphicsLineItem* createLeader(ATCFlightTag* tag, double lon, double lat, double trueHdg);
+    QGraphicsLineItem* createConnector(ATCFlightTag *tag);
+    ATCTagRect* createTagBox(ATCFlightTag *tag, QGraphicsLineItem *connector);
+    QGraphicsSimpleTextItem* createTagText(ATCFlightTag *tag, ATCFlight *flight);
+
+    void assignTagPositions();
 
     void loadInitialDisplay(QString path);
     void interpretDisplayFile(QString path);

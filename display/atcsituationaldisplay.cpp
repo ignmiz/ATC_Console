@@ -628,11 +628,21 @@ void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
 
     QGraphicsRectItem *diamond = createDiamond(tag, flight->getState().x, flight->getState().y);
     QGraphicsLineItem *leader = createLeader(tag, flight->getState().x, flight->getState().y, flight->getState().hdg);
+    QGraphicsLineItem *connector = createConnector(tag);
+    QGraphicsRectItem *tagBox = createTagBox(tag, connector);
+    QGraphicsSimpleTextItem *text = createTagText(tag, flight);
 
     flight->setFlightTag(tag);
 
     scene->addItem(diamond);
     scene->addItem(leader);
+    scene->addItem(connector);
+    scene->addItem(tagBox);
+
+    text->setParentItem(tagBox);
+
+    tagBox->setFlag(QGraphicsItem::ItemIsMovable);
+
     visibleTags.append(tag);
 }
 
@@ -1024,19 +1034,57 @@ void ATCSituationalDisplay::rescaleTags()
         double sideLength = settings->TAG_DIAMOND_WIDTH / currentScale;
         double leaderWidth = settings->TAG_LEADER_WIDTH / currentScale;
 
+        double boxWidth = settings->TAG_BOX_WIDTH / currentScale;
+        double boxHeight = settings->TAG_BOX_HEIGHT / currentScale;
+
+        double connectorWidth = settings->TAG_CONNECTOR_WIDTH / currentScale;
+
+        double tagFont = settings->TAG_LABEL_HEIGHT / currentScale;
+        double labelMargins = settings->TAG_LABEL_MARGINS / currentScale;
+
         QPen leaderPen = visibleTags.at(0)->getLeader()->pen();
         leaderPen.setWidthF(leaderWidth);
 
+        QPen connectorPen = visibleTags.at(0)->getConnector()->pen();
+        connectorPen.setWidthF(connectorWidth);
+
+        QFont labelFont = visibleTags.at(0)->getText()->font();
+        labelFont.setPointSizeF(tagFont);
+
         for(int i = 0; i < visibleTags.size(); i++)
         {
-            QGraphicsRectItem *rectItem = visibleTags.at(i)->getDiamond();
+            QGraphicsRectItem *diamond = visibleTags.at(i)->getDiamond();
+            QGraphicsLineItem *connector = visibleTags.at(i)->getConnector();
+            ATCTagRect *tagBox = visibleTags.at(i)->getTagBox();
+
             QPointF currentPosition = visibleTags.at(i)->getDiamondPosition();
 
             QRectF rect(currentPosition.x() - sideLength/2, currentPosition.y() - sideLength/2, sideLength, sideLength);
+            diamond->setRect(rect);
 
-            rectItem->setRect(rect);
+            QPointF initial = connector->line().p2();
+
+            double dx = visibleTags.at(i)->getDX() / currentScale;
+            double dy = visibleTags.at(i)->getDY() / currentScale;
+
+            connector->setLine(QLineF(currentPosition.x(), currentPosition.y(), currentPosition.x() + dx, currentPosition.y() + dy));
+            connector->setPen(connectorPen);
+
+            QPointF final = connector->line().p2();
+
+            double dw = boxWidth - tagBox->rect().width();
+            double dh = boxHeight - tagBox->rect().height();
+
+            double translationX = final.x() - initial.x() - dw/2;
+            double translationY = final.y() - initial.y() - dh/2;
+
+            tagBox->setRect(tagBox->rect().x(), tagBox->rect().y(), boxWidth, boxHeight);
+            tagBox->moveBy(translationX, translationY);
+
+            visibleTags.at(i)->getText()->setPos(tagBox->rect().x() + labelMargins, tagBox->rect().y() + labelMargins);
 
             visibleTags.at(i)->getLeader()->setPen(leaderPen);
+            visibleTags.at(i)->getText()->setFont(labelFont);
         }
     }
 }
@@ -2685,6 +2733,91 @@ QGraphicsLineItem *ATCSituationalDisplay::createLeader(ATCFlightTag *tag, double
     return leader;
 }
 
+QGraphicsLineItem *ATCSituationalDisplay::createConnector(ATCFlightTag *tag)
+{
+    double x = tag->getDiamondPosition().x();
+    double y = tag->getDiamondPosition().y();
+
+    double xTagBox = x + settings->TAG_BOX_DX / currentScale;
+    double yTagBox = y + settings->TAG_BOX_DY / currentScale;
+
+    QPen pen(Qt::green);
+    pen.setWidthF(settings->TAG_CONNECTOR_WIDTH / currentScale);
+
+    QGraphicsLineItem *connector = new QGraphicsLineItem(x, y, xTagBox, yTagBox);
+    connector->setPen(pen);
+
+    tag->setConnector(connector);
+
+    return connector;
+}
+
+ATCTagRect *ATCSituationalDisplay::createTagBox(ATCFlightTag *tag, QGraphicsLineItem *connector)
+{
+    double width = settings->TAG_BOX_WIDTH / currentScale;
+    double height = settings->TAG_BOX_HEIGHT / currentScale;
+
+    double dx = settings->TAG_BOX_DX / currentScale;
+    double dy = settings->TAG_BOX_DY / currentScale;
+
+    double x = tag->getDiamondPosition().x();
+    double y = tag->getDiamondPosition().y();
+
+    QBrush brush(Qt::gray);
+
+    ATCTagRect *tagBox = new ATCTagRect(x + dx - width/2, y + dy - height/2, width, height, connector);
+    tagBox->setBrush(brush);
+    tagBox->setOpacity(0.25);
+    tagBox->setFlag(QGraphicsItem::ItemDoesntPropagateOpacityToChildren);
+
+    tag->setTagBox(tagBox);
+
+    return tagBox;
+}
+
+QGraphicsSimpleTextItem *ATCSituationalDisplay::createTagText(ATCFlightTag *tag, ATCFlight *flight)
+{
+//    QString callsign = flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber();
+    QString callsign = "LOT231H   472\n"
+                       "265↑300 EVINA\n"
+                       "A321M H225 S250\n";
+
+    QFont textFont("Consolas");
+    textFont.setPointSizeF(settings->TAG_LABEL_HEIGHT / currentScale);
+
+    double xPos = tag->getDiamondPosition().x() + settings->TAG_BOX_DX/currentScale - settings->TAG_BOX_WIDTH/2/currentScale + settings->TAG_LABEL_MARGINS/currentScale;
+    double yPos = tag->getDiamondPosition().y() + settings->TAG_BOX_DY/currentScale - settings->TAG_BOX_HEIGHT/2/currentScale + settings->TAG_LABEL_MARGINS/currentScale;
+
+    QBrush brush(Qt::green);
+
+    QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem(callsign);
+    text->setFont(textFont);
+    text->setBrush(brush);
+    text->setPos(xPos, yPos);
+    text->setOpacity(1);
+
+    tag->setText(text);
+
+    return text;
+}
+
+void ATCSituationalDisplay::assignTagPositions()
+{
+    for(int i = 0; i < visibleTags.size(); i++)
+    {
+        QGraphicsLineItem *connector = visibleTags.at(i)->getConnector();
+
+        QPointF p1 = connector->line().p1();
+        QPointF p2 = connector->line().p2();
+
+        double dx = (p2.x() - p1.x()) * currentScale;
+        double dy = (p2.y() - p1.y()) * currentScale;
+
+        visibleTags.at(i)->setDX(dx);
+        visibleTags.at(i)->setDY(dy);
+    }
+}
+
 void ATCSituationalDisplay::hideAll()
 {
     for(int i = 0; i < visibleSectorsARTCCLow.size(); i++)
@@ -3324,6 +3457,8 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
 {
     if(QGuiApplication::queryKeyboardModifiers().testFlag(Qt::ControlModifier))
     {
+        assignTagPositions();
+
         QPoint numDegrees = event->angleDelta();
         qreal increment = (numDegrees.y() / 120) * scaleResolution;
 
