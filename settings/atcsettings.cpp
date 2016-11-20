@@ -548,6 +548,34 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 {
                     TAG_LEADER_WIDTH = stringList.at(1).trimmed().toDouble();
                 }
+                else if(stringList.at(0).trimmed() == "BOX WIDTH")
+                {
+                    TAG_BOX_WIDTH = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "BOX HEIGHT")
+                {
+                    TAG_BOX_HEIGHT = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "BOX DX")
+                {
+                    TAG_BOX_DX = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "BOX DY")
+                {
+                    TAG_BOX_DY = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "CONNECTOR WIDTH")
+                {
+                    TAG_CONNECTOR_WIDTH = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "LABEL HEIGHT")
+                {
+                    TAG_LABEL_HEIGHT = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "LABEL MARGINS")
+                {
+                    TAG_LABEL_MARGINS = stringList.at(1).trimmed().toDouble();
+                }
             }
         }
     }
@@ -666,6 +694,13 @@ void ATCSettings::exportSymbology(QString path)
     out << "DIAMOND DIAMETER = " << TAG_DIAMOND_DIA << endl;
     out << "LEADER LENGTH = " << TAG_LEADER_LENGTH << endl;
     out << "LEADER WIDTH = " << TAG_LEADER_WIDTH << endl;
+    out << "BOX WIDTH = " << TAG_BOX_WIDTH << endl;
+    out << "BOX HEIGHT = " << TAG_BOX_HEIGHT << endl;
+    out << "BOX DX = " << TAG_BOX_DX << endl;
+    out << "BOX DY = " << TAG_BOX_DY << endl;
+    out << "CONNECTOR WIDTH = " << TAG_CONNECTOR_WIDTH << endl;
+    out << "LABEL HEIGHT = " << TAG_LABEL_HEIGHT << endl;
+    out << "LABEL MARGINS = " << TAG_LABEL_MARGINS << endl;
 
     file.close();
 }

@@ -92,6 +92,13 @@ public:
     double TAG_DIAMOND_LINE;
     double TAG_LEADER_LENGTH;
     double TAG_LEADER_WIDTH;
+    double TAG_BOX_WIDTH;
+    double TAG_BOX_HEIGHT;
+    double TAG_BOX_DX;
+    double TAG_BOX_DY;
+    double TAG_CONNECTOR_WIDTH;
+    double TAG_LABEL_HEIGHT;
+    double TAG_LABEL_MARGINS;
 
 signals:
     void signalColorARTCCLow(const QColor &color);
