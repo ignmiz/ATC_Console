@@ -15,6 +15,9 @@ private slots:
     void test_setDiamondPosition();
     void test_setLeader();
     void test_setLeaderEndPosition();
+    void test_getTagBox();
+    void test_getConnector();
+    void test_getText();
 };
 
 #endif // TEST_ATCFLIGHTTAG_H

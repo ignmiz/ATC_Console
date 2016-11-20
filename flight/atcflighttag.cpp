@@ -8,15 +8,10 @@ ATCFlightTag::ATCFlightTag()
 
 ATCFlightTag::~ATCFlightTag()
 {
-    if(diamond != nullptr)
-    {
-        delete diamond;
-    }
-
-    if(leader != nullptr)
-    {
-        delete leader;
-    }
+    if(diamond != nullptr) delete diamond;
+    if(leader != nullptr) delete leader;
+    if(tagBox != nullptr) delete tagBox;
+    if(connector != nullptr) delete connector;
 }
 
 QGraphicsRectItem* ATCFlightTag::getDiamond()
@@ -39,6 +34,31 @@ QPointF &ATCFlightTag::getLeaderEndPosition()
     return leaderEnd;
 }
 
+ATCTagRect *ATCFlightTag::getTagBox()
+{
+    return tagBox;
+}
+
+QGraphicsLineItem *ATCFlightTag::getConnector()
+{
+    return connector;
+}
+
+double ATCFlightTag::getDX()
+{
+    return dx;
+}
+
+double ATCFlightTag::getDY()
+{
+    return dy;
+}
+
+QGraphicsSimpleTextItem *ATCFlightTag::getText()
+{
+    return text;
+}
+
 void ATCFlightTag::setDiamond(QGraphicsRectItem *rect)
 {
     diamond = rect;
@@ -57,4 +77,29 @@ void ATCFlightTag::setLeader(QGraphicsLineItem *line)
 void ATCFlightTag::setLeaderEndPosition(QPointF &pos)
 {
     leaderEnd = pos;
+}
+
+void ATCFlightTag::setTagBox(ATCTagRect *rect)
+{
+    tagBox = rect;
+}
+
+void ATCFlightTag::setConnector(QGraphicsLineItem *line)
+{
+    connector = line;
+}
+
+void ATCFlightTag::setDX(double deltaX)
+{
+    dx = deltaX;
+}
+
+void ATCFlightTag::setDY(double deltaY)
+{
+    dy = deltaY;
+}
+
+void ATCFlightTag::setText(QGraphicsSimpleTextItem *t)
+{
+    text = t;
 }
