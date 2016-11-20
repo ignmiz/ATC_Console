@@ -1,6 +1,8 @@
 #ifndef ATCTAGRECT_H
 #define ATCTAGRECT_H
 
+#include "atcconst.h"
+
 #include <QGraphicsItem>
 
 class ATCTagRect : public QGraphicsRectItem

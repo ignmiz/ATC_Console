@@ -2765,9 +2765,9 @@ ATCTagRect *ATCSituationalDisplay::createTagBox(ATCFlightTag *tag, QGraphicsLine
 
     QBrush brush(Qt::gray);
 
-    ATCTagRect *tagBox = new ATCTagRect(x + dx - width/2, y + dy - height/2, width, height, connector);
+    ATCTagRect *tagBox = new ATCTagRect(x + dx - width/2, y + dy - height, width, height, connector);
     tagBox->setBrush(brush);
-    tagBox->setOpacity(0.25);
+    tagBox->setOpacity(0.01);
     tagBox->setFlag(QGraphicsItem::ItemDoesntPropagateOpacityToChildren);
 
     tag->setTagBox(tagBox);
@@ -2786,7 +2786,7 @@ QGraphicsSimpleTextItem *ATCSituationalDisplay::createTagText(ATCFlightTag *tag,
     textFont.setPointSizeF(settings->TAG_LABEL_HEIGHT / currentScale);
 
     double xPos = tag->getDiamondPosition().x() + settings->TAG_BOX_DX/currentScale - settings->TAG_BOX_WIDTH/2/currentScale + settings->TAG_LABEL_MARGINS/currentScale;
-    double yPos = tag->getDiamondPosition().y() + settings->TAG_BOX_DY/currentScale - settings->TAG_BOX_HEIGHT/2/currentScale + settings->TAG_LABEL_MARGINS/currentScale;
+    double yPos = tag->getDiamondPosition().y() + settings->TAG_BOX_DY/currentScale - settings->TAG_BOX_HEIGHT/currentScale + settings->TAG_LABEL_MARGINS/currentScale;
 
     QBrush brush(Qt::green);
 
