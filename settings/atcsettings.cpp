@@ -556,6 +556,10 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 {
                     TAG_BOX_HEIGHT = stringList.at(1).trimmed().toDouble();
                 }
+                else if(stringList.at(0).trimmed() == "BOX HEIGHT FULL")
+                {
+                    TAG_BOX_HEIGHT_FULL = stringList.at(1).trimmed().toDouble();
+                }
                 else if(stringList.at(0).trimmed() == "BOX DX")
                 {
                     TAG_BOX_DX = stringList.at(1).trimmed().toDouble();
@@ -563,6 +567,10 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 else if(stringList.at(0).trimmed() == "BOX DY")
                 {
                     TAG_BOX_DY = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "BOX COLOR")
+                {
+                    TAG_BOX_COLOR = colorFromString(stringList.at(1));
                 }
                 else if(stringList.at(0).trimmed() == "CONNECTOR WIDTH")
                 {
@@ -575,6 +583,10 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 else if(stringList.at(0).trimmed() == "LABEL MARGINS")
                 {
                     TAG_LABEL_MARGINS = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "LABEL COLOR")
+                {
+                    TAG_LABEL_COLOR = colorFromString(stringList.at(1));
                 }
             }
         }
@@ -696,11 +708,14 @@ void ATCSettings::exportSymbology(QString path)
     out << "LEADER WIDTH = " << TAG_LEADER_WIDTH << endl;
     out << "BOX WIDTH = " << TAG_BOX_WIDTH << endl;
     out << "BOX HEIGHT = " << TAG_BOX_HEIGHT << endl;
+    out << "BOX HEIGHT FULL = " << TAG_BOX_HEIGHT_FULL << endl;
     out << "BOX DX = " << TAG_BOX_DX << endl;
     out << "BOX DY = " << TAG_BOX_DY << endl;
+    out << "BOX COLOR = " << TAG_BOX_COLOR.red() << ", " << TAG_BOX_COLOR.green() << ", " << TAG_BOX_COLOR.blue() << endl;
     out << "CONNECTOR WIDTH = " << TAG_CONNECTOR_WIDTH << endl;
     out << "LABEL HEIGHT = " << TAG_LABEL_HEIGHT << endl;
     out << "LABEL MARGINS = " << TAG_LABEL_MARGINS << endl;
+    out << "LABEL COLOR = " << TAG_LABEL_COLOR.red() << ", " << TAG_LABEL_COLOR.green() << ", " << TAG_LABEL_COLOR.blue() << endl;
 
     file.close();
 }
