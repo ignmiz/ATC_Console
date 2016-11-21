@@ -629,8 +629,14 @@ void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
     QGraphicsRectItem *diamond = createDiamond(tag, flight->getState().x, flight->getState().y);
     QGraphicsLineItem *leader = createLeader(tag, flight->getState().x, flight->getState().y, flight->getState().hdg);
     QGraphicsLineItem *connector = createConnector(tag);
-    QGraphicsRectItem *tagBox = createTagBox(tag, connector);
-    QGraphicsSimpleTextItem *text = createTagText(tag, flight);
+    QGraphicsSimpleTextItem *text = createTagText(tag);
+    ATCTagRect *tagBox = createTagBox(tag);
+
+    tagBox->setConnector(connector);
+    tagBox->setText(text);
+    text->setParentItem(tagBox);
+
+    createEtiquettes(flight, tag);
 
     flight->setFlightTag(tag);
 
@@ -638,10 +644,6 @@ void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
     scene->addItem(leader);
     scene->addItem(connector);
     scene->addItem(tagBox);
-
-    text->setParentItem(tagBox);
-
-    tagBox->setFlag(QGraphicsItem::ItemIsMovable);
 
     visibleTags.append(tag);
 }
@@ -653,9 +655,6 @@ void ATCSituationalDisplay::situationalDisplaySetup()
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setDragMode(QGraphicsView::NoDrag);
     setRenderHint(QPainter::Antialiasing);
-
-    setMouseTracking(true);
-//    viewport()->setMouseTracking(true);
 
     setSceneRect(-0.5 * ATCConst::SCENE_WIDTH, -0.5 * ATCConst::SCENE_HEIGHT, ATCConst::SCENE_WIDTH, ATCConst::SCENE_HEIGHT);
 
@@ -1075,16 +1074,19 @@ void ATCSituationalDisplay::rescaleTags()
 
             QPointF final = connector->line().p2();
 
+            double rectX = tagBox->rect().x();
+            double rectY = tagBox->rect().y();
+
             double dw = boxWidth - tagBox->rect().width();
             double dh = boxHeight - tagBox->rect().height();
 
             double translationX = final.x() - initial.x() - dw/2;
             double translationY = final.y() - initial.y() - dh/2;
 
-            tagBox->setRect(tagBox->rect().x(), tagBox->rect().y(), boxWidth, boxHeight);
+            tagBox->setRect(rectX, rectY, boxWidth, boxHeight);
             tagBox->moveBy(translationX, translationY);
 
-            visibleTags.at(i)->getText()->setPos(tagBox->rect().x() + labelMargins, tagBox->rect().y() + labelMargins);
+            visibleTags.at(i)->getText()->setPos(rectX + labelMargins, rectY + labelMargins);
 
             visibleTags.at(i)->getLeader()->setPen(leaderPen);
             visibleTags.at(i)->getText()->setFont(labelFont);
@@ -2755,7 +2757,7 @@ QGraphicsLineItem *ATCSituationalDisplay::createConnector(ATCFlightTag *tag)
     return connector;
 }
 
-ATCTagRect *ATCSituationalDisplay::createTagBox(ATCFlightTag *tag, QGraphicsLineItem *connector)
+ATCTagRect *ATCSituationalDisplay::createTagBox(ATCFlightTag *tag)
 {
     double width = settings->TAG_BOX_WIDTH / currentScale;
     double height = settings->TAG_BOX_HEIGHT / currentScale;
@@ -2766,9 +2768,9 @@ ATCTagRect *ATCSituationalDisplay::createTagBox(ATCFlightTag *tag, QGraphicsLine
     double x = tag->getDiamondPosition().x();
     double y = tag->getDiamondPosition().y();
 
-    QBrush brush(Qt::gray);
+    QBrush brush(settings->TAG_BOX_COLOR);
 
-    ATCTagRect *tagBox = new ATCTagRect(x + dx - width/2, y + dy - height, width, height, connector);
+    ATCTagRect *tagBox = new ATCTagRect(x + dx - width/2, y + dy - height, width, height, settings, &currentScale);
     tagBox->setBrush(brush);
     tagBox->setOpacity(0.01);
     tagBox->setFlag(QGraphicsItem::ItemDoesntPropagateOpacityToChildren);
@@ -2778,12 +2780,9 @@ ATCTagRect *ATCSituationalDisplay::createTagBox(ATCFlightTag *tag, QGraphicsLine
     return tagBox;
 }
 
-QGraphicsSimpleTextItem *ATCSituationalDisplay::createTagText(ATCFlightTag *tag, ATCFlight *flight)
+QGraphicsSimpleTextItem *ATCSituationalDisplay::createTagText(ATCFlightTag *tag)
 {
-//    QString callsign = flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber();
-    QString callsign = "LOT231H   472\n"
-                       "265↑300 EVINA\n"
-                       "A321M H225 S250\n";
+    QString string = "";
 
     QFont textFont("Consolas");
     textFont.setPointSizeF(settings->TAG_LABEL_HEIGHT / currentScale);
@@ -2791,9 +2790,9 @@ QGraphicsSimpleTextItem *ATCSituationalDisplay::createTagText(ATCFlightTag *tag,
     double xPos = tag->getDiamondPosition().x() + settings->TAG_BOX_DX/currentScale - settings->TAG_BOX_WIDTH/2/currentScale + settings->TAG_LABEL_MARGINS/currentScale;
     double yPos = tag->getDiamondPosition().y() + settings->TAG_BOX_DY/currentScale - settings->TAG_BOX_HEIGHT/currentScale + settings->TAG_LABEL_MARGINS/currentScale;
 
-    QBrush brush(Qt::green);
+    QBrush brush(settings->TAG_LABEL_COLOR);
 
-    QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem(callsign);
+    QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem(string);
     text->setFont(textFont);
     text->setBrush(brush);
     text->setPos(xPos, yPos);
@@ -2802,6 +2801,23 @@ QGraphicsSimpleTextItem *ATCSituationalDisplay::createTagText(ATCFlightTag *tag,
     tag->setText(text);
 
     return text;
+}
+
+void ATCSituationalDisplay::createEtiquettes(ATCFlight *flight, ATCFlightTag *tag)
+{
+    //EXTRACT & PARSE DATA FROM *flight HERE
+
+    QString shortEtiquette = "LOT231H   472\n"
+                             "265↑300 EVINA\n";
+
+    QString longEtiquette = "LOT231H   472\n"
+                            "265↑300 EVINA\n"
+                            "A321M H225 S250\n";
+
+    tag->getTagBox()->setShortEtiquette(shortEtiquette);
+    tag->getTagBox()->setLongEtiquette(longEtiquette);
+
+    tag->getText()->setText(shortEtiquette);
 }
 
 void ATCSituationalDisplay::assignTagPositions()
@@ -3517,6 +3533,8 @@ void ATCSituationalDisplay::mousePressEvent(QMouseEvent *event)
 
         flagGetLocation = false;
     }
+
+    event->accept();
 }
 
 void ATCSituationalDisplay::mouseMoveEvent(QMouseEvent *event)
