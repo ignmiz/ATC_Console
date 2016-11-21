@@ -8,6 +8,7 @@ ATCTagRect::ATCTagRect(double x, double y, double width, double height, QGraphic
 {
     setFlag(QGraphicsItem::ItemIsMovable);
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
+    setAcceptHoverEvents(true);
 }
 
 ATCTagRect::~ATCTagRect()
@@ -56,4 +57,14 @@ QVariant ATCTagRect::itemChange(QGraphicsItem::GraphicsItemChange change, const 
     }
 
     return QGraphicsItem::itemChange(change, value);
+}
+
+void ATCTagRect::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    setOpacity(0.25);
+}
+
+void ATCTagRect::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    setOpacity(0.01);
 }

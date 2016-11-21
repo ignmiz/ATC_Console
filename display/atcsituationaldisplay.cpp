@@ -654,6 +654,9 @@ void ATCSituationalDisplay::situationalDisplaySetup()
     setDragMode(QGraphicsView::NoDrag);
     setRenderHint(QPainter::Antialiasing);
 
+    setMouseTracking(true);
+//    viewport()->setMouseTracking(true);
+
     setSceneRect(-0.5 * ATCConst::SCENE_WIDTH, -0.5 * ATCConst::SCENE_HEIGHT, ATCConst::SCENE_WIDTH, ATCConst::SCENE_HEIGHT);
 
     viewport()->setCursor(Qt::CrossCursor);
@@ -3518,10 +3521,8 @@ void ATCSituationalDisplay::mousePressEvent(QMouseEvent *event)
 
 void ATCSituationalDisplay::mouseMoveEvent(QMouseEvent *event)
 {
-    if(QGuiApplication::queryKeyboardModifiers().testFlag(Qt::ControlModifier))
-    {
-        QGraphicsView::mouseMoveEvent(event);
-    }
+    QGraphicsView::mouseMoveEvent(event);
+
     event->accept();
 }
 
