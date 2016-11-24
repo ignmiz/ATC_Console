@@ -179,7 +179,7 @@ void DialogFlightCreator::on_buttonOK_clicked()
         //Set altitude restrictions
         if(!uiInner->lineEditAltitudeRes->text().isEmpty())
         {
-            flight->setTargetAltitude(uiInner->lineEditAltitudeCurrent->text());
+            flight->setTargetAltitude(uiInner->lineEditAltitudeRes->text());
         }
         else
         {

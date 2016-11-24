@@ -185,7 +185,7 @@ private:
     QGraphicsLineItem* createConnector(ATCFlightTag *tag);
     ATCTagRect* createTagBox(ATCFlightTag *tag);
     QGraphicsSimpleTextItem* createTagText(ATCFlightTag *tag);
-    void createEtiquettes(ATCFlight *flight, ATCFlightTag *tag);
+    void createEtiquettes(ATCFlight *flight);
 
     void assignTagPositions();
 

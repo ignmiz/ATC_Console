@@ -625,6 +625,7 @@ void ATCSituationalDisplay::slotGetLocation()
 void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
 {
     ATCFlightTag *tag = new ATCFlightTag();
+    flight->setFlightTag(tag);
 
     QGraphicsRectItem *diamond = createDiamond(tag, flight->getState().x, flight->getState().y);
     QGraphicsLineItem *leader = createLeader(tag, flight->getState().x, flight->getState().y, flight->getState().hdg);
@@ -636,9 +637,7 @@ void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
     tagBox->setText(text);
     text->setParentItem(tagBox);
 
-    createEtiquettes(flight, tag);
-
-    flight->setFlightTag(tag);
+    createEtiquettes(flight);
 
     scene->addItem(diamond);
     scene->addItem(leader);
@@ -2803,21 +2802,138 @@ QGraphicsSimpleTextItem *ATCSituationalDisplay::createTagText(ATCFlightTag *tag)
     return text;
 }
 
-void ATCSituationalDisplay::createEtiquettes(ATCFlight *flight, ATCFlightTag *tag)
+void ATCSituationalDisplay::createEtiquettes(ATCFlight *flight)
 {
-    //EXTRACT & PARSE DATA FROM *flight HERE
+    QString shortEtiquette = "             \n"
+                             "             ";
 
-    QString shortEtiquette = "LOT231H   472\n"
-                             "265↑300 EVINA\n";
+    QString longEtiquette = "             \n"
+                            "             \n"
+                            "               ";
 
-    QString longEtiquette = "LOT231H   472\n"
-                            "265↑300 EVINA\n"
-                            "A321M H225 S250\n";
+    QString callsign = flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber();
+    callsign = callsign.left(9);
 
-    tag->getTagBox()->setShortEtiquette(shortEtiquette);
-    tag->getTagBox()->setLongEtiquette(longEtiquette);
+    QString groundSpd = QString::number(ATCMath::mps2kt(flight->getState().v), 'f' ,0);
 
-    tag->getText()->setText(shortEtiquette);
+    for(int i = 0; i < callsign.size(); i++)
+    {
+        shortEtiquette[i] = callsign.at(i);
+        longEtiquette[i] = callsign.at(i);
+    }
+
+    for(int i = 0; i < groundSpd.size(); i++)
+    {
+        shortEtiquette[i + 10] = groundSpd.at(i);
+        longEtiquette[i + 10] = groundSpd.at(i);
+    }
+
+    QString altitude = QString::number((ATCMath::m2ft(flight->getState().h), 'f', 0) / 100);
+    QString targetAltitude = flight->getTargetAltitude().right(3);
+    QString nextFix = flight->getNextFix();
+
+    //CLIMB ARROW ASSIGNMENT HERE
+
+    for(int i = 0; i < altitude.size(); i++)
+    {
+        shortEtiquette[i + 14] = altitude.at(i);
+        longEtiquette[i + 14] = altitude.at(i);
+
+
+        shortEtiquette[i + 18] = targetAltitude.at(i);
+        longEtiquette[i + 18] = targetAltitude.at(i);
+    }
+
+    for(int i = 0; i < nextFix.size(); i++)
+    {
+        shortEtiquette[i + 22] = nextFix.at(i);
+        longEtiquette[i + 22] = nextFix.at(i);
+    }
+
+    QString type = flight->getFlightPlan()->getType()->getAcType().ICAOcode;
+
+    ATC::WakeCategory w = flight->getFlightPlan()->getType()->getAcType().wake;
+    QString wake;
+
+    if(w == ATC::L)
+    {
+        wake = "L";
+    }
+    else if(w == ATC::M)
+    {
+        wake = "M";
+    }
+    else if(w == ATC::H)
+    {
+        wake = "H";
+    }
+    else if(w == ATC::J)
+    {
+        wake = "J";
+    }
+
+    type = type + wake;
+
+    QString headingRes;
+    QString speedRes;
+
+    if(flight->getNavMode() == ATC::Hdg)
+    {
+        if(!QString::number(flight->getHdgRestriction()).isEmpty())
+        {
+            int hdg = flight->getHdgRestriction();
+
+            if(hdg < 10)
+            {
+                headingRes = "H00" + QString::number(flight->getHdgRestriction());
+            }
+            else if(hdg < 100)
+            {
+                headingRes = "H0" + QString::number(flight->getHdgRestriction());
+            }
+            else
+            {
+                headingRes = "H" + QString::number(flight->getHdgRestriction());
+            }
+        }
+        else
+        {
+            headingRes = "H---";
+        }
+    }
+    else
+    {
+        headingRes = "H---";
+    }
+
+    if(!flight->getTargetSpeed().isEmpty())
+    {
+        speedRes = "S" + flight->getTargetSpeed();
+    }
+    else
+    {
+        speedRes = "S---";
+    }
+
+    for(int i = 0; i < type.size(); i++)
+    {
+        longEtiquette[i + 28] = type.at(i);
+    }
+
+    for(int i = 0; i < headingRes.size(); i++)
+    {
+        longEtiquette[i + 34] = headingRes.at(i);
+    }
+
+    for(int i = 0; i < speedRes.size(); i++)
+    {
+        longEtiquette[i + 39] = speedRes.at(i);
+    }
+
+    flight->getFlightTag()->getTagBox()->setShortEtiquette(shortEtiquette);
+    flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
+
+    flight->getFlightTag()->getText()->setText(shortEtiquette);
 }
 
 void ATCSituationalDisplay::assignTagPositions()
