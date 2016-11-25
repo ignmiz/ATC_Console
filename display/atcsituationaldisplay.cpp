@@ -627,6 +627,7 @@ void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
     ATCFlightTag *tag = new ATCFlightTag();
     flight->setFlightTag(tag);
 
+    createTagType(flight);
     QGraphicsRectItem *diamond = createDiamond(tag, flight->getState().x, flight->getState().y);
     QGraphicsLineItem *leader = createLeader(tag, flight->getState().x, flight->getState().y, flight->getState().hdg);
     QGraphicsLineItem *connector = createConnector(tag);
@@ -1036,7 +1037,7 @@ void ATCSituationalDisplay::rescaleTags()
         double leaderWidth = settings->TAG_LEADER_WIDTH / currentScale;
 
         double boxWidth = settings->TAG_BOX_WIDTH / currentScale;
-        double boxHeight = settings->TAG_BOX_HEIGHT / currentScale;
+        double boxHeight;
 
         double connectorWidth = settings->TAG_CONNECTOR_WIDTH / currentScale;
 
@@ -1054,6 +1055,15 @@ void ATCSituationalDisplay::rescaleTags()
 
         for(int i = 0; i < visibleTags.size(); i++)
         {
+            if(visibleTags.at(i)->getTagType() == ATC::Short)
+            {
+                boxHeight = settings->TAG_BOX_HEIGHT / currentScale;
+            }
+            else
+            {
+                boxHeight = settings->TAG_BOX_HEIGHT_FULL / currentScale;
+            }
+
             QGraphicsRectItem *diamond = visibleTags.at(i)->getDiamond();
             QGraphicsLineItem *connector = visibleTags.at(i)->getConnector();
             ATCTagRect *tagBox = visibleTags.at(i)->getTagBox();
@@ -2672,6 +2682,21 @@ void ATCSituationalDisplay::calculateAirwayHigh()
     }
 }
 
+void ATCSituationalDisplay::createTagType(ATCFlight *flight)
+{
+    QString speedRes = flight->getTargetSpeed();
+    QString headingRes = QString::number(flight->getHdgRestriction());
+
+    if(speedRes.isEmpty() && (headingRes.isEmpty() || flight->getNavMode() == ATC::Nav))
+    {
+        flight->getFlightTag()->setTagType(ATC::Short);
+    }
+    else
+    {
+        flight->getFlightTag()->setTagType(ATC::Full);
+    }
+}
+
 QGraphicsRectItem* ATCSituationalDisplay::createDiamond(ATCFlightTag *tag, double lon, double lat)
 {
     double x = mercatorProjectionLon(lon);
@@ -2758,8 +2783,17 @@ QGraphicsLineItem *ATCSituationalDisplay::createConnector(ATCFlightTag *tag)
 
 ATCTagRect *ATCSituationalDisplay::createTagBox(ATCFlightTag *tag)
 {
-    double width = settings->TAG_BOX_WIDTH / currentScale;
-    double height = settings->TAG_BOX_HEIGHT / currentScale;
+    double width = settings->TAG_BOX_WIDTH / currentScale;;
+    double height;
+
+    if(tag->getTagType() == ATC::Short)
+    {
+        height = settings->TAG_BOX_HEIGHT / currentScale;
+    }
+    else
+    {
+        height = settings->TAG_BOX_HEIGHT_FULL / currentScale;
+    }
 
     double dx = settings->TAG_BOX_DX / currentScale;
     double dy = settings->TAG_BOX_DY / currentScale;
@@ -2769,7 +2803,7 @@ ATCTagRect *ATCSituationalDisplay::createTagBox(ATCFlightTag *tag)
 
     QBrush brush(settings->TAG_BOX_COLOR);
 
-    ATCTagRect *tagBox = new ATCTagRect(x + dx - width/2, y + dy - height, width, height, settings, &currentScale);
+    ATCTagRect *tagBox = new ATCTagRect(x + dx - width/2, y + dy - height, width, height, settings, &currentScale, &tag->getTagType());
     tagBox->setBrush(brush);
     tagBox->setOpacity(0.01);
     tagBox->setFlag(QGraphicsItem::ItemDoesntPropagateOpacityToChildren);
@@ -2787,7 +2821,16 @@ QGraphicsSimpleTextItem *ATCSituationalDisplay::createTagText(ATCFlightTag *tag)
     textFont.setPointSizeF(settings->TAG_LABEL_HEIGHT / currentScale);
 
     double xPos = tag->getDiamondPosition().x() + settings->TAG_BOX_DX/currentScale - settings->TAG_BOX_WIDTH/2/currentScale + settings->TAG_LABEL_MARGINS/currentScale;
-    double yPos = tag->getDiamondPosition().y() + settings->TAG_BOX_DY/currentScale - settings->TAG_BOX_HEIGHT/currentScale + settings->TAG_LABEL_MARGINS/currentScale;
+    double yPos;
+
+    if(tag->getTagType() == ATC::Short)
+    {
+        yPos = tag->getDiamondPosition().y() + settings->TAG_BOX_DY/currentScale - settings->TAG_BOX_HEIGHT/currentScale + settings->TAG_LABEL_MARGINS/currentScale;
+    }
+    else
+    {
+        yPos = tag->getDiamondPosition().y() + settings->TAG_BOX_DY/currentScale - settings->TAG_BOX_HEIGHT_FULL/currentScale + settings->TAG_LABEL_MARGINS/currentScale;
+    }
 
     QBrush brush(settings->TAG_LABEL_COLOR);
 
@@ -2814,7 +2857,7 @@ void ATCSituationalDisplay::createEtiquettes(ATCFlight *flight)
     QString callsign = flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber();
     callsign = callsign.left(9);
 
-    QString groundSpd = QString::number(ATCMath::mps2kt(flight->getState().v), 'f' ,0);
+    QString groundSpd = QString::number(ATCMath::mps2kt(flight->getState().v));
 
     for(int i = 0; i < callsign.size(); i++)
     {
@@ -2828,7 +2871,7 @@ void ATCSituationalDisplay::createEtiquettes(ATCFlight *flight)
         longEtiquette[i + 10] = groundSpd.at(i);
     }
 
-    QString altitude = QString::number((ATCMath::m2ft(flight->getState().h), 'f', 0) / 100);
+    QString altitude = QString::number(ATCMath::m2ft(flight->getState().h) / 100);
     QString targetAltitude = flight->getTargetAltitude().right(3);
     QString nextFix = flight->getNextFix();
 
@@ -2933,7 +2976,14 @@ void ATCSituationalDisplay::createEtiquettes(ATCFlight *flight)
     flight->getFlightTag()->getTagBox()->setShortEtiquette(shortEtiquette);
     flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
 
-    flight->getFlightTag()->getText()->setText(shortEtiquette);
+    if(flight->getFlightTag()->getTagType() == ATC::Short)
+    {
+        flight->getFlightTag()->getText()->setText(shortEtiquette);
+    }
+    else
+    {
+        flight->getFlightTag()->getText()->setText(longEtiquette);
+    }
 }
 
 void ATCSituationalDisplay::assignTagPositions()

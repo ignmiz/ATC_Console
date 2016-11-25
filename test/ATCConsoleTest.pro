@@ -98,6 +98,7 @@ SOURCES += \
     atcmath.cpp \
     atcsimulation.cpp \
     atcflighttag.cpp \
+    atctagrect.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -157,6 +158,7 @@ HEADERS  += \
     atcmath.h \
     atcsimulation.h \
     atcflighttag.h \
+    atctagrect.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \

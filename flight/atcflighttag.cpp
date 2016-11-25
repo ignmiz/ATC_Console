@@ -14,6 +14,11 @@ ATCFlightTag::~ATCFlightTag()
     if(connector != nullptr) delete connector;
 }
 
+ATC::TagType& ATCFlightTag::getTagType()
+{
+    return type;
+}
+
 QGraphicsRectItem* ATCFlightTag::getDiamond()
 {
     return diamond;
@@ -57,6 +62,11 @@ double ATCFlightTag::getDY()
 QGraphicsSimpleTextItem *ATCFlightTag::getText()
 {
     return text;
+}
+
+void ATCFlightTag::setTagType(ATC::TagType t)
+{
+    type = t;
 }
 
 void ATCFlightTag::setDiamond(QGraphicsRectItem *rect)

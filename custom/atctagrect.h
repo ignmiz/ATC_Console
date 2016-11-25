@@ -3,13 +3,14 @@
 
 #include "atcconst.h"
 #include "atcsettings.h"
+#include "atcflags.h"
 
 #include <QGraphicsItem>
 
 class ATCTagRect : public QGraphicsRectItem
 {
 public:
-    explicit ATCTagRect(double x, double y, double width, double height, ATCSettings *settings, double *scale);
+    explicit ATCTagRect(double x, double y, double width, double height, ATCSettings *settings, double *scale, ATC::TagType *type);
     ~ATCTagRect();
 
     QString getShortEtiquette();
@@ -26,6 +27,8 @@ public:
 
 private:
     void moveLine(QPointF newPos);
+
+    ATC::TagType *type;
 
     QGraphicsLineItem *line;
     QGraphicsSimpleTextItem *text;

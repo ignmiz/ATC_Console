@@ -180,6 +180,7 @@ private:
     void calculateAirwayLow();
     void calculateAirwayHigh();
 
+    void createTagType(ATCFlight *flight);
     QGraphicsRectItem* createDiamond(ATCFlightTag *tag, double lon, double lat);
     QGraphicsLineItem* createLeader(ATCFlightTag* tag, double lon, double lat, double trueHdg);
     QGraphicsLineItem* createConnector(ATCFlightTag *tag);

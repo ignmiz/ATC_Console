@@ -2,6 +2,17 @@
 #include "test_atcflighttag.h"
 
 
+void Test_ATCFlightTag::test_setTagType()
+{
+    ATCFlightTag foo;
+
+    foo.setTagType(ATC::Full);
+    QVERIFY(foo.getTagType() == ATC::Full);
+
+    foo.setTagType(ATC::Short);
+    QVERIFY(foo.getTagType() == ATC::Short);
+}
+
 void Test_ATCFlightTag::test_setDiamond()
 {
     ATCFlightTag foo;
@@ -45,7 +56,11 @@ void Test_ATCFlightTag::test_getTagBox()
     ATCFlightTag foo;
     QVERIFY(foo.getTagBox() == nullptr);
 
-    QGraphicsRectItem *rect = new QGraphicsRectItem();
+    ATCPaths paths;
+    ATCSettings settings(&paths);
+    double scale = 4;
+
+    ATCTagRect *rect = new ATCTagRect(2, 2, 4, 3, &settings, &scale);
     foo.setTagBox(rect);
     QVERIFY(foo.getTagBox() == rect);
 }

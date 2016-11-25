@@ -2,6 +2,7 @@
 #define ATCFLIGHTTAG_H
 
 #include "atctagrect.h"
+#include "atcflags.h"
 
 #include <QGraphicsItem>
 
@@ -10,6 +11,8 @@ class ATCFlightTag
 public:
     explicit ATCFlightTag();
     ~ATCFlightTag();
+
+    ATC::TagType& getTagType();
 
     QGraphicsRectItem* getDiamond();
     QPointF& getDiamondPosition();
@@ -23,6 +26,8 @@ public:
     double getDY();
 
     QGraphicsSimpleTextItem* getText();
+
+    void setTagType(ATC::TagType t);
 
     void setDiamond(QGraphicsRectItem *rect);
     void setDiamondPosition(QPointF &pos);
@@ -38,6 +43,8 @@ public:
     void setText(QGraphicsSimpleTextItem *text);
 
 private:
+    ATC::TagType type;
+
     QGraphicsRectItem *diamond = nullptr;
     QPointF diamondPos;
 

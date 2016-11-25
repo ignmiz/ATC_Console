@@ -32,6 +32,12 @@ enum NavMode
 {
     Nav, Hdg
 };
+
+enum TagType
+{
+    Short, Full
+};
 }
+
 
 #endif // ATCFLAGS_H
