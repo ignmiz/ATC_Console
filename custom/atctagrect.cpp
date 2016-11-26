@@ -85,7 +85,14 @@ void ATCTagRect::moveLine(QPointF newPos)
     }
     else if((alpha > ATCConst::PI/4) && (alpha <= 3*ATCConst::PI/4))
     {
-        p2 = QPointF(newCentrePos.x(), newCentrePos.y() - settings->TAG_BOX_HEIGHT / *scale / 2);
+        if(*type == ATC::Short)
+        {
+            p2 = QPointF(newCentrePos.x(), newCentrePos.y() - settings->TAG_BOX_HEIGHT / *scale / 2);
+        }
+        else
+        {
+            p2 = QPointF(newCentrePos.x(), newCentrePos.y() - settings->TAG_BOX_HEIGHT_FULL / *scale / 2);
+        }
     }
     else if((alpha > - 3*ATCConst::PI/4) && (alpha <=  - ATCConst::PI/4))
     {
@@ -130,6 +137,8 @@ void ATCTagRect::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
     {
         setOpacity(1);
     }
+
+    event->accept();
 }
 
 void ATCTagRect::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
@@ -145,4 +154,53 @@ void ATCTagRect::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     {
         setOpacity(0.01);
     }
+
+    setBrush(QBrush(settings->TAG_BOX_COLOR));
+
+    event->accept();
+}
+
+void ATCTagRect::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    QPointF point = event->pos();
+
+    if(point.y() < rect().y() + rect().height() / 3)
+    {
+        if(point.x() < rect().x() + rect().width() * 0.609)
+        {
+            setBrush(QBrush(Qt::magenta));
+        }
+    }
+    else if(point.y() >= rect().y() + rect().height() * 2/3)
+    {
+        if(point.x() < rect().x() + rect().width() * 0.357)
+        {
+            setBrush(QBrush(Qt::blue));
+        }
+        else if(point.x() >= rect().x() + rect().width() * 0.678)
+        {
+            setBrush(QBrush(Qt::yellow));
+        }
+        else
+        {
+            setBrush(QBrush(Qt::white));
+        }
+    }
+    else
+    {
+        if(point.x() < rect().x() + rect().width() * 0.235)
+        {
+            setBrush(QBrush(Qt::red));
+        }
+        else if(point.x() >= rect().x() + rect().width() * 0.496)
+        {
+            setBrush(QBrush(Qt::cyan));
+        }
+        else
+        {
+            setBrush(QBrush(Qt::gray));
+        }
+    }
+
+    event->accept();
 }

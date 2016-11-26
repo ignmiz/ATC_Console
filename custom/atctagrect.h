@@ -6,6 +6,10 @@
 #include "atcflags.h"
 
 #include <QGraphicsItem>
+#include <QGraphicsSceneHoverEvent>
+#include <QGraphicsSceneMouseEvent>
+
+#include <QDebug>
 
 class ATCTagRect : public QGraphicsRectItem
 {
@@ -42,6 +46,7 @@ protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
 };
 
 #endif // ATCTAGRECT_H
