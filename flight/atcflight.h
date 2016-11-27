@@ -5,6 +5,9 @@
 #include "atcflighttag.h"
 
 #include <QString>
+#include <QObject>
+
+#include <QDebug>
 
 enum CM
 {
@@ -52,8 +55,10 @@ struct State
     AM am;
 };
 
-class ATCFlight
+class ATCFlight : public QObject
 {
+    Q_OBJECT
+
 public:
     explicit ATCFlight(State s);
     explicit ATCFlight(State s, ATCFlightPlan *p);
@@ -85,6 +90,12 @@ public:
     void setSimStartTime(QTime time);
 
     void setFlightTag(ATCFlightTag *t);
+
+signals:
+    void signalCreateAltitudeDialog(ATCFlight *flight);
+
+private slots:
+    void slotCreateAltitudeDialog();
 
 private:
     ATCFlightPlan *plan = nullptr;

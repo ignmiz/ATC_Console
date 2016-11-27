@@ -645,7 +645,15 @@ void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
     scene->addItem(connector);
     scene->addItem(tagBox);
 
+    connect(tagBox, SIGNAL(signalCreateAltitudeDialog()), flight, SLOT(slotCreateAltitudeDialog()));
+    connect(flight, SIGNAL(signalCreateAltitudeDialog(ATCFlight*)), this, SLOT(slotCreateAltitudeDialog(ATCFlight*)));
+
     visibleTags.append(tag);
+}
+
+void ATCSituationalDisplay::slotCreateAltitudeDialog(ATCFlight *flight)
+{
+
 }
 
 void ATCSituationalDisplay::situationalDisplaySetup()

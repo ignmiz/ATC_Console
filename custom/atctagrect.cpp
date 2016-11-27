@@ -162,43 +162,55 @@ void ATCTagRect::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 
 void ATCTagRect::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    QPointF point = event->pos();
+    if(event->button() == Qt::RightButton)
+    {
 
-    if(point.y() < rect().y() + rect().height() / 3)
-    {
-        if(point.x() < rect().x() + rect().width() * 0.609)
+        QPointF point = event->pos();
+
+        if((point.y() < rect().y() + rect().height() / 3) &&
+           (point.y() >= rect().y()))
         {
-            setBrush(QBrush(Qt::magenta));
+            if((point.x() < rect().x() + rect().width() * 0.609) &&
+               (point.x() >= rect().x()))
+            {
+                setBrush(QBrush(Qt::magenta));
+            }
         }
-    }
-    else if(point.y() >= rect().y() + rect().height() * 2/3)
-    {
-        if(point.x() < rect().x() + rect().width() * 0.357)
+        else if((point.y() >= rect().y() + rect().height() * 2/3) &&
+                (point.y() <= rect().y() + rect().height()))
         {
-            setBrush(QBrush(Qt::blue));
-        }
-        else if(point.x() >= rect().x() + rect().width() * 0.678)
-        {
-            setBrush(QBrush(Qt::yellow));
-        }
-        else
-        {
-            setBrush(QBrush(Qt::white));
-        }
-    }
-    else
-    {
-        if(point.x() < rect().x() + rect().width() * 0.235)
-        {
-            setBrush(QBrush(Qt::red));
-        }
-        else if(point.x() >= rect().x() + rect().width() * 0.496)
-        {
-            setBrush(QBrush(Qt::cyan));
+            if((point.x() < rect().x() + rect().width() * 0.357) &&
+               (point.x() >= rect().x()))
+            {
+                setBrush(QBrush(Qt::blue));
+            }
+            else if((point.x() >= rect().x() + rect().width() * 0.678) &&
+                    (point.x() <= rect().x() + rect().width()))
+            {
+                setBrush(QBrush(Qt::yellow));
+            }
+            else
+            {
+                setBrush(QBrush(Qt::white));
+            }
         }
         else
         {
-            setBrush(QBrush(Qt::gray));
+            if((point.x() < rect().x() + rect().width() * 0.235) &&
+               (point.x() >= rect().x()))
+            {
+                setBrush(QBrush(Qt::red));
+            }
+            else if((point.x() >= rect().x() + rect().width() * 0.496) &&
+                    (point.x() <= rect().x() + rect().width()))
+            {
+                setBrush(QBrush(Qt::cyan));
+            }
+            else
+            {
+                emit signalCreateAltitudeDialog();
+                setBrush(QBrush(Qt::gray));
+            }
         }
     }
 

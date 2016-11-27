@@ -8,11 +8,14 @@
 #include <QGraphicsItem>
 #include <QGraphicsSceneHoverEvent>
 #include <QGraphicsSceneMouseEvent>
+#include <QObject>
 
 #include <QDebug>
 
-class ATCTagRect : public QGraphicsRectItem
+class ATCTagRect : public QObject, public QGraphicsRectItem
 {
+    Q_OBJECT
+
 public:
     explicit ATCTagRect(double x, double y, double width, double height, ATCSettings *settings, double *scale, ATC::TagType *type);
     ~ATCTagRect();
@@ -28,6 +31,9 @@ public:
 
     void setConnector(QGraphicsLineItem *connector);
     void setText(QGraphicsSimpleTextItem *txt);
+
+signals:
+    void signalCreateAltitudeDialog();
 
 private:
     void moveLine(QPointF newPos);

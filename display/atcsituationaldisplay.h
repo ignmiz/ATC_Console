@@ -92,6 +92,8 @@ private slots:
     void slotGetLocation();
     void slotCreateFlightTag(ATCFlight *flight);
 
+    void slotCreateAltitudeDialog(ATCFlight *flight);
+
 private:
     ATCAirspace *airspaceData = nullptr;
     ATCSettings *settings = nullptr;

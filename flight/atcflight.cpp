@@ -3,21 +3,20 @@
 
 ATCFlight::ATCFlight(State s) : state(s)
 {
-
 }
 
 ATCFlight::ATCFlight(State s, ATCFlightPlan *p) : state(s), plan(p)
 {
-
 }
 
 ATCFlight::ATCFlight(State s, ATCFlightPlan *p, QString sq) : state(s), plan(p), assignedSquawk(sq)
 {
-
 }
 
 ATCFlight::~ATCFlight()
 {
+    disconnect(tag->getTagBox(), SIGNAL(signalCreateAltitudeDialog()), this, SLOT(slotCreateAltitudeDialog()));
+
     if(plan != nullptr)
     {
         delete plan;
@@ -138,4 +137,9 @@ void ATCFlight::setSimStartTime(QTime time)
 void ATCFlight::setFlightTag(ATCFlightTag *t)
 {
     tag = t;
+}
+
+void ATCFlight::slotCreateAltitudeDialog()
+{
+    emit signalCreateAltitudeDialog(this);
 }
