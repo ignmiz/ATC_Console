@@ -7,8 +7,6 @@
 #include <QString>
 #include <QObject>
 
-#include <QDebug>
-
 enum CM
 {
     CM_C, CM_D, CM_L
@@ -92,10 +90,10 @@ public:
     void setFlightTag(ATCFlightTag *t);
 
 signals:
-    void signalCreateAltitudeDialog(ATCFlight *flight);
+    void signalCreateDialogAltitude(ATCFlight *flight, QPoint point);
 
 private slots:
-    void slotCreateAltitudeDialog();
+    void slotCreateDialogAltitude(QPoint point);
 
 private:
     ATCFlightPlan *plan = nullptr;

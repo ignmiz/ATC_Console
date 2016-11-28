@@ -87,7 +87,8 @@ SOURCES += main.cpp\
     dialogflightcreator.cpp \
     atcsimulation.cpp \
     atcflighttag.cpp \
-    atctagrect.cpp
+    atctagrect.cpp \
+    dialogaltitude.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -146,7 +147,8 @@ HEADERS  += mainwindow.h \
     dialogflightcreator.h \
     atcsimulation.h \
     atcflighttag.h \
-    atctagrect.h
+    atctagrect.h \
+    dialogaltitude.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
@@ -155,7 +157,8 @@ FORMS    += mainwindow.ui \
     dialogtextconsole.ui \
     dialogsettings.ui \
     dialogflight.ui \
-    dialogflightcreator.ui
+    dialogflightcreator.ui \
+    dialogaltitude.ui
 
 DISTFILES += \
     resources/acft_cursor.png

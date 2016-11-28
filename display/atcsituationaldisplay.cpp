@@ -50,6 +50,8 @@ ATCSituationalDisplay::~ATCSituationalDisplay()
     if(airspaceData != nullptr) delete airspaceData;
     if(settings != nullptr) delete settings;
     if(paths != nullptr) delete paths;
+    if(dialogAltitude != nullptr) delete dialogAltitude;
+
     scene->clear();
 }
 
@@ -645,15 +647,37 @@ void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
     scene->addItem(connector);
     scene->addItem(tagBox);
 
-    connect(tagBox, SIGNAL(signalCreateAltitudeDialog()), flight, SLOT(slotCreateAltitudeDialog()));
-    connect(flight, SIGNAL(signalCreateAltitudeDialog(ATCFlight*)), this, SLOT(slotCreateAltitudeDialog(ATCFlight*)));
+    connect(tagBox, SIGNAL(signalCreateDialogAltitude(QPoint)), flight, SLOT(slotCreateDialogAltitude(QPoint)));
+    connect(flight, SIGNAL(signalCreateDialogAltitude(ATCFlight*,QPoint)), this, SLOT(slotCreateDialogAltitude(ATCFlight*,QPoint)));
 
     visibleTags.append(tag);
 }
 
-void ATCSituationalDisplay::slotCreateAltitudeDialog(ATCFlight *flight)
+void ATCSituationalDisplay::slotCreateDialogAltitude(ATCFlight *flight, QPoint point)
 {
+    if(!dialogAltitudeExists)
+    {
+        dialogAltitude = new DialogAltitude(flight, settings, this);
+        dialogAltitude->move(point.x() - dialogAltitude->width()/2, point.y() - dialogAltitude->height()/2 - settings->TAG_BOX_HEIGHT_FULL/2);
 
+        dialogAltitude->show();
+        dialogAltitudeExists = true;
+
+        QTimer::singleShot(100, this, SLOT(slotDialogAltitudeCloseOnClick()));
+        connect(dialogAltitude, SIGNAL(signalClosed()), this, SLOT(slotDialogAltitudeClosed()));
+    }
+}
+
+void ATCSituationalDisplay::slotDialogAltitudeClosed()
+{
+    dialogAltitude = nullptr;
+    dialogAltitudeExists = false;
+    dialogAltitudeCloseOnClick = false;
+}
+
+void ATCSituationalDisplay::slotDialogAltitudeCloseOnClick()
+{
+    dialogAltitudeCloseOnClick = true;
 }
 
 void ATCSituationalDisplay::situationalDisplaySetup()
@@ -2855,12 +2879,12 @@ QGraphicsSimpleTextItem *ATCSituationalDisplay::createTagText(ATCFlightTag *tag)
 
 void ATCSituationalDisplay::createEtiquettes(ATCFlight *flight)
 {
-    QString shortEtiquette = "             \n"
-                             "             ";
+    QString shortEtiquette = "               \n"
+                             "               ";
 
-    QString longEtiquette = "             \n"
-                            "             \n"
-                            "               ";
+    QString longEtiquette =  "               \n"
+                             "               \n"
+                             "               ";
 
     QString callsign = flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber();
     callsign = callsign.left(9);
@@ -2887,18 +2911,17 @@ void ATCSituationalDisplay::createEtiquettes(ATCFlight *flight)
 
     for(int i = 0; i < altitude.size(); i++)
     {
-        shortEtiquette[i + 14] = altitude.at(i);
-        longEtiquette[i + 14] = altitude.at(i);
+        shortEtiquette[i + 16] = altitude.at(i);
+        longEtiquette[i + 16] = altitude.at(i);
 
-
-        shortEtiquette[i + 18] = targetAltitude.at(i);
-        longEtiquette[i + 18] = targetAltitude.at(i);
+        shortEtiquette[i + 20] = targetAltitude.at(i);
+        longEtiquette[i + 20] = targetAltitude.at(i);
     }
 
     for(int i = 0; i < nextFix.size(); i++)
     {
-        shortEtiquette[i + 22] = nextFix.at(i);
-        longEtiquette[i + 22] = nextFix.at(i);
+        shortEtiquette[i + 24] = nextFix.at(i);
+        longEtiquette[i + 24] = nextFix.at(i);
     }
 
     QString type = flight->getFlightPlan()->getType()->getAcType().ICAOcode;
@@ -2968,17 +2991,17 @@ void ATCSituationalDisplay::createEtiquettes(ATCFlight *flight)
 
     for(int i = 0; i < type.size(); i++)
     {
-        longEtiquette[i + 28] = type.at(i);
+        longEtiquette[i + 32] = type.at(i);
     }
 
     for(int i = 0; i < headingRes.size(); i++)
     {
-        longEtiquette[i + 34] = headingRes.at(i);
+        longEtiquette[i + 38] = headingRes.at(i);
     }
 
     for(int i = 0; i < speedRes.size(); i++)
     {
-        longEtiquette[i + 39] = speedRes.at(i);
+        longEtiquette[i + 43] = speedRes.at(i);
     }
 
     flight->getFlightTag()->getTagBox()->setShortEtiquette(shortEtiquette);
@@ -3706,6 +3729,17 @@ void ATCSituationalDisplay::mousePressEvent(QMouseEvent *event)
         emit signalDisplayClicked(lon, lat);
 
         flagGetLocation = false;
+    }
+
+    if(dialogAltitudeCloseOnClick)
+    {
+        dialogAltitudeCloseOnClick = false;
+
+        if(dialogAltitude != nullptr)
+        {
+            dialogAltitude->close();
+            slotDialogAltitudeClosed();
+        }
     }
 
     event->accept();

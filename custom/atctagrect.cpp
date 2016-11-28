@@ -164,8 +164,8 @@ void ATCTagRect::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if(event->button() == Qt::RightButton)
     {
-
         QPointF point = event->pos();
+        QPoint globalPoint = event->screenPos();
 
         if((point.y() < rect().y() + rect().height() / 3) &&
            (point.y() >= rect().y()))
@@ -208,8 +208,7 @@ void ATCTagRect::mousePressEvent(QGraphicsSceneMouseEvent *event)
             }
             else
             {
-                emit signalCreateAltitudeDialog();
-                setBrush(QBrush(Qt::gray));
+                emit signalCreateDialogAltitude(globalPoint);
             }
         }
     }

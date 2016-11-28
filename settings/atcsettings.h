@@ -103,6 +103,8 @@ public:
     double TAG_LABEL_MARGINS;
     QColor TAG_LABEL_COLOR;
 
+    int TRANSITION_LEVEL = 80; //TEMPORARY MOCKUP!
+
 signals:
     void signalColorARTCCLow(const QColor &color);
     void signalColorARTCCHigh(const QColor &color);

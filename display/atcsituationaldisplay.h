@@ -7,7 +7,10 @@
 #include "atcpaths.h"
 #include "atcflight.h"
 
+#include "dialogaltitude.h"
+
 #include <QGraphicsView>
+#include <QTimer>
 #include <QVector>
 
 struct coord
@@ -92,7 +95,9 @@ private slots:
     void slotGetLocation();
     void slotCreateFlightTag(ATCFlight *flight);
 
-    void slotCreateAltitudeDialog(ATCFlight *flight);
+    void slotCreateDialogAltitude(ATCFlight *flight, QPoint point);
+    void slotDialogAltitudeClosed();
+    void slotDialogAltitudeCloseOnClick();
 
 private:
     ATCAirspace *airspaceData = nullptr;
@@ -127,6 +132,10 @@ private:
     QVector<ATCAirwayHigh*> visibleHighAirways;
 
     QVector<ATCFlightTag*> visibleTags;
+
+    DialogAltitude *dialogAltitude = nullptr;
+    bool dialogAltitudeExists = false;
+    bool dialogAltitudeCloseOnClick = false;
 
     void situationalDisplaySetup();
 

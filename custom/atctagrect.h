@@ -33,7 +33,7 @@ public:
     void setText(QGraphicsSimpleTextItem *txt);
 
 signals:
-    void signalCreateAltitudeDialog();
+    void signalCreateDialogAltitude(QPoint point);
 
 private:
     void moveLine(QPointF newPos);

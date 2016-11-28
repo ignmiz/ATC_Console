@@ -15,7 +15,7 @@ ATCFlight::ATCFlight(State s, ATCFlightPlan *p, QString sq) : state(s), plan(p),
 
 ATCFlight::~ATCFlight()
 {
-    disconnect(tag->getTagBox(), SIGNAL(signalCreateAltitudeDialog()), this, SLOT(slotCreateAltitudeDialog()));
+    disconnect(tag->getTagBox(), SIGNAL(signalCreateDialogAltitude(QPoint)), this, SLOT(slotCreateDialogAltitude(QPoint)));
 
     if(plan != nullptr)
     {
@@ -139,7 +139,7 @@ void ATCFlight::setFlightTag(ATCFlightTag *t)
     tag = t;
 }
 
-void ATCFlight::slotCreateAltitudeDialog()
+void ATCFlight::slotCreateDialogAltitude(QPoint point)
 {
-    emit signalCreateAltitudeDialog(this);
+    emit signalCreateDialogAltitude(this, point);
 }

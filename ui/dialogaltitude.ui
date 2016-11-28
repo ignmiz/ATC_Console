@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DialogAltitude</class>
+ <widget class="QDialog" name="DialogAltitude">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>40</width>
+    <height>180</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QDialog
+{
+	background-color: #000000;
+}
+
+QFrame#frameDialog
+{
+	background-color: #000000;
+	border-style: outset;
+	border-width: 2px;
+	border-color: #3e3e3e;
+}
+
+QPushButton
+{
+	color: #c8c8c8;
+	font: 10px;
+	background-color: #000000;
+	border-style: outset;
+	border-width: 2px;
+	border-color: #3e3e3e;
+}
+
+QPushButton::hover
+{
+	background-color: #2d2d2d;
+}
+
+QPushButton::pressed
+{
+	background-color: #3c3c3c;
+}
+
+QLabel
+{
+	color: #c8c8c8;
+}</string>
+  </property>
+  <widget class="QFrame" name="frameDialog">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>40</width>
+     <height>180</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QListView" name="listView">
+    <property name="geometry">
+     <rect>
+      <x>2</x>
+      <y>2</y>
+      <width>36</width>
+      <height>176</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QListView
+{;
+	color: #c8c8c8;;
+	background-color: #000000;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	font: 11px;
+	outline: none;
+}
+
+QListView::item:hover
+{
+    background-color: #4b4b4b;
+}
+
+QListView::item:selected
+{
+
+}
+
+QListView::item:selected:active
+{
+
+}
+
+QListView::item:alternate
+{
+
+}
+
+QListView::item:focus
+{
+	outline: none;
+}
+
+
+QScrollBar:vertical
+{
+	background: #000000;
+	width: 2px;
+	border: none;
+	margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: #323232;
+}
+
+QScrollBar::add-page:vertical
+{
+	background: #000000;
+	border: none;
+}
+
+QScrollBar::sub-page:vertical
+{
+	background: #000000;
+	border: none;
+}</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
