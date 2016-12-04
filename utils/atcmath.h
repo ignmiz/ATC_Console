@@ -2,6 +2,7 @@
 #define ATCMATH_H
 
 #include "atcconst.h"
+#include "atcflags.h"
 
 #include <QtMath>
 
@@ -44,9 +45,11 @@ public:
 
     static ISA atmosISA(double h);
 
+    static double crossoverAltitude(double CAS, double M);
+
+    static double normalizeAngle(double angle, ATC::AngularUnits unitType);
+
     static double ESF();                    //DUMMY
-    static double crossoverAltitude(double CAS, double M);      //DUMMY
-    static double normalizeAngle();         //DUMMY
     static double projectAcftPosOnPath();   //DUMMY
 
 private:

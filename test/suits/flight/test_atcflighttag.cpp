@@ -60,7 +60,8 @@ void Test_ATCFlightTag::test_getTagBox()
     ATCSettings settings(&paths);
     double scale = 4;
 
-    ATCTagRect *rect = new ATCTagRect(2, 2, 4, 3, &settings, &scale);
+    ATC::TagType type = ATC::Full;
+    ATCTagRect *rect = new ATCTagRect(2, 2, 4, 3, &settings, &scale, &type);
     foo.setTagBox(rect);
     QVERIFY(foo.getTagBox() == rect);
 }

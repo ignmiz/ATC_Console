@@ -98,7 +98,9 @@ SOURCES += \
     atcmath.cpp \
     atcsimulation.cpp \
     atcflighttag.cpp \
-    atctagrect.cpp
+    atctagrect.cpp \
+    dialogaltitude.cpp \
+    dialogspeed.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -158,7 +160,9 @@ HEADERS  += \
     atcmath.h \
     atcsimulation.h \
     atcflighttag.h \
-    atctagrect.h
+    atctagrect.h \
+    dialogaltitude.h \
+    dialogspeed.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
@@ -167,7 +171,9 @@ FORMS    += mainwindow.ui \
     dialogtextconsole.ui \
     dialogsettings.ui \
     dialogflight.ui \
-    dialogflightcreator.ui
+    dialogflightcreator.ui \
+    dialogaltitude.ui \
+    dialogspeed.ui
 
 #MOCK SOURCES & HEADERS GO HERE:
 

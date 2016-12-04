@@ -229,3 +229,20 @@ void Test_ATCMath::test_crossoverAltitude()
     double error = 1E-5;
     QVERIFY(ATCMath::compareDouble(ATCMath::crossoverAltitude(ATCMath::kt2mps(280), 0.78), 9895.14388, error));
 }
+
+void Test_ATCMath::test_normalizeAngle()
+{
+    double angle = 540;
+    QVERIFY(ATCMath::normalizeAngle(angle, ATC::Deg) == 180);
+
+    angle = -400;
+    QVERIFY(ATCMath::normalizeAngle(angle, ATC::Deg) == 320);
+
+    double error = 1E-8;
+
+    angle = ATCMath::deg2rad(540);
+    QVERIFY(ATCMath::compareDouble(ATCMath::normalizeAngle(angle, ATC::Rad), ATCMath::deg2rad(180), error));
+
+    angle = ATCMath::deg2rad(-400);
+    QVERIFY(ATCMath::compareDouble(ATCMath::normalizeAngle(angle, ATC::Rad), ATCMath::deg2rad(320), error));
+}

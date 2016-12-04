@@ -228,8 +228,41 @@ double ATCMath::crossoverAltitude(double CAS, double M)
 
     double deltaTrans = (qPow((1 + (kappa-1)/2 * qPow(CAS/a0, 2)), kappa/(kappa - 1)) - 1) / (qPow((1 + (kappa-1)/2 * qPow(M, 2)), kappa/(kappa-1)) - 1);
     double thetaTrans = qPow(deltaTrans, -1 * betaTrop * R / g0);
-//    double HpTrans = 1000 / (0.3048 * 6.5) * t0 * (1 - thetaTrans);
     double HpTrans = 1000 / 6.5 * t0 * (1 - thetaTrans);
 
     return HpTrans;
+}
+
+double ATCMath::normalizeAngle(double angle, ATC::AngularUnits unitType)
+{
+    double normAngle;
+
+    if(unitType == ATC::Rad)
+    {
+        int k = qFloor(qFabs(angle) / (2 * ATCConst::PI));
+
+        if(angle > 0)
+        {
+            normAngle = angle - k * 2 * ATCConst::PI;
+        }
+        else
+        {
+            normAngle = angle + (k + 1) * 2 * ATCConst::PI;
+        }
+    }
+    else
+    {
+        int k = qFloor(qFabs(angle) / 360);
+
+        if(angle > 0)
+        {
+            normAngle = angle - k * 360;
+        }
+        else
+        {
+            normAngle = angle + (k + 1) * 360;
+        }
+    }
+
+    return normAngle;
 }

@@ -37,6 +37,7 @@ private slots:
     void test_atmosISA();
 
     void test_crossoverAltitude();
+    void test_normalizeAngle();
 };
 
 #endif // TEST_ATCMATH_H

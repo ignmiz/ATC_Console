@@ -15,8 +15,6 @@ ATCFlight::ATCFlight(State s, ATCFlightPlan *p, QString sq) : state(s), plan(p),
 
 ATCFlight::~ATCFlight()
 {
-    disconnect(tag->getTagBox(), SIGNAL(signalCreateDialogAltitude(QPoint)), this, SLOT(slotCreateDialogAltitude(QPoint)));
-
     if(plan != nullptr)
     {
         delete plan;

@@ -37,6 +37,12 @@ enum TagType
 {
     Short, Full
 };
+
+enum AngularUnits
+{
+    Deg, Rad
+};
+
 }
 
 
