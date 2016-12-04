@@ -35,7 +35,7 @@ public:
     static double cas2tas(double casMPS, double p, double rho);
     static double cas2mach(double casMPS, double p, double rho, double a);
 
-    static double tas2cas(double casMPS, double p, double rho);
+    static double tas2cas(double tasMPS, double p, double rho);
     static double tas2mach(double tasMPS, double a);
 
     static double mach2tas(double mach, double a);

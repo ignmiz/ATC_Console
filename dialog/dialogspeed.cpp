@@ -142,11 +142,37 @@ void DialogSpeed::dialogSpeedSetup()
 
     QString speedString = flight->getTargetSpeed();
 
-    for(int i = 0; i < model->rowCount(); i++)
+    if((speedString == "---") || speedString.isEmpty())
     {
-        if(model->index(i, 0).data(Qt::DisplayRole).toString() == speedString)
+        if(altitude <= crossover)
         {
-            ui->listView->scrollTo(model->index(i, 0), QAbstractItemView::PositionAtCenter);
+            for(int i = 0; i < model->rowCount(); i++)
+            {
+                if(model->index(i, 0).data(Qt::DisplayRole).toString() == "250")
+                {
+                    ui->listView->scrollTo(model->index(i, 0), QAbstractItemView::PositionAtCenter);
+                }
+            }
+        }
+        else
+        {
+            for(int i = 0; i < model->rowCount(); i++)
+            {
+                if(model->index(i, 0).data(Qt::DisplayRole).toString() == "0.78")
+                {
+                    ui->listView->scrollTo(model->index(i, 0), QAbstractItemView::PositionAtCenter);
+                }
+            }
+        }
+    }
+    else
+    {
+        for(int i = 0; i < model->rowCount(); i++)
+        {
+            if(model->index(i, 0).data(Qt::DisplayRole).toString() == speedString)
+            {
+                ui->listView->scrollTo(model->index(i, 0), QAbstractItemView::PositionAtCenter);
+            }
         }
     }
 }
