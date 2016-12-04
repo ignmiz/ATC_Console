@@ -29,11 +29,15 @@ public:
     void setShort();
     void setLong();
 
+    void rectLong2Short();
+    void rectShort2Long();
+
     void setConnector(QGraphicsLineItem *connector);
     void setText(QGraphicsSimpleTextItem *txt);
 
 signals:
     void signalCreateDialogAltitude(QPoint point);
+    void signalCreateDialogSpeed(QPoint point);
 
 private:
     void moveLine(QPointF newPos);
@@ -47,6 +51,8 @@ private:
 
     QString shortEtiquette;
     QString longEtiquette;
+
+    QPointF tempPos;
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);

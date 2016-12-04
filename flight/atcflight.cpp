@@ -141,3 +141,8 @@ void ATCFlight::slotCreateDialogAltitude(QPoint point)
 {
     emit signalCreateDialogAltitude(this, point);
 }
+
+void ATCFlight::slotCreateDialogSpeed(QPoint point)
+{
+    emit signalCreateDialogSpeed(this, point);
+}

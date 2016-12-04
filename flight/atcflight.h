@@ -91,9 +91,11 @@ public:
 
 signals:
     void signalCreateDialogAltitude(ATCFlight *flight, QPoint point);
+    void signalCreateDialogSpeed(ATCFlight *flight, QPoint point);
 
 private slots:
     void slotCreateDialogAltitude(QPoint point);
+    void slotCreateDialogSpeed(QPoint point);
 
 private:
     ATCFlightPlan *plan = nullptr;

@@ -8,6 +8,7 @@
 #include "atcflight.h"
 
 #include "dialogaltitude.h"
+#include "dialogspeed.h"
 
 #include <QGraphicsView>
 #include <QTimer>
@@ -99,6 +100,10 @@ private slots:
     void slotDialogAltitudeClosed();
     void slotDialogAltitudeCloseOnClick();
 
+    void slotCreateDialogSpeed(ATCFlight *flight, QPoint point);
+    void slotDialogSpeedClosed();
+    void slotDialogSpeedCloseOnClick();
+
 private:
     ATCAirspace *airspaceData = nullptr;
     ATCSettings *settings = nullptr;
@@ -136,6 +141,10 @@ private:
     DialogAltitude *dialogAltitude = nullptr;
     bool dialogAltitudeExists = false;
     bool dialogAltitudeCloseOnClick = false;
+
+    DialogSpeed *dialogSpeed = nullptr;
+    bool dialogSpeedExists = false;
+    bool dialogSpeedCloseOnClick = false;
 
     void situationalDisplaySetup();
 

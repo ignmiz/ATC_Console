@@ -50,7 +50,9 @@ ATCSituationalDisplay::~ATCSituationalDisplay()
     if(airspaceData != nullptr) delete airspaceData;
     if(settings != nullptr) delete settings;
     if(paths != nullptr) delete paths;
+
     if(dialogAltitude != nullptr) delete dialogAltitude;
+    if(dialogSpeed != nullptr) delete dialogSpeed;
 
     scene->clear();
 }
@@ -650,22 +652,28 @@ void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
     connect(tagBox, SIGNAL(signalCreateDialogAltitude(QPoint)), flight, SLOT(slotCreateDialogAltitude(QPoint)));
     connect(flight, SIGNAL(signalCreateDialogAltitude(ATCFlight*,QPoint)), this, SLOT(slotCreateDialogAltitude(ATCFlight*,QPoint)));
 
+    connect(tagBox, SIGNAL(signalCreateDialogSpeed(QPoint)), flight, SLOT(slotCreateDialogSpeed(QPoint)));
+    connect(flight, SIGNAL(signalCreateDialogSpeed(ATCFlight*,QPoint)), this, SLOT(slotCreateDialogSpeed(ATCFlight*,QPoint)));
+
     visibleTags.append(tag);
 }
 
 void ATCSituationalDisplay::slotCreateDialogAltitude(ATCFlight *flight, QPoint point)
 {
-    if(!dialogAltitudeExists)
+    if(dialogAltitudeExists)
     {
-        dialogAltitude = new DialogAltitude(flight, settings, this);
-        dialogAltitude->move(point.x() - dialogAltitude->width()/2, point.y() - dialogAltitude->height()/2 - settings->TAG_BOX_HEIGHT_FULL/2);
-
-        dialogAltitude->show();
-        dialogAltitudeExists = true;
-
-        QTimer::singleShot(100, this, SLOT(slotDialogAltitudeCloseOnClick()));
-        connect(dialogAltitude, SIGNAL(signalClosed()), this, SLOT(slotDialogAltitudeClosed()));
+        dialogAltitude->close();
+        slotDialogAltitudeClosed();
     }
+
+    dialogAltitude = new DialogAltitude(flight, settings, this);
+    dialogAltitude->move(point.x() - dialogAltitude->width()/2, point.y() - dialogAltitude->height()/2 - settings->TAG_BOX_HEIGHT_FULL/2);
+
+    dialogAltitude->show();
+    dialogAltitudeExists = true;
+
+    QTimer::singleShot(100, this, SLOT(slotDialogAltitudeCloseOnClick()));
+    connect(dialogAltitude, SIGNAL(signalClosed()), this, SLOT(slotDialogAltitudeClosed()));
 }
 
 void ATCSituationalDisplay::slotDialogAltitudeClosed()
@@ -678,6 +686,36 @@ void ATCSituationalDisplay::slotDialogAltitudeClosed()
 void ATCSituationalDisplay::slotDialogAltitudeCloseOnClick()
 {
     dialogAltitudeCloseOnClick = true;
+}
+
+void ATCSituationalDisplay::slotCreateDialogSpeed(ATCFlight *flight, QPoint point)
+{
+    if(dialogSpeedExists)
+    {
+        dialogSpeed->close();
+        slotDialogSpeedClosed();
+    }
+
+    dialogSpeed = new DialogSpeed(flight, settings, this);
+    dialogSpeed->move(point.x() - dialogSpeed->width()/2, point.y() - dialogSpeed->height()/2 - settings->TAG_BOX_HEIGHT_FULL/2);
+
+    dialogSpeed->show();
+    dialogSpeedExists = true;
+
+    QTimer::singleShot(100, this, SLOT(slotDialogSpeedCloseOnClick()));
+    connect(dialogSpeed, SIGNAL(signalClosed()), this, SLOT(slotDialogSpeedClosed()));
+}
+
+void ATCSituationalDisplay::slotDialogSpeedClosed()
+{
+    dialogSpeed = nullptr;
+    dialogSpeedExists = false;
+    dialogSpeedCloseOnClick = false;
+}
+
+void ATCSituationalDisplay::slotDialogSpeedCloseOnClick()
+{
+    dialogSpeedCloseOnClick = true;
 }
 
 void ATCSituationalDisplay::situationalDisplaySetup()
@@ -2982,7 +3020,18 @@ void ATCSituationalDisplay::createEtiquettes(ATCFlight *flight)
 
     if(!flight->getTargetSpeed().isEmpty())
     {
-        speedRes = "S" + flight->getTargetSpeed();
+        if(flight->getTargetSpeed().at(1) != '.')
+        {
+            speedRes = "S" + flight->getTargetSpeed();
+        }
+        else if(flight->getTargetSpeed().at(0) == '0')
+        {
+            speedRes = "M." + flight->getTargetSpeed().right(2);
+        }
+        else
+        {
+            speedRes = flight->getTargetSpeed();
+        }
     }
     else
     {
@@ -3739,6 +3788,17 @@ void ATCSituationalDisplay::mousePressEvent(QMouseEvent *event)
         {
             dialogAltitude->close();
             slotDialogAltitudeClosed();
+        }
+    }
+
+    if(dialogSpeedCloseOnClick)
+    {
+        dialogSpeedCloseOnClick = false;
+
+        if(dialogSpeed != nullptr)
+        {
+            dialogSpeed->close();
+            slotDialogSpeedClosed();
         }
     }
 

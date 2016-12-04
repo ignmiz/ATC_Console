@@ -8,6 +8,8 @@ ATCTagRect::ATCTagRect(double x, double y, double width, double height, ATCSetti
     scale(scale),
     type(type)
 {
+    tempPos = QPointF(0, 0);
+
     setFlag(QGraphicsItem::ItemIsMovable);
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
     setAcceptHoverEvents(true);
@@ -46,6 +48,20 @@ void ATCTagRect::setShort()
 void ATCTagRect::setLong()
 {
     text->setText(longEtiquette);
+}
+
+void ATCTagRect::rectLong2Short()
+{
+    setRect(rect().x(), rect().y(), settings->TAG_BOX_WIDTH / *scale ,settings->TAG_BOX_HEIGHT / *scale);
+    *type = ATC::Short;
+    moveLine(tempPos);
+}
+
+void ATCTagRect::rectShort2Long()
+{
+    setRect(rect().x(), rect().y(), settings->TAG_BOX_WIDTH / *scale ,settings->TAG_BOX_HEIGHT_FULL / *scale);
+    *type = ATC::Full;
+    moveLine(tempPos);
 }
 
 void ATCTagRect::setConnector(QGraphicsLineItem *connector)
@@ -94,7 +110,7 @@ void ATCTagRect::moveLine(QPointF newPos)
             p2 = QPointF(newCentrePos.x(), newCentrePos.y() - settings->TAG_BOX_HEIGHT_FULL / *scale / 2);
         }
     }
-    else if((alpha > - 3*ATCConst::PI/4) && (alpha <=  - ATCConst::PI/4))
+    else if((alpha > - 3*ATCConst::PI/4) && (alpha <= -ATCConst::PI/4))
     {
         if(*type == ATC::Short)
         {
@@ -117,8 +133,8 @@ QVariant ATCTagRect::itemChange(QGraphicsItem::GraphicsItemChange change, const 
 {
     if(change == ItemPositionChange && scene())
     {
-        QPointF newPos = value.toPointF();
-        moveLine(newPos);
+        tempPos = value.toPointF();
+        moveLine(tempPos);
     }
 
     return QGraphicsItem::itemChange(change, value);
@@ -187,7 +203,7 @@ void ATCTagRect::mousePressEvent(QGraphicsSceneMouseEvent *event)
             else if((point.x() >= rect().x() + rect().width() * 0.678) &&
                     (point.x() <= rect().x() + rect().width()))
             {
-                setBrush(QBrush(Qt::yellow));
+                emit signalCreateDialogSpeed(globalPoint);
             }
             else
             {
