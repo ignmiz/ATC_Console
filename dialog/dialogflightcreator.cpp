@@ -204,6 +204,10 @@ void DialogFlightCreator::on_buttonOK_clicked()
                 flight->setHdgRestriction(ATCMath::normalizeAngle(uiInner->spinBoxTrueHDG->text().toInt() - qFloor(ATCConst::AVG_DECLINATION), ATC::Deg));
             }
         }
+        else
+        {
+            flight->setHdgRestriction(-1);
+        }
 
         //Set next fix
         if(uiInner->radioButtonOwnNav->isChecked())

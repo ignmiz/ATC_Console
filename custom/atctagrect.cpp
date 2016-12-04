@@ -207,7 +207,7 @@ void ATCTagRect::mousePressEvent(QGraphicsSceneMouseEvent *event)
             }
             else
             {
-                setBrush(QBrush(Qt::white));
+                emit signalCreateDialogHeading(globalPoint);
             }
         }
         else

@@ -146,3 +146,8 @@ void ATCFlight::slotCreateDialogSpeed(QPoint point)
 {
     emit signalCreateDialogSpeed(this, point);
 }
+
+void ATCFlight::slotCreateDialogHeading(QPoint point)
+{
+    emit signalCreateDialogHeading(this, point);
+}

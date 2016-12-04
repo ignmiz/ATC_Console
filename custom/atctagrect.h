@@ -38,6 +38,7 @@ public:
 signals:
     void signalCreateDialogAltitude(QPoint point);
     void signalCreateDialogSpeed(QPoint point);
+    void signalCreateDialogHeading(QPoint point);
 
 private:
     void moveLine(QPointF newPos);

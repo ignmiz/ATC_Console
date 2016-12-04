@@ -655,6 +655,9 @@ void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
     connect(tagBox, SIGNAL(signalCreateDialogSpeed(QPoint)), flight, SLOT(slotCreateDialogSpeed(QPoint)));
     connect(flight, SIGNAL(signalCreateDialogSpeed(ATCFlight*,QPoint)), this, SLOT(slotCreateDialogSpeed(ATCFlight*,QPoint)));
 
+    connect(tagBox, SIGNAL(signalCreateDialogHeading(QPoint)), flight, SLOT(slotCreateDialogHeading(QPoint)));
+    connect(flight, SIGNAL(signalCreateDialogHeading(ATCFlight*,QPoint)), this, SLOT(slotCreateDialogHeading(ATCFlight*,QPoint)));
+
     visibleTags.append(tag);
 }
 
@@ -716,6 +719,36 @@ void ATCSituationalDisplay::slotDialogSpeedClosed()
 void ATCSituationalDisplay::slotDialogSpeedCloseOnClick()
 {
     dialogSpeedCloseOnClick = true;
+}
+
+void ATCSituationalDisplay::slotCreateDialogHeading(ATCFlight *flight, QPoint point)
+{
+    if(dialogHeadingExists)
+    {
+        dialogHeading->close();
+        slotDialogHeadingClosed();
+    }
+
+    dialogHeading = new DialogHeading(flight, settings, this);
+    dialogHeading->move(point.x() - dialogHeading->width()/2, point.y() - dialogHeading->height()/2 - settings->TAG_BOX_HEIGHT_FULL/2);
+
+    dialogHeading->show();
+    dialogHeadingExists = true;
+
+    QTimer::singleShot(100, this, SLOT(slotDialogHeadingCloseOnClick()));
+    connect(dialogHeading, SIGNAL(signalClosed()), this, SLOT(slotDialogHeadingClosed()));
+}
+
+void ATCSituationalDisplay::slotDialogHeadingClosed()
+{
+    dialogHeading = nullptr;
+    dialogHeadingExists = false;
+    dialogHeadingCloseOnClick = false;
+}
+
+void ATCSituationalDisplay::slotDialogHeadingCloseOnClick()
+{
+    dialogHeadingCloseOnClick = true;
 }
 
 void ATCSituationalDisplay::situationalDisplaySetup()
@@ -3799,6 +3832,17 @@ void ATCSituationalDisplay::mousePressEvent(QMouseEvent *event)
         {
             dialogSpeed->close();
             slotDialogSpeedClosed();
+        }
+    }
+
+    if(dialogHeadingCloseOnClick)
+    {
+        dialogHeadingCloseOnClick = false;
+
+        if(dialogHeading != nullptr)
+        {
+            dialogHeading->close();
+            slotDialogHeadingClosed();
         }
     }
 

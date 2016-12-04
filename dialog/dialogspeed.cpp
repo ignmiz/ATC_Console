@@ -29,7 +29,6 @@ void DialogSpeed::slotClicked(const QModelIndex &index)
 
     flight->setTargetSpeed(speedString);
 
-    QString shortEtiquette = flight->getFlightTag()->getTagBox()->getShortEtiquette();
     QString longEtiquette = flight->getFlightTag()->getTagBox()->getLongEtiquette();
 
     if((speedString.at(1) == '.') && (speedString.toDouble() >= 1))
@@ -58,7 +57,6 @@ void DialogSpeed::slotClicked(const QModelIndex &index)
         }
     }
 
-    flight->getFlightTag()->getTagBox()->setShortEtiquette(shortEtiquette);
     flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
 
     if(flight->getFlightTag()->getTagType() == ATC::Short)
