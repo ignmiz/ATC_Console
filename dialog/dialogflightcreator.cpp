@@ -35,7 +35,7 @@ DialogFlightCreator::DialogFlightCreator(ATCFlightFactory *flightFactory, ATCSim
 
     uiInner->lineEditAltitudeRes->setInputMask(">A999");
     uiInner->lineEditSpeedRes->setInputMask("9X90");
-    uiInner->lineEditNextFix->setInputMask("aaaaa");
+    uiInner->lineEditNextFix->setInputMask(">aaaaa");
 
     uiInner->labelError->setVisible(false);
 
@@ -201,7 +201,7 @@ void DialogFlightCreator::on_buttonOK_clicked()
             }
             else
             {
-                flight->setHdgRestriction(uiInner->spinBoxTrueHDG->text().toInt() - qFloor(ATCConst::AVG_DECLINATION));
+                flight->setHdgRestriction(ATCMath::normalizeAngle(uiInner->spinBoxTrueHDG->text().toInt() - qFloor(ATCConst::AVG_DECLINATION), ATC::Deg));
             }
         }
 
