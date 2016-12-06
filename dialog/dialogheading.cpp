@@ -58,6 +58,17 @@ void DialogHeading::slotClicked(const QModelIndex &index)
     }
     else
     {
+        if(flight->getNavMode() == ATC::Nav)
+        {
+            for(int i = 0; i < 5; i++)
+            {
+                shortEtiquette[i + 24] = QChar(' ');
+                longEtiquette[i + 24] = QChar(' ');
+            }
+
+            flight->setNavMode(ATC::Hdg);
+        }
+
         flight->getFlightTag()->getTagBox()->setShortEtiquette(shortEtiquette);
         flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
 
