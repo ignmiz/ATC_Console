@@ -15,11 +15,12 @@ DialogFlightCreator::DialogFlightCreator(ATCFlightFactory *flightFactory, ATCSim
         QString type = flightFactory->getAircraftTypeFactory().getType(i)->getAcType().ICAOcode;
         uiInner->comboBoxAcftType->addItem(type, Qt::DisplayRole);
     }
+
     uiInner->spinBoxHeadingRes->clear();
     uiInner->spinBoxTrueHDG->clear();
 
     uiInner->spinBoxHeadingRes->setEnabled(false);
-    uiInner->lineEditNextFix->setEnabled(false);
+    uiInner->comboBoxNextFix->setEnabled(false);
 
     uiInner->lineEditCallsign->setInputMask(">AAAxxxxxxx");
     uiInner->lineEditDeparture->setInputMask(">AAAA");
@@ -35,7 +36,6 @@ DialogFlightCreator::DialogFlightCreator(ATCFlightFactory *flightFactory, ATCSim
 
     uiInner->lineEditAltitudeRes->setInputMask(">A999");
     uiInner->lineEditSpeedRes->setInputMask("9X90");
-    uiInner->lineEditNextFix->setInputMask(">aaaaa");
 
     uiInner->labelError->setVisible(false);
 
@@ -212,13 +212,12 @@ void DialogFlightCreator::on_buttonOK_clicked()
         //Set next fix
         if(uiInner->radioButtonOwnNav->isChecked())
         {
-            flight->setNextFix(uiInner->lineEditNextFix->text());
+            flight->setNextFix(uiInner->comboBoxNextFix->currentText());
         }
 
         //Append flight to simulation
         simulation->appendFlight(flight);
 
-        //CREATE NEW FLIGHT TAG ON SITUATIONAL DISPLAY - TO BE IMPLEMENTED
         emit signalCreateFlightTag(flight);
 
         emit closed();
@@ -471,9 +470,9 @@ bool DialogFlightCreator::verifyForm()
         return false;
     }
     else if((uiInner->radioButtonOwnNav->isChecked()) &&
-            (uiInner->lineEditNextFix->text().isEmpty()))
+            (uiInner->comboBoxNextFix->currentText().isEmpty()))
     {
-        errorMessage("ERROR: Next fix not specified!");
+        errorMessage("ERROR: Next fix not selected!");
         return false;
     }
     else
@@ -521,13 +520,35 @@ void DialogFlightCreator::on_radioButtonOwnNav_clicked()
     uiInner->spinBoxHeadingRes->setEnabled(false);
     uiInner->spinBoxHeadingRes->clear();
 
-    uiInner->lineEditNextFix->setEnabled(true);
+    uiInner->comboBoxNextFix->setEnabled(true);
+    uiInner->comboBoxNextFix->clear();
+
+    QStringList routeStr = uiInner->plainTextEditRoute->toPlainText().toUpper().split(" ", QString::SkipEmptyParts);
+
+    for(int i = 0; i < routeStr.size(); i++)
+    {
+        if(i % 2 == 0) uiInner->comboBoxNextFix->addItem(routeStr.at(i), Qt::DisplayRole);
+    }
 }
 
 void DialogFlightCreator::on_radioButtonHDG_clicked()
 {
     uiInner->spinBoxHeadingRes->setEnabled(true);
 
-    uiInner->lineEditNextFix->setEnabled(false);
-    uiInner->lineEditNextFix->setText(QString());
+    uiInner->comboBoxNextFix->setEnabled(false);
+    uiInner->comboBoxNextFix->clear();
+}
+
+void DialogFlightCreator::on_tabWidget_tabBarClicked(int index)
+{
+    if((index == 1) && uiInner->radioButtonOwnNav->isChecked())
+    {
+        uiInner->comboBoxNextFix->clear();
+        QStringList routeStr = uiInner->plainTextEditRoute->toPlainText().toUpper().split(" ", QString::SkipEmptyParts);
+
+        for(int i = 0; i < routeStr.size(); i++)
+        {
+            if(i % 2 == 0) uiInner->comboBoxNextFix->addItem(routeStr.at(i), Qt::DisplayRole);
+        }
+    }
 }

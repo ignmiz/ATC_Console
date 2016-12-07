@@ -1001,16 +1001,6 @@ QScrollBar::sub-page:vertical
        </rect>
       </property>
      </widget>
-     <widget class="QLineEdit" name="lineEditNextFix">
-      <property name="geometry">
-       <rect>
-        <x>190</x>
-        <y>140</y>
-        <width>120</width>
-        <height>25</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QLabel" name="labelSimulationStart">
       <property name="geometry">
        <rect>
@@ -1073,6 +1063,45 @@ QScrollBar::sub-page:vertical
       </property>
       <property name="singleStep">
        <number>5</number>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBoxNextFix">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>140</y>
+        <width>120</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QComboBox
+{
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	font: 13px;
+}
+
+QComboBox QAbstractItemView
+{	
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+    selection-background-color: #060064;
+	font: 13px;
+}
+
+QComboBox::disabled
+{
+	color: #c8c8c8;
+	background-color: #050505;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #111111;
+	font: 13px;
+}</string>
       </property>
      </widget>
     </widget>

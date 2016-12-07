@@ -39,6 +39,8 @@ private slots:
     void slotShowFlightCreator();
     void slotDisplayClicked(double x, double y);
 
+    void on_tabWidget_tabBarClicked(int index);
+
 private:
     Ui::DialogFlightCreator *uiInner;
     ATCFlightFactory *flightFactory;
