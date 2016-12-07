@@ -287,10 +287,14 @@ void DialogFlightCreator::setCallsign()
 void DialogFlightCreator::setSquawk()
 {
     QString squawk  = ATCFlightFactory::generateSquawk();
-    if((squawk != "7500") || (squawk != "7600") || (squawk != "7700"))
+    if((squawk != "7500") || (squawk != "7500") || (squawk != "7600") || (squawk != "7700"))
     {
         uiInner->lineEditSquawk->setText(squawk);
         uiInner->lineEditSquawkCurrent->setText(squawk);
+    }
+    else
+    {
+        setSquawk();
     }
 }
 
