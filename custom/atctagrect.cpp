@@ -189,7 +189,7 @@ void ATCTagRect::mousePressEvent(QGraphicsSceneMouseEvent *event)
             if((point.x() < rect().x() + rect().width() * 0.609) &&
                (point.x() >= rect().x()))
             {
-                setBrush(QBrush(Qt::magenta));
+                emit signalCreateDialogHandoff(globalPoint);
             }
         }
         else if((point.y() >= rect().y() + rect().height() * 2/3) &&

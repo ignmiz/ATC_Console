@@ -91,7 +91,8 @@ SOURCES += main.cpp\
     dialogaltitude.cpp \
     dialogspeed.cpp \
     dialogheading.cpp \
-    dialogroute.cpp
+    dialogroute.cpp \
+    dialoghandoff.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -154,7 +155,8 @@ HEADERS  += mainwindow.h \
     dialogaltitude.h \
     dialogspeed.h \
     dialogheading.h \
-    dialogroute.h
+    dialogroute.h \
+    dialoghandoff.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
@@ -167,7 +169,8 @@ FORMS    += mainwindow.ui \
     dialogaltitude.ui \
     dialogspeed.ui \
     dialogheading.ui \
-    dialogroute.ui
+    dialogroute.ui \
+    dialoghandoff.ui
 
 DISTFILES += \
     resources/acft_cursor.png

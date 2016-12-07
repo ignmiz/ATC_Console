@@ -1,5 +1,5 @@
-#ifndef DIALOGHEADING_H
-#define DIALOGHEADING_H
+#ifndef DIALOGHANDOFF_H
+#define DIALOGHANDOFF_H
 
 #include "atcflight.h"
 
@@ -7,16 +7,16 @@
 #include <QStandardItemModel>
 
 namespace Ui {
-class DialogHeading;
+class DialogHandoff;
 }
 
-class DialogHeading : public QDialog
+class DialogHandoff : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit DialogHeading(ATCFlight *flight, ATCSettings *settings, QWidget *parent = 0);
-    ~DialogHeading();
+    explicit DialogHandoff(ATCFlight *flight, ATCSettings *settings, QWidget *parent = 0);
+    ~DialogHandoff();
 
 signals:
     void signalClosed();
@@ -25,14 +25,14 @@ private slots:
     void slotClicked(const QModelIndex &index);
 
 private:
-    Ui::DialogHeading *ui;
+    Ui::DialogHandoff *ui;
     ATCFlight *flight;
     ATCSettings *settings;
 
     QStandardItemModel *model = nullptr;
 
-    void dialogHeadingSetup();
+    void dialogHandoffSetup();
     void appendRow(QString text, QStandardItemModel *model);
 };
 
-#endif // DIALOGHEADING_H
+#endif // DIALOGHANDOFF_H

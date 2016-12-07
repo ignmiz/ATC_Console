@@ -661,6 +661,9 @@ void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
     connect(tagBox, SIGNAL(signalCreateDialogRoute(QPoint)), flight, SLOT(slotCreateDialogRoute(QPoint)));
     connect(flight, SIGNAL(signalCreateDialogRoute(ATCFlight*,QPoint)), this, SLOT(slotCreateDialogRoute(ATCFlight*,QPoint)));
 
+    connect(tagBox, SIGNAL(signalCreateDialogHandoff(QPoint)), flight, SLOT(slotCreateDialogHandoff(QPoint)));
+    connect(flight, SIGNAL(signalCreateDialogHandoff(ATCFlight*,QPoint)), this, SLOT(slotCreateDialogHandoff(ATCFlight*,QPoint)));
+
     visibleTags.append(tag);
 }
 
@@ -782,6 +785,36 @@ void ATCSituationalDisplay::slotDialogRouteClosed()
 void ATCSituationalDisplay::slotDialogRouteCloseOnClick()
 {
     dialogRouteCloseOnClick = true;
+}
+
+void ATCSituationalDisplay::slotCreateDialogHandoff(ATCFlight *flight, QPoint point)
+{
+    if(dialogHandoffExists)
+    {
+        dialogHandoff->close();
+        slotDialogHandoffClosed();
+    }
+
+    dialogHandoff = new DialogHandoff(flight, settings, this);
+    dialogHandoff->move(point.x() - dialogHandoff->width()/2, point.y() - dialogHandoff->height()/2 - settings->TAG_BOX_HEIGHT_FULL/2);
+
+    dialogHandoff->show();
+    dialogHandoffExists = true;
+
+    QTimer::singleShot(100, this, SLOT(slotDialogHandoffCloseOnClick()));
+    connect(dialogHandoff, SIGNAL(signalClosed()), this, SLOT(slotDialogHandoffClosed()));
+}
+
+void ATCSituationalDisplay::slotDialogHandoffClosed()
+{
+    dialogHandoff = nullptr;
+    dialogHandoffExists = false;
+    dialogHandoffCloseOnClick = false;
+}
+
+void ATCSituationalDisplay::slotDialogHandoffCloseOnClick()
+{
+    dialogHandoffCloseOnClick = true;
 }
 
 void ATCSituationalDisplay::situationalDisplaySetup()
@@ -3889,6 +3922,18 @@ void ATCSituationalDisplay::mousePressEvent(QMouseEvent *event)
             slotDialogRouteClosed();
         }
     }
+
+    if(dialogHandoffCloseOnClick)
+    {
+        dialogHandoffCloseOnClick = false;
+
+        if(dialogHandoff != nullptr)
+        {
+            dialogHandoff->close();
+            slotDialogHandoffClosed();
+        }
+    }
+
 
     event->accept();
 }

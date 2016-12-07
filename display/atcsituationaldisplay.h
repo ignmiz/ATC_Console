@@ -11,6 +11,7 @@
 #include "dialogspeed.h"
 #include "dialogheading.h"
 #include "dialogroute.h"
+#include "dialoghandoff.h"
 
 #include <QGraphicsView>
 #include <QTimer>
@@ -114,6 +115,10 @@ private slots:
     void slotDialogRouteClosed();
     void slotDialogRouteCloseOnClick();
 
+    void slotCreateDialogHandoff(ATCFlight *flight, QPoint point);
+    void slotDialogHandoffClosed();
+    void slotDialogHandoffCloseOnClick();
+
 private:
     ATCAirspace *airspaceData = nullptr;
     ATCSettings *settings = nullptr;
@@ -163,6 +168,10 @@ private:
     DialogRoute *dialogRoute = nullptr;
     bool dialogRouteExists = false;
     bool dialogRouteCloseOnClick = false;
+
+    DialogHandoff *dialogHandoff = nullptr;
+    bool dialogHandoffExists = false;
+    bool dialogHandoffCloseOnClick = false;
 
     void situationalDisplaySetup();
 
