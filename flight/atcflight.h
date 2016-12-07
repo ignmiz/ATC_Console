@@ -93,11 +93,13 @@ signals:
     void signalCreateDialogAltitude(ATCFlight *flight, QPoint point);
     void signalCreateDialogSpeed(ATCFlight *flight, QPoint point);
     void signalCreateDialogHeading(ATCFlight *flight, QPoint point);
+    void signalCreateDialogRoute(ATCFlight *flight, QPoint point);
 
 private slots:
     void slotCreateDialogAltitude(QPoint point);
     void slotCreateDialogSpeed(QPoint point);
     void slotCreateDialogHeading(QPoint point);
+    void slotCreateDialogRoute(QPoint point);
 
 private:
     ATCFlightPlan *plan = nullptr;

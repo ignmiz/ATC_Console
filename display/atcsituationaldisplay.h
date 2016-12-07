@@ -10,6 +10,7 @@
 #include "dialogaltitude.h"
 #include "dialogspeed.h"
 #include "dialogheading.h"
+#include "dialogroute.h"
 
 #include <QGraphicsView>
 #include <QTimer>
@@ -109,6 +110,10 @@ private slots:
     void slotDialogHeadingClosed();
     void slotDialogHeadingCloseOnClick();
 
+    void slotCreateDialogRoute(ATCFlight *flight, QPoint point);
+    void slotDialogRouteClosed();
+    void slotDialogRouteCloseOnClick();
+
 private:
     ATCAirspace *airspaceData = nullptr;
     ATCSettings *settings = nullptr;
@@ -154,6 +159,10 @@ private:
     DialogHeading *dialogHeading = nullptr;
     bool dialogHeadingExists = false;
     bool dialogHeadingCloseOnClick = false;
+
+    DialogRoute *dialogRoute = nullptr;
+    bool dialogRouteExists = false;
+    bool dialogRouteCloseOnClick = false;
 
     void situationalDisplaySetup();
 

@@ -658,6 +658,9 @@ void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
     connect(tagBox, SIGNAL(signalCreateDialogHeading(QPoint)), flight, SLOT(slotCreateDialogHeading(QPoint)));
     connect(flight, SIGNAL(signalCreateDialogHeading(ATCFlight*,QPoint)), this, SLOT(slotCreateDialogHeading(ATCFlight*,QPoint)));
 
+    connect(tagBox, SIGNAL(signalCreateDialogRoute(QPoint)), flight, SLOT(slotCreateDialogRoute(QPoint)));
+    connect(flight, SIGNAL(signalCreateDialogRoute(ATCFlight*,QPoint)), this, SLOT(slotCreateDialogRoute(ATCFlight*,QPoint)));
+
     visibleTags.append(tag);
 }
 
@@ -749,6 +752,36 @@ void ATCSituationalDisplay::slotDialogHeadingClosed()
 void ATCSituationalDisplay::slotDialogHeadingCloseOnClick()
 {
     dialogHeadingCloseOnClick = true;
+}
+
+void ATCSituationalDisplay::slotCreateDialogRoute(ATCFlight *flight, QPoint point)
+{
+    if(dialogRouteExists)
+    {
+        dialogRoute->close();
+        slotDialogRouteClosed();
+    }
+
+    dialogRoute = new DialogRoute(flight, settings, this);
+    dialogRoute->move(point.x() - dialogRoute->width()/2, point.y() - dialogRoute->height()/2 - settings->TAG_BOX_HEIGHT_FULL/2);
+
+    dialogRoute->show();
+    dialogRouteExists = true;
+
+    QTimer::singleShot(100, this, SLOT(slotDialogRouteCloseOnClick()));
+    connect(dialogRoute, SIGNAL(signalClosed()), this, SLOT(slotDialogRouteClosed()));
+}
+
+void ATCSituationalDisplay::slotDialogRouteClosed()
+{
+    dialogRoute = nullptr;
+    dialogRouteExists = false;
+    dialogRouteCloseOnClick = false;
+}
+
+void ATCSituationalDisplay::slotDialogRouteCloseOnClick()
+{
+    dialogRouteCloseOnClick = true;
 }
 
 void ATCSituationalDisplay::situationalDisplaySetup()
@@ -3843,6 +3876,17 @@ void ATCSituationalDisplay::mousePressEvent(QMouseEvent *event)
         {
             dialogHeading->close();
             slotDialogHeadingClosed();
+        }
+    }
+
+    if(dialogRouteCloseOnClick)
+    {
+        dialogRouteCloseOnClick = false;
+
+        if(dialogRoute != nullptr)
+        {
+            dialogRoute->close();
+            slotDialogRouteClosed();
         }
     }
 

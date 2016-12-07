@@ -1,23 +1,22 @@
-#ifndef DIALOGSPEED_H
-#define DIALOGSPEED_H
+#ifndef DIALOGROUTE_H
+#define DIALOGROUTE_H
 
 #include "atcflight.h"
-#include "atcmath.h"
 
 #include <QDialog>
 #include <QStandardItemModel>
 
 namespace Ui {
-class DialogSpeed;
+class DialogRoute;
 }
 
-class DialogSpeed : public QDialog
+class DialogRoute : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit DialogSpeed(ATCFlight *flight, ATCSettings *settings, QWidget *parent = 0);
-    ~DialogSpeed();
+    explicit DialogRoute(ATCFlight *flight, ATCSettings *settings, QWidget *parent = 0);
+    ~DialogRoute();
 
 signals:
     void signalClosed();
@@ -26,14 +25,14 @@ private slots:
     void slotClicked(const QModelIndex &index);
 
 private:
-    Ui::DialogSpeed *ui;
+    Ui::DialogRoute *ui;
     ATCFlight *flight;
     ATCSettings *settings;
 
     QStandardItemModel *model = nullptr;
 
-    void dialogSpeedSetup();
+    void dialogRouteSetup();
     void appendRow(QString text, QStandardItemModel *model);
 };
 
-#endif // DIALOGSPEED_H
+#endif // DIALOGROUTE_H

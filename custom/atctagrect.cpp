@@ -220,7 +220,7 @@ void ATCTagRect::mousePressEvent(QGraphicsSceneMouseEvent *event)
             else if((point.x() >= rect().x() + rect().width() * 0.496) &&
                     (point.x() <= rect().x() + rect().width()))
             {
-                setBrush(QBrush(Qt::cyan));
+                emit signalCreateDialogRoute(globalPoint);
             }
             else
             {
