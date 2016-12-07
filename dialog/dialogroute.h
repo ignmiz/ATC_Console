@@ -2,6 +2,7 @@
 #define DIALOGROUTE_H
 
 #include "atcflight.h"
+#include "atcroute.h"
 
 #include <QDialog>
 #include <QStandardItemModel>

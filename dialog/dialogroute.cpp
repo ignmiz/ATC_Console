@@ -25,12 +25,91 @@ DialogRoute::~DialogRoute()
 
 void DialogRoute::slotClicked(const QModelIndex &index)
 {
+    QString nextFix = index.data(Qt::DisplayRole).toString();
 
+    flight->setNextFix(nextFix);
+
+    QString shortEtiquette = flight->getFlightTag()->getTagBox()->getShortEtiquette();
+    QString longEtiquette = flight->getFlightTag()->getTagBox()->getLongEtiquette();
+
+    for(int i = nextFix.length(); i < 5; i++)
+    {
+        nextFix.append(' ');
+    }
+
+    for(int i = 0; i < nextFix.size(); i++)
+    {
+        shortEtiquette[i + 24] = nextFix.at(i);
+        longEtiquette[i + 24] = nextFix.at(i);
+    }
+
+    flight->getFlightTag()->getTagBox()->setShortEtiquette(shortEtiquette);
+    flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
+
+    if(flight->getNavMode() == ATC::Hdg)
+    {
+        for(int i = 0; i < 3; i++)
+        {
+            longEtiquette[i + 39] = '-';
+        }
+
+        flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
+        flight->setNavMode(ATC::Nav);
+
+        if((flight->getTargetSpeed() == "---") || flight->getTargetSpeed().isEmpty())
+        {
+            flight->getFlightTag()->getTagBox()->rectLong2Short();
+            flight->getFlightTag()->getTagBox()->setShort();
+            flight->getFlightTag()->setTagType(ATC::Short);
+        }
+        else
+        {
+            flight->getFlightTag()->getTagBox()->setLong();
+        }
+    }
+    else
+    {
+        if(flight->getFlightTag()->getTagType() == ATC::Short)
+        {
+            flight->getFlightTag()->getTagBox()->setShort();
+        }
+        else
+        {
+            flight->getFlightTag()->getTagBox()->setLong();
+        }
+    }
+
+    emit signalClosed();
+    close();
 }
 
 void DialogRoute::dialogRouteSetup()
 {
+    model = new QStandardItemModel(this);
+    QStringList routeList = flight->getFlightPlan()->getRoute().getRoute();
 
+    for(int i = 0; i < routeList.size(); i++)
+    {
+        if(i % 2 == 0)
+        {
+            appendRow(routeList.at(i), model);
+        }
+    }
+
+    ui->listView->setModel(model);
+    ui->listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->listView->setSelectionMode(QAbstractItemView::NoSelection);
+    ui->listView->setFocusPolicy(Qt::NoFocus);
+
+    QString nextFix = flight->getNextFix();
+
+    for(int i = 0; i < model->rowCount(); i++)
+    {
+        if(model->index(i, 0).data(Qt::DisplayRole).toString() == nextFix)
+        {
+            ui->listView->scrollTo(model->index(i, 0), QAbstractItemView::PositionAtCenter);
+        }
+    }
 }
 
 void DialogRoute::appendRow(QString text, QStandardItemModel *model)

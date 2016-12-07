@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>60</width>
-    <height>180</height>
+    <height>120</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -58,7 +58,7 @@ QLabel
      <x>0</x>
      <y>0</y>
      <width>60</width>
-     <height>180</height>
+     <height>120</height>
     </rect>
    </property>
    <property name="frameShape">
@@ -73,7 +73,7 @@ QLabel
       <x>2</x>
       <y>2</y>
       <width>56</width>
-      <height>176</height>
+      <height>116</height>
      </rect>
     </property>
     <property name="styleSheet">
