@@ -656,6 +656,27 @@ ATCAirwayHigh *ATCAirspace::findAirwayHigh(QString name)
     return nullptr;
 }
 
+ATCAbstractAirway *ATCAirspace::findAirway(QString name)
+{
+    for(int i = 0; i < lowAirways.size(); i++)
+    {
+        if(lowAirways.at(i)->getName() == name)
+        {
+            return lowAirways.at(i);
+        }
+    }
+
+    for(int i = 0; i < highAirways.size(); i++)
+    {
+        if(highAirways.at(i)->getName() == name)
+        {
+            return highAirways.at(i);
+        }
+    }
+
+    return nullptr;
+}
+
 void ATCAirspace::deleteAllSectors()
 {
     if(!sectors.empty())

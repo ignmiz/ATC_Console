@@ -121,6 +121,7 @@ public:
     ATCProcedureSTARSymbol* findSTARSymbol(QString name);
     ATCAirwayLow* findAirwayLow(QString name);
     ATCAirwayHigh* findAirwayHigh(QString name);
+    ATCAbstractAirway* findAirway(QString name);
 
 private:
     QVector<ATCAirspaceSector*> sectors;

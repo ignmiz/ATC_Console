@@ -1,8 +1,9 @@
 #include "dialogflight.h"
 #include "ui_dialogflight.h"
 
-DialogFlight::DialogFlight(QWidget *parent) :
+DialogFlight::DialogFlight(ATCAirspace *airspace, QWidget *parent) :
     ATCDialog(parent, "Flight Creator", 300, 160),
+    airspace(airspace),
     uiInner(new Ui::DialogFlight)
 {
     uiInner->setupUi(this);

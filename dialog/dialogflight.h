@@ -1,6 +1,7 @@
 #ifndef DIALOGFLIGHT_H
 #define DIALOGFLIGHT_H
 
+#include "atcairspace.h"
 #include "atcdialog.h"
 
 namespace Ui {
@@ -12,7 +13,7 @@ class DialogFlight : public ATCDialog
     Q_OBJECT
 
 public:
-    explicit DialogFlight(QWidget *parent = 0);
+    explicit DialogFlight(ATCAirspace *airspace, QWidget *parent = 0);
     ~DialogFlight();
 
 signals:
@@ -27,6 +28,7 @@ private slots:
 
 private:
     Ui::DialogFlight *uiInner;
+    ATCAirspace *airspace;
 };
 
 #endif // DIALOGFLIGHT_H

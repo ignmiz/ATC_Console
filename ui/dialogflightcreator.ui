@@ -509,7 +509,7 @@ QComboBox QAbstractItemView
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>550</y>
+       <y>530</y>
        <width>100</width>
        <height>25</height>
       </rect>
@@ -522,7 +522,7 @@ QComboBox QAbstractItemView
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>400</y>
+       <y>380</y>
        <width>100</width>
        <height>25</height>
       </rect>
@@ -564,7 +564,7 @@ QComboBox QAbstractItemView
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>460</y>
+       <y>440</y>
        <width>100</width>
        <height>25</height>
       </rect>
@@ -577,7 +577,7 @@ QComboBox QAbstractItemView
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>520</y>
+       <y>500</y>
        <width>100</width>
        <height>25</height>
       </rect>
@@ -590,7 +590,7 @@ QComboBox QAbstractItemView
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>490</y>
+       <y>470</y>
        <width>100</width>
        <height>25</height>
       </rect>
@@ -669,6 +669,78 @@ QScrollBar::add-page:vertical
 QScrollBar::sub-page:vertical
 {
 	background: #1e1e1e;
+	border: none;
+}</string>
+     </property>
+    </widget>
+    <widget class="QTableView" name="tableViewValidator">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>380</y>
+       <width>420</width>
+       <height>175</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QTableView
+{;
+	color: #c8c8c8;;
+	background-color: #000000;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	font: 11px;
+	outline: none;
+}
+
+QTableView::item:hover
+{
+    background-color: #4b4b4b;
+}
+
+QTableView::item:selected
+{
+
+}
+
+QTableView::item:selected:active
+{
+
+}
+
+QTableView::item:alternate
+{
+
+}
+
+QTableView::item:focus
+{
+	outline: none;
+}
+
+
+QScrollBar:vertical
+{
+	background: #000000;
+	width: 2px;
+	border: none;
+	margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: #323232;
+}
+
+QScrollBar::add-page:vertical
+{
+	background: #000000;
+	border: none;
+}
+
+QScrollBar::sub-page:vertical
+{
+	background: #000000;
 	border: none;
 }</string>
      </property>

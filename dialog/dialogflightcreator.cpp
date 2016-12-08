@@ -1,11 +1,13 @@
 #include "dialogflightcreator.h"
 #include "ui_dialogflightcreator.h"
 
-DialogFlightCreator::DialogFlightCreator(ATCFlightFactory *flightFactory, ATCSimulation *simulation, QWidget *parent) :
+DialogFlightCreator::DialogFlightCreator(ATCAirspace *airspace, ATCFlightFactory *flightFactory, ATCSimulation *simulation, QWidget *parent) :
     ATCDialog(parent, "Flight Creator", 600, 700),
     uiInner(new Ui::DialogFlightCreator),
+    airspace(airspace),
     flightFactory(flightFactory),
-    simulation(simulation)
+    simulation(simulation),
+    model(new QStandardItemModel(this))
 {
     uiInner->setupUi(this);
     windowSetup();
@@ -42,17 +44,22 @@ DialogFlightCreator::DialogFlightCreator(ATCFlightFactory *flightFactory, ATCSim
     uiInner->timeEditDepTime->setEnabled(false);
     uiInner->timeEditEnrTime->setEnabled(false);
     uiInner->timeEditFuelTime->setEnabled(false);
+
+    uiInner->tableViewValidator->setGridStyle(Qt::NoPen);
+    uiInner->tableViewValidator->horizontalHeader()->setHidden(true);
+    uiInner->tableViewValidator->verticalHeader()->setHidden(true);
+
+    model->setColumnCount(2);
 }
 
 DialogFlightCreator::~DialogFlightCreator()
 {
+    if(model != nullptr) delete model;
     delete uiInner;
 }
 
 void DialogFlightCreator::on_buttonOK_clicked()
 {
-    //TO BE IMPLEMENTED
-
     bool filledOK = verifyForm();
 
     if(filledOK)
@@ -329,6 +336,169 @@ void DialogFlightCreator::setTAS()
     uiInner->lineEditTAS->setText(QString::number(tas));
 }
 
+void DialogFlightCreator::validateRoute()
+{
+    model->clear();
+
+    QStringList routeStr = uiInner->plainTextEditRoute->toPlainText().toUpper().split(" ", QString::SkipEmptyParts);
+
+    if(!routeStr.isEmpty())
+    {
+        QList<QStandardItem*> row;
+
+        QStandardItem *emptyAirway = new QStandardItem();
+        emptyAirway->setFlags(Qt::NoItemFlags);
+        row.append(emptyAirway);
+
+        QStandardItem *firstFix = new QStandardItem(routeStr.at(0));
+        firstFix->setFlags(Qt::NoItemFlags);
+        firstFix->setTextAlignment(Qt::AlignCenter);
+
+        if(airspace->isValidNavaid(routeStr.at(0)))
+        {
+            firstFix->setBackground(QBrush(Qt::darkGreen));
+        }
+        else
+        {
+            firstFix->setBackground(QBrush(Qt::darkRed));
+        }
+
+        row.append(firstFix);
+
+        model->appendRow(row);
+        row.clear();
+
+        for(int i = 1; i < routeStr.size(); i++)
+        {
+            if(i % 2 == 1)
+            {
+                QStandardItem *airway = new QStandardItem(routeStr.at(i));
+                airway->setFlags(Qt::NoItemFlags);
+                airway->setTextAlignment(Qt::AlignCenter);
+
+                ATCAbstractAirway *aw = airspace->findAirway(routeStr.at(i));
+                bool previousFixConnected = false;
+
+                if(aw != nullptr)
+                {
+                    for(int j = 0; j < aw->getRouteFixes().size(); j++)
+                    {
+                        if(aw->getRouteFixes().at(j) == routeStr.at(i - 1)) previousFixConnected = true;
+                    }
+                }
+
+                if(((airspace->isAirwayLow(routeStr.at(i)) || airspace->isAirwayHigh(routeStr.at(i))) && previousFixConnected) || (routeStr.at(i) == "DCT"))
+                {
+                    airway->setBackground(QBrush(Qt::darkGreen));
+                }
+                else
+                {
+                    airway->setBackground(QBrush(Qt::darkRed));
+                }
+
+                row.append(airway);
+            }
+            else
+            {
+                ATCAbstractAirway *airway = airspace->findAirway(routeStr.at(i - 1));
+
+                QStringList fixList;
+                int firstFix = -1;
+                int secondFix = -1;
+
+                if(airway != nullptr)
+                {
+                    fixList = airway->getRouteFixes();
+
+                    for(int j = 0; j < fixList.size(); j++)
+                    {
+                        if(fixList.at(j) == routeStr.at(i - 2)) firstFix = j;
+                        if(fixList.at(j) == routeStr.at(i)) secondFix = j;
+                    }
+
+                    if((qFabs(firstFix - secondFix) > 1) && (firstFix >= 0) && (secondFix >= 0))
+                    {
+                        if(firstFix < secondFix)
+                        {
+                            for(int j = firstFix + 1; j < secondFix; j++)
+                            {
+                                QList<QStandardItem*> tempRow;
+
+                                QStandardItem *airway = new QStandardItem(routeStr.at(i - 1));
+                                airway->setFlags(Qt::NoItemFlags);
+                                airway->setTextAlignment(Qt::AlignCenter);
+                                airway->setBackground(QBrush(Qt::darkGreen));
+
+                                QStandardItem *fix = new QStandardItem(fixList.at(j));
+                                fix->setFlags(Qt::NoItemFlags);
+                                fix->setTextAlignment(Qt::AlignCenter);
+                                fix->setBackground(QBrush(Qt::darkGreen));
+
+                                tempRow.append(airway);
+                                tempRow.append(fix);
+
+                                model->appendRow(tempRow);
+                            }
+                        }
+                        else if(firstFix > secondFix)
+                        {
+                            for(int j = firstFix - 1; j > secondFix; j--)
+                            {
+                                QList<QStandardItem*> tempRow;
+
+                                QStandardItem *airway = new QStandardItem(routeStr.at(i - 1));
+                                airway->setFlags(Qt::NoItemFlags);
+                                airway->setTextAlignment(Qt::AlignCenter);
+                                airway->setBackground(QBrush(Qt::darkGreen));
+
+                                QStandardItem *fix = new QStandardItem(fixList.at(j));
+                                fix->setFlags(Qt::NoItemFlags);
+                                fix->setTextAlignment(Qt::AlignCenter);
+                                fix->setBackground(QBrush(Qt::darkGreen));
+
+                                tempRow.append(airway);
+                                tempRow.append(fix);
+
+                                model->appendRow(tempRow);
+                            }
+                        }
+                    }
+                }
+
+                QStandardItem *fix = new QStandardItem(routeStr.at(i));
+                fix->setFlags(Qt::NoItemFlags);
+                fix->setTextAlignment(Qt::AlignCenter);
+
+                if(airspace->isValidNavaid(routeStr.at(i)) && ((secondFix >= 0) || (routeStr.at(i - 1) == "DCT")))
+                {
+                    fix->setBackground(QBrush(Qt::darkGreen));
+                }
+                else
+                {
+                    fix->setBackground(QBrush(Qt::darkRed));
+                }
+
+                row.append(fix);
+            }
+
+            if(i % 2 == 0)
+            {
+                model->appendRow(row);
+                row.clear();
+            }
+        }
+
+        uiInner->tableViewValidator->setModel(model);
+
+        for(int i = 0; i < model->rowCount(); i++)
+        {
+            uiInner->tableViewValidator->setRowHeight(i, 20);
+        }
+
+        uiInner->tableViewValidator->scrollToBottom();
+    }
+}
+
 bool DialogFlightCreator::verifyForm()
 {
     if(!uiInner->lineEditCallsign->text().isEmpty())
@@ -551,4 +721,9 @@ void DialogFlightCreator::on_tabWidget_tabBarClicked(int index)
             if(i % 2 == 0) uiInner->comboBoxNextFix->addItem(routeStr.at(i), Qt::DisplayRole);
         }
     }
+}
+
+void DialogFlightCreator::on_plainTextEditRoute_textChanged()
+{
+    validateRoute();
 }
