@@ -22,6 +22,7 @@ private slots:
     void test_show();
     void test_hide();
     void test_isVisible();
+    void test_appendGetRouteFix();
 };
 
 

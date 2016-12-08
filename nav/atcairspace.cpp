@@ -1963,12 +1963,20 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                         ATCAirwayLow *currentObject = findAirwayLow(name);
                         currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
                         currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                        currentObject->appendRouteFix(lat1String);
+                        currentObject->appendRouteFix(lat2String);
+                        currentObject->getRouteFixes().removeDuplicates();
                     }
                     else
                     {
                         ATCAirwayLow *currentObject = new ATCAirwayLow(name);
                         currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
                         currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                        currentObject->appendRouteFix(lat1String);
+                        currentObject->appendRouteFix(lat2String);
+                        currentObject->getRouteFixes().removeDuplicates();
 
                         appendAirwayLow(currentObject);
                     }
@@ -2058,12 +2066,20 @@ void ATCAirspace::loadData(QString SCTpath, QString ESEpath)
                         ATCAirwayHigh *currentObject = findAirwayHigh(name);
                         currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
                         currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                        currentObject->appendRouteFix(lat1String);
+                        currentObject->appendRouteFix(lat2String);
+                        currentObject->getRouteFixes().removeDuplicates();
                     }
                     else
                     {
                         ATCAirwayHigh *currentObject = new ATCAirwayHigh(name);
                         currentObject->appendCoords1(new ATCAirspaceFix(lat1, lon1));
                         currentObject->appendCoords2(new ATCAirspaceFix(lat2, lon2));
+
+                        currentObject->appendRouteFix(lat1String);
+                        currentObject->appendRouteFix(lat2String);
+                        currentObject->getRouteFixes().removeDuplicates();
 
                         appendAirwayHigh(currentObject);
                     }

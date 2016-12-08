@@ -56,6 +56,11 @@ int ATCAbstractAirway::getCoordsVectorSize()
     return coords1.size();
 }
 
+QStringList &ATCAbstractAirway::getRouteFixes()
+{
+    return routeFixes;
+}
+
 void ATCAbstractAirway::setName(QString name)
 {
     airwayName = name;
@@ -85,6 +90,11 @@ void ATCAbstractAirway::appendCoords2(ATCAirspaceFix *coord)
 void ATCAbstractAirway::appendLine(QGraphicsLineItem *line)
 {
     lines.append(line);
+}
+
+void ATCAbstractAirway::appendRouteFix(QString fix)
+{
+    routeFixes.append(fix);
 }
 
 void ATCAbstractAirway::show()

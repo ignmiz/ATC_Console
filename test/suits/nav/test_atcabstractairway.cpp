@@ -114,3 +114,15 @@ void Test_ATCAbstractAirway::test_isVisible()
     airway.show();
     QVERIFY(airway.isVisible());
 }
+
+void Test_ATCAbstractAirway::test_appendGetRouteFix()
+{
+    Mock_ATCAbstractAirway airway("TEST");
+
+    airway.appendRouteFix("TEST1");
+    airway.appendRouteFix("TEST2");
+
+    QVERIFY(airway.getRouteFixes().size() == 2);
+    QVERIFY(airway.getRouteFixes().at(0) == "TEST1");
+    QVERIFY(airway.getRouteFixes().at(1) == "TEST2");
+}

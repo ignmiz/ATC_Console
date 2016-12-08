@@ -17,6 +17,7 @@ public:
     ATCAirspaceFix* getCoords2(int iterator);
     QGraphicsLineItem* getLine(int iterator);
     int getCoordsVectorSize();
+    QStringList& getRouteFixes();
 
     void setName(QString name);
     void setColor(QColor color);
@@ -24,6 +25,7 @@ public:
     void appendCoords1(ATCAirspaceFix* coord);
     void appendCoords2(ATCAirspaceFix *coord);
     void appendLine(QGraphicsLineItem *line);
+    void appendRouteFix(QString fix);
 
     void show();
     void hide();
@@ -34,6 +36,7 @@ private:
     QVector<ATCAirspaceFix*> coords1;
     QVector<ATCAirspaceFix*> coords2;
     QVector<QGraphicsLineItem*> lines;
+    QStringList routeFixes;
 
     bool visible = false;
 };
