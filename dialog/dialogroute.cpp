@@ -86,14 +86,11 @@ void DialogRoute::slotClicked(const QModelIndex &index)
 void DialogRoute::dialogRouteSetup()
 {
     model = new QStandardItemModel(this);
-    QStringList routeList = flight->getFlightPlan()->getRoute().getRoute();
+    QStringList routeList = flight->getFixList();
 
     for(int i = 0; i < routeList.size(); i++)
     {
-        if(i % 2 == 0)
-        {
-            appendRow(routeList.at(i), model);
-        }
+        appendRow(routeList.at(i), model);
     }
 
     ui->listView->setModel(model);

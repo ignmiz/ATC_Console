@@ -24,6 +24,7 @@ public:
 signals:
     void signalGetLocation();
     void signalCreateFlightTag(ATCFlight *flight);
+    void signalFormError(QString string);
 
 private slots:
     ATC_MOUSE_HANDLER
@@ -40,11 +41,11 @@ private slots:
     void on_radioButtonOwnNav_clicked();
     void on_radioButtonHDG_clicked();
 
-    void slotShowFlightCreator();
-    void slotDisplayClicked(double x, double y);
-
     void on_tabWidget_tabBarClicked(int index);
     void on_plainTextEditRoute_textChanged();
+
+    void slotShowFlightCreator();
+    void slotDisplayClicked(double x, double y);
 
 private:
     Ui::DialogFlightCreator *uiInner;

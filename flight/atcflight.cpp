@@ -76,6 +76,11 @@ QTime ATCFlight::getSimStartTime()
     return simStart;
 }
 
+QStringList &ATCFlight::getFixList()
+{
+    return fixList;
+}
+
 ATCFlightTag *ATCFlight::getFlightTag()
 {
     return tag;
@@ -130,6 +135,11 @@ void ATCFlight::setNextFix(QString fix)
 void ATCFlight::setSimStartTime(QTime time)
 {
     simStart = time;
+}
+
+void ATCFlight::setFixList(QStringList list)
+{
+    fixList = list;
 }
 
 void ATCFlight::setFlightTag(ATCFlightTag *t)

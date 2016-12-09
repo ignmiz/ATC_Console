@@ -53,7 +53,6 @@ DialogFlightCreator::DialogFlightCreator(ATCAirspace *airspace, ATCFlightFactory
 
     uiInner->tableViewValidator->horizontalHeader()->setHidden(true);
     uiInner->tableViewValidator->verticalHeader()->setHidden(true);
-
 }
 
 DialogFlightCreator::~DialogFlightCreator()
@@ -170,6 +169,17 @@ void DialogFlightCreator::on_buttonOK_clicked()
         //Create flight
         ATCFlight *flight = flightFactory->newFlight(state);
         flight->setFlightPlan(fpl);
+
+        //Flight - fix list
+        QStringList fixList;
+
+        for(int i = 0; i < model->rowCount(); i++)
+        {
+            QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
+            fixList.append(fix);
+        }
+
+        flight->setFixList(fixList);
 
         //Assign selected SSR
         flight->setSquawk(uiInner->lineEditSquawkCurrent->text());
@@ -655,6 +665,11 @@ bool DialogFlightCreator::verifyForm()
         errorMessage("ERROR: Incorrect squawk format!");
         return false;
     }
+    else if(!routeValid)
+    {
+        errorMessage("ERROR: Route incorrect! See route validator.");
+        return false;
+    }
     else if(uiInner->lineEditLatitude->text().isEmpty())
     {
         errorMessage("ERROR: Initial latitude not specified!");
@@ -783,11 +798,10 @@ void DialogFlightCreator::on_radioButtonOwnNav_clicked()
     uiInner->comboBoxNextFix->setEnabled(true);
     uiInner->comboBoxNextFix->clear();
 
-    QStringList routeStr = uiInner->plainTextEditRoute->toPlainText().toUpper().split(" ", QString::SkipEmptyParts);
-
-    for(int i = 0; i < routeStr.size(); i++)
+    for(int i = 0; i < model->rowCount(); i++)
     {
-        if(i % 2 == 0) uiInner->comboBoxNextFix->addItem(routeStr.at(i), Qt::DisplayRole);
+        QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
+        uiInner->comboBoxNextFix->addItem(fix, Qt::DisplayRole);
     }
 }
 
@@ -804,11 +818,11 @@ void DialogFlightCreator::on_tabWidget_tabBarClicked(int index)
     if((index == 1) && uiInner->radioButtonOwnNav->isChecked())
     {
         uiInner->comboBoxNextFix->clear();
-        QStringList routeStr = uiInner->plainTextEditRoute->toPlainText().toUpper().split(" ", QString::SkipEmptyParts);
 
-        for(int i = 0; i < routeStr.size(); i++)
+        for(int i = 0; i < model->rowCount(); i++)
         {
-            if(i % 2 == 0) uiInner->comboBoxNextFix->addItem(routeStr.at(i), Qt::DisplayRole);
+            QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
+            uiInner->comboBoxNextFix->addItem(fix, Qt::DisplayRole);
         }
     }
 }

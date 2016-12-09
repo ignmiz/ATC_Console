@@ -36,11 +36,11 @@ void DialogHandoff::dialogHandoffSetup()
     appendRow("TANSFER", model);
     appendRow("DROP", model);
 
-    //IF NOT ASSUMED
-    appendRow("ACCEPT", model);
+//    //IF NOT ASSUMED
+//    appendRow("ACCEPT", model);
 
-    //IF DROPPED
-    appendRow("ASSUME", model);
+//    //IF DROPPED
+//    appendRow("ASSUME", model);
 
     ui->listView->setModel(model);
     ui->listView->setEditTriggers(QAbstractItemView::NoEditTriggers);

@@ -73,6 +73,7 @@ public:
     int getHdgRestriction();
     QString getNextFix();
     QTime getSimStartTime();
+    QStringList& getFixList();
 
     ATCFlightTag* getFlightTag();
 
@@ -86,6 +87,7 @@ public:
     void setHdgRestriction(int hdg);
     void setNextFix(QString fix);
     void setSimStartTime(QTime time);
+    void setFixList(QStringList list);
 
     void setFlightTag(ATCFlightTag *t);
 
@@ -117,6 +119,7 @@ private:
 
     int hdgRestriction;
     QString nextFix;
+    QStringList fixList;
 
     QTime simStart;
 

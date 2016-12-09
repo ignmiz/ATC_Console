@@ -283,3 +283,17 @@ void Test_ATCFlight::test_setTag()
     QVERIFY(foo.getFlightTag() == tag);
 }
 
+void Test_ATCFlight::test_setFixList()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+
+    QStringList list;
+    list << "TEST1" << "TEST2";
+    foo.setFixList(list);
+
+    QVERIFY(foo.getFixList() == list);
+}
+
