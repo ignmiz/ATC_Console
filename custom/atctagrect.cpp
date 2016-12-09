@@ -198,7 +198,7 @@ void ATCTagRect::mousePressEvent(QGraphicsSceneMouseEvent *event)
             if((point.x() < rect().x() + rect().width() * 0.357) &&
                (point.x() >= rect().x()))
             {
-                setBrush(QBrush(Qt::blue));
+                emit signalCreateDialogFlightPlan();
             }
             else if((point.x() >= rect().x() + rect().width() * 0.678) &&
                     (point.x() <= rect().x() + rect().width()))

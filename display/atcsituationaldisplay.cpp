@@ -664,6 +664,9 @@ void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
     connect(tagBox, SIGNAL(signalCreateDialogHandoff(QPoint)), flight, SLOT(slotCreateDialogHandoff(QPoint)));
     connect(flight, SIGNAL(signalCreateDialogHandoff(ATCFlight*,QPoint)), this, SLOT(slotCreateDialogHandoff(ATCFlight*,QPoint)));
 
+    connect(tagBox, SIGNAL(signalCreateDialogFlightPlan()), flight, SLOT(slotCreateDialogFlightPlan()));
+    connect(flight, SIGNAL(signalCreateDialogFlightPlan(ATCFlight*)), this, SLOT(slotCreateDialogFlightPlan(ATCFlight*)));
+
     visibleTags.append(tag);
 }
 
@@ -815,6 +818,25 @@ void ATCSituationalDisplay::slotDialogHandoffClosed()
 void ATCSituationalDisplay::slotDialogHandoffCloseOnClick()
 {
     dialogHandoffCloseOnClick = true;
+}
+
+void ATCSituationalDisplay::slotCreateDialogFlightPlan(ATCFlight *flight)
+{
+    if(!dialogFlightPlanExists)
+    {
+        dialogFlightPlan = new DialogFlightPlan(flight, this);
+
+        dialogFlightPlan->show();
+        dialogFlightPlanExists = true;
+
+        connect(dialogFlightPlan, SIGNAL(closed()), this, SLOT(slotDialogFlightPlanClosed()));
+    }
+}
+
+void ATCSituationalDisplay::slotDialogFlightPlanClosed()
+{
+    dialogFlightPlan = nullptr;
+    dialogFlightPlanExists = false;
 }
 
 void ATCSituationalDisplay::situationalDisplaySetup()

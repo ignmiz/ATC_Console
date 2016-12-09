@@ -41,6 +41,7 @@ signals:
     void signalCreateDialogHeading(QPoint point);
     void signalCreateDialogRoute(QPoint point);
     void signalCreateDialogHandoff(QPoint point);
+    void signalCreateDialogFlightPlan();
 
 private:
     void moveLine(QPointF newPos);

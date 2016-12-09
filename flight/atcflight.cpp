@@ -171,3 +171,8 @@ void ATCFlight::slotCreateDialogHandoff(QPoint point)
 {
     emit signalCreateDialogHandoff(this, point);
 }
+
+void ATCFlight::slotCreateDialogFlightPlan()
+{
+    emit signalCreateDialogFlightPlan(this);
+}

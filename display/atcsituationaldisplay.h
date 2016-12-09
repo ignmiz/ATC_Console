@@ -12,6 +12,7 @@
 #include "dialogheading.h"
 #include "dialogroute.h"
 #include "dialoghandoff.h"
+#include "dialogflightplan.h"
 
 #include <QGraphicsView>
 #include <QTimer>
@@ -119,6 +120,9 @@ private slots:
     void slotDialogHandoffClosed();
     void slotDialogHandoffCloseOnClick();
 
+    void slotCreateDialogFlightPlan(ATCFlight *flight);
+    void slotDialogFlightPlanClosed();
+
 private:
     ATCAirspace *airspaceData = nullptr;
     ATCSettings *settings = nullptr;
@@ -172,6 +176,9 @@ private:
     DialogHandoff *dialogHandoff = nullptr;
     bool dialogHandoffExists = false;
     bool dialogHandoffCloseOnClick = false;
+
+    DialogFlightPlan *dialogFlightPlan = nullptr;
+    bool dialogFlightPlanExists = false;
 
     void situationalDisplaySetup();
 
