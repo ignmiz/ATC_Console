@@ -45,11 +45,15 @@ DialogFlightCreator::DialogFlightCreator(ATCAirspace *airspace, ATCFlightFactory
     uiInner->timeEditEnrTime->setEnabled(false);
     uiInner->timeEditFuelTime->setEnabled(false);
 
+    model->setColumnCount(3);
+
+    uiInner->tableViewValidator->setModel(model);
     uiInner->tableViewValidator->setGridStyle(Qt::NoPen);
+
+
     uiInner->tableViewValidator->horizontalHeader()->setHidden(true);
     uiInner->tableViewValidator->verticalHeader()->setHidden(true);
 
-    model->setColumnCount(2);
 }
 
 DialogFlightCreator::~DialogFlightCreator()
@@ -336,8 +340,10 @@ void DialogFlightCreator::setTAS()
     uiInner->lineEditTAS->setText(QString::number(tas));
 }
 
-void DialogFlightCreator::validateRoute()
+bool DialogFlightCreator::validateRoute()
 {
+    bool error = false;
+
     model->clear();
 
     QStringList routeStr = uiInner->plainTextEditRoute->toPlainText().toUpper().split(" ", QString::SkipEmptyParts);
@@ -353,23 +359,38 @@ void DialogFlightCreator::validateRoute()
         QStandardItem *firstFix = new QStandardItem(routeStr.at(0));
         firstFix->setFlags(Qt::NoItemFlags);
         firstFix->setTextAlignment(Qt::AlignCenter);
+        row.append(firstFix);
 
         if(airspace->isValidNavaid(routeStr.at(0)))
         {
             firstFix->setBackground(QBrush(Qt::darkGreen));
+
+            QStandardItem *description = new QStandardItem("Correct");
+            description->setFlags(Qt::NoItemFlags);
+            description->setTextAlignment(Qt::AlignCenter);
+            description->setForeground(Qt::green);
+            row.append(description);
         }
         else
         {
             firstFix->setBackground(QBrush(Qt::darkRed));
-        }
+            QStandardItem *description = new QStandardItem(routeStr.at(0) + " not found");
+            description->setFlags(Qt::NoItemFlags);
+            description->setTextAlignment(Qt::AlignCenter);
+            description->setForeground(Qt::red);
+            row.append(description);
 
-        row.append(firstFix);
+            error  = true;
+        }
 
         model->appendRow(row);
         row.clear();
 
         for(int i = 1; i < routeStr.size(); i++)
         {
+            QStandardItem *descriptionAirway;
+            QStandardItem *descriptionFix;
+
             if(i % 2 == 1)
             {
                 QStandardItem *airway = new QStandardItem(routeStr.at(i));
@@ -387,13 +408,33 @@ void DialogFlightCreator::validateRoute()
                     }
                 }
 
-                if(((airspace->isAirwayLow(routeStr.at(i)) || airspace->isAirwayHigh(routeStr.at(i))) && previousFixConnected) || (routeStr.at(i) == "DCT"))
+                bool isAirway = airspace->isAirwayLow(routeStr.at(i)) || airspace->isAirwayHigh(routeStr.at(i));
+
+                if((isAirway && previousFixConnected) || (routeStr.at(i) == "DCT"))
                 {
+                    descriptionAirway = new QStandardItem();
+
                     airway->setBackground(QBrush(Qt::darkGreen));
                 }
                 else
                 {
+                    if(!isAirway)
+                    {
+                        descriptionAirway = new QStandardItem(routeStr.at(i) + " not found");
+                        descriptionAirway->setFlags(Qt::NoItemFlags);
+                        descriptionAirway->setTextAlignment(Qt::AlignCenter);
+                        descriptionAirway->setForeground(Qt::red);
+                    }
+                    else if(!previousFixConnected)
+                    {
+                        descriptionAirway = new QStandardItem(routeStr.at(i - 1) + " not connected to " + routeStr.at(i));
+                        descriptionAirway->setFlags(Qt::NoItemFlags);
+                        descriptionAirway->setTextAlignment(Qt::AlignCenter);
+                        descriptionAirway->setForeground(Qt::red);
+                    }
+
                     airway->setBackground(QBrush(Qt::darkRed));
+                    error  = true;
                 }
 
                 row.append(airway);
@@ -434,8 +475,14 @@ void DialogFlightCreator::validateRoute()
                                 fix->setTextAlignment(Qt::AlignCenter);
                                 fix->setBackground(QBrush(Qt::darkGreen));
 
+                                QStandardItem *description = new QStandardItem("Correct");
+                                description->setFlags(Qt::NoItemFlags);
+                                description->setTextAlignment(Qt::AlignCenter);
+                                description->setForeground(Qt::green);
+
                                 tempRow.append(airway);
                                 tempRow.append(fix);
+                                tempRow.append(description);
 
                                 model->appendRow(tempRow);
                             }
@@ -456,8 +503,14 @@ void DialogFlightCreator::validateRoute()
                                 fix->setTextAlignment(Qt::AlignCenter);
                                 fix->setBackground(QBrush(Qt::darkGreen));
 
+                                QStandardItem *description = new QStandardItem("Correct");
+                                description->setFlags(Qt::NoItemFlags);
+                                description->setTextAlignment(Qt::AlignCenter);
+                                description->setForeground(Qt::green);
+
                                 tempRow.append(airway);
                                 tempRow.append(fix);
+                                tempRow.append(description);
 
                                 model->appendRow(tempRow);
                             }
@@ -468,17 +521,48 @@ void DialogFlightCreator::validateRoute()
                 QStandardItem *fix = new QStandardItem(routeStr.at(i));
                 fix->setFlags(Qt::NoItemFlags);
                 fix->setTextAlignment(Qt::AlignCenter);
+                row.append(fix);
 
-                if(airspace->isValidNavaid(routeStr.at(i)) && ((secondFix >= 0) || (routeStr.at(i - 1) == "DCT")))
+                bool isValidNavaid = airspace->isValidNavaid(routeStr.at(i));
+
+                if(isValidNavaid && ((secondFix >= 0) || (routeStr.at(i - 1) == "DCT")))
                 {
                     fix->setBackground(QBrush(Qt::darkGreen));
+
+                    descriptionFix = new QStandardItem("Correct");
+                    descriptionFix->setFlags(Qt::NoItemFlags);
+                    descriptionFix->setTextAlignment(Qt::AlignCenter);
+                    descriptionFix->setForeground(Qt::green);
                 }
                 else
                 {
                     fix->setBackground(QBrush(Qt::darkRed));
+                    error  = true;
+
+                    if(!isValidNavaid)
+                    {
+                        descriptionFix = new QStandardItem(routeStr.at(i) + " not found");
+                        descriptionFix->setFlags(Qt::NoItemFlags);
+                        descriptionFix->setTextAlignment(Qt::AlignCenter);
+                        descriptionFix->setForeground(Qt::red);
+                    }
+                    else if(secondFix == -1)
+                    {
+                        descriptionFix = new QStandardItem(routeStr.at(i) + " not connected to " + routeStr.at(i - 1));
+                        descriptionFix->setFlags(Qt::NoItemFlags);
+                        descriptionFix->setTextAlignment(Qt::AlignCenter);
+                        descriptionFix->setForeground(Qt::red);
+                    }
                 }
 
-                row.append(fix);
+                if(descriptionAirway->text().isEmpty())
+                {
+                    row.append(descriptionFix);
+                }
+                else
+                {
+                    row.append(descriptionAirway);
+                }
             }
 
             if(i % 2 == 0)
@@ -497,6 +581,12 @@ void DialogFlightCreator::validateRoute()
 
         uiInner->tableViewValidator->scrollToBottom();
     }
+
+    uiInner->tableViewValidator->setColumnWidth(0, 75);
+    uiInner->tableViewValidator->setColumnWidth(1, 75);
+    uiInner->tableViewValidator->setColumnWidth(2, 260);
+
+    return !error;
 }
 
 bool DialogFlightCreator::verifyForm()
@@ -725,5 +815,5 @@ void DialogFlightCreator::on_tabWidget_tabBarClicked(int index)
 
 void DialogFlightCreator::on_plainTextEditRoute_textChanged()
 {
-    validateRoute();
+    routeValid = validateRoute();
 }

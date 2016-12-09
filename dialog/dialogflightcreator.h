@@ -54,12 +54,14 @@ private:
 
     QStandardItemModel *model = nullptr;
 
+    bool routeValid = false;
+
     void setRoute();
     void setCallsign();
     void setSquawk();
     void setTAS();
 
-    void validateRoute();
+    bool validateRoute();
 
     bool verifyForm();
     void errorMessage(QString msg);
