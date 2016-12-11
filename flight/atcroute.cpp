@@ -16,6 +16,7 @@ ATCRoute::ATCRoute(ATCRoute *other)
     departure = other->getDeparture();
     route = other->getRoute();
     destination = other->getDestination();
+    alternate = other->getAlternate();
 }
 
 ATCRoute::ATCRoute(ATCRoute &other)
@@ -23,6 +24,7 @@ ATCRoute::ATCRoute(ATCRoute &other)
     departure = other.getDeparture();
     route = other.getRoute();
     destination = other.getDestination();
+    alternate = other.getAlternate();
 }
 
 ATCRoute::~ATCRoute()

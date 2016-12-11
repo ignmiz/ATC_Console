@@ -67,6 +67,16 @@ void ATCSituationalDisplay::setBaseScale(qreal scale)
     baseScale = scale;
 }
 
+void ATCSituationalDisplay::setFlightFactory(ATCFlightFactory *factory)
+{
+    flightFactory = factory;
+}
+
+void ATCSituationalDisplay::setSimulation(ATCSimulation *sim)
+{
+    simulation = sim;
+}
+
 ATCSettings* ATCSituationalDisplay::getSettings()
 {
     return settings;
@@ -824,7 +834,7 @@ void ATCSituationalDisplay::slotCreateDialogFlightPlan(ATCFlight *flight)
 {
     if(!dialogFlightPlanExists)
     {
-        dialogFlightPlan = new DialogFlightPlan(flight, this);
+        dialogFlightPlan = new DialogFlightPlan(flight, airspaceData, simulation, flightFactory, this);
 
         dialogFlightPlan->show();
         dialogFlightPlanExists = true;
@@ -3062,7 +3072,17 @@ void ATCSituationalDisplay::createEtiquettes(ATCFlight *flight)
         longEtiquette[i + 10] = groundSpd.at(i);
     }
 
-    QString altitude = QString::number(ATCMath::m2ft(flight->getState().h) / 100);
+    QString altitude = QString::number(qFloor(ATCMath::m2ft(flight->getState().h) / 100));
+
+    if(altitude.size() == 2)
+    {
+        altitude = "0" + altitude;
+    }
+    else if(altitude.size() == 1)
+    {
+        altitude = "00" + altitude;
+    }
+
     QString targetAltitude = flight->getTargetAltitude().right(3);
     QString nextFix = flight->getNextFix();
 

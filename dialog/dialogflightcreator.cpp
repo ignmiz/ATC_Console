@@ -50,7 +50,6 @@ DialogFlightCreator::DialogFlightCreator(ATCAirspace *airspace, ATCFlightFactory
     uiInner->tableViewValidator->setModel(model);
     uiInner->tableViewValidator->setGridStyle(Qt::NoPen);
 
-
     uiInner->tableViewValidator->horizontalHeader()->setHidden(true);
     uiInner->tableViewValidator->verticalHeader()->setHidden(true);
 }

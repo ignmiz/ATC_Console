@@ -6,6 +6,7 @@
 #include "atcsettings.h"
 #include "atcpaths.h"
 #include "atcflight.h"
+#include "atcsimulation.h"
 
 #include "dialogaltitude.h"
 #include "dialogspeed.h"
@@ -39,6 +40,9 @@ public:
 
     qreal getBaseScale() const;
     void setBaseScale(qreal scale);
+
+    void setFlightFactory(ATCFlightFactory *flightFactory);
+    void setSimulation(ATCSimulation *sim);
 
     ATCSettings* getSettings();
     ATCAirspace* getAirspaceData();
@@ -127,6 +131,8 @@ private:
     ATCAirspace *airspaceData = nullptr;
     ATCSettings *settings = nullptr;
     ATCPaths *paths = nullptr;
+    ATCFlightFactory *flightFactory = nullptr;
+    ATCSimulation *simulation = nullptr;
 
     qreal baseScale = 1;
     qreal scaleResolution = 0.15;

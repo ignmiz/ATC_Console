@@ -15,6 +15,9 @@ MainWindow::MainWindow(ATCFlightFactory *flightFactory, ATCSimulation *simulatio
     ui->setupUi(this);
     dialogTextConsole = new DialogTextConsole(this);
 
+    ui->situationalDisplay->setFlightFactory(flightFactory);
+    ui->situationalDisplay->setSimulation(simulation);
+
     mainWindowSetup();
     setSituationalDisplayFocus();
 }
