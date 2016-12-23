@@ -215,7 +215,7 @@ void ATCTagRect::mousePressEvent(QGraphicsSceneMouseEvent *event)
             if((point.x() < rect().x() + rect().width() * 0.235) &&
                (point.x() >= rect().x()))
             {
-                setBrush(QBrush(Qt::red));
+                emit signalDisplayRoute();
             }
             else if((point.x() >= rect().x() + rect().width() * 0.496) &&
                     (point.x() <= rect().x() + rect().width()))

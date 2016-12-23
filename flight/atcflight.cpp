@@ -15,15 +15,10 @@ ATCFlight::ATCFlight(State s, ATCFlightPlan *p, QString sq) : state(s), plan(p),
 
 ATCFlight::~ATCFlight()
 {
-    if(plan != nullptr)
-    {
-        delete plan;
-    }
-
-    if(tag != nullptr)
-    {
-        delete tag;
-    }
+    if(plan != nullptr) delete plan;
+    if(tag != nullptr) delete tag;
+    if(navPrediction != nullptr) delete navPrediction;
+    if(hdgPrediction != nullptr) delete hdgPrediction;
 }
 
 ATCFlightPlan *ATCFlight::getFlightPlan()
@@ -84,6 +79,18 @@ QStringList &ATCFlight::getFixList()
 ATCFlightTag *ATCFlight::getFlightTag()
 {
     return tag;
+}
+
+ATCRoutePrediction *ATCFlight::getRoutePrediction(ATC::NavMode mode)
+{
+    if(mode == ATC::Nav)
+    {
+        return navPrediction;
+    }
+    else
+    {
+        return hdgPrediction;
+    }
 }
 
 void ATCFlight::setFlightPlan(ATCFlightPlan *fpl)
@@ -147,6 +154,18 @@ void ATCFlight::setFlightTag(ATCFlightTag *t)
     tag = t;
 }
 
+void ATCFlight::setRoutePrediction(ATC::NavMode mode, ATCRoutePrediction *prediction)
+{
+    if(mode == ATC::Nav)
+    {
+        navPrediction = prediction;
+    }
+    else
+    {
+        hdgPrediction = prediction;
+    }
+}
+
 void ATCFlight::slotCreateDialogAltitude(QPoint point)
 {
     emit signalCreateDialogAltitude(this, point);
@@ -175,4 +194,9 @@ void ATCFlight::slotCreateDialogHandoff(QPoint point)
 void ATCFlight::slotCreateDialogFlightPlan()
 {
     emit signalCreateDialogFlightPlan(this);
+}
+
+void ATCFlight::slotDisplayRoute()
+{
+    emit signalDisplayRoute(this);
 }

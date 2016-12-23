@@ -60,8 +60,8 @@ DialogFlightPlan::DialogFlightPlan(ATCFlight *flight, ATCAirspace *airspace, ATC
     {
         routeStr = routeStr + route.at(i) + " ";
     }
+    if(route.size() >= 1)routeStr = routeStr + route.at(route.size() - 1);
 
-    routeStr = routeStr + route.at(route.size() - 1);
     uiInner->plainTextEditRoute->setPlainText(routeStr);
 
     uiInner->timeEditDepTime->setEnabled(false);
@@ -111,7 +111,7 @@ bool DialogFlightPlan::validateRoute()
         firstFix->setTextAlignment(Qt::AlignCenter);
         row.append(firstFix);
 
-        if(airspace->isValidNavaid(routeStr.at(0)))
+        if(airspace->isValidNavaid(routeStr.at(0)) || ((routeStr.at(0) == "DCT") && (routeStr.size() == 1)))
         {
             firstFix->setBackground(QBrush(Qt::darkGreen));
 

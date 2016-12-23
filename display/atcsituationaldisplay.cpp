@@ -677,6 +677,9 @@ void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
     connect(tagBox, SIGNAL(signalCreateDialogFlightPlan()), flight, SLOT(slotCreateDialogFlightPlan()));
     connect(flight, SIGNAL(signalCreateDialogFlightPlan(ATCFlight*)), this, SLOT(slotCreateDialogFlightPlan(ATCFlight*)));
 
+    connect(tagBox, SIGNAL(signalDisplayRoute()), flight, SLOT(slotDisplayRoute()));
+    connect(flight, SIGNAL(signalDisplayRoute(ATCFlight*)), this, SLOT(slotDisplayRoute(ATCFlight*)));
+
     visibleTags.append(tag);
 }
 
@@ -847,6 +850,11 @@ void ATCSituationalDisplay::slotDialogFlightPlanClosed()
 {
     dialogFlightPlan = nullptr;
     dialogFlightPlanExists = false;
+}
+
+void ATCSituationalDisplay::slotDisplayRoute(ATCFlight *flight)
+{
+    qDebug() << "Display route " << flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber();
 }
 
 void ATCSituationalDisplay::situationalDisplaySetup()

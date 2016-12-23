@@ -172,11 +172,14 @@ void DialogFlightCreator::on_buttonOK_clicked()
         //Flight - fix list
         QStringList fixList;
 
+        fixList.append(departure);
         for(int i = 0; i < model->rowCount(); i++)
         {
             QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
-            fixList.append(fix);
+            if(fix != "DCT") fixList.append(fix);
         }
+        fixList.append(destination);
+        if(!alternate.isEmpty()) fixList.append(alternate);
 
         flight->setFixList(fixList);
 
@@ -370,7 +373,7 @@ bool DialogFlightCreator::validateRoute()
         firstFix->setTextAlignment(Qt::AlignCenter);
         row.append(firstFix);
 
-        if(airspace->isValidNavaid(routeStr.at(0)))
+        if(airspace->isValidNavaid(routeStr.at(0)) || ((routeStr.at(0) == "DCT") && (routeStr.size() == 1)))
         {
             firstFix->setBackground(QBrush(Qt::darkGreen));
 
@@ -797,11 +800,14 @@ void DialogFlightCreator::on_radioButtonOwnNav_clicked()
     uiInner->comboBoxNextFix->setEnabled(true);
     uiInner->comboBoxNextFix->clear();
 
+    uiInner->comboBoxNextFix->addItem(uiInner->lineEditDeparture->text());
     for(int i = 0; i < model->rowCount(); i++)
     {
         QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
-        uiInner->comboBoxNextFix->addItem(fix, Qt::DisplayRole);
+        if(fix != "DCT") uiInner->comboBoxNextFix->addItem(fix, Qt::DisplayRole);
     }
+    uiInner->comboBoxNextFix->addItem(uiInner->lineEditDestination->text());
+    if(!uiInner->lineEditAlternate->text().isEmpty()) uiInner->comboBoxNextFix->addItem(uiInner->lineEditAlternate->text());
 }
 
 void DialogFlightCreator::on_radioButtonHDG_clicked()
@@ -818,11 +824,14 @@ void DialogFlightCreator::on_tabWidget_tabBarClicked(int index)
     {
         uiInner->comboBoxNextFix->clear();
 
+        uiInner->comboBoxNextFix->addItem(uiInner->lineEditDeparture->text());
         for(int i = 0; i < model->rowCount(); i++)
         {
             QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
-            uiInner->comboBoxNextFix->addItem(fix, Qt::DisplayRole);
+            if(fix != "DCT") uiInner->comboBoxNextFix->addItem(fix, Qt::DisplayRole);
         }
+        uiInner->comboBoxNextFix->addItem(uiInner->lineEditDestination->text());
+        if(!uiInner->lineEditAlternate->text().isEmpty()) uiInner->comboBoxNextFix->addItem(uiInner->lineEditAlternate->text());
     }
 }
 

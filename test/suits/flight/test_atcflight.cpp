@@ -297,3 +297,19 @@ void Test_ATCFlight::test_setFixList()
     QVERIFY(foo.getFixList() == list);
 }
 
+void Test_ATCFlight::test_setRoutePrediction()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+
+    ATCRoutePrediction *prediction1 = new ATCRoutePrediction();
+    foo.setRoutePrediction(ATC::Nav, prediction1);
+    QVERIFY(foo.getRoutePrediction(ATC::Nav) == prediction1);
+
+    ATCRoutePrediction *prediction2 = new ATCRoutePrediction();
+    foo.setRoutePrediction(ATC::Hdg, prediction2);
+    QVERIFY(foo.getRoutePrediction(ATC::Hdg) == prediction2);
+}
+

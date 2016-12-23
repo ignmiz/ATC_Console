@@ -3,6 +3,7 @@
 
 #include "atcflightplan.h"
 #include "atcflighttag.h"
+#include "atcrouteprediction.h"
 
 #include <QString>
 #include <QObject>
@@ -76,6 +77,7 @@ public:
     QStringList& getFixList();
 
     ATCFlightTag* getFlightTag();
+    ATCRoutePrediction* getRoutePrediction(ATC::NavMode mode);
 
     void setFlightPlan(ATCFlightPlan *fpl);
     void setSquawk(QString sq);
@@ -90,6 +92,7 @@ public:
     void setFixList(QStringList list);
 
     void setFlightTag(ATCFlightTag *t);
+    void setRoutePrediction(ATC::NavMode mode, ATCRoutePrediction *prediction);
 
 signals:
     void signalCreateDialogAltitude(ATCFlight *flight, QPoint point);
@@ -98,6 +101,7 @@ signals:
     void signalCreateDialogRoute(ATCFlight *flight, QPoint point);
     void signalCreateDialogHandoff(ATCFlight *flight, QPoint point);
     void signalCreateDialogFlightPlan(ATCFlight *flight);
+    void signalDisplayRoute(ATCFlight *flight);
 
 private slots:
     void slotCreateDialogAltitude(QPoint point);
@@ -106,6 +110,7 @@ private slots:
     void slotCreateDialogRoute(QPoint point);
     void slotCreateDialogHandoff(QPoint point);
     void slotCreateDialogFlightPlan();
+    void slotDisplayRoute();
 
 private:
     ATCFlightPlan *plan = nullptr;
@@ -114,6 +119,8 @@ private:
     State state;
 
     ATCFlightTag *tag = nullptr;
+    ATCRoutePrediction *navPrediction = nullptr;
+    ATCRoutePrediction *hdgPrediction = nullptr;
 
     ATC::NavMode mode;
     QString targetAltitude;

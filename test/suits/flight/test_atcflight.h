@@ -26,6 +26,7 @@ private slots:
     void test_setSimStartTime();
     void test_setTag();
     void test_setFixList();
+    void test_setRoutePrediction();
 };
 
 #endif // TEST_ATCFLIGHT_H

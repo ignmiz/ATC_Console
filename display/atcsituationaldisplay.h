@@ -127,6 +127,8 @@ private slots:
     void slotCreateDialogFlightPlan(ATCFlight *flight);
     void slotDialogFlightPlanClosed();
 
+    void slotDisplayRoute(ATCFlight *flight);
+
 private:
     ATCAirspace *airspaceData = nullptr;
     ATCSettings *settings = nullptr;
