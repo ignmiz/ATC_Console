@@ -93,7 +93,8 @@ SOURCES += main.cpp\
     dialogheading.cpp \
     dialogroute.cpp \
     dialoghandoff.cpp \
-    dialogflightplan.cpp
+    dialogflightplan.cpp \
+    atcrouteprediction.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -158,7 +159,8 @@ HEADERS  += mainwindow.h \
     dialogheading.h \
     dialogroute.h \
     dialoghandoff.h \
-    dialogflightplan.h
+    dialogflightplan.h \
+    atcrouteprediction.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
