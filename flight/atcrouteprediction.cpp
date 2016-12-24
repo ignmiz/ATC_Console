@@ -16,7 +16,7 @@ ATCRoutePrediction::~ATCRoutePrediction()
     labels.clear();
 }
 
-QGraphicsPolygonItem *ATCRoutePrediction::getPolygon()
+QGraphicsPathItem *ATCRoutePrediction::getPolygon()
 {
     return polygon;
 }
@@ -26,7 +26,7 @@ QVector<QGraphicsSimpleTextItem *> &ATCRoutePrediction::getLabels()
     return labels;
 }
 
-void ATCRoutePrediction::setPolygon(QGraphicsPolygonItem *poly)
+void ATCRoutePrediction::setPolygon(QGraphicsPathItem *poly)
 {
     polygon = poly;
 }

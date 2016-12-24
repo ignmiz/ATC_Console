@@ -11,14 +11,14 @@ public:
     explicit ATCRoutePrediction();
     ~ATCRoutePrediction();
 
-    QGraphicsPolygonItem* getPolygon();
+    QGraphicsPathItem* getPolygon();
     QVector<QGraphicsSimpleTextItem*>& getLabels();
 
-    void setPolygon(QGraphicsPolygonItem *poly);
+    void setPolygon(QGraphicsPathItem *poly);
     void appendLabel(QGraphicsSimpleTextItem *text);
 
 private:
-    QGraphicsPolygonItem *polygon = nullptr;
+    QGraphicsPathItem *polygon = nullptr;
     QVector<QGraphicsSimpleTextItem*> labels;
 };
 
