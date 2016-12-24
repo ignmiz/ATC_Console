@@ -17,8 +17,7 @@ ATCFlight::~ATCFlight()
 {
     if(plan != nullptr) delete plan;
     if(tag != nullptr) delete tag;
-    if(navPrediction != nullptr) delete navPrediction;
-    if(hdgPrediction != nullptr) delete hdgPrediction;
+    if(prediction != nullptr) delete prediction;
 }
 
 ATCFlightPlan *ATCFlight::getFlightPlan()
@@ -81,16 +80,9 @@ ATCFlightTag *ATCFlight::getFlightTag()
     return tag;
 }
 
-ATCRoutePrediction *ATCFlight::getRoutePrediction(ATC::NavMode mode)
+ATCRoutePrediction *ATCFlight::getRoutePrediction()
 {
-    if(mode == ATC::Nav)
-    {
-        return navPrediction;
-    }
-    else
-    {
-        return hdgPrediction;
-    }
+    return prediction;
 }
 
 void ATCFlight::setFlightPlan(ATCFlightPlan *fpl)
@@ -154,16 +146,9 @@ void ATCFlight::setFlightTag(ATCFlightTag *t)
     tag = t;
 }
 
-void ATCFlight::setRoutePrediction(ATC::NavMode mode, ATCRoutePrediction *prediction)
+void ATCFlight::setRoutePrediction(ATCRoutePrediction *pred)
 {
-    if(mode == ATC::Nav)
-    {
-        navPrediction = prediction;
-    }
-    else
-    {
-        hdgPrediction = prediction;
-    }
+    prediction = pred;
 }
 
 void ATCFlight::slotCreateDialogAltitude(QPoint point)

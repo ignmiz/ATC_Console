@@ -77,7 +77,7 @@ public:
     QStringList& getFixList();
 
     ATCFlightTag* getFlightTag();
-    ATCRoutePrediction* getRoutePrediction(ATC::NavMode mode);
+    ATCRoutePrediction* getRoutePrediction();
 
     void setFlightPlan(ATCFlightPlan *fpl);
     void setSquawk(QString sq);
@@ -92,7 +92,7 @@ public:
     void setFixList(QStringList list);
 
     void setFlightTag(ATCFlightTag *t);
-    void setRoutePrediction(ATC::NavMode mode, ATCRoutePrediction *prediction);
+    void setRoutePrediction(ATCRoutePrediction *pred);
 
 signals:
     void signalCreateDialogAltitude(ATCFlight *flight, QPoint point);
@@ -119,8 +119,7 @@ private:
     State state;
 
     ATCFlightTag *tag = nullptr;
-    ATCRoutePrediction *navPrediction = nullptr;
-    ATCRoutePrediction *hdgPrediction = nullptr;
+    ATCRoutePrediction *prediction = nullptr;
 
     ATC::NavMode mode;
     QString targetAltitude;
