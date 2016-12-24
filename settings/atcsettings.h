@@ -103,6 +103,12 @@ public:
     double TAG_LABEL_MARGINS;
     QColor TAG_LABEL_COLOR;
 
+    QColor ROUTE_COLOR;
+    double ROUTE_LINE_WIDTH;
+    double ROUTE_LABEL_HEIGHT;
+    double ROUTE_LABEL_DX;
+    double ROUTE_LABEL_DY;
+
     int TRANSITION_LEVEL = 80; //TEMPORARY MOCKUP!
 
 signals:
