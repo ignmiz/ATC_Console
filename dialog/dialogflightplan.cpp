@@ -539,11 +539,14 @@ void DialogFlightPlan::on_buttonOK_clicked()
         //Flight - fix list
         QStringList fixList;
 
+        fixList.append(departure);
         for(int i = 0; i < model->rowCount(); i++)
         {
             QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
-            fixList.append(fix);
+            if(fix != "DCT") fixList.append(fix);
         }
+        fixList.append(destination);
+        if(!alternate.isEmpty()) fixList.append(alternate);
 
         flight->setFixList(fixList);
 
