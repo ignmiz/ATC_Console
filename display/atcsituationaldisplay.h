@@ -102,6 +102,7 @@ public slots:
 
 private slots:
     void slotGetLocation();
+
     void slotCreateFlightTag(ATCFlight *flight);
 
     void slotCreateDialogAltitude(ATCFlight *flight, QPoint point);
@@ -164,6 +165,7 @@ private:
     QVector<ATCAirwayHigh*> visibleHighAirways;
 
     QVector<ATCFlightTag*> visibleTags;
+    QVector<ATCRoutePrediction*> visibleRoutes;
 
     DialogAltitude *dialogAltitude = nullptr;
     bool dialogAltitudeExists = false;
@@ -210,6 +212,7 @@ private:
     void rescaleAirwaysLow();
     void rescaleAirwaysHigh();
     void rescaleTags();
+    void rescaleRoutes();
 
     void rescaleSectorARTCCLow(ATCSectorARTCCLow *object);
     void rescaleSectorARTCCHigh(ATCSectorARTCCHigh *object);
