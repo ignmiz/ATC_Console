@@ -79,6 +79,7 @@ void DialogRoute::slotClicked(const QModelIndex &index)
         }
     }
 
+    if(flight->getRoutePrediction() != nullptr) emit signalUpdateRoute(flight);
     emit signalClosed();
     close();
 }

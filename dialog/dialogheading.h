@@ -20,6 +20,7 @@ public:
 
 signals:
     void signalClosed();
+    void signalUpdateRoute(ATCFlight *flight);
 
 private slots:
     void slotClicked(const QModelIndex &index);

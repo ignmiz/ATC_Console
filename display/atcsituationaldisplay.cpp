@@ -757,6 +757,8 @@ void ATCSituationalDisplay::slotCreateDialogHeading(ATCFlight *flight, QPoint po
     dialogHeading->show();
     dialogHeadingExists = true;
 
+    connect(dialogHeading, SIGNAL(signalUpdateRoute(ATCFlight*)), this, SLOT(slotUpdateRoute(ATCFlight*)));
+
     QTimer::singleShot(100, this, SLOT(slotDialogHeadingCloseOnClick()));
     connect(dialogHeading, SIGNAL(signalClosed()), this, SLOT(slotDialogHeadingClosed()));
 }
@@ -786,6 +788,8 @@ void ATCSituationalDisplay::slotCreateDialogRoute(ATCFlight *flight, QPoint poin
 
     dialogRoute->show();
     dialogRouteExists = true;
+
+    connect(dialogRoute, SIGNAL(signalUpdateRoute(ATCFlight*)), this, SLOT(slotUpdateRoute(ATCFlight*)));
 
     QTimer::singleShot(100, this, SLOT(slotDialogRouteCloseOnClick()));
     connect(dialogRoute, SIGNAL(signalClosed()), this, SLOT(slotDialogRouteClosed()));
@@ -855,57 +859,52 @@ void ATCSituationalDisplay::slotDialogFlightPlanClosed()
 void ATCSituationalDisplay::slotDisplayRoute(ATCFlight *flight)
 {
     ATCRoutePrediction *prediction = flight->getRoutePrediction();
+    QVector<QPointF> polyVertices;
 
     if(prediction != nullptr)
     {
-        scene->removeItem(prediction->getPolygon());
-        //HERE REMOVE LABELS AS WELL
-
-        int iter = 0;
-
-        for(int i = 0; i < visibleRoutes.size(); i++)
-        {
-            if(visibleRoutes.at(i) == prediction) iter = i;
-        }
-
-        visibleRoutes.remove(iter);
-
-        delete prediction;
-        flight->setRoutePrediction(nullptr);
+        slotClearRoute(flight);
     }
     else
     {
-        //CREATE ROUTE PREDICTION HERE DEPENDING ON NAV/HDG MODE
         if(flight->getNavMode() == ATC::Nav)
         {
-
-        }
-        else
-        {
+            //Calculate positions of leg fixes & leg lines
             QStringList fixList = flight->getFixList();
-            QVector<QPointF> polyVertices;
+            QString nextFix = flight->getNextFix();
+            int nextIndex;
 
-            ATCAirport *departure = airspaceData->findAirport(fixList.at(0));
-            polyVertices.append(*departure->getScenePosition());
+            polyVertices.append(flight->getFlightTag()->getDiamondPosition());
 
-            for(int i = 1; i < fixList.size() - 2; i++)
+            for(int i = 0; i < fixList.size(); i++)
             {
-                polyVertices.append(*airspaceData->findFix(fixList.at(i))->getScenePosition());
+                if(fixList.at(i) == nextFix) nextIndex = i;
             }
 
-            ATCNavFix *fix = airspaceData->findFix(fixList.at(fixList.size() - 2));
-            ATCAirport *airport = airspaceData->findAirport(fixList.at(fixList.size() - 1));
+            ATCNavFix *fix;
+            ATCBeaconVOR *vor;
+            ATCAirport *airport;
+            ATCBeaconNDB *ndb;
 
-            if(fix != nullptr)
+            for(int i = nextIndex; i < fixList.size(); i++)
             {
-                polyVertices.append(*fix->getScenePosition());
+                if((fix = airspaceData->findFix(fixList.at(i))) != nullptr)
+                {
+                    polyVertices.append(*fix->getScenePosition());
+                }
+                else if((airport = airspaceData->findAirport(fixList.at(i))) != nullptr)
+                {
+                    polyVertices.append(*airport->getScenePosition());
+                }
+                else if((vor = airspaceData->findVOR(fixList.at(i))) != nullptr)
+                {
+                    polyVertices.append(*vor->getScenePosition());
+                }
+                else if((ndb = airspaceData->findNDB(fixList.at(i))) != nullptr)
+                {
+                    polyVertices.append(*ndb->getScenePosition());
+                }
             }
-            else
-            {
-                polyVertices.append(*airspaceData->findAirport(fixList.at(fixList.size() - 2))->getScenePosition());
-            }
-
-            polyVertices.append(*airport->getScenePosition());
 
             QPainterPath path;
             path.addPolygon(polyVertices);
@@ -915,20 +914,134 @@ void ATCSituationalDisplay::slotDisplayRoute(ATCFlight *flight)
 
             prediction = new ATCRoutePrediction();
             prediction->setPolygon(poly);
-            //HERE SET LABELS AS WELL
+
+            //Create labels
+            for(int i = nextIndex; i < fixList.size(); i++)
+            {
+                QGraphicsSimpleTextItem *label = new QGraphicsSimpleTextItem(fixList.at(i));
+                prediction->appendLabel(label);
+            }
+
+            flight->setRoutePrediction(prediction);
+        }
+        else
+        {
+            //Calculate positions of leg fixes & leg lines
+            QStringList fixList = flight->getFixList();
+
+            ATCNavFix *fix;
+            ATCBeaconVOR *vor;
+            ATCAirport *airport;
+            ATCBeaconNDB *ndb;
+
+            for(int i = 0; i < fixList.size(); i++)
+            {
+                if((fix = airspaceData->findFix(fixList.at(i))) != nullptr)
+                {
+                    polyVertices.append(*fix->getScenePosition());
+                }
+                else if((airport = airspaceData->findAirport(fixList.at(i))) != nullptr)
+                {
+                    polyVertices.append(*airport->getScenePosition());
+                }
+                else if((vor = airspaceData->findVOR(fixList.at(i))) != nullptr)
+                {
+                    polyVertices.append(*vor->getScenePosition());
+                }
+                else if((ndb = airspaceData->findNDB(fixList.at(i))) != nullptr)
+                {
+                    polyVertices.append(*ndb->getScenePosition());
+                }
+            }
+
+            QPainterPath path;
+            path.addPolygon(polyVertices);
+
+            QGraphicsPathItem *poly = new QGraphicsPathItem(path);
+            poly->setPen(QPen(settings->ROUTE_COLOR, settings->ROUTE_LINE_WIDTH/currentScale));
+
+            prediction = new ATCRoutePrediction();
+            prediction->setPolygon(poly);
+
+            //Create labels
+            for(int i = 0; i < fixList.size(); i++)
+            {
+                QGraphicsSimpleTextItem *label = new QGraphicsSimpleTextItem(fixList.at(i));
+                prediction->appendLabel(label);
+            }
 
             flight->setRoutePrediction(prediction);
         }
 
+        //Display route prediction
         if(prediction != nullptr)
         {
             prediction->getPolygon()->setPen(QPen(settings->ROUTE_COLOR, settings->ROUTE_LINE_WIDTH / currentScale));
-            //HERE ADD LABELS AS WELL
             scene->addItem(prediction->getPolygon());
+
+            QBrush textBrush(Qt::white);
+
+            QFont textFont("Arial");
+            textFont.setPointSizeF(settings->ROUTE_LABEL_HEIGHT / currentScale);
+
+            if(flight->getNavMode() == ATC::Nav)
+            {
+                for(int i = 0; i < prediction->getLabels().size(); i++)
+                {
+                    prediction->getLabels().at(i)->setBrush(textBrush);
+                    prediction->getLabels().at(i)->setFont(textFont);
+                    prediction->getLabels().at(i)->setPos(polyVertices.at(i + 1).x() + settings->ROUTE_LABEL_DX / currentScale,
+                                                          polyVertices.at(i + 1).y() + settings->ROUTE_LABEL_DY / currentScale);
+
+                    scene->addItem(prediction->getLabels().at(i));
+                }
+            }
+            else
+            {
+                for(int i = 0; i < prediction->getLabels().size(); i++)
+                {
+                    prediction->getLabels().at(i)->setBrush(textBrush);
+                    prediction->getLabels().at(i)->setFont(textFont);
+                    prediction->getLabels().at(i)->setPos(polyVertices.at(i).x() + settings->ROUTE_LABEL_DX / currentScale,
+                                                          polyVertices.at(i).y() + settings->ROUTE_LABEL_DY / currentScale);
+
+                    scene->addItem(prediction->getLabels().at(i));
+                }
+            }
 
             visibleRoutes.append(prediction);
         }
     }
+}
+
+void ATCSituationalDisplay::slotClearRoute(ATCFlight *flight)
+{
+    ATCRoutePrediction *prediction = flight->getRoutePrediction();
+
+    scene->removeItem(prediction->getPolygon());
+    for(int i = 0; i < prediction->getLabels().size(); i++)
+    {
+        scene->removeItem(prediction->getLabels().at(i));
+    }
+
+    int iter = 0;
+
+    for(int i = 0; i < visibleRoutes.size(); i++)
+    {
+        if(visibleRoutes.at(i) == prediction) iter = i;
+    }
+
+    visibleRoutes.remove(iter);
+
+    delete prediction;
+    prediction = nullptr;
+    flight->setRoutePrediction(nullptr);
+}
+
+void ATCSituationalDisplay::slotUpdateRoute(ATCFlight *flight)
+{
+    slotClearRoute(flight);
+    slotDisplayRoute(flight);
 }
 
 void ATCSituationalDisplay::situationalDisplaySetup()
@@ -1393,11 +1506,33 @@ void ATCSituationalDisplay::rescaleRoutes()
     {
         QPen pen(settings->ROUTE_COLOR, settings->ROUTE_LINE_WIDTH / currentScale);
 
+        QFont textFont("Arial");
+        textFont.setPointSizeF(settings->ROUTE_LABEL_HEIGHT / currentScale);
+
         for(int i = 0; i < visibleRoutes.size(); i++)
         {
-            visibleRoutes.at(i)->getPolygon()->setPen(pen);
+            QGraphicsPathItem *currentPath = visibleRoutes.at(i)->getPolygon();
+            QVector<QGraphicsSimpleTextItem*> labels = visibleRoutes.at(i)->getLabels();
 
-            //HERE RESCALE LABELS AS WELL
+            currentPath->setPen(pen);
+
+            QList<QPointF> pointList = currentPath->path().toFillPolygon().toList();
+
+            for(int j = 0; j < labels.size(); j++)
+            {
+                if(pointList.size() - labels.size() == 1) //ATC::Hdg mode
+                {
+                    labels.at(j)->setFont(textFont);
+                    labels.at(j)->setPos(pointList.at(j).x() + settings->ROUTE_LABEL_DX / currentScale,
+                                         pointList.at(j).y() + settings->ROUTE_LABEL_DY / currentScale);
+                }
+                else //ATC::Nav mode
+                {
+                    labels.at(j)->setFont(textFont);
+                    labels.at(j)->setPos(pointList.at(j + 1).x() + settings->ROUTE_LABEL_DX / currentScale,
+                                         pointList.at(j + 1).y() + settings->ROUTE_LABEL_DY / currentScale);
+                }
+            }
         }
     }
 }

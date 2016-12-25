@@ -75,6 +75,7 @@ void DialogHeading::slotClicked(const QModelIndex &index)
         flight->getFlightTag()->getTagBox()->setLong();
     }
 
+    if(flight->getRoutePrediction() != nullptr) emit signalUpdateRoute(flight);
     emit signalClosed();
     close();
 }
