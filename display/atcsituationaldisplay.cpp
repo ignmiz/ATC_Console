@@ -847,6 +847,7 @@ void ATCSituationalDisplay::slotCreateDialogFlightPlan(ATCFlight *flight)
         dialogFlightPlanExists = true;
 
         connect(dialogFlightPlan, SIGNAL(closed()), this, SLOT(slotDialogFlightPlanClosed()));
+        connect(dialogFlightPlan, SIGNAL(signalUpdateRoute(ATCFlight*)), this, SLOT(slotUpdateRoute(ATCFlight*)));
     }
 }
 
@@ -872,7 +873,7 @@ void ATCSituationalDisplay::slotDisplayRoute(ATCFlight *flight)
             //Calculate positions of leg fixes & leg lines
             QStringList fixList = flight->getFixList();
             QString nextFix = flight->getNextFix();
-            int nextIndex;
+            int nextIndex = -1;
 
             polyVertices.append(flight->getFlightTag()->getDiamondPosition());
 
@@ -886,21 +887,43 @@ void ATCSituationalDisplay::slotDisplayRoute(ATCFlight *flight)
             ATCAirport *airport;
             ATCBeaconNDB *ndb;
 
-            for(int i = nextIndex; i < fixList.size(); i++)
+            if(nextIndex != -1)
             {
-                if((fix = airspaceData->findFix(fixList.at(i))) != nullptr)
+                for(int i = nextIndex; i < fixList.size(); i++)
+                {
+                    if((fix = airspaceData->findFix(fixList.at(i))) != nullptr)
+                    {
+                        polyVertices.append(*fix->getScenePosition());
+                    }
+                    else if((airport = airspaceData->findAirport(fixList.at(i))) != nullptr)
+                    {
+                        polyVertices.append(*airport->getScenePosition());
+                    }
+                    else if((vor = airspaceData->findVOR(fixList.at(i))) != nullptr)
+                    {
+                        polyVertices.append(*vor->getScenePosition());
+                    }
+                    else if((ndb = airspaceData->findNDB(fixList.at(i))) != nullptr)
+                    {
+                        polyVertices.append(*ndb->getScenePosition());
+                    }
+                }
+            }
+            else
+            {
+                if((fix = airspaceData->findFix(nextFix)) != nullptr)
                 {
                     polyVertices.append(*fix->getScenePosition());
                 }
-                else if((airport = airspaceData->findAirport(fixList.at(i))) != nullptr)
+                else if((airport = airspaceData->findAirport(nextFix)) != nullptr)
                 {
                     polyVertices.append(*airport->getScenePosition());
                 }
-                else if((vor = airspaceData->findVOR(fixList.at(i))) != nullptr)
+                else if((vor = airspaceData->findVOR(nextFix)) != nullptr)
                 {
                     polyVertices.append(*vor->getScenePosition());
                 }
-                else if((ndb = airspaceData->findNDB(fixList.at(i))) != nullptr)
+                else if((ndb = airspaceData->findNDB(nextFix)) != nullptr)
                 {
                     polyVertices.append(*ndb->getScenePosition());
                 }
@@ -916,9 +939,17 @@ void ATCSituationalDisplay::slotDisplayRoute(ATCFlight *flight)
             prediction->setPolygon(poly);
 
             //Create labels
-            for(int i = nextIndex; i < fixList.size(); i++)
+            if(nextIndex != -1)
             {
-                QGraphicsSimpleTextItem *label = new QGraphicsSimpleTextItem(fixList.at(i));
+                for(int i = nextIndex; i < fixList.size(); i++)
+                {
+                    QGraphicsSimpleTextItem *label = new QGraphicsSimpleTextItem(fixList.at(i));
+                    prediction->appendLabel(label);
+                }
+            }
+            else
+            {
+                QGraphicsSimpleTextItem *label = new QGraphicsSimpleTextItem(nextFix);
                 prediction->appendLabel(label);
             }
 

@@ -22,6 +22,9 @@ public:
     explicit DialogFlightPlan(ATCFlight *flight, ATCAirspace *airspace, ATCSimulation *simulation, ATCFlightFactory *flightFactory, QWidget *parent = 0);
     ~DialogFlightPlan();
 
+signals:
+    void signalUpdateRoute(ATCFlight *flight);
+
 private slots:
     ATC_MOUSE_HANDLER
 
@@ -33,7 +36,6 @@ private slots:
     void on_buttonSetRoute_clicked();
 
     void on_buttonOK_clicked();
-
     void on_buttonCancel_clicked();
 
 private:

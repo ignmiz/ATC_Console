@@ -581,6 +581,7 @@ void DialogFlightPlan::on_buttonOK_clicked()
             flight->getFlightTag()->getTagBox()->setLong();
         }
 
+        if(flight->getRoutePrediction() != nullptr) emit signalUpdateRoute(flight);
         emit closed();
         close();
     }
