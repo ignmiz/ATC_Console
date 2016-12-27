@@ -15,11 +15,13 @@ public:
 
     ATCFlight* getFlight(int i);
     ATCFlight* getFlight(QString callsign);
+    QVector<ATCFlight*>& getFlightsVector();
     int getFlightsVectorSize();
 
     void appendFlight(ATCFlight *flight);
 
     void removeFlight(QString callsign);
+    void clearFlights();
 
 private:
     QVector<ATCFlight*> flights;

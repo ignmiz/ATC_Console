@@ -1,8 +1,13 @@
 #ifndef DIALOGFLIGHT_H
 #define DIALOGFLIGHT_H
 
-#include "atcairspace.h"
+#include "atcsimulation.h"
 #include "atcdialog.h"
+#include "atcflight.h"
+#include "atcmath.h"
+
+#include <QStandardItemModel>
+#include <QDebug>
 
 namespace Ui {
 class DialogFlight;
@@ -13,7 +18,7 @@ class DialogFlight : public ATCDialog
     Q_OBJECT
 
 public:
-    explicit DialogFlight(ATCAirspace *airspace, QWidget *parent = 0);
+    explicit DialogFlight(ATCSimulation *simulation, QWidget *parent = 0);
     ~DialogFlight();
 
 signals:
@@ -22,13 +27,24 @@ signals:
 private slots:
     ATC_MOUSE_HANDLER
 
-    void on_buttonCreateFlight_clicked();
+    void slotUpdateFlightList(ATCFlight *flight);
+
     void on_buttonReady_clicked();
     void on_buttonCancel_clicked();
 
+    void on_buttonCreateFlight_clicked();
+    void on_buttonEditFlight_clicked();
+    void on_buttonDeleteFlight_clicked();
+    void on_buttonDeleteAll_clicked();
+
 private:
     Ui::DialogFlight *uiInner;
-    ATCAirspace *airspace;
+    ATCSimulation *simulation;
+    QStandardItemModel *model = nullptr;
+
+    void dialogFlightSetup();
+    void appendRow(ATCFlight *flight, QStandardItemModel *model);
+    void modifyRow(ATCFlight *flight, QStandardItemModel *model);
 };
 
 #endif // DIALOGFLIGHT_H

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>300</width>
-    <height>160</height>
+    <width>600</width>
+    <height>650</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,9 +16,9 @@
   <widget class="QPushButton" name="buttonCreateFlight">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>60</y>
-     <width>200</width>
+     <x>10</x>
+     <y>45</y>
+     <width>145</width>
      <height>25</height>
     </rect>
    </property>
@@ -29,9 +29,9 @@
   <widget class="QPushButton" name="buttonReady">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>110</y>
-     <width>95</width>
+     <x>340</x>
+     <y>610</y>
+     <width>120</width>
      <height>25</height>
     </rect>
    </property>
@@ -42,14 +42,135 @@
   <widget class="QPushButton" name="buttonCancel">
    <property name="geometry">
     <rect>
-     <x>155</x>
-     <y>110</y>
-     <width>95</width>
+     <x>470</x>
+     <y>610</y>
+     <width>120</width>
      <height>25</height>
     </rect>
    </property>
    <property name="text">
     <string>Cancel</string>
+   </property>
+  </widget>
+  <widget class="QTableView" name="tableViewFlights">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>80</y>
+     <width>580</width>
+     <height>510</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QTableView
+{;
+	color: #c8c8c8;;
+	background-color: #000000;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	font: 11px;
+	outline: none;
+}
+
+QTableView::item:hover
+{
+
+}
+
+QTableView::item:selected
+{
+	background-color: #282828;
+	color: #c8c8c8;;
+	font: 11px;
+	outline: none;
+}
+
+QTableView::item:selected:active
+{
+
+}
+
+QTableView::item:alternate
+{
+
+}
+
+QTableView::item:focus
+{
+	outline: none;
+}
+
+QHeaderView::section
+{
+    background-color: #141414;
+    color: #c8c8c8;
+	font: 11px;
+    border: 2px solid #282828;
+}
+
+QScrollBar:vertical
+{
+	background: #000000;
+	width: 2px;
+	border: none;
+	margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: #323232;
+}
+
+QScrollBar::add-page:vertical
+{
+	background: #000000;
+	border: none;
+}
+
+QScrollBar::sub-page:vertical
+{
+	background: #000000;
+	border: none;
+}</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonEditFlight">
+   <property name="geometry">
+    <rect>
+     <x>155</x>
+     <y>45</y>
+     <width>145</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Edit Flight</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonDeleteFlight">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>45</y>
+     <width>145</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Delete Flight</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonDeleteAll">
+   <property name="geometry">
+    <rect>
+     <x>445</x>
+     <y>45</y>
+     <width>145</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Delete All</string>
    </property>
   </widget>
  </widget>

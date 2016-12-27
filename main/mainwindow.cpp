@@ -131,7 +131,7 @@ void MainWindow::slotConstructDialogFlight()
 {
     dialogMainMenu->hide();
 
-    dialogFlight = new DialogFlight(ui->situationalDisplay->getAirspaceData(), this);
+    dialogFlight = new DialogFlight(simulation, this);
     dialogFlight->show();
 
     connect(dialogFlight, SIGNAL(closed()), this, SLOT(slotCloseDialogFlight()));
@@ -158,6 +158,7 @@ void MainWindow::slotConstructFlightCreator()
     connect(ui->situationalDisplay, SIGNAL(signalShowFlightCreator()), dialogFlightCreator, SLOT(slotShowFlightCreator()));
     connect(ui->situationalDisplay, SIGNAL(signalDisplayClicked(double,double)), dialogFlightCreator, SLOT(slotDisplayClicked(double,double)));
     connect(dialogFlightCreator, SIGNAL(signalCreateFlightTag(ATCFlight*)), ui->situationalDisplay, SLOT(slotCreateFlightTag(ATCFlight*)));
+    connect(dialogFlightCreator, SIGNAL(signalUpdateFlightList(ATCFlight*)), dialogFlight, SLOT(slotUpdateFlightList(ATCFlight*)));
 }
 
 void MainWindow::slotCloseFlightCreator()

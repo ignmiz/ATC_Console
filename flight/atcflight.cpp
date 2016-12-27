@@ -15,6 +15,8 @@ ATCFlight::ATCFlight(State s, ATCFlightPlan *p, QString sq) : state(s), plan(p),
 
 ATCFlight::~ATCFlight()
 {
+    emit signalClearFlightElements(this);
+
     if(plan != nullptr) delete plan;
     if(tag != nullptr) delete tag;
     if(prediction != nullptr) delete prediction;

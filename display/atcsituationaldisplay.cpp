@@ -680,6 +680,8 @@ void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
     connect(tagBox, SIGNAL(signalDisplayRoute()), flight, SLOT(slotDisplayRoute()));
     connect(flight, SIGNAL(signalDisplayRoute(ATCFlight*)), this, SLOT(slotDisplayRoute(ATCFlight*)));
 
+    connect(flight, SIGNAL(signalClearFlightElements(ATCFlight*)), this, SLOT(slotClearFlightElements(ATCFlight*)));
+
     visibleTags.append(tag);
 }
 
@@ -1073,6 +1075,25 @@ void ATCSituationalDisplay::slotUpdateRoute(ATCFlight *flight)
 {
     slotClearRoute(flight);
     slotDisplayRoute(flight);
+}
+
+void ATCSituationalDisplay::slotClearFlightElements(ATCFlight *flight)
+{
+    for(int i = 0; i < visibleTags.size(); i++)
+    {
+        if(visibleTags.at(i) == flight->getFlightTag()) visibleTags.remove(i);
+    }
+
+    for(int i = 0; i < visibleRoutes.size(); i++)
+    {
+        if(visibleRoutes.at(i) == flight->getRoutePrediction()) visibleRoutes.remove(i);
+    }
+}
+
+void ATCSituationalDisplay::slotClearAllFlightElements()
+{
+    visibleTags.clear();
+    visibleRoutes.clear();
 }
 
 void ATCSituationalDisplay::situationalDisplaySetup()

@@ -238,10 +238,14 @@ void DialogFlightCreator::on_buttonOK_clicked()
             flight->setNextFix(uiInner->comboBoxNextFix->currentText());
         }
 
+        //Set start time of flight simulation
+        flight->setSimStartTime(uiInner->timeEditSimulationStart->time());
+
         //Append flight to simulation
         simulation->appendFlight(flight);
 
         emit signalCreateFlightTag(flight);
+        emit signalUpdateFlightList(flight);
 
         emit closed();
         close();

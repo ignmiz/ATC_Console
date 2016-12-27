@@ -57,6 +57,10 @@ void Test_ATCSimulation::test_getFlight()
     QVERIFY(foo.getFlight("ABC123") == flight1);
     QVERIFY(foo.getFlight("CDE456") == flight2);
     QVERIFY(foo.getFlight("SPHMD") == flight3);
+
+    QVERIFY(foo.getFlightsVector().at(0) == flight1);
+    QVERIFY(foo.getFlightsVector().at(1) == flight2);
+    QVERIFY(foo.getFlightsVector().at(2) == flight3);
 }
 
 void Test_ATCSimulation::test_removeFlight()

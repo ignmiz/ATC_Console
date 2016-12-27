@@ -44,6 +44,11 @@ ATCFlight* ATCSimulation::getFlight(QString callsign)
     return flight;
 }
 
+QVector<ATCFlight *> &ATCSimulation::getFlightsVector()
+{
+    return flights;
+}
+
 int ATCSimulation::getFlightsVectorSize()
 {
     return flights.size();
@@ -69,4 +74,9 @@ void ATCSimulation::removeFlight(QString callsign)
             }
         }
     }
+}
+
+void ATCSimulation::clearFlights()
+{
+    flights.clear();
 }

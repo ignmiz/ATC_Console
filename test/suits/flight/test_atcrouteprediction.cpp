@@ -3,7 +3,7 @@
 void Test_ATCRoutePrediction::test_getPolygon()
 {
     ATCRoutePrediction foo;
-    QGraphicsPolygonItem *polygon = new QGraphicsPolygonItem();
+    QGraphicsPathItem *polygon = new QGraphicsPathItem();
     foo.setPolygon(polygon);
 
     QVERIFY(foo.getPolygon() == polygon);

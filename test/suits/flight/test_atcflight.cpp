@@ -305,11 +305,11 @@ void Test_ATCFlight::test_setRoutePrediction()
     ATCFlight foo(state);
 
     ATCRoutePrediction *prediction1 = new ATCRoutePrediction();
-    foo.setRoutePrediction(ATC::Nav, prediction1);
-    QVERIFY(foo.getRoutePrediction(ATC::Nav) == prediction1);
+    foo.setRoutePrediction(prediction1);
+    QVERIFY(foo.getRoutePrediction() == prediction1);
 
     ATCRoutePrediction *prediction2 = new ATCRoutePrediction();
-    foo.setRoutePrediction(ATC::Hdg, prediction2);
-    QVERIFY(foo.getRoutePrediction(ATC::Hdg) == prediction2);
+    foo.setRoutePrediction(prediction2);
+    QVERIFY(foo.getRoutePrediction() == prediction2);
 }
 
