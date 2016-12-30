@@ -20,7 +20,15 @@ DialogFlight::~DialogFlight()
 
 void DialogFlight::slotUpdateFlightList(ATCFlight *flight)
 {
-    appendRow(flight, model);
+    if(rowToEdit == -1)
+    {
+        appendRow(flight, model);
+    }
+    else
+    {
+        modifyRow(flight, rowToEdit, model);
+        rowToEdit = -1;
+    }
 }
 
 void DialogFlight::on_buttonCreateFlight_clicked()
@@ -46,7 +54,7 @@ void DialogFlight::dialogFlightSetup()
     model->setColumnCount(12);
 
     QStringList labelList;
-    labelList << "T+" << "CS" << "TYPE" << "W" << "ADEP" << "R" << "SID" << "ADES" << "R" << "STAR" << "AFL" << "CFL";
+    labelList << "T+" << "CS" << "TYPE" << "W" << "ADEP" << "R" << "SID" << "ADES" << "R" << "STAR" << "AFL" << "TAS";
     model->setHorizontalHeaderLabels(labelList);
 
     uiInner->tableViewFlights->setModel(model);
@@ -57,18 +65,18 @@ void DialogFlight::dialogFlightSetup()
     uiInner->tableViewFlights->horizontalHeader()->setHighlightSections(false);
     uiInner->tableViewFlights->verticalHeader()->setHidden(true);
 
-    uiInner->tableViewFlights->setColumnWidth(0, 60);   //Start time
-    uiInner->tableViewFlights->setColumnWidth(1, 80);   //Callsign
-    uiInner->tableViewFlights->setColumnWidth(2, 40);   //Type
-    uiInner->tableViewFlights->setColumnWidth(3, 30);   //Weight category
-    uiInner->tableViewFlights->setColumnWidth(4, 40);   //ADEP
-    uiInner->tableViewFlights->setColumnWidth(5, 33);   //DEP RWY
-    uiInner->tableViewFlights->setColumnWidth(6, 70);   //SID ID
-    uiInner->tableViewFlights->setColumnWidth(7, 40);   //ADES
-    uiInner->tableViewFlights->setColumnWidth(8, 33);   //ARR RWY
-    uiInner->tableViewFlights->setColumnWidth(9, 70);   //STAR ID
-    uiInner->tableViewFlights->setColumnWidth(10, 40);  //AFL
-    uiInner->tableViewFlights->setColumnWidth(11, 40);  //CFL
+    uiInner->tableViewFlights->setColumnWidth(0, 60);       //Start time
+    uiInner->tableViewFlights->setColumnWidth(1, 80);       //Callsign
+    uiInner->tableViewFlights->setColumnWidth(2, 40);       //Type
+    uiInner->tableViewFlights->setColumnWidth(3, 30);       //Weight category
+    uiInner->tableViewFlights->setColumnWidth(4, 40);       //ADEP
+    uiInner->tableViewFlights->setColumnWidth(5, 33);       //DEP RWY
+    uiInner->tableViewFlights->setColumnWidth(6, 70);       //SID ID
+    uiInner->tableViewFlights->setColumnWidth(7, 40);       //ADES
+    uiInner->tableViewFlights->setColumnWidth(8, 33);       //ARR RWY
+    uiInner->tableViewFlights->setColumnWidth(9, 70);       //STAR ID
+    uiInner->tableViewFlights->setColumnWidth(10, 40);      //AFL
+    uiInner->tableViewFlights->setColumnWidth(11, 40);      //TAS
 
     uiInner->tableViewFlights->setSelectionBehavior(QAbstractItemView::SelectRows);
 }
@@ -152,28 +160,99 @@ void DialogFlight::appendRow(ATCFlight *flight, QStandardItemModel *model)
     star->setTextAlignment(Qt::AlignCenter);
     row.append(star);
 
-    QStandardItem *afl = new QStandardItem(QString::number(ATCMath::m2ft(flight->getState().h) / 100).left(3));
+    QStandardItem *afl;
+    double height = ATCMath::m2ft(flight->getState().h) / 100;
+
+    if(height < 10)
+    {
+        afl = new QStandardItem("00" + QString::number(height).left(3));
+    }
+    else if(height < 100)
+    {
+        afl = new QStandardItem("0" + QString::number(height).left(3));
+    }
+    else
+    {
+        afl = new QStandardItem(QString::number(height).left(3));
+    }
+
     afl->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
     afl->setTextAlignment(Qt::AlignCenter);
     row.append(afl);
 
-    QStandardItem *cfl = new QStandardItem(flight->getTargetAltitude().right(3));
-    cfl->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-    cfl->setTextAlignment(Qt::AlignCenter);
-    row.append(cfl);
+    QStandardItem *tas = new QStandardItem(QString::number(ATCMath::mps2kt(flight->getState().v)));
+    tas->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+    tas->setTextAlignment(Qt::AlignCenter);
+    row.append(tas);
 
     model->appendRow(row);
-    uiInner->tableViewFlights->setRowHeight(model->rowCount() - 1, 20);
+
+    for(int i = 0; i < model->rowCount(); i++)
+    {
+        uiInner->tableViewFlights->setRowHeight(i, 20);
+    }
 }
 
-void DialogFlight::modifyRow(ATCFlight *flight, QStandardItemModel *model)
+void DialogFlight::modifyRow(ATCFlight *flight, int row, QStandardItemModel *model)
 {
+    model->item(row, 0)->setText(flight->getSimStartTime().toString("HH:mm:ss"));
+    model->item(row, 1)->setText(flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber());
+    model->item(row, 2)->setText(flight->getFlightPlan()->getType()->getAcType().ICAOcode);
 
+    switch(flight->getFlightPlan()->getType()->getAcType().wake)
+    {
+    case ATC::L:
+        model->item(row, 3)->setText("L");
+        break;
+
+    case ATC::M:
+        model->item(row, 3)->setText("M");
+        break;
+
+    case ATC::H:
+        model->item(row, 3)->setText("H");
+        break;
+
+    case ATC::J:
+        model->item(row, 3)->setText("J");
+        break;
+    }
+
+    model->item(row, 4)->setText(flight->getFlightPlan()->getRoute().getDeparture());
+    model->item(row, 5)->setText("29");           //DEP RWY
+    model->item(row, 6)->setText("EVINA5K");      //SID
+    model->item(row, 7)->setText(flight->getFlightPlan()->getRoute().getDestination());
+    model->item(row, 8)->setText("15");           //DEP RWY
+    model->item(row, 9)->setText("SOXER3G");      //SID
+
+    double height = ATCMath::m2ft(flight->getState().h) / 100;
+
+    if(height < 10)
+    {
+        model->item(row, 10)->setText("00" + QString::number(height).left(3));
+    }
+    else if(height < 100)
+    {
+        model->item(row, 10)->setText("0" + QString::number(height).left(3));
+    }
+    else
+    {
+        model->item(row, 10)->setText(QString::number(height).left(3));
+    }
+
+    model->item(row, 11)->setText(QString::number(ATCMath::mps2kt(flight->getState().v)));
 }
 
 void DialogFlight::on_buttonEditFlight_clicked()
 {
+    QModelIndexList selectionList = uiInner->tableViewFlights->selectionModel()->selectedRows();
 
+    if(selectionList.size() > 0)
+    {
+        emit signalConstructFlightCreator(simulation->getFlight(model->index(selectionList.at(0).row(), 1).data().toString()));
+
+        rowToEdit = selectionList.at(0).row();
+    }
 }
 
 void DialogFlight::on_buttonDeleteFlight_clicked()

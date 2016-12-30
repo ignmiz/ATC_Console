@@ -18,12 +18,14 @@ class DialogFlightCreator : public ATCDialog
     Q_OBJECT
 
 public:
-    explicit DialogFlightCreator(ATCAirspace *airspace, ATCFlightFactory *flightFactory, ATCSimulation *simulation, QWidget *parent = 0);
+    explicit DialogFlightCreator(ATCFlight *flight, ATCAirspace *airspace, ATCSettings *settings, ATCFlightFactory *flightFactory, ATCSimulation *simulation, QWidget *parent = 0);
+    explicit DialogFlightCreator(ATCAirspace *airspace, ATCSettings *settings, ATCFlightFactory *flightFactory, ATCSimulation *simulation, QWidget *parent = 0);
     ~DialogFlightCreator();
 
 signals:
     void signalGetLocation();
     void signalCreateFlightTag(ATCFlight *flight);
+    void signalUpdateFlightTag(ATCFlight *flight);
     void signalUpdateFlightList(ATCFlight *flight);
 
 private slots:
@@ -52,6 +54,8 @@ private:
     ATCFlightFactory *flightFactory;
     ATCSimulation *simulation;
     ATCAirspace *airspace;
+    ATCSettings *settings;
+    ATCFlight *flight = nullptr;
 
     QStandardItemModel *model = nullptr;
 
@@ -66,6 +70,9 @@ private:
 
     bool verifyForm();
     void errorMessage(QString msg);
+
+    void formSetup();
+    void formSetup(ATCFlight *flight);
 };
 
 #endif // DIALOGFLIGHTCREATOR_H

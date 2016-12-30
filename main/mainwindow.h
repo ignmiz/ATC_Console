@@ -10,7 +10,11 @@
 #include "dialogsettings.h"
 #include "dialogflight.h"
 #include "dialogflightcreator.h"
+#include "dialogflightplan.h"
 
+#include "atcpaths.h"
+#include "atcairspace.h"
+#include "atcsettings.h"
 #include "atcflightfactory.h"
 #include "atcsimulation.h"
 
@@ -54,7 +58,11 @@ private slots:
     void slotConstructDialogFlight();
     void slotCloseDialogFlight();
 
+    void slotCreateDialogFlightPlan(ATCFlight *flight);
+    void slotDialogFlightPlanClosed();
+
     void slotConstructFlightCreator();
+    void slotConstructFlightCreator(ATCFlight *flight);
     void slotCloseFlightCreator();
 
 private:
@@ -64,9 +72,14 @@ private:
     DialogSectorSetup *dialogSectorSetup;
     DialogSettings *dialogSettings;
 
-    DialogFlight *dialogFlight;
-    DialogFlightCreator *dialogFlightCreator;
+    DialogFlight *dialogFlight = nullptr;
+    DialogFlightCreator *dialogFlightCreator = nullptr;
 
+    DialogFlightPlan *dialogFlightPlan = nullptr;
+
+    ATCPaths *paths;
+    ATCAirspace *airspaceData;
+    ATCSettings *settings;
     ATCFlightFactory *flightFactory;
     ATCSimulation *simulation;
 
@@ -75,6 +88,8 @@ private:
     bool flagDialogSettingsExists = false;
 
     void mainWindowSetup();
+
+    void connectDialogFlightCreatorSlots();
 };
 
 #endif // MAINWINDOW_H

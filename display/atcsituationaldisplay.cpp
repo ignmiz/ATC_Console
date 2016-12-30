@@ -638,26 +638,9 @@ void ATCSituationalDisplay::slotGetLocation()
 
 void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
 {
-    ATCFlightTag *tag = new ATCFlightTag();
-    flight->setFlightTag(tag);
+    createFlightTag(flight);
 
-    createTagType(flight);
-    QGraphicsRectItem *diamond = createDiamond(tag, flight->getState().x, flight->getState().y);
-    QGraphicsLineItem *leader = createLeader(tag, flight->getState().x, flight->getState().y, flight->getState().hdg);
-    QGraphicsLineItem *connector = createConnector(tag);
-    QGraphicsSimpleTextItem *text = createTagText(tag);
-    ATCTagRect *tagBox = createTagBox(tag);
-
-    tagBox->setConnector(connector);
-    tagBox->setText(text);
-    text->setParentItem(tagBox);
-
-    createEtiquettes(flight);
-
-    scene->addItem(diamond);
-    scene->addItem(leader);
-    scene->addItem(connector);
-    scene->addItem(tagBox);
+    ATCTagRect *tagBox = flight->getFlightTag()->getTagBox();
 
     connect(tagBox, SIGNAL(signalCreateDialogAltitude(QPoint)), flight, SLOT(slotCreateDialogAltitude(QPoint)));
     connect(flight, SIGNAL(signalCreateDialogAltitude(ATCFlight*,QPoint)), this, SLOT(slotCreateDialogAltitude(ATCFlight*,QPoint)));
@@ -675,14 +658,38 @@ void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
     connect(flight, SIGNAL(signalCreateDialogHandoff(ATCFlight*,QPoint)), this, SLOT(slotCreateDialogHandoff(ATCFlight*,QPoint)));
 
     connect(tagBox, SIGNAL(signalCreateDialogFlightPlan()), flight, SLOT(slotCreateDialogFlightPlan()));
-    connect(flight, SIGNAL(signalCreateDialogFlightPlan(ATCFlight*)), this, SLOT(slotCreateDialogFlightPlan(ATCFlight*)));
+    connect(flight, SIGNAL(signalCreateDialogFlightPlan(ATCFlight*)), dynamic_cast<MainWindow*>(this->parentWidget()), SLOT(slotCreateDialogFlightPlan(ATCFlight*)));
 
     connect(tagBox, SIGNAL(signalDisplayRoute()), flight, SLOT(slotDisplayRoute()));
     connect(flight, SIGNAL(signalDisplayRoute(ATCFlight*)), this, SLOT(slotDisplayRoute(ATCFlight*)));
 
     connect(flight, SIGNAL(signalClearFlightElements(ATCFlight*)), this, SLOT(slotClearFlightElements(ATCFlight*)));
+}
 
-    visibleTags.append(tag);
+void ATCSituationalDisplay::slotUpdateFlightTag(ATCFlight *flight)
+{
+    ATCFlightTag *tag = flight->getFlightTag();
+
+    for(int i = 0; i < visibleTags.size(); i++)
+    {
+        if(visibleTags.at(i) == tag) visibleTags.remove(i);
+    }
+
+    if(tag != nullptr) delete tag;
+    flight->setFlightTag(nullptr);
+
+    createFlightTag(flight);
+    if(flight->getRoutePrediction() != nullptr) slotUpdateRoute(flight);
+
+    ATCTagRect *tagBox = flight->getFlightTag()->getTagBox();
+
+    connect(tagBox, SIGNAL(signalCreateDialogAltitude(QPoint)), flight, SLOT(slotCreateDialogAltitude(QPoint)));
+    connect(tagBox, SIGNAL(signalCreateDialogSpeed(QPoint)), flight, SLOT(slotCreateDialogSpeed(QPoint)));
+    connect(tagBox, SIGNAL(signalCreateDialogHeading(QPoint)), flight, SLOT(slotCreateDialogHeading(QPoint)));
+    connect(tagBox, SIGNAL(signalCreateDialogRoute(QPoint)), flight, SLOT(slotCreateDialogRoute(QPoint)));
+    connect(tagBox, SIGNAL(signalCreateDialogHandoff(QPoint)), flight, SLOT(slotCreateDialogHandoff(QPoint)));
+    connect(tagBox, SIGNAL(signalCreateDialogFlightPlan()), flight, SLOT(slotCreateDialogFlightPlan()));
+    connect(tagBox, SIGNAL(signalDisplayRoute()), flight, SLOT(slotDisplayRoute()));
 }
 
 void ATCSituationalDisplay::slotCreateDialogAltitude(ATCFlight *flight, QPoint point)
@@ -837,26 +844,6 @@ void ATCSituationalDisplay::slotDialogHandoffClosed()
 void ATCSituationalDisplay::slotDialogHandoffCloseOnClick()
 {
     dialogHandoffCloseOnClick = true;
-}
-
-void ATCSituationalDisplay::slotCreateDialogFlightPlan(ATCFlight *flight)
-{
-    if(!dialogFlightPlanExists)
-    {
-        dialogFlightPlan = new DialogFlightPlan(flight, airspaceData, simulation, flightFactory, this);
-
-        dialogFlightPlan->show();
-        dialogFlightPlanExists = true;
-
-        connect(dialogFlightPlan, SIGNAL(closed()), this, SLOT(slotDialogFlightPlanClosed()));
-        connect(dialogFlightPlan, SIGNAL(signalUpdateRoute(ATCFlight*)), this, SLOT(slotUpdateRoute(ATCFlight*)));
-    }
-}
-
-void ATCSituationalDisplay::slotDialogFlightPlanClosed()
-{
-    dialogFlightPlan = nullptr;
-    dialogFlightPlanExists = false;
 }
 
 void ATCSituationalDisplay::slotDisplayRoute(ATCFlight *flight)
@@ -1057,17 +1044,12 @@ void ATCSituationalDisplay::slotClearRoute(ATCFlight *flight)
         scene->removeItem(prediction->getLabels().at(i));
     }
 
-    int iter = 0;
-
     for(int i = 0; i < visibleRoutes.size(); i++)
     {
-        if(visibleRoutes.at(i) == prediction) iter = i;
+        if(visibleRoutes.at(i) == prediction) visibleRoutes.remove(i);
     }
 
-    visibleRoutes.remove(iter);
-
     delete prediction;
-    prediction = nullptr;
     flight->setRoutePrediction(nullptr);
 }
 
@@ -3168,6 +3150,35 @@ void ATCSituationalDisplay::calculateAirwayHigh()
     }
 }
 
+void ATCSituationalDisplay::createFlightTag(ATCFlight *flight)
+{
+    ATCFlightTag *tag = new ATCFlightTag();
+    flight->setFlightTag(tag);
+
+    double longitude = ATCMath::rad2deg(flight->getState().x);
+    double latitude = ATCMath::rad2deg(flight->getState().y);
+
+    createTagType(flight);
+    QGraphicsRectItem *diamond = createDiamond(tag, longitude, latitude);
+    QGraphicsLineItem *leader = createLeader(tag, longitude, latitude, flight->getState().hdg);
+    QGraphicsLineItem *connector = createConnector(tag);
+    QGraphicsSimpleTextItem *text = createTagText(tag);
+    ATCTagRect *tagBox = createTagBox(tag);
+
+    tagBox->setConnector(connector);
+    tagBox->setText(text);
+    text->setParentItem(tagBox);
+
+    createEtiquettes(flight);
+
+    scene->addItem(diamond);
+    scene->addItem(leader);
+    scene->addItem(connector);
+    scene->addItem(tagBox);
+
+    visibleTags.append(tag);
+}
+
 void ATCSituationalDisplay::createTagType(ATCFlight *flight)
 {
     QString speedRes = flight->getTargetSpeed();
@@ -3357,7 +3368,7 @@ void ATCSituationalDisplay::createEtiquettes(ATCFlight *flight)
         longEtiquette[i + 10] = groundSpd.at(i);
     }
 
-    QString altitude = QString::number(qFloor(ATCMath::m2ft(flight->getState().h) / 100));
+    QString altitude = QString::number(ATCMath::m2ft(flight->getState().h) / 100);
 
     if(altitude.size() == 2)
     {
@@ -3382,10 +3393,13 @@ void ATCSituationalDisplay::createEtiquettes(ATCFlight *flight)
         longEtiquette[i + 20] = targetAltitude.at(i);
     }
 
-    for(int i = 0; i < nextFix.size(); i++)
+    if(flight->getNavMode() == ATC::Nav)
     {
-        shortEtiquette[i + 24] = nextFix.at(i);
-        longEtiquette[i + 24] = nextFix.at(i);
+        for(int i = 0; i < nextFix.size(); i++)
+        {
+            shortEtiquette[i + 24] = nextFix.at(i);
+            longEtiquette[i + 24] = nextFix.at(i);
+        }
     }
 
     QString type = flight->getFlightPlan()->getType()->getAcType().ICAOcode;

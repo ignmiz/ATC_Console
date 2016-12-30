@@ -17,6 +17,11 @@ MainWindow::MainWindow(ATCFlightFactory *flightFactory, ATCSimulation *simulatio
 
     ui->situationalDisplay->setFlightFactory(flightFactory);
     ui->situationalDisplay->setSimulation(simulation);
+    ui->situationalDisplay->setParent(this);
+
+    paths = ui->situationalDisplay->getPaths();
+    airspaceData = ui->situationalDisplay->getAirspaceData();
+    settings = ui->situationalDisplay->getSettings();
 
     mainWindowSetup();
     setSituationalDisplayFocus();
@@ -136,29 +141,55 @@ void MainWindow::slotConstructDialogFlight()
 
     connect(dialogFlight, SIGNAL(closed()), this, SLOT(slotCloseDialogFlight()));
     connect(dialogFlight, SIGNAL(signalConstructFlightCreator()), this, SLOT(slotConstructFlightCreator()));
+    connect(dialogFlight, SIGNAL(signalConstructFlightCreator(ATCFlight*)), this, SLOT(slotConstructFlightCreator(ATCFlight*)));
 }
 
 void MainWindow::slotCloseDialogFlight()
 {
     disconnect(dialogFlight, SIGNAL(closed()), this, SLOT(slotCloseDialogFlight()));
     disconnect(dialogFlight, SIGNAL(signalConstructFlightCreator()), this, SLOT(slotConstructFlightCreator()));
+    disconnect(dialogFlight, SIGNAL(signalConstructFlightCreator(ATCFlight*)), this, SLOT(slotConstructFlightCreator(ATCFlight*)));
+
+    dialogFlight = nullptr;
 
     dialogMainMenu->show();
+}
+
+void MainWindow::slotCreateDialogFlightPlan(ATCFlight *flight)
+{
+    if((dialogFlightPlan == nullptr) && (dialogFlight == nullptr) && (dialogFlightCreator == nullptr))
+    {
+        dialogFlightPlan = new DialogFlightPlan(flight, airspaceData, simulation, flightFactory, this);
+        dialogFlightPlan->show();
+
+        connect(dialogFlightPlan, SIGNAL(closed()), this, SLOT(slotDialogFlightPlanClosed()));
+        connect(dialogFlightPlan, SIGNAL(signalUpdateRoute(ATCFlight*)), ui->situationalDisplay, SLOT(slotUpdateRoute(ATCFlight*)));
+    }
+}
+
+void MainWindow::slotDialogFlightPlanClosed()
+{
+    dialogFlightPlan = nullptr;
 }
 
 void MainWindow::slotConstructFlightCreator()
 {
     dialogFlight->hide();
 
-    dialogFlightCreator = new DialogFlightCreator(ui->situationalDisplay->getAirspaceData(), flightFactory, simulation, this);
+    dialogFlightCreator = new DialogFlightCreator(airspaceData, settings, flightFactory, simulation, this);
     dialogFlightCreator->show();
 
-    connect(dialogFlightCreator, SIGNAL(closed()), this, SLOT(slotCloseFlightCreator()));
-    connect(dialogFlightCreator, SIGNAL(signalGetLocation()), ui->situationalDisplay, SLOT(slotGetLocation()));
-    connect(ui->situationalDisplay, SIGNAL(signalShowFlightCreator()), dialogFlightCreator, SLOT(slotShowFlightCreator()));
-    connect(ui->situationalDisplay, SIGNAL(signalDisplayClicked(double,double)), dialogFlightCreator, SLOT(slotDisplayClicked(double,double)));
-    connect(dialogFlightCreator, SIGNAL(signalCreateFlightTag(ATCFlight*)), ui->situationalDisplay, SLOT(slotCreateFlightTag(ATCFlight*)));
-    connect(dialogFlightCreator, SIGNAL(signalUpdateFlightList(ATCFlight*)), dialogFlight, SLOT(slotUpdateFlightList(ATCFlight*)));
+    connectDialogFlightCreatorSlots();
+}
+
+void MainWindow::slotConstructFlightCreator(ATCFlight *flight)
+{
+    dialogFlight->hide();
+
+    dialogFlightCreator = new DialogFlightCreator(flight, airspaceData, settings, flightFactory, simulation, this);
+    dialogFlightCreator->show();
+
+    connectDialogFlightCreatorSlots();
 }
 
 void MainWindow::slotCloseFlightCreator()
@@ -168,6 +199,8 @@ void MainWindow::slotCloseFlightCreator()
     disconnect(ui->situationalDisplay, SIGNAL(signalShowFlightCreator()), dialogFlightCreator, SLOT(slotShowFlightCreator()));
     disconnect(ui->situationalDisplay, SIGNAL(signalDisplayClicked(double,double)), dialogFlightCreator, SLOT(slotDisplayClicked(double,double)));
     disconnect(dialogFlightCreator, SIGNAL(signalCreateFlightTag(ATCFlight*)), ui->situationalDisplay, SLOT(slotCreateFlightTag(ATCFlight*)));
+
+    dialogFlightCreator = nullptr;
 
     dialogFlight->show();
 }
@@ -190,6 +223,17 @@ void MainWindow::mainWindowSetup()
 
     ui->mainToolBar->hide();
     ui->statusBar->hide();
+}
+
+void MainWindow::connectDialogFlightCreatorSlots()
+{
+    connect(dialogFlightCreator, SIGNAL(closed()), this, SLOT(slotCloseFlightCreator()));
+    connect(dialogFlightCreator, SIGNAL(signalGetLocation()), ui->situationalDisplay, SLOT(slotGetLocation()));
+    connect(ui->situationalDisplay, SIGNAL(signalShowFlightCreator()), dialogFlightCreator, SLOT(slotShowFlightCreator()));
+    connect(ui->situationalDisplay, SIGNAL(signalDisplayClicked(double,double)), dialogFlightCreator, SLOT(slotDisplayClicked(double,double)));
+    connect(dialogFlightCreator, SIGNAL(signalCreateFlightTag(ATCFlight*)), ui->situationalDisplay, SLOT(slotCreateFlightTag(ATCFlight*)));
+    connect(dialogFlightCreator, SIGNAL(signalUpdateFlightList(ATCFlight*)), dialogFlight, SLOT(slotUpdateFlightList(ATCFlight*)));
+    connect(dialogFlightCreator, SIGNAL(signalUpdateFlightTag(ATCFlight*)), ui->situationalDisplay, SLOT(slotUpdateFlightTag(ATCFlight*)));
 }
 
 bool MainWindow::getFlagDialogMainMenuExists() const

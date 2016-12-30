@@ -104,6 +104,7 @@ private slots:
     void slotGetLocation();
 
     void slotCreateFlightTag(ATCFlight *flight);
+    void slotUpdateFlightTag(ATCFlight *flight);
 
     void slotCreateDialogAltitude(ATCFlight *flight, QPoint point);
     void slotDialogAltitudeClosed();
@@ -124,9 +125,6 @@ private slots:
     void slotCreateDialogHandoff(ATCFlight *flight, QPoint point);
     void slotDialogHandoffClosed();
     void slotDialogHandoffCloseOnClick();
-
-    void slotCreateDialogFlightPlan(ATCFlight *flight);
-    void slotDialogFlightPlanClosed();
 
     void slotDisplayRoute(ATCFlight *flight);
     void slotClearRoute(ATCFlight *flight);
@@ -192,9 +190,6 @@ private:
     bool dialogHandoffExists = false;
     bool dialogHandoffCloseOnClick = false;
 
-    DialogFlightPlan *dialogFlightPlan = nullptr;
-    bool dialogFlightPlanExists = false;
-
     void situationalDisplaySetup();
 
     void rescaleAll();
@@ -250,6 +245,8 @@ private:
     void calculateAirwayLow();
     void calculateAirwayHigh();
 
+    void createFlightTag(ATCFlight *flight);
+
     void createTagType(ATCFlight *flight);
     QGraphicsRectItem* createDiamond(ATCFlightTag *tag, double lon, double lat);
     QGraphicsLineItem* createLeader(ATCFlightTag* tag, double lon, double lat, double trueHdg);
@@ -257,6 +254,7 @@ private:
     ATCTagRect* createTagBox(ATCFlightTag *tag);
     QGraphicsSimpleTextItem* createTagText(ATCFlightTag *tag);
     void createEtiquettes(ATCFlight *flight);
+
 
     void assignTagPositions();
 
@@ -279,6 +277,7 @@ private:
     double translateFromLocalY(double localY);
 
     void calculateSectorParameters();
+
     void connectSlots();
 
     template<class T> void removeFromVisible(T *object, QVector<T*> &vector);

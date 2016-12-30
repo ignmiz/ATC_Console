@@ -23,6 +23,7 @@ public:
 
 signals:
     void signalConstructFlightCreator();
+    void signalConstructFlightCreator(ATCFlight *flight);
 
 private slots:
     ATC_MOUSE_HANDLER
@@ -42,9 +43,11 @@ private:
     ATCSimulation *simulation;
     QStandardItemModel *model = nullptr;
 
+    int rowToEdit = -1;
+
     void dialogFlightSetup();
     void appendRow(ATCFlight *flight, QStandardItemModel *model);
-    void modifyRow(ATCFlight *flight, QStandardItemModel *model);
+    void modifyRow(ATCFlight *flight, int row, QStandardItemModel *model);
 };
 
 #endif // DIALOGFLIGHT_H

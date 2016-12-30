@@ -1,57 +1,33 @@
 #include "dialogflightcreator.h"
 #include "ui_dialogflightcreator.h"
 
-DialogFlightCreator::DialogFlightCreator(ATCAirspace *airspace, ATCFlightFactory *flightFactory, ATCSimulation *simulation, QWidget *parent) :
+DialogFlightCreator::DialogFlightCreator(ATCFlight *flight, ATCAirspace *airspace, ATCSettings *settings, ATCFlightFactory *flightFactory, ATCSimulation *simulation, QWidget *parent) :
     ATCDialog(parent, "Flight Creator", 600, 700),
     uiInner(new Ui::DialogFlightCreator),
+    flight(flight),
     airspace(airspace),
+    settings(settings),
     flightFactory(flightFactory),
     simulation(simulation),
     model(new QStandardItemModel(this))
 {
     uiInner->setupUi(this);
     windowSetup();
+    formSetup(flight);
+}
 
-    for(int i = 0; i < flightFactory->getAircraftTypeFactory().getTypeVectorSize(); i++)
-    {
-        QString type = flightFactory->getAircraftTypeFactory().getType(i)->getAcType().ICAOcode;
-        uiInner->comboBoxAcftType->addItem(type, Qt::DisplayRole);
-    }
-
-    uiInner->spinBoxHeadingRes->clear();
-    uiInner->spinBoxTrueHDG->clear();
-
-    uiInner->spinBoxHeadingRes->setEnabled(false);
-    uiInner->comboBoxNextFix->setEnabled(false);
-
-    uiInner->lineEditCallsign->setInputMask(">AAAxxxxxxx");
-    uiInner->lineEditDeparture->setInputMask(">AAAA");
-    uiInner->lineEditDestination->setInputMask(">AAAA");
-    uiInner->lineEditAlternate->setInputMask(">AAAA");
-    uiInner->lineEditAltitude->setInputMask(">A999");
-    uiInner->lineEditTAS->setInputMask("9990");
-    uiInner->lineEditSquawk->setInputMask("9999");
-
-    uiInner->lineEditSquawkCurrent->setInputMask("9999");
-    uiInner->lineEditAltitudeCurrent->setInputMask(">A999");
-    uiInner->lineEditTASCurrent->setInputMask("9990");
-
-    uiInner->lineEditAltitudeRes->setInputMask(">A999");
-    uiInner->lineEditSpeedRes->setInputMask("9X90");
-
-    uiInner->labelError->setVisible(false);
-
-    uiInner->timeEditDepTime->setEnabled(false);
-    uiInner->timeEditEnrTime->setEnabled(false);
-    uiInner->timeEditFuelTime->setEnabled(false);
-
-    model->setColumnCount(3);
-
-    uiInner->tableViewValidator->setModel(model);
-    uiInner->tableViewValidator->setGridStyle(Qt::NoPen);
-
-    uiInner->tableViewValidator->horizontalHeader()->setHidden(true);
-    uiInner->tableViewValidator->verticalHeader()->setHidden(true);
+DialogFlightCreator::DialogFlightCreator(ATCAirspace *airspace, ATCSettings *settings, ATCFlightFactory *flightFactory, ATCSimulation *simulation, QWidget *parent) :
+    ATCDialog(parent, "Flight Creator", 600, 700),
+    uiInner(new Ui::DialogFlightCreator),
+    airspace(airspace),
+    settings(settings),
+    flightFactory(flightFactory),
+    simulation(simulation),
+    model(new QStandardItemModel(this))
+{
+    uiInner->setupUi(this);
+    windowSetup();
+    formSetup();
 }
 
 DialogFlightCreator::~DialogFlightCreator()
@@ -64,13 +40,13 @@ void DialogFlightCreator::on_buttonOK_clicked()
 {
     bool filledOK = verifyForm();
 
-    if(filledOK)
+    if(filledOK && (flight == nullptr)) //Create new flight
     {
         //Initial state assignment
         State state;
 
-        state.x = uiInner->lineEditLongitude->text().toDouble();
-        state.y = uiInner->lineEditLatitude->text().toDouble();
+        state.x = ATCMath::deg2rad(uiInner->lineEditLongitude->text().toDouble());
+        state.y = ATCMath::deg2rad(uiInner->lineEditLatitude->text().toDouble());
 
         state.h = ATCMath::ft2m(uiInner->lineEditAltitudeCurrent->text().right(3).toDouble() * 100);
 
@@ -246,7 +222,188 @@ void DialogFlightCreator::on_buttonOK_clicked()
 
         emit signalCreateFlightTag(flight);
         emit signalUpdateFlightList(flight);
+    }
+    else if(filledOK && (flight != nullptr)) //Edit existing flight
+    {
+        //Initial state assignment
+        State state;
 
+        state.x = ATCMath::deg2rad(uiInner->lineEditLongitude->text().toDouble());
+        state.y = ATCMath::deg2rad(uiInner->lineEditLatitude->text().toDouble());
+
+        state.h = ATCMath::ft2m(uiInner->lineEditAltitudeCurrent->text().right(3).toDouble() * 100);
+
+        state.v = ATCMath::kt2mps(uiInner->lineEditTASCurrent->text().toDouble());
+        state.hdg = ATCMath::deg2rad(uiInner->spinBoxTrueHDG->text().toDouble());
+
+        flight->setState(state);
+
+        //Flight plan
+        ATCFlightPlan *fpl = flight->getFlightPlan();
+
+        //Flight plan - Flight rules
+        QString rulesStr = uiInner->comboBoxFlightRules->currentText();
+        ATC::FlightRules rules;
+
+        if(rulesStr == "IFR")
+        {
+            rules = ATC::IFR;
+        }
+        else if(rulesStr == "VFR")
+        {
+            rules = ATC::VFR;
+        }
+        else if(rulesStr == "SVFR")
+        {
+            rules = ATC::SVFR;
+        }
+
+        fpl->setFlightRules(rules);
+
+        //Flight plan - company & flight number
+        QString callsign = uiInner->lineEditCallsign->text();
+
+        ATCCompany *company;
+        QString flightNo;
+
+        if(callsign.at(3).isLetter())
+        {
+            company = new ATCCompany(callsign, "UNKNOWN", "Unknown Airline");
+            flightFactory->getCompanyFactory().appendCompany(company);
+            flightNo = "";
+        }
+        else
+        {
+            if(flightFactory->getCompanyFactory().getCompany(callsign.left(3)) != nullptr)
+            {
+                company = flightFactory->getCompanyFactory().getCompany(callsign.left(3));
+                flightNo = callsign.right(callsign.size() - 3);
+            }
+            else
+            {
+                company = new ATCCompany(callsign.left(3), "UNKNOWN", "Unknown Airline");
+                flightNo = callsign.right(callsign.size() - 3);
+            }
+        }
+
+        fpl->setCompany(company);
+        fpl->setFlightNumber(flightNo);
+
+        //Flight plan - aircraft type
+        QString typeStr = uiInner->comboBoxAcftType->currentText();
+        ATCAircraftType *type = flightFactory->getAircraftTypeFactory().getType(typeStr);
+
+        fpl->setType(type);
+
+        //Flight plan - route
+        QString departure = uiInner->lineEditDeparture->text();
+        QString destination = uiInner->lineEditDestination->text();
+        QStringList routeStr = uiInner->plainTextEditRoute->toPlainText().toUpper().split(" ", QString::SkipEmptyParts);
+        QString alternate = uiInner->lineEditAlternate->text();
+
+        ATCRoute route(departure, routeStr, destination);
+        route.setAlternate(alternate);
+
+        fpl->setRoute(route);
+
+        //Flight plan - tas
+        int tas = uiInner->lineEditTAS->text().toInt();
+        fpl->setTAS(tas);
+
+        //Flight plan - altitude
+        QString altitude = uiInner->lineEditAltitude->text();
+        fpl->setAltitude(altitude);
+
+        //Flight plan - departure time
+        QTime depTime = uiInner->timeEditDepTime->time();
+        fpl->setDepartureTime(depTime);
+
+        //Flight plan - enroute time
+        QTime enrTime = uiInner->timeEditEnrTime->time();
+        fpl->setEnrouteTime(enrTime);
+
+        //Flight plan - fuel time
+        QTime fuelTime = uiInner->timeEditFuelTime->time();
+        fpl->setFuelTime(fuelTime);
+
+        //Flight - fix list
+        QStringList fixList;
+
+        fixList.append(departure);
+        for(int i = 0; i < model->rowCount(); i++)
+        {
+            QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
+            if(fix != "DCT") fixList.append(fix);
+        }
+        fixList.append(destination);
+        if(!alternate.isEmpty()) fixList.append(alternate);
+
+        flight->setFixList(fixList);
+
+        //Assign selected SSR
+        flight->setSquawk(uiInner->lineEditSquawkCurrent->text());
+
+        //Assign assigned SSR
+        flight->setAssignedSquawk(uiInner->lineEditSquawk->text());
+
+        //Set initial navigation type
+        if(uiInner->radioButtonOwnNav->isChecked())
+        {
+            flight->setNavMode(ATC::Nav);
+        }
+        else if(uiInner->radioButtonHDG->isChecked())
+        {
+            flight->setNavMode(ATC::Hdg);
+        }
+
+        //Set altitude restrictions
+        if(!uiInner->lineEditAltitudeRes->text().isEmpty())
+        {
+            flight->setTargetAltitude(uiInner->lineEditAltitudeRes->text());
+        }
+        else
+        {
+            flight->setTargetAltitude(uiInner->lineEditAltitude->text());
+        }
+
+        //Set speed restrictions
+        if(!uiInner->lineEditSpeedRes->text().isEmpty())
+        {
+            flight->setTargetSpeed(uiInner->lineEditSpeedRes->text());
+        }
+
+        //Set heading restrictions
+        if(uiInner->radioButtonHDG->isChecked())
+        {
+            if(!uiInner->spinBoxHeadingRes->text().isEmpty())
+            {
+                flight->setHdgRestriction(uiInner->spinBoxHeadingRes->text().toInt());
+            }
+            else
+            {
+                flight->setHdgRestriction(ATCMath::normalizeAngle(uiInner->spinBoxTrueHDG->text().toInt() - qFloor(ATCConst::AVG_DECLINATION), ATC::Deg));
+            }
+        }
+        else
+        {
+            flight->setHdgRestriction(-1);
+        }
+
+        //Set next fix
+        if(uiInner->radioButtonOwnNav->isChecked())
+        {
+            flight->setNextFix(uiInner->comboBoxNextFix->currentText());
+        }
+
+        //Set start time of flight simulation
+        flight->setSimStartTime(uiInner->timeEditSimulationStart->time());
+
+        emit signalUpdateFlightTag(flight);
+        emit signalUpdateFlightList(flight);
+    }
+
+    if(filledOK)
+    {
         emit closed();
         close();
     }
@@ -607,7 +764,7 @@ bool DialogFlightCreator::validateRoute()
 
 bool DialogFlightCreator::verifyForm()
 {
-    if(!uiInner->lineEditCallsign->text().isEmpty())
+    if(!uiInner->lineEditCallsign->text().isEmpty() && (flight == nullptr))
     {
         ATCFlight *flight = simulation->getFlight(uiInner->lineEditCallsign->text());
 
@@ -770,6 +927,169 @@ void DialogFlightCreator::errorMessage(QString msg)
     uiInner->labelError->setVisible(true);
 }
 
+void DialogFlightCreator::formSetup()
+{
+    for(int i = 0; i < flightFactory->getAircraftTypeFactory().getTypeVectorSize(); i++)
+    {
+        QString type = flightFactory->getAircraftTypeFactory().getType(i)->getAcType().ICAOcode;
+        uiInner->comboBoxAcftType->addItem(type, Qt::DisplayRole);
+    }
+
+    uiInner->spinBoxHeadingRes->clear();
+    uiInner->spinBoxTrueHDG->clear();
+
+    uiInner->spinBoxHeadingRes->setEnabled(false);
+    uiInner->comboBoxNextFix->setEnabled(false);
+
+    uiInner->lineEditCallsign->setInputMask(">AAAxxxxxxx");
+    uiInner->lineEditDeparture->setInputMask(">AAAA");
+    uiInner->lineEditDestination->setInputMask(">AAAA");
+    uiInner->lineEditAlternate->setInputMask(">AAAA");
+    uiInner->lineEditAltitude->setInputMask(">A999");
+    uiInner->lineEditTAS->setInputMask("9990");
+    uiInner->lineEditSquawk->setInputMask("9999");
+
+    uiInner->lineEditSquawkCurrent->setInputMask("9999");
+    uiInner->lineEditAltitudeCurrent->setInputMask(">A999");
+    uiInner->lineEditTASCurrent->setInputMask("9990");
+
+    uiInner->lineEditAltitudeRes->setInputMask(">A999");
+    uiInner->lineEditSpeedRes->setInputMask("9X90");
+
+    uiInner->labelError->setVisible(false);
+
+    uiInner->timeEditDepTime->setEnabled(false);
+    uiInner->timeEditEnrTime->setEnabled(false);
+    uiInner->timeEditFuelTime->setEnabled(false);
+
+    model->setColumnCount(3);
+
+    uiInner->tableViewValidator->setModel(model);
+    uiInner->tableViewValidator->setGridStyle(Qt::NoPen);
+
+    uiInner->tableViewValidator->horizontalHeader()->setHidden(true);
+    uiInner->tableViewValidator->verticalHeader()->setHidden(true);
+}
+
+void DialogFlightCreator::formSetup(ATCFlight *flight)
+{
+    formSetup();
+
+    if(flight != nullptr)
+    {
+        uiInner->lineEditCallsign->setText(flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber());
+
+        switch(flight->getFlightPlan()->getFlightRules())
+        {
+            case ATC::IFR:
+                uiInner->comboBoxFlightRules->setCurrentIndex(uiInner->comboBoxFlightRules->findText("IFR"));
+                break;
+
+            case ATC::VFR:
+                uiInner->comboBoxFlightRules->setCurrentIndex(uiInner->comboBoxFlightRules->findText("VFR"));
+                break;
+
+            case ATC::SVFR:
+                uiInner->comboBoxFlightRules->setCurrentIndex(uiInner->comboBoxFlightRules->findText("SVFR"));
+                break;
+        }
+
+        QString acftType = flight->getFlightPlan()->getType()->getAcType().ICAOcode;
+        uiInner->comboBoxAcftType->setCurrentIndex(uiInner->comboBoxAcftType->findText(acftType));
+        uiInner->comboBoxAcftType->setEnabled(false);
+
+        uiInner->lineEditDeparture->setText(flight->getFlightPlan()->getRoute().getDeparture());
+        uiInner->lineEditDestination->setText(flight->getFlightPlan()->getRoute().getDestination());
+        uiInner->lineEditAlternate->setText(flight->getFlightPlan()->getRoute().getAlternate());
+        uiInner->lineEditTAS->setText(QString::number(flight->getFlightPlan()->getTAS()));
+        uiInner->lineEditAltitude->setText(flight->getFlightPlan()->getAltitude());
+        uiInner->lineEditSquawk->setText(flight->getAssignedSquawk());
+
+        QStringList route = flight->getFlightPlan()->getRoute().getRoute();
+        QString routeStr;
+
+        for(int i = 0; i < route.size() - 1; i++)
+        {
+            routeStr = routeStr + route.at(i) + " ";
+        }
+        if(route.size() >= 1)routeStr = routeStr + route.at(route.size() - 1);
+
+        uiInner->plainTextEditRoute->setPlainText(routeStr);
+
+        uiInner->timeEditDepTime->setEnabled(false);
+        uiInner->timeEditEnrTime->setEnabled(false);
+        uiInner->timeEditFuelTime->setEnabled(false);
+
+        uiInner->lineEditLatitude->setText(QString::number(ATCMath::rad2deg(flight->getState().y)));
+        uiInner->lineEditLongitude->setText(QString::number(ATCMath::rad2deg(flight->getState().x)));
+
+        double altitude = ATCMath::m2ft(flight->getState().h) / 100;
+        if(altitude >= settings->TRANSITION_LEVEL)
+        {
+            if(altitude < 10)
+            {
+                uiInner->lineEditAltitudeCurrent->setText("F00" + QString::number(altitude).left(3));
+            }
+            else if(altitude < 100)
+            {
+                uiInner->lineEditAltitudeCurrent->setText("F0" + QString::number(altitude).left(3));
+            }
+            else
+            {
+                uiInner->lineEditAltitudeCurrent->setText("F" + QString::number(altitude).left(3));
+            }
+        }
+        else
+        {
+            if(altitude < 10)
+            {
+                uiInner->lineEditAltitudeCurrent->setText("A00" + QString::number(altitude).left(3));
+            }
+            else if(altitude < 100)
+            {
+                uiInner->lineEditAltitudeCurrent->setText("A0" + QString::number(altitude).left(3));
+            }
+            else
+            {
+                uiInner->lineEditAltitudeCurrent->setText("A" + QString::number(altitude).left(3));
+            }
+        }
+
+        uiInner->lineEditTASCurrent->setText(QString::number(ATCMath::mps2kt(flight->getState().v)));
+        uiInner->lineEditSquawkCurrent->setText(flight->getSquawk());
+        uiInner->spinBoxTrueHDG->setValue(ATCMath::rad2deg(flight->getState().hdg));
+
+        uiInner->lineEditAltitudeRes->setText(flight->getTargetAltitude());
+        uiInner->lineEditSpeedRes->setText(flight->getTargetSpeed());
+
+        switch(flight->getNavMode())
+        {
+            case ATC::Nav:
+                uiInner->radioButtonOwnNav->setChecked(true);
+                uiInner->radioButtonHDG->setChecked(false);
+
+                uiInner->comboBoxNextFix->setEnabled(true);
+                uiInner->spinBoxHeadingRes->setEnabled(false);
+
+                on_tabWidget_tabBarClicked(1);
+                break;
+
+            case ATC::Hdg:
+                uiInner->radioButtonOwnNav->setChecked(false);
+                uiInner->radioButtonHDG->setChecked(true);
+
+                uiInner->comboBoxNextFix->setEnabled(false);
+                uiInner->spinBoxHeadingRes->setEnabled(true);
+
+                uiInner->spinBoxHeadingRes->setValue(flight->getHdgRestriction());
+                break;
+        }
+
+        uiInner->timeEditSimulationStart->setTime(flight->getSimStartTime());
+
+    }
+}
+
 void DialogFlightCreator::on_buttonSetCallsign_clicked()
 {
     setCallsign();
@@ -836,6 +1156,8 @@ void DialogFlightCreator::on_tabWidget_tabBarClicked(int index)
         }
         uiInner->comboBoxNextFix->addItem(uiInner->lineEditDestination->text());
         if(!uiInner->lineEditAlternate->text().isEmpty()) uiInner->comboBoxNextFix->addItem(uiInner->lineEditAlternate->text());
+
+        if(flight != nullptr) uiInner->comboBoxNextFix->setCurrentIndex(uiInner->comboBoxNextFix->findText(flight->getNextFix()));
     }
 }
 
