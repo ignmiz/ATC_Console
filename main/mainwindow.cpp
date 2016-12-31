@@ -140,15 +140,15 @@ void MainWindow::slotConstructDialogFlight()
     dialogFlight->show();
 
     connect(dialogFlight, SIGNAL(closed()), this, SLOT(slotCloseDialogFlight()));
-    connect(dialogFlight, SIGNAL(signalConstructFlightCreator()), this, SLOT(slotConstructFlightCreator()));
-    connect(dialogFlight, SIGNAL(signalConstructFlightCreator(ATCFlight*)), this, SLOT(slotConstructFlightCreator(ATCFlight*)));
+    connect(dialogFlight, SIGNAL(signalConstructDialogFlightCreator()), this, SLOT(slotConstructDialogFlightCreator()));
+    connect(dialogFlight, SIGNAL(signalConstructDialogFlightCreator(ATCFlight*)), this, SLOT(slotConstructDialogFlightCreator(ATCFlight*)));
 }
 
 void MainWindow::slotCloseDialogFlight()
 {
     disconnect(dialogFlight, SIGNAL(closed()), this, SLOT(slotCloseDialogFlight()));
-    disconnect(dialogFlight, SIGNAL(signalConstructFlightCreator()), this, SLOT(slotConstructFlightCreator()));
-    disconnect(dialogFlight, SIGNAL(signalConstructFlightCreator(ATCFlight*)), this, SLOT(slotConstructFlightCreator(ATCFlight*)));
+    disconnect(dialogFlight, SIGNAL(signalConstructDialogFlightCreator()), this, SLOT(slotConstructDialogFlightCreator()));
+    disconnect(dialogFlight, SIGNAL(signalConstructDialogFlightCreator(ATCFlight*)), this, SLOT(slotConstructDialogFlightCreator(ATCFlight*)));
 
     dialogFlight = nullptr;
 
@@ -162,17 +162,17 @@ void MainWindow::slotCreateDialogFlightPlan(ATCFlight *flight)
         dialogFlightPlan = new DialogFlightPlan(flight, airspaceData, simulation, flightFactory, this);
         dialogFlightPlan->show();
 
-        connect(dialogFlightPlan, SIGNAL(closed()), this, SLOT(slotDialogFlightPlanClosed()));
+        connect(dialogFlightPlan, SIGNAL(closed()), this, SLOT(slotCloseDialogFlightPlan()));
         connect(dialogFlightPlan, SIGNAL(signalUpdateRoute(ATCFlight*)), ui->situationalDisplay, SLOT(slotUpdateRoute(ATCFlight*)));
     }
 }
 
-void MainWindow::slotDialogFlightPlanClosed()
+void MainWindow::slotCloseDialogFlightPlan()
 {
     dialogFlightPlan = nullptr;
 }
 
-void MainWindow::slotConstructFlightCreator()
+void MainWindow::slotConstructDialogFlightCreator()
 {
     dialogFlight->hide();
 
@@ -182,7 +182,7 @@ void MainWindow::slotConstructFlightCreator()
     connectDialogFlightCreatorSlots();
 }
 
-void MainWindow::slotConstructFlightCreator(ATCFlight *flight)
+void MainWindow::slotConstructDialogFlightCreator(ATCFlight *flight)
 {
     dialogFlight->hide();
 
@@ -192,9 +192,9 @@ void MainWindow::slotConstructFlightCreator(ATCFlight *flight)
     connectDialogFlightCreatorSlots();
 }
 
-void MainWindow::slotCloseFlightCreator()
+void MainWindow::slotCloseDialogFlightCreator()
 {
-    disconnect(dialogFlightCreator, SIGNAL(closed()), this, SLOT(slotCloseFlightCreator()));
+    disconnect(dialogFlightCreator, SIGNAL(closed()), this, SLOT(slotCloseDialogFlightCreator()));
     disconnect(dialogFlightCreator, SIGNAL(signalGetLocation()), ui->situationalDisplay, SLOT(slotGetLocation()));
     disconnect(ui->situationalDisplay, SIGNAL(signalShowFlightCreator()), dialogFlightCreator, SLOT(slotShowFlightCreator()));
     disconnect(ui->situationalDisplay, SIGNAL(signalDisplayClicked(double,double)), dialogFlightCreator, SLOT(slotDisplayClicked(double,double)));
@@ -227,7 +227,7 @@ void MainWindow::mainWindowSetup()
 
 void MainWindow::connectDialogFlightCreatorSlots()
 {
-    connect(dialogFlightCreator, SIGNAL(closed()), this, SLOT(slotCloseFlightCreator()));
+    connect(dialogFlightCreator, SIGNAL(closed()), this, SLOT(slotCloseDialogFlightCreator()));
     connect(dialogFlightCreator, SIGNAL(signalGetLocation()), ui->situationalDisplay, SLOT(slotGetLocation()));
     connect(ui->situationalDisplay, SIGNAL(signalShowFlightCreator()), dialogFlightCreator, SLOT(slotShowFlightCreator()));
     connect(ui->situationalDisplay, SIGNAL(signalDisplayClicked(double,double)), dialogFlightCreator, SLOT(slotDisplayClicked(double,double)));

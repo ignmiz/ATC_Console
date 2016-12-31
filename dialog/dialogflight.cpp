@@ -33,7 +33,7 @@ void DialogFlight::slotUpdateFlightList(ATCFlight *flight)
 
 void DialogFlight::on_buttonCreateFlight_clicked()
 {
-    emit signalConstructFlightCreator();
+    emit signalConstructDialogFlightCreator();
 }
 
 void DialogFlight::on_buttonReady_clicked()
@@ -249,7 +249,7 @@ void DialogFlight::on_buttonEditFlight_clicked()
 
     if(selectionList.size() > 0)
     {
-        emit signalConstructFlightCreator(simulation->getFlight(model->index(selectionList.at(0).row(), 1).data().toString()));
+        emit signalConstructDialogFlightCreator(simulation->getFlight(model->index(selectionList.at(0).row(), 1).data().toString()));
 
         rowToEdit = selectionList.at(0).row();
     }

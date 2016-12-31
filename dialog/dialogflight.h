@@ -22,8 +22,8 @@ public:
     ~DialogFlight();
 
 signals:
-    void signalConstructFlightCreator();
-    void signalConstructFlightCreator(ATCFlight *flight);
+    void signalConstructDialogFlightCreator();
+    void signalConstructDialogFlightCreator(ATCFlight *flight);
 
 private slots:
     ATC_MOUSE_HANDLER

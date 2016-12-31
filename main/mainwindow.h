@@ -59,11 +59,11 @@ private slots:
     void slotCloseDialogFlight();
 
     void slotCreateDialogFlightPlan(ATCFlight *flight);
-    void slotDialogFlightPlanClosed();
+    void slotCloseDialogFlightPlan();
 
-    void slotConstructFlightCreator();
-    void slotConstructFlightCreator(ATCFlight *flight);
-    void slotCloseFlightCreator();
+    void slotConstructDialogFlightCreator();
+    void slotConstructDialogFlightCreator(ATCFlight *flight);
+    void slotCloseDialogFlightCreator();
 
 private:
     Ui::MainWindow *ui;
