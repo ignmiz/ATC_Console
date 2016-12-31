@@ -11,6 +11,7 @@
 #include "dialogflight.h"
 #include "dialogflightcreator.h"
 #include "dialogflightplan.h"
+#include "dialogactiverunways.h"
 
 #include "atcpaths.h"
 #include "atcairspace.h"
@@ -65,6 +66,9 @@ private slots:
     void slotConstructDialogFlightCreator(ATCFlight *flight);
     void slotCloseDialogFlightCreator();
 
+    void slotConstructDialogActiveRunways();
+    void slotCloseDialogActiveRunways();
+
 private:
     Ui::MainWindow *ui;
     DialogTextConsole *dialogTextConsole;
@@ -74,6 +78,7 @@ private:
 
     DialogFlight *dialogFlight = nullptr;
     DialogFlightCreator *dialogFlightCreator = nullptr;
+    DialogActiveRunways *dialogActiveRunways = nullptr;
 
     DialogFlightPlan *dialogFlightPlan = nullptr;
 

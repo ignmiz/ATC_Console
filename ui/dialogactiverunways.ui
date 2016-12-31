@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DialogActiveRunways</class>
+ <widget class="QDialog" name="DialogActiveRunways">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>650</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QPushButton" name="buttonCancel">
+   <property name="geometry">
+    <rect>
+     <x>470</x>
+     <y>610</y>
+     <width>120</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Cancel</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonOK">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>610</y>
+     <width>120</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>OK</string>
+   </property>
+  </widget>
+  <widget class="QTableView" name="tableViewRunways">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>50</y>
+     <width>580</width>
+     <height>540</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QTableView
+{;
+	color: #c8c8c8;;
+	background-color: #000000;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	font: 11px;
+	outline: none;
+}
+
+QTableView::item:hover
+{
+
+}
+
+QTableView::item:selected
+{
+	background-color: #282828;
+	color: #c8c8c8;;
+	font: 11px;
+	outline: none;
+}
+
+QTableView::item:selected:active
+{
+
+}
+
+QTableView::item:alternate
+{
+
+}
+
+QTableView::item:focus
+{
+	outline: none;
+}
+
+QHeaderView::section
+{
+    background-color: #141414;
+    color: #c8c8c8;
+	font: 11px;
+    border: 2px solid #282828;
+}
+
+QScrollBar:vertical
+{
+	background: #000000;
+	width: 2px;
+	border: none;
+	margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: #323232;
+}
+
+QScrollBar::add-page:vertical
+{
+	background: #000000;
+	border: none;
+}
+
+QScrollBar::sub-page:vertical
+{
+	background: #000000;
+	border: none;
+}</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

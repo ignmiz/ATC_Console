@@ -279,3 +279,8 @@ void DialogFlight::on_buttonDeleteAll_clicked()
     simulation->clearFlights();
     model->removeRows(0, model->rowCount());
 }
+
+void DialogFlight::on_buttonActiveRunways_clicked()
+{
+    emit signalConstructDialogActiveRunways();
+}

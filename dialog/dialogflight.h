@@ -25,6 +25,8 @@ signals:
     void signalConstructDialogFlightCreator();
     void signalConstructDialogFlightCreator(ATCFlight *flight);
 
+    void signalConstructDialogActiveRunways();
+
 private slots:
     ATC_MOUSE_HANDLER
 
@@ -37,6 +39,8 @@ private slots:
     void on_buttonEditFlight_clicked();
     void on_buttonDeleteFlight_clicked();
     void on_buttonDeleteAll_clicked();
+
+    void on_buttonActiveRunways_clicked();
 
 private:
     Ui::DialogFlight *uiInner;

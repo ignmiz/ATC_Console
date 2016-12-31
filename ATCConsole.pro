@@ -94,7 +94,8 @@ SOURCES += main.cpp\
     dialogroute.cpp \
     dialoghandoff.cpp \
     dialogflightplan.cpp \
-    atcrouteprediction.cpp
+    atcrouteprediction.cpp \
+    dialogactiverunways.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -160,7 +161,8 @@ HEADERS  += mainwindow.h \
     dialogroute.h \
     dialoghandoff.h \
     dialogflightplan.h \
-    atcrouteprediction.h
+    atcrouteprediction.h \
+    dialogactiverunways.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
@@ -175,7 +177,8 @@ FORMS    += mainwindow.ui \
     dialogheading.ui \
     dialogroute.ui \
     dialoghandoff.ui \
-    dialogflightplan.ui
+    dialogflightplan.ui \
+    dialogactiverunways.ui
 
 DISTFILES += \
     resources/acft_cursor.png

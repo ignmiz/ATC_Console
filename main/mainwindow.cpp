@@ -142,6 +142,7 @@ void MainWindow::slotConstructDialogFlight()
     connect(dialogFlight, SIGNAL(closed()), this, SLOT(slotCloseDialogFlight()));
     connect(dialogFlight, SIGNAL(signalConstructDialogFlightCreator()), this, SLOT(slotConstructDialogFlightCreator()));
     connect(dialogFlight, SIGNAL(signalConstructDialogFlightCreator(ATCFlight*)), this, SLOT(slotConstructDialogFlightCreator(ATCFlight*)));
+    connect(dialogFlight, SIGNAL(signalConstructDialogActiveRunways()), this, SLOT(slotConstructDialogActiveRunways()));
 }
 
 void MainWindow::slotCloseDialogFlight()
@@ -202,6 +203,22 @@ void MainWindow::slotCloseDialogFlightCreator()
 
     dialogFlightCreator = nullptr;
 
+    dialogFlight->show();
+}
+
+void MainWindow::slotConstructDialogActiveRunways()
+{
+    dialogFlight->hide();
+
+    dialogActiveRunways = new DialogActiveRunways(this);
+    dialogActiveRunways->show();
+
+    connect(dialogActiveRunways, SIGNAL(closed()), this, SLOT(slotCloseDialogActiveRunways()));
+}
+
+void MainWindow::slotCloseDialogActiveRunways()
+{
+    dialogActiveRunways = nullptr;
     dialogFlight->show();
 }
 

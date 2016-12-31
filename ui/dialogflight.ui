@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>45</y>
+     <y>80</y>
      <width>145</width>
      <height>25</height>
     </rect>
@@ -56,9 +56,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>80</y>
+     <y>115</y>
      <width>580</width>
-     <height>510</height>
+     <height>475</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -138,7 +138,7 @@ QScrollBar::sub-page:vertical
    <property name="geometry">
     <rect>
      <x>155</x>
-     <y>45</y>
+     <y>80</y>
      <width>145</width>
      <height>25</height>
     </rect>
@@ -151,7 +151,7 @@ QScrollBar::sub-page:vertical
    <property name="geometry">
     <rect>
      <x>300</x>
-     <y>45</y>
+     <y>80</y>
      <width>145</width>
      <height>25</height>
     </rect>
@@ -164,13 +164,26 @@ QScrollBar::sub-page:vertical
    <property name="geometry">
     <rect>
      <x>445</x>
-     <y>45</y>
+     <y>80</y>
      <width>145</width>
      <height>25</height>
     </rect>
    </property>
    <property name="text">
     <string>Delete All</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonActiveRunways">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>50</y>
+     <width>580</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Select Active Airports and Runways</string>
    </property>
   </widget>
  </widget>
