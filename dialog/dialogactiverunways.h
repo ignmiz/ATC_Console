@@ -26,6 +26,8 @@ private slots:
     void on_buttonOK_clicked();
     void on_buttonCancel_clicked();
 
+    void slotCheckBoxStateChanged(int i);
+
 private:
     Ui::DialogActiveRunways *uiInner;
     ATCAirspace *airspace;
@@ -38,6 +40,7 @@ private:
     void appendRow(QString airportCode, QStandardItemModel *model);
 
     void createCenteredCheckbox(QModelIndex &index);
+    QModelIndex getCheckBoxIndex(QCheckBox *checkBox);
 };
 
 #endif // DIALOGACTIVERUNWAYS_H

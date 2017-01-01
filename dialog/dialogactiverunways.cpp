@@ -29,6 +29,31 @@ void DialogActiveRunways::on_buttonCancel_clicked()
     close();
 }
 
+void DialogActiveRunways::slotCheckBoxStateChanged(int i)
+{
+    QModelIndex checkBoxIndex = getCheckBoxIndex(dynamic_cast<QCheckBox*>(sender()));
+
+    if((checkBoxIndex.column() == 0) || (checkBoxIndex.column() == 1))
+    {
+        for(int j = 0; j < model->rowCount(); j++)
+        {
+            if(model->index(j, 2).data().toString() == model->index(checkBoxIndex.row(), 2).data().toString())
+            {
+                QCheckBox *box = dynamic_cast<QCheckBox*>(uiInner->tableViewRunways->indexWidget(model->index(j, checkBoxIndex.column()))->layout()->itemAt(0)->widget());
+
+                if(i == 0) //Box unchecked
+                {
+                    box->setChecked(false);
+                }
+                else if(i == 2) //Box checked
+                {
+                    box->setChecked(true);
+                }
+            }
+        }
+    }
+}
+
 void DialogActiveRunways::dialogSetup()
 {
     model = new QStandardItemModel(this);
@@ -53,7 +78,7 @@ void DialogActiveRunways::dialogSetup()
     uiInner->tableViewRunways->setColumnWidth(3, 65);       //RUNWAY CODE
     uiInner->tableViewRunways->setColumnWidth(4, 60);       //RUNWAY ARR
     uiInner->tableViewRunways->setColumnWidth(5, 60);       //RUNWAY DEP
-    uiInner->tableViewRunways->setColumnWidth(6, 119);      //AIRPORT CODE
+    uiInner->tableViewRunways->setColumnWidth(6, 119);      //SPACER
 
     for(int i = 0; i < airspace->getAirportsVectorSize(); i++)
     {
@@ -68,6 +93,12 @@ void DialogActiveRunways::dialogSetup()
     for(int i = 0; i < model->rowCount(); i++)
     {
         uiInner->tableViewRunways->setRowHeight(i, 25);
+
+        connect(dynamic_cast<QCheckBox*>(uiInner->tableViewRunways->indexWidget(model->index(i, 0))->layout()->itemAt(0)->widget()), SIGNAL(stateChanged(int)), this, SLOT(slotCheckBoxStateChanged(int)));
+        connect(dynamic_cast<QCheckBox*>(uiInner->tableViewRunways->indexWidget(model->index(i, 1))->layout()->itemAt(0)->widget()), SIGNAL(stateChanged(int)), this, SLOT(slotCheckBoxStateChanged(int)));
+
+        if(uiInner->tableViewRunways->indexWidget(model->index(i, 4)) != nullptr) connect(dynamic_cast<QCheckBox*>(uiInner->tableViewRunways->indexWidget(model->index(i, 4))->layout()->itemAt(0)->widget()), SIGNAL(stateChanged(int)), this, SLOT(slotCheckBoxStateChanged(int)));
+        if(uiInner->tableViewRunways->indexWidget(model->index(i, 5)) != nullptr) connect(dynamic_cast<QCheckBox*>(uiInner->tableViewRunways->indexWidget(model->index(i, 5))->layout()->itemAt(0)->widget()), SIGNAL(stateChanged(int)), this, SLOT(slotCheckBoxStateChanged(int)));
     }
 }
 
@@ -190,5 +221,37 @@ void DialogActiveRunways::createCenteredCheckbox(QModelIndex &index)
     checkBoxLayout->setAlignment(Qt::AlignCenter);
     checkBoxLayout->setContentsMargins(0, 0, 0, 0);
 
+    centeredCheckBoxWidget->setLayout(checkBoxLayout);
     uiInner->tableViewRunways->setIndexWidget(index, centeredCheckBoxWidget);
+}
+
+QModelIndex DialogActiveRunways::getCheckBoxIndex(QCheckBox *checkBox)
+{
+    QModelIndex checkBoxIndex;
+
+    for(int i = 0; i < model->rowCount(); i++)
+    {
+        if(uiInner->tableViewRunways->indexWidget(model->index(i, 0))->layout()->itemAt(0)->widget() == checkBox)
+        {
+            checkBoxIndex = model->index(i, 0);
+        }
+        else if(uiInner->tableViewRunways->indexWidget(model->index(i, 1))->layout()->itemAt(0)->widget() == checkBox)
+        {
+            checkBoxIndex = model->index(i, 1);
+        }
+        else if((uiInner->tableViewRunways->indexWidget(model->index(i, 4)) != nullptr) &&
+                (uiInner->tableViewRunways->indexWidget(model->index(i, 5)) != nullptr))
+        {
+            if(uiInner->tableViewRunways->indexWidget(model->index(i, 4))->layout()->itemAt(0)->widget() == checkBox)
+            {
+                checkBoxIndex = model->index(i, 4);
+            }
+            else if(uiInner->tableViewRunways->indexWidget(model->index(i, 5))->layout()->itemAt(0)->widget() == checkBox)
+            {
+                checkBoxIndex = model->index(i, 5);
+            }
+        }
+    }
+
+    return checkBoxIndex;
 }
