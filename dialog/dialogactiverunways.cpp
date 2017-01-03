@@ -1,9 +1,10 @@
 #include "dialogactiverunways.h"
 #include "ui_dialogactiverunways.h"
 
-DialogActiveRunways::DialogActiveRunways(ATCAirspace *airspace, QWidget *parent) :
+DialogActiveRunways::DialogActiveRunways(ATCAirspace *airspace, ATCActiveRunways *activeRunways, QWidget *parent) :
     ATCDialog(parent, "Active Runways", 600, 650),
     airspace(airspace),
+    activeRunways(activeRunways),
     uiInner(new Ui::DialogActiveRunways)
 {
     uiInner->setupUi(this);
@@ -20,7 +21,82 @@ DialogActiveRunways::~DialogActiveRunways()
 
 void DialogActiveRunways::on_buttonOK_clicked()
 {
+    QString tempAirport = "";
 
+    for(int i = 0; i < model->rowCount(); i++)
+    {
+        QCheckBox *boxAirportDep = dynamic_cast<QCheckBox*>(uiInner->tableViewRunways->indexWidget(model->index(i, 0))->layout()->itemAt(0)->widget());
+        QCheckBox *boxAirportArr = dynamic_cast<QCheckBox*>(uiInner->tableViewRunways->indexWidget(model->index(i, 1))->layout()->itemAt(0)->widget());
+        QCheckBox *boxRunwayDep = nullptr;
+        QCheckBox *boxRunwayArr = nullptr;
+
+        if(uiInner->tableViewRunways->indexWidget(model->index(i, 4)) != nullptr) boxRunwayDep = dynamic_cast<QCheckBox*>(uiInner->tableViewRunways->indexWidget(model->index(i, 4))->layout()->itemAt(0)->widget());
+        if(uiInner->tableViewRunways->indexWidget(model->index(i, 5)) != nullptr) boxRunwayArr = dynamic_cast<QCheckBox*>(uiInner->tableViewRunways->indexWidget(model->index(i, 5))->layout()->itemAt(0)->widget());
+
+        bool boxAirportDepChecked = boxAirportDep->isChecked();
+        bool boxAirportArrChecked = boxAirportArr->isChecked();
+        bool boxRunwayDepChecked = false;
+        bool boxRunwayArrChecked = false;
+
+        if(boxRunwayDep != nullptr) boxRunwayDepChecked = boxRunwayDep->isChecked();
+        if(boxRunwayArr != nullptr) boxRunwayArrChecked = boxRunwayArr->isChecked();
+
+        if(boxAirportDepChecked || boxAirportArrChecked || boxRunwayDepChecked || boxRunwayArrChecked)
+        {
+            QString airport = model->index(i, 2).data().toString();
+
+            if(airport != tempAirport) //Create new ActiveAirport
+            {
+                ActiveAirport activeAirport;
+
+                activeAirport.airportCode = airport;
+                if(boxAirportDepChecked) activeAirport.dep = true;
+                if(boxAirportArrChecked) activeAirport.arr = true;
+                if(boxRunwayDepChecked) activeAirport.depRwys.append(model->index(i, 3).data().toString());
+                if(boxRunwayArrChecked) activeAirport.arrRwys.append(model->index(i, 3).data().toString());
+
+                activeRunways->appendActiveAirport(activeAirport);
+
+                tempAirport = airport;
+            }
+            else //Append data to last ActiveAirport
+            {
+                ActiveAirport activeAirport = activeRunways->getActiveAirport(activeRunways->getActiveAirports().size() - 1);
+
+                if(boxRunwayDepChecked)
+                {
+                    activeAirport.depRwys.append(model->index(i, 3).data().toString());
+                    activeRunways->getActiveAirports().replace(activeRunways->getActiveAirports().size() - 1, activeAirport);
+                }
+
+                if(boxRunwayArrChecked)
+                {
+                    activeAirport.arrRwys.append(model->index(i, 3).data().toString());
+                    activeRunways->getActiveAirports().replace(activeRunways->getActiveAirports().size() - 1, activeAirport);
+                }
+            }
+        }
+    }
+
+//    for(int i = 0; i < activeRunways->getActiveAirports().size(); i++)
+//    {
+//        ActiveAirport airport = activeRunways->getActiveAirport(i);
+
+//        qDebug() << airport.airportCode << "| dep: " << airport.dep << " arr: " << airport.arr;
+
+//        for(int j = 0; j < airport.depRwys.size(); j++)
+//        {
+//            qDebug() << "Dep RWY: " << airport.depRwys.at(j);
+//        }
+
+//        for(int j = 0; j < airport.arrRwys.size(); j++)
+//        {
+//            qDebug() << "Arr RWY: " << airport.arrRwys.at(j);
+//        }
+//    }
+
+    emit closed();
+    close();
 }
 
 void DialogActiveRunways::on_buttonCancel_clicked()

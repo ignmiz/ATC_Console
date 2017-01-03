@@ -7,8 +7,8 @@
 struct ActiveAirport
 {
     QString airportCode;
-    bool dep;
-    bool arr;
+    bool dep = false;
+    bool arr = false;
     QStringList depRwys;
     QStringList arrRwys;
 };

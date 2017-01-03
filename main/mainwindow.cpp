@@ -210,7 +210,7 @@ void MainWindow::slotConstructDialogActiveRunways()
 {
     dialogFlight->hide();
 
-    dialogActiveRunways = new DialogActiveRunways(airspaceData, this);
+    dialogActiveRunways = new DialogActiveRunways(airspaceData, simulation->getActiveRunways(), this);
     dialogActiveRunways->show();
 
     connect(dialogActiveRunways, SIGNAL(closed()), this, SLOT(slotCloseDialogActiveRunways()));

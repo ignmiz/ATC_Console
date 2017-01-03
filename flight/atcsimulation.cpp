@@ -1,13 +1,15 @@
 
 #include "atcsimulation.h"
 
-ATCSimulation::ATCSimulation()
+ATCSimulation::ATCSimulation() : activeRunways(new ATCActiveRunways())
 {
 
 }
 
 ATCSimulation::~ATCSimulation()
 {
+    if(activeRunways != nullptr) delete activeRunways;
+
     if(!flights.empty())
     {
         for(int i = 0; i < flights.size(); i++)
@@ -17,6 +19,11 @@ ATCSimulation::~ATCSimulation()
     }
 
     flights.clear();
+}
+
+ATCActiveRunways *ATCSimulation::getActiveRunways()
+{
+    return activeRunways;
 }
 
 ATCFlight* ATCSimulation::getFlight(int i)

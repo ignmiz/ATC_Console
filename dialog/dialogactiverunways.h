@@ -3,10 +3,13 @@
 
 #include "atcdialog.h"
 #include "atcairspace.h"
+#include "atcactiverunways.h"
 
 #include <QCheckBox>
 #include <QHBoxLayout>
 #include <QStandardItemModel>
+
+#include <QDebug>
 
 namespace Ui {
 class DialogActiveRunways;
@@ -17,7 +20,7 @@ class DialogActiveRunways : public ATCDialog
     Q_OBJECT
 
 public:
-    explicit DialogActiveRunways(ATCAirspace *airspace, QWidget *parent = 0);
+    explicit DialogActiveRunways(ATCAirspace *airspace, ATCActiveRunways *activeRunways, QWidget *parent = 0);
     ~DialogActiveRunways();
 
 private slots:
@@ -31,6 +34,7 @@ private slots:
 private:
     Ui::DialogActiveRunways *uiInner;
     ATCAirspace *airspace;
+    ATCActiveRunways *activeRunways;
     QStandardItemModel *model = nullptr;
 
     void dialogSetup();
