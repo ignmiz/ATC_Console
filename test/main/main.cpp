@@ -40,6 +40,7 @@
 #include "test_atcsimulation.h"
 #include "test_atcflighttag.h"
 #include "test_atcrouteprediction.h"
+#include "test_atcactiverunways.h"
 
 //----------Submodule: utils----------
 #include "test_atcmath.h"
@@ -93,6 +94,7 @@ int main(int argc, char *argv[])
     Test_ATCSimulation test_ATCSimulation;
     Test_ATCFlightTag test_ATCFlightTag;
     Test_ATCRoutePrediction test_ATCRoutePrediction;
+    Test_ATCActiveRunways test_ATCActiveRunways;
 
     //----------Submodule: utils----------
     Test_ATCMath test_ATCMath;
@@ -140,6 +142,7 @@ int main(int argc, char *argv[])
     failed.append(QTest::qExec(&test_ATCSimulation, argc, argv));
     failed.append(QTest::qExec(&test_ATCFlightTag, argc, argv));
     failed.append(QTest::qExec(&test_ATCRoutePrediction, argc,argv));
+    failed.append(QTest::qExec(&test_ATCActiveRunways, argc, argv));
 
     //----------Submodule: utils----------
     failed.append(QTest::qExec(&test_ATCMath, argc, argv));

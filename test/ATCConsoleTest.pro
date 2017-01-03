@@ -105,8 +105,9 @@ SOURCES += \
     dialogroute.cpp \
     dialoghandoff.cpp \
     dialogflightplan.cpp \
-    atcrouteprediction.cpp
-
+    atcrouteprediction.cpp \
+    dialogactiverunways.cpp \
+    atcactiverunways.cpp \
 
 HEADERS  += \
     mainwindow.h \
@@ -173,7 +174,9 @@ HEADERS  += \
     dialogroute.h \
     dialoghandoff.h \
     dialogflightplan.h \
-    atcrouteprediction.h
+    atcrouteprediction.h \
+    dialogactiverunways.h \
+    atcactiverunways.h \
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
@@ -188,7 +191,8 @@ FORMS    += mainwindow.ui \
     dialogheading.ui \
     dialogroute.ui \
     dialoghandoff.ui \
-    dialogflightplan.ui
+    dialogflightplan.ui \
+    dialogactiverunways.ui
 
 #MOCK SOURCES & HEADERS GO HERE:
 
@@ -249,6 +253,7 @@ SOURCES += main.cpp \
     test_atcsimulation.cpp \
     test_atcflighttag.cpp \
     test_atcrouteprediction.cpp \
+    test_atcactiverunways.cpp \
     \
     test_atcmath.cpp
 
@@ -293,6 +298,7 @@ HEADERS += \
     test_atcsimulation.h \
     test_atcflighttag.h \
     test_atcrouteprediction.h \
+    test_atcactiverunways.h \
     \
     test_atcmath.h
 
