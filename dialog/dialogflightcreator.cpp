@@ -996,7 +996,6 @@ void DialogFlightCreator::formSetup(ATCFlight *flight)
 
         QString acftType = flight->getFlightPlan()->getType()->getAcType().ICAOcode;
         uiInner->comboBoxAcftType->setCurrentIndex(uiInner->comboBoxAcftType->findText(acftType));
-        uiInner->comboBoxAcftType->setEnabled(false);
 
         uiInner->lineEditDeparture->setText(flight->getFlightPlan()->getRoute().getDeparture());
         uiInner->lineEditDestination->setText(flight->getFlightPlan()->getRoute().getDestination());

@@ -56,7 +56,7 @@
 	border-style: inset;
 	border-width: 2px;
 	border-color: #141414;
-	font: 11px;
+	font: 12px;
 	outline: none;
 }
 
