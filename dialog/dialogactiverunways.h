@@ -38,6 +38,9 @@ private:
     QStandardItemModel *model = nullptr;
 
     void dialogSetup();
+    void fillModel();
+
+    void setActive(ActiveAirport &airport);
 
     void appendAirport(ATCAirport *airport, QStandardItemModel *model);
     void appendRow(QString airportCode, QString rwyCode, QStandardItemModel *model);

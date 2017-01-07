@@ -11,6 +11,7 @@ DialogActiveRunways::DialogActiveRunways(ATCAirspace *airspace, ATCActiveRunways
     windowSetup();
 
     dialogSetup();
+    fillModel();
 }
 
 DialogActiveRunways::~DialogActiveRunways()
@@ -21,6 +22,8 @@ DialogActiveRunways::~DialogActiveRunways()
 
 void DialogActiveRunways::on_buttonOK_clicked()
 {
+    activeRunways->clearActiveAirports();
+
     QString tempAirport = "";
 
     for(int i = 0; i < model->rowCount(); i++)
@@ -77,23 +80,6 @@ void DialogActiveRunways::on_buttonOK_clicked()
             }
         }
     }
-
-//    for(int i = 0; i < activeRunways->getActiveAirports().size(); i++)
-//    {
-//        ActiveAirport airport = activeRunways->getActiveAirport(i);
-
-//        qDebug() << airport.airportCode << "| dep: " << airport.dep << " arr: " << airport.arr;
-
-//        for(int j = 0; j < airport.depRwys.size(); j++)
-//        {
-//            qDebug() << "Dep RWY: " << airport.depRwys.at(j);
-//        }
-
-//        for(int j = 0; j < airport.arrRwys.size(); j++)
-//        {
-//            qDebug() << "Arr RWY: " << airport.arrRwys.at(j);
-//        }
-//    }
 
     emit closed();
     close();
@@ -175,6 +161,50 @@ void DialogActiveRunways::dialogSetup()
 
         if(uiInner->tableViewRunways->indexWidget(model->index(i, 4)) != nullptr) connect(dynamic_cast<QCheckBox*>(uiInner->tableViewRunways->indexWidget(model->index(i, 4))->layout()->itemAt(0)->widget()), SIGNAL(stateChanged(int)), this, SLOT(slotCheckBoxStateChanged(int)));
         if(uiInner->tableViewRunways->indexWidget(model->index(i, 5)) != nullptr) connect(dynamic_cast<QCheckBox*>(uiInner->tableViewRunways->indexWidget(model->index(i, 5))->layout()->itemAt(0)->widget()), SIGNAL(stateChanged(int)), this, SLOT(slotCheckBoxStateChanged(int)));
+    }
+}
+
+void DialogActiveRunways::fillModel()
+{
+    for(int i = 0; i < activeRunways->getActiveAirports().size(); i++)
+    {
+        ActiveAirport airport = activeRunways->getActiveAirport(i);
+        setActive(airport);
+    }
+}
+
+void DialogActiveRunways::setActive(ActiveAirport &airport)
+{
+    QString airportCode = airport.airportCode;
+    bool dep = airport.dep;
+    bool arr = airport.arr;
+    QStringList depRwys = airport.depRwys;
+    QStringList arrRwys = airport.arrRwys;
+
+    QVector<QModelIndex> indexes;
+
+    for(int i = 0; i < model->rowCount(); i++)
+    {
+        QModelIndex currentIndex = model->index(i, 2);
+        if(currentIndex.data().toString() == airportCode) indexes.append(currentIndex);
+    }
+
+    for(int i = 0; i < indexes.size(); i++)
+    {
+        int row = indexes.at(i).row();
+
+        if(dep) static_cast<QCheckBox*>(uiInner->tableViewRunways->indexWidget(model->index(row, 0))->layout()->itemAt(0)->widget())->setChecked(true);
+        if(arr) static_cast<QCheckBox*>(uiInner->tableViewRunways->indexWidget(model->index(row, 1))->layout()->itemAt(0)->widget())->setChecked(true);
+
+        for(int j = 0; j < depRwys.size(); j++)
+        {
+            if(depRwys.at(j) == model->index(row, 3).data().toString()) static_cast<QCheckBox*>(uiInner->tableViewRunways->indexWidget(model->index(row, 4))->layout()->itemAt(0)->widget())->setChecked(true);
+        }
+
+        for(int j = 0; j < arrRwys.size(); j++)
+        {
+            if(arrRwys.at(j) == model->index(row, 3).data().toString()) static_cast<QCheckBox*>(uiInner->tableViewRunways->indexWidget(model->index(row, 5))->layout()->itemAt(0)->widget())->setChecked(true);
+        }
     }
 }
 
