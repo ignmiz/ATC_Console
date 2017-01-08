@@ -80,7 +80,7 @@ SOURCES += \
     dialogsettings.cpp \
     dialogcolorpicker.cpp \
     atcsettings.cpp \
-    atcsettingstableview.cpp \
+    atctableviewsettings.cpp \
     atccompany.cpp \
     atccompanyfactory.cpp \
     atcaircrafttype.cpp \
@@ -149,7 +149,7 @@ HEADERS  += \
     dialogsettings.h \
     dialogcolorpicker.h \
     atcsettings.h \
-    atcsettingstableview.h \
+    atctableviewsettings.h \
     atccompany.h \
     atccompanyfactory.h \
     atcaircrafttype.h \

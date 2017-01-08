@@ -3,11 +3,11 @@
 
 #include <QTableView>
 
-class ATCSettingsTableView : public QTableView
+class ATCTableViewSettings : public QTableView
 {
 public:
-    explicit ATCSettingsTableView(QWidget *parent = 0);
-    ~ATCSettingsTableView();
+    explicit ATCTableViewSettings(QWidget *parent = 0);
+    ~ATCTableViewSettings();
 };
 
 #endif // ATCSETTINGSTABLEVIEW_H
