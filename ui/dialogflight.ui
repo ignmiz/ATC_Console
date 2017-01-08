@@ -131,6 +131,24 @@ QScrollBar::sub-page:vertical
 {
 	background: #000000;
 	border: none;
+}
+
+QComboBox
+{
+	color: #c8c8c8;
+	background-color: #282828;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	font: 11px;
+}
+
+QComboBox QAbstractItemView
+{	
+	color: #c8c8c8;
+	background-color: #282828;
+    selection-background-color: #060064;
+	font: 11px;
 }</string>
    </property>
   </widget>

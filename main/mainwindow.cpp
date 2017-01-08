@@ -136,7 +136,7 @@ void MainWindow::slotConstructDialogFlight()
 {
     dialogMainMenu->hide();
 
-    dialogFlight = new DialogFlight(simulation, this);
+    dialogFlight = new DialogFlight(simulation, airspaceData, this);
     dialogFlight->show();
 
     connect(dialogFlight, SIGNAL(closed()), this, SLOT(slotCloseDialogFlight()));

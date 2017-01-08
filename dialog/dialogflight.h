@@ -5,6 +5,7 @@
 #include "atcdialog.h"
 #include "atcflight.h"
 #include "atcmath.h"
+#include "atccombodelegate.h"
 
 #include <QStandardItemModel>
 #include <QDebug>
@@ -18,7 +19,7 @@ class DialogFlight : public ATCDialog
     Q_OBJECT
 
 public:
-    explicit DialogFlight(ATCSimulation *simulation, QWidget *parent = 0);
+    explicit DialogFlight(ATCSimulation *simulation, ATCAirspace *airspace, QWidget *parent = 0);
     ~DialogFlight();
 
 signals:
@@ -42,10 +43,15 @@ private slots:
 
     void on_buttonActiveRunways_clicked();
 
+    void slotEdit(QModelIndex index);
+
 private:
     Ui::DialogFlight *uiInner;
     ATCSimulation *simulation;
+    ATCAirspace *airspace;
     QStandardItemModel *model = nullptr;
+
+    ATCComboDelegate *procedureDelegate = nullptr;
 
     int rowToEdit = -1;
 

@@ -1,8 +1,9 @@
 #include "dialogflight.h"
 #include "ui_dialogflight.h"
 
-DialogFlight::DialogFlight(ATCSimulation *simulation, QWidget *parent) :
+DialogFlight::DialogFlight(ATCSimulation *simulation, ATCAirspace *airspace, QWidget *parent) :
     simulation(simulation),
+    airspace(airspace),
     ATCDialog(parent, "Flight Creator", 600, 650),
     uiInner(new Ui::DialogFlight)
 {
@@ -15,6 +16,7 @@ DialogFlight::DialogFlight(ATCSimulation *simulation, QWidget *parent) :
 DialogFlight::~DialogFlight()
 {
     if(model != nullptr) delete model;
+    if(procedureDelegate != nullptr) delete procedureDelegate;
     delete uiInner;
 }
 
@@ -79,6 +81,12 @@ void DialogFlight::dialogFlightSetup()
     uiInner->tableViewFlights->setColumnWidth(11, 40);      //TAS
 
     uiInner->tableViewFlights->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+    procedureDelegate = new ATCComboDelegate(airspace, simulation->getActiveRunways(), uiInner->tableViewFlights);
+    uiInner->tableViewFlights->setItemDelegate(procedureDelegate);
+
+    uiInner->tableViewFlights->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    connect(uiInner->tableViewFlights, SIGNAL(clicked(QModelIndex)), this, SLOT(slotEdit(QModelIndex)));
 }
 
 void DialogFlight::appendRow(ATCFlight *flight, QStandardItemModel *model)
@@ -136,12 +144,12 @@ void DialogFlight::appendRow(ATCFlight *flight, QStandardItemModel *model)
     row.append(adep);
 
     QStandardItem *depRwy = new QStandardItem("29"); //TO BE CHANGED WHEN ACTIVE RWY SYSTEM IS IMPLEMENTED
-    depRwy->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+    depRwy->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
     depRwy->setTextAlignment(Qt::AlignCenter);
     row.append(depRwy);
 
     QStandardItem *sid = new QStandardItem("EVINA5K"); //TO BE CHANGED WHEN ACTIVE RWY SYSTEM IS IMPLEMENTED
-    sid->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+    sid->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
     sid->setTextAlignment(Qt::AlignCenter);
     row.append(sid);
 
@@ -151,12 +159,12 @@ void DialogFlight::appendRow(ATCFlight *flight, QStandardItemModel *model)
     row.append(ades);
 
     QStandardItem *desRwy = new QStandardItem("15"); //TO BE CHANGED WHEN ACTIVE RWY SYSTEM IS IMPLEMENTED
-    desRwy->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+    desRwy->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
     desRwy->setTextAlignment(Qt::AlignCenter);
     row.append(desRwy);
 
     QStandardItem *star = new QStandardItem("SOXER3G"); //TO BE CHANGED WHEN ACTIVE RWY SYSTEM IS IMPLEMENTED
-    star->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+    star->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
     star->setTextAlignment(Qt::AlignCenter);
     row.append(star);
 
@@ -283,4 +291,15 @@ void DialogFlight::on_buttonDeleteAll_clicked()
 void DialogFlight::on_buttonActiveRunways_clicked()
 {
     emit signalConstructDialogActiveRunways();
+}
+
+void DialogFlight::slotEdit(QModelIndex index)
+{
+    if((index.column() == 5) ||
+       (index.column() == 6) ||
+       (index.column() == 8) ||
+       (index.column() == 9))
+    {
+        uiInner->tableViewFlights->edit(index);
+    }
 }
