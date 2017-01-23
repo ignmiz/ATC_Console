@@ -141,6 +141,12 @@ QComboBox
 	border-width: 2px;
 	border-color: #141414;
 	font: 11px;
+	padding: 0;
+}
+
+QComboBox::drop-down
+{
+	width: 8px;
 }
 
 QComboBox QAbstractItemView

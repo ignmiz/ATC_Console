@@ -82,7 +82,7 @@ void DialogFlight::dialogFlightSetup()
 
     uiInner->tableViewFlights->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-    procedureDelegate = new ATCComboDelegate(airspace, simulation->getActiveRunways(), uiInner->tableViewFlights);
+    procedureDelegate = new ATCComboDelegate(airspace, simulation, simulation->getActiveRunways(), uiInner->tableViewFlights);
     uiInner->tableViewFlights->setItemDelegate(procedureDelegate);
 
     uiInner->tableViewFlights->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -92,6 +92,8 @@ void DialogFlight::dialogFlightSetup()
 void DialogFlight::appendRow(ATCFlight *flight, QStandardItemModel *model)
 {
     QList<QStandardItem*> row;
+    QVector<ActiveAirport> activeAirports = simulation->getActiveRunways()->getActiveAirports();
+    ATCRoute route(flight->getFlightPlan()->getRoute());
 
     QStandardItem *startTime = new QStandardItem(flight->getSimStartTime().toString("HH:mm:ss"));
     startTime->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
@@ -143,12 +145,34 @@ void DialogFlight::appendRow(ATCFlight *flight, QStandardItemModel *model)
     adep->setTextAlignment(Qt::AlignCenter);
     row.append(adep);
 
-    QStandardItem *depRwy = new QStandardItem("29"); //TO BE CHANGED WHEN ACTIVE RWY SYSTEM IS IMPLEMENTED
+    QString activeDep = "";
+    for(int i = 0; i < activeAirports.size(); i++)
+    {
+        if(activeAirports.at(i).airportCode == flight->getFlightPlan()->getRoute().getDeparture())
+        {
+            QStringList depRwys = activeAirports.at(i).depRwys;
+            if(!depRwys.isEmpty()) activeDep = depRwys.at(0);
+        }
+    }
+
+    QStandardItem *depRwy = new QStandardItem(activeDep);
     depRwy->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
     depRwy->setTextAlignment(Qt::AlignCenter);
     row.append(depRwy);
 
-    QStandardItem *sid = new QStandardItem("EVINA5K"); //TO BE CHANGED WHEN ACTIVE RWY SYSTEM IS IMPLEMENTED
+    QString procedureSID = "";
+    for(int i = 0; i < airspace->getSIDsVectorSize(); i++)
+    {
+        ATCProcedureSID *currentSID = airspace->getSID(i);
+        if((route.getDeparture() == currentSID->getAirport()) &&
+           (route.getRoute().at(0) == currentSID->getFixName(currentSID->getFixListSize() - 1)) &&
+           (activeDep == currentSID->getRunwayID()))
+        {
+            procedureSID = currentSID->getName();
+        }
+    }
+
+    QStandardItem *sid = new QStandardItem(procedureSID);
     sid->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
     sid->setTextAlignment(Qt::AlignCenter);
     row.append(sid);
@@ -158,12 +182,34 @@ void DialogFlight::appendRow(ATCFlight *flight, QStandardItemModel *model)
     ades->setTextAlignment(Qt::AlignCenter);
     row.append(ades);
 
-    QStandardItem *desRwy = new QStandardItem("15"); //TO BE CHANGED WHEN ACTIVE RWY SYSTEM IS IMPLEMENTED
+    QString activeArr = "";
+    for(int i = 0; i < activeAirports.size(); i++)
+    {
+        if(activeAirports.at(i).airportCode == flight->getFlightPlan()->getRoute().getDestination())
+        {
+            QStringList arrRwys = activeAirports.at(i).arrRwys;
+            if(!arrRwys.isEmpty()) activeArr = arrRwys.at(0);
+        }
+    }
+
+    QStandardItem *desRwy = new QStandardItem(activeArr);
     desRwy->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
     desRwy->setTextAlignment(Qt::AlignCenter);
     row.append(desRwy);
 
-    QStandardItem *star = new QStandardItem("SOXER3G"); //TO BE CHANGED WHEN ACTIVE RWY SYSTEM IS IMPLEMENTED
+    QString procedureSTAR = "";
+    for(int i = 0; i < airspace->getSTARsVectorSize(); i++)
+    {
+        ATCProcedureSTAR *currentSTAR = airspace->getSTAR(i);
+        if((route.getDestination() == currentSTAR->getAirport()) &&
+           (route.getRoute().at(route.getRoute().size() - 1) == currentSTAR->getFixName(0)) &&
+           (activeArr == currentSTAR->getRunwayID()))
+        {
+            procedureSTAR = currentSTAR->getName();
+        }
+    }
+
+    QStandardItem *star = new QStandardItem(procedureSTAR);
     star->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
     star->setTextAlignment(Qt::AlignCenter);
     row.append(star);
@@ -203,6 +249,9 @@ void DialogFlight::appendRow(ATCFlight *flight, QStandardItemModel *model)
 
 void DialogFlight::modifyRow(ATCFlight *flight, int row, QStandardItemModel *model)
 {
+    QVector<ActiveAirport> activeAirports = simulation->getActiveRunways()->getActiveAirports();
+    ATCRoute route(flight->getFlightPlan()->getRoute());
+
     model->item(row, 0)->setText(flight->getSimStartTime().toString("HH:mm:ss"));
     model->item(row, 1)->setText(flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber());
     model->item(row, 2)->setText(flight->getFlightPlan()->getType()->getAcType().ICAOcode);
@@ -227,11 +276,59 @@ void DialogFlight::modifyRow(ATCFlight *flight, int row, QStandardItemModel *mod
     }
 
     model->item(row, 4)->setText(flight->getFlightPlan()->getRoute().getDeparture());
-    model->item(row, 5)->setText("29");           //DEP RWY
-    model->item(row, 6)->setText("EVINA5K");      //SID
+
+    QString activeDep = "";
+    for(int i = 0; i < activeAirports.size(); i++)
+    {
+        if(activeAirports.at(i).airportCode == flight->getFlightPlan()->getRoute().getDeparture())
+        {
+            QStringList depRwys = activeAirports.at(i).depRwys;
+            if(!depRwys.isEmpty()) activeDep = depRwys.at(0);
+        }
+    }
+
+    model->item(row, 5)->setText(activeDep);
+
+    QString procedureSID = "";
+    for(int i = 0; i < airspace->getSIDsVectorSize(); i++)
+    {
+        ATCProcedureSID *currentSID = airspace->getSID(i);
+        if((route.getDeparture() == currentSID->getAirport()) &&
+           (route.getRoute().at(0) == currentSID->getFixName(currentSID->getFixListSize() - 1)) &&
+           (activeDep == currentSID->getRunwayID()))
+        {
+            procedureSID = currentSID->getName();
+        }
+    }
+
+    model->item(row, 6)->setText(procedureSID);
     model->item(row, 7)->setText(flight->getFlightPlan()->getRoute().getDestination());
-    model->item(row, 8)->setText("15");           //DEP RWY
-    model->item(row, 9)->setText("SOXER3G");      //SID
+
+    QString activeArr = "";
+    for(int i = 0; i < activeAirports.size(); i++)
+    {
+        if(activeAirports.at(i).airportCode == flight->getFlightPlan()->getRoute().getDestination())
+        {
+            QStringList arrRwys = activeAirports.at(i).arrRwys;
+            if(!arrRwys.isEmpty()) activeArr = arrRwys.at(0);
+        }
+    }
+
+    model->item(row, 8)->setText(activeArr);
+
+    QString procedureSTAR = "";
+    for(int i = 0; i < airspace->getSTARsVectorSize(); i++)
+    {
+        ATCProcedureSTAR *currentSTAR = airspace->getSTAR(i);
+        if((route.getDestination() == currentSTAR->getAirport()) &&
+           (route.getRoute().at(route.getRoute().size() - 1) == currentSTAR->getFixName(0)) &&
+           (activeArr == currentSTAR->getRunwayID()))
+        {
+            procedureSTAR = currentSTAR->getName();
+        }
+    }
+
+    model->item(row, 9)->setText(procedureSTAR);
 
     double height = ATCMath::m2ft(flight->getState().h) / 100;
 

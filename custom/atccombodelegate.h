@@ -3,9 +3,12 @@
 
 #include "atcactiverunways.h"
 #include "atcairspace.h"
+#include "atcsimulation.h"
 
-#include <QStyledItemDelegate>
 #include <QComboBox>
+#include <QLineEdit>
+#include <QStyledItemDelegate>
+#include <QStringList>
 #include <QDebug>
 
 class ATCComboDelegate : public QStyledItemDelegate
@@ -13,7 +16,7 @@ class ATCComboDelegate : public QStyledItemDelegate
     Q_OBJECT
 
 public:
-    explicit ATCComboDelegate(ATCAirspace *airspace, ATCActiveRunways *runways, QObject *parent = 0);
+    explicit ATCComboDelegate(ATCAirspace *airspace, ATCSimulation *simulation, ATCActiveRunways *runways, QObject *parent = 0);
     ~ATCComboDelegate();
 
     virtual QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const;
@@ -26,6 +29,7 @@ private slots:
 private:
     ATCAirspace *airspace;
     ATCActiveRunways *runways;
+    ATCSimulation *simulation;
 };
 
 #endif // ATCPROCEDURECOMBODELEGATE_H
