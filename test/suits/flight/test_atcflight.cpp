@@ -313,3 +313,51 @@ void Test_ATCFlight::test_setRoutePrediction()
     QVERIFY(foo.getRoutePrediction() == prediction2);
 }
 
+void Test_ATCFlight::test_setRunwayDeparture()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+
+    QString rwy = "15";
+    foo.setRunwayDeparture(rwy);
+    QVERIFY(foo.getRunwayDeparture() == rwy);
+}
+
+void Test_ATCFlight::test_setRunwayDestination()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+
+    QString rwy = "15";
+    foo.setRunwayDestination(rwy);
+    QVERIFY(foo.getRunwayDestination() == rwy);
+}
+
+void Test_ATCFlight::test_setSID()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+
+    QString procedure = "OLILA5G";
+    foo.setSID(procedure);
+    QVERIFY(foo.getSID() == procedure);
+}
+
+void Test_ATCFlight::test_setSTAR()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+
+    QString procedure = "OLILA5G";
+    foo.setSTAR(procedure);
+    QVERIFY(foo.getSTAR() == procedure);
+}
+

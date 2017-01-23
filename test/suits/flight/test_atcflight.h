@@ -27,6 +27,10 @@ private slots:
     void test_setTag();
     void test_setFixList();
     void test_setRoutePrediction();
+    void test_setRunwayDeparture();
+    void test_setRunwayDestination();
+    void test_setSID();
+    void test_setSTAR();
 };
 
 #endif // TEST_ATCFLIGHT_H

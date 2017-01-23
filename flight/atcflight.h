@@ -76,6 +76,11 @@ public:
     QTime getSimStartTime();
     QStringList& getFixList();
 
+    QString getRunwayDeparture();
+    QString getRunwayDestination();
+    QString getSID();
+    QString getSTAR();
+
     ATCFlightTag* getFlightTag();
     ATCRoutePrediction* getRoutePrediction();
 
@@ -90,6 +95,11 @@ public:
     void setNextFix(QString fix);
     void setSimStartTime(QTime time);
     void setFixList(QStringList list);
+
+    void setRunwayDeparture(QString rwy);
+    void setRunwayDestination(QString rwy);
+    void setSID(QString procedure);
+    void setSTAR(QString procedure);
 
     void setFlightTag(ATCFlightTag *t);
     void setRoutePrediction(ATCRoutePrediction *pred);
@@ -132,6 +142,10 @@ private:
 
     QTime simStart;
 
+    QString depRwy;
+    QString desRwy;
+    QString sid;
+    QString star;
 };
 
 #endif // ATCFLIGHT_H

@@ -77,6 +77,26 @@ QStringList &ATCFlight::getFixList()
     return fixList;
 }
 
+QString ATCFlight::getRunwayDeparture()
+{
+    return depRwy;
+}
+
+QString ATCFlight::getRunwayDestination()
+{
+    return desRwy;
+}
+
+QString ATCFlight::getSID()
+{
+    return sid;
+}
+
+QString ATCFlight::getSTAR()
+{
+    return star;
+}
+
 ATCFlightTag *ATCFlight::getFlightTag()
 {
     return tag;
@@ -141,6 +161,26 @@ void ATCFlight::setSimStartTime(QTime time)
 void ATCFlight::setFixList(QStringList list)
 {
     fixList = list;
+}
+
+void ATCFlight::setRunwayDeparture(QString rwy)
+{
+    depRwy = rwy;
+}
+
+void ATCFlight::setRunwayDestination(QString rwy)
+{
+    desRwy = rwy;
+}
+
+void ATCFlight::setSID(QString procedure)
+{
+    sid = procedure;
+}
+
+void ATCFlight::setSTAR(QString procedure)
+{
+    star = procedure;
 }
 
 void ATCFlight::setFlightTag(ATCFlightTag *t)
