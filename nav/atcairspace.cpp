@@ -604,6 +604,32 @@ ATCBeaconNDB *ATCAirspace::findNDB(QString name)
     return nullptr;
 }
 
+ATCProcedureSID *ATCAirspace::findSID(QString name)
+{
+    for(int i = 0; i < sids.size(); i++)
+    {
+        if(sids.at(i)->getName() == name)
+        {
+            return sids.at(i);
+        }
+    }
+
+    return nullptr;
+}
+
+ATCProcedureSTAR *ATCAirspace::findSTAR(QString name)
+{
+    for(int i = 0; i < stars.size(); i++)
+    {
+        if(stars.at(i)->getName() == name)
+        {
+            return stars.at(i);
+        }
+    }
+
+    return nullptr;
+}
+
 ATCProcedureSIDSymbol* ATCAirspace::findSIDSymbol(QString name)
 {
     for(int i = 0; i < sidSymbols.size(); i++)

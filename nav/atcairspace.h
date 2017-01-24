@@ -117,6 +117,8 @@ public:
     ATCNavFix* findFix(QString fixName);
     ATCBeaconVOR* findVOR(QString name);
     ATCBeaconNDB* findNDB(QString name);
+    ATCProcedureSID* findSID(QString name);
+    ATCProcedureSTAR* findSTAR(QString name);
     ATCProcedureSIDSymbol* findSIDSymbol(QString name);
     ATCProcedureSTARSymbol* findSTARSymbol(QString name);
     ATCAirwayLow* findAirwayLow(QString name);
