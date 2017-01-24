@@ -145,34 +145,34 @@ void DialogFlight::appendRow(ATCFlight *flight, QStandardItemModel *model)
     adep->setTextAlignment(Qt::AlignCenter);
     row.append(adep);
 
-    QString activeDep = "";
-    for(int i = 0; i < activeAirports.size(); i++)
-    {
-        if(activeAirports.at(i).airportCode == flight->getFlightPlan()->getRoute().getDeparture())
-        {
-            QStringList depRwys = activeAirports.at(i).depRwys;
-            if(!depRwys.isEmpty()) activeDep = depRwys.at(0);
-        }
-    }
+//    QString activeDep = "";
+//    for(int i = 0; i < activeAirports.size(); i++)
+//    {
+//        if(activeAirports.at(i).airportCode == flight->getFlightPlan()->getRoute().getDeparture())
+//        {
+//            QStringList depRwys = activeAirports.at(i).depRwys;
+//            if(!depRwys.isEmpty()) activeDep = depRwys.at(0);
+//        }
+//    }
 
-    QStandardItem *depRwy = new QStandardItem(activeDep);
+    QStandardItem *depRwy = new QStandardItem(flight->getRunwayDeparture());
     depRwy->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
     depRwy->setTextAlignment(Qt::AlignCenter);
     row.append(depRwy);
 
-    QString procedureSID = "";
-    for(int i = 0; i < airspace->getSIDsVectorSize(); i++)
-    {
-        ATCProcedureSID *currentSID = airspace->getSID(i);
-        if((route.getDeparture() == currentSID->getAirport()) &&
-           (route.getRoute().at(0) == currentSID->getFixName(currentSID->getFixListSize() - 1)) &&
-           (activeDep == currentSID->getRunwayID()))
-        {
-            procedureSID = currentSID->getName();
-        }
-    }
+//    QString procedureSID = "";
+//    for(int i = 0; i < airspace->getSIDsVectorSize(); i++)
+//    {
+//        ATCProcedureSID *currentSID = airspace->getSID(i);
+//        if((route.getDeparture() == currentSID->getAirport()) &&
+//           (route.getRoute().at(0) == currentSID->getFixName(currentSID->getFixListSize() - 1)) &&
+//           (activeDep == currentSID->getRunwayID()))
+//        {
+//            procedureSID = currentSID->getName();
+//        }
+//    }
 
-    QStandardItem *sid = new QStandardItem(procedureSID);
+    QStandardItem *sid = new QStandardItem(flight->getSID());
     sid->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
     sid->setTextAlignment(Qt::AlignCenter);
     row.append(sid);
@@ -182,34 +182,34 @@ void DialogFlight::appendRow(ATCFlight *flight, QStandardItemModel *model)
     ades->setTextAlignment(Qt::AlignCenter);
     row.append(ades);
 
-    QString activeArr = "";
-    for(int i = 0; i < activeAirports.size(); i++)
-    {
-        if(activeAirports.at(i).airportCode == flight->getFlightPlan()->getRoute().getDestination())
-        {
-            QStringList arrRwys = activeAirports.at(i).arrRwys;
-            if(!arrRwys.isEmpty()) activeArr = arrRwys.at(0);
-        }
-    }
+//    QString activeArr = "";
+//    for(int i = 0; i < activeAirports.size(); i++)
+//    {
+//        if(activeAirports.at(i).airportCode == flight->getFlightPlan()->getRoute().getDestination())
+//        {
+//            QStringList arrRwys = activeAirports.at(i).arrRwys;
+//            if(!arrRwys.isEmpty()) activeArr = arrRwys.at(0);
+//        }
+//    }
 
-    QStandardItem *desRwy = new QStandardItem(activeArr);
+    QStandardItem *desRwy = new QStandardItem(flight->getRunwayDestination());
     desRwy->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
     desRwy->setTextAlignment(Qt::AlignCenter);
     row.append(desRwy);
 
-    QString procedureSTAR = "";
-    for(int i = 0; i < airspace->getSTARsVectorSize(); i++)
-    {
-        ATCProcedureSTAR *currentSTAR = airspace->getSTAR(i);
-        if((route.getDestination() == currentSTAR->getAirport()) &&
-           (route.getRoute().at(route.getRoute().size() - 1) == currentSTAR->getFixName(0)) &&
-           (activeArr == currentSTAR->getRunwayID()))
-        {
-            procedureSTAR = currentSTAR->getName();
-        }
-    }
+//    QString procedureSTAR = "";
+//    for(int i = 0; i < airspace->getSTARsVectorSize(); i++)
+//    {
+//        ATCProcedureSTAR *currentSTAR = airspace->getSTAR(i);
+//        if((route.getDestination() == currentSTAR->getAirport()) &&
+//           (route.getRoute().at(route.getRoute().size() - 1) == currentSTAR->getFixName(0)) &&
+//           (activeArr == currentSTAR->getRunwayID()))
+//        {
+//            procedureSTAR = currentSTAR->getName();
+//        }
+//    }
 
-    QStandardItem *star = new QStandardItem(procedureSTAR);
+    QStandardItem *star = new QStandardItem(flight->getSTAR());
     star->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
     star->setTextAlignment(Qt::AlignCenter);
     row.append(star);
@@ -277,58 +277,58 @@ void DialogFlight::modifyRow(ATCFlight *flight, int row, QStandardItemModel *mod
 
     model->item(row, 4)->setText(flight->getFlightPlan()->getRoute().getDeparture());
 
-    QString activeDep = "";
-    for(int i = 0; i < activeAirports.size(); i++)
-    {
-        if(activeAirports.at(i).airportCode == flight->getFlightPlan()->getRoute().getDeparture())
-        {
-            QStringList depRwys = activeAirports.at(i).depRwys;
-            if(!depRwys.isEmpty()) activeDep = depRwys.at(0);
-        }
-    }
+//    QString activeDep = "";
+//    for(int i = 0; i < activeAirports.size(); i++)
+//    {
+//        if(activeAirports.at(i).airportCode == flight->getFlightPlan()->getRoute().getDeparture())
+//        {
+//            QStringList depRwys = activeAirports.at(i).depRwys;
+//            if(!depRwys.isEmpty()) activeDep = depRwys.at(0);
+//        }
+//    }
 
-    model->item(row, 5)->setText(activeDep);
+    model->item(row, 5)->setText(flight->getRunwayDeparture());
 
-    QString procedureSID = "";
-    for(int i = 0; i < airspace->getSIDsVectorSize(); i++)
-    {
-        ATCProcedureSID *currentSID = airspace->getSID(i);
-        if((route.getDeparture() == currentSID->getAirport()) &&
-           (route.getRoute().at(0) == currentSID->getFixName(currentSID->getFixListSize() - 1)) &&
-           (activeDep == currentSID->getRunwayID()))
-        {
-            procedureSID = currentSID->getName();
-        }
-    }
+//    QString procedureSID = "";
+//    for(int i = 0; i < airspace->getSIDsVectorSize(); i++)
+//    {
+//        ATCProcedureSID *currentSID = airspace->getSID(i);
+//        if((route.getDeparture() == currentSID->getAirport()) &&
+//           (route.getRoute().at(0) == currentSID->getFixName(currentSID->getFixListSize() - 1)) &&
+//           (activeDep == currentSID->getRunwayID()))
+//        {
+//            procedureSID = currentSID->getName();
+//        }
+//    }
 
-    model->item(row, 6)->setText(procedureSID);
+    model->item(row, 6)->setText(flight->getSID());
     model->item(row, 7)->setText(flight->getFlightPlan()->getRoute().getDestination());
 
-    QString activeArr = "";
-    for(int i = 0; i < activeAirports.size(); i++)
-    {
-        if(activeAirports.at(i).airportCode == flight->getFlightPlan()->getRoute().getDestination())
-        {
-            QStringList arrRwys = activeAirports.at(i).arrRwys;
-            if(!arrRwys.isEmpty()) activeArr = arrRwys.at(0);
-        }
-    }
+//    QString activeArr = "";
+//    for(int i = 0; i < activeAirports.size(); i++)
+//    {
+//        if(activeAirports.at(i).airportCode == flight->getFlightPlan()->getRoute().getDestination())
+//        {
+//            QStringList arrRwys = activeAirports.at(i).arrRwys;
+//            if(!arrRwys.isEmpty()) activeArr = arrRwys.at(0);
+//        }
+//    }
 
-    model->item(row, 8)->setText(activeArr);
+    model->item(row, 8)->setText(flight->getRunwayDestination());
 
-    QString procedureSTAR = "";
-    for(int i = 0; i < airspace->getSTARsVectorSize(); i++)
-    {
-        ATCProcedureSTAR *currentSTAR = airspace->getSTAR(i);
-        if((route.getDestination() == currentSTAR->getAirport()) &&
-           (route.getRoute().at(route.getRoute().size() - 1) == currentSTAR->getFixName(0)) &&
-           (activeArr == currentSTAR->getRunwayID()))
-        {
-            procedureSTAR = currentSTAR->getName();
-        }
-    }
+//    QString procedureSTAR = "";
+//    for(int i = 0; i < airspace->getSTARsVectorSize(); i++)
+//    {
+//        ATCProcedureSTAR *currentSTAR = airspace->getSTAR(i);
+//        if((route.getDestination() == currentSTAR->getAirport()) &&
+//           (route.getRoute().at(route.getRoute().size() - 1) == currentSTAR->getFixName(0)) &&
+//           (activeArr == currentSTAR->getRunwayID()))
+//        {
+//            procedureSTAR = currentSTAR->getName();
+//        }
+//    }
 
-    model->item(row, 9)->setText(procedureSTAR);
+    model->item(row, 9)->setText(flight->getSTAR());
 
     double height = ATCMath::m2ft(flight->getState().h) / 100;
 

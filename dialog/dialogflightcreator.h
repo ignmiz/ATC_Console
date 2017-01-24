@@ -46,8 +46,14 @@ private slots:
     void on_tabWidget_tabBarClicked(int index);
     void on_plainTextEditRoute_textChanged();
 
+    void on_lineEditDeparture_textChanged(const QString &arg1);
+    void on_lineEditDestination_textChanged(const QString &arg1);
+
     void slotShowFlightCreator();
     void slotDisplayClicked(double x, double y);
+
+    void on_comboBoxRwyDep_currentTextChanged(const QString &arg1);
+    void on_comboBoxRwyDes_currentTextChanged(const QString &arg1);
 
 private:
     Ui::DialogFlightCreator *uiInner;
@@ -61,6 +67,9 @@ private:
 
     bool routeValid = false;
 
+    bool departureChanged = false;
+    bool destinationChanged = false;
+
     void setRoute();
     void setCallsign();
     void setSquawk();
@@ -73,6 +82,8 @@ private:
 
     void formSetup();
     void formSetup(ATCFlight *flight);
+
+    void setupProcedureBoxes(ATCFlight *flight);
 };
 
 #endif // DIALOGFLIGHTCREATOR_H

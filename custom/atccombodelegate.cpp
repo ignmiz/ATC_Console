@@ -48,20 +48,25 @@ QWidget *ATCComboDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
         }
 
         case 6:     //SID
-        {       
+        {
+            QStringList items;
+            ATCAirport *airport = airspace->findAirport(index.model()->index(index.row(), 4).data().toString());
+            QString rwy = index.model()->index(index.row(), 5).data().toString();
+
             for(int i = 0; i < airspace->getSIDsVectorSize(); i++)
             {
-                ATCAirport *airport = airspace->findAirport(index.model()->index(index.row(), 4).data().toString());
                 ATCProcedureSID *sid = airspace->getSID(i);
-                QString rwy = index.model()->index(index.row(), 5).data().toString();
 
                 QString airportCode;
                 if(airport != nullptr) airportCode = airport->getName();
 
-                if((airportCode == sid->getAirport()) && (rwy == sid->getRunwayID())) cb->addItem(sid->getName());
+                if((airportCode == sid->getAirport()) && (rwy == sid->getRunwayID())) items.append(sid->getName());
             }
 
-            cb->addItem("");
+            items.sort();
+            items.append("");
+
+            cb->addItems(items);
 
             break;
         }
@@ -95,19 +100,24 @@ QWidget *ATCComboDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
 
         case 9:     //STAR
         {
+            QStringList items;
+            ATCAirport *airport = airspace->findAirport(index.model()->index(index.row(), 7).data().toString());
+            QString rwy = index.model()->index(index.row(), 8).data().toString();
+
             for(int i = 0; i < airspace->getSTARsVectorSize(); i++)
             {
-                ATCAirport *airport = airspace->findAirport(index.model()->index(index.row(), 7).data().toString());
                 ATCProcedureSTAR *star = airspace->getSTAR(i);
-                QString rwy = index.model()->index(index.row(), 8).data().toString();
 
                 QString airportCode;
                 if(airport != nullptr) airportCode = airport->getName();
 
-                if((airportCode == star->getAirport()) && (rwy == star->getRunwayID())) cb->addItem(star->getName());
+                if((airportCode == star->getAirport()) && (rwy == star->getRunwayID())) items.append(star->getName());
             }
 
-            cb->addItem("");
+            items.sort();
+            items.append("");
+
+            cb->addItems(items);
 
             break;
         }
@@ -148,10 +158,10 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
     {
         model->setData(index, cb->currentText(), Qt::DisplayRole);
 
+        ATCFlight *flight = simulation->getFlight(model->index(index.row(), 1).data().toString());
+
         if(index.column() == 5)
         {
-            ATCFlight *flight = simulation->getFlight(model->index(index.row(), 1).data().toString());
-
             QString rwy = index.data().toString();
             QString adep = flight->getFlightPlan()->getRoute().getDeparture();
             QStringList route = flight->getFlightPlan()->getRoute().getRoute();
@@ -172,11 +182,16 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             }
 
             if(!found) model->setData(model->index(index.row(), 6), "", Qt::DisplayRole);
+
+            flight->setRunwayDeparture(model->index(index.row(), 5).data().toString());
+            flight->setSID(model->index(index.row(), 6).data().toString());
+        }
+        else if(index.column() == 6)
+        {
+            flight->setSID(model->index(index.row(), 6).data().toString());
         }
         else if(index.column() == 8)
         {
-            ATCFlight *flight = simulation->getFlight(model->index(index.row(), 1).data().toString());
-
             QString rwy = index.data().toString();
             QString ades = flight->getFlightPlan()->getRoute().getDestination();
             QStringList route = flight->getFlightPlan()->getRoute().getRoute();
@@ -197,8 +212,14 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             }
 
             if(!found) model->setData(model->index(index.row(), 9), "", Qt::DisplayRole);
-        }
 
+            flight->setRunwayDestination(model->index(index.row(), 8).data().toString());
+            flight->setSTAR(model->index(index.row(), 9).data().toString());
+        }
+        else if(index.column() == 9)
+        {
+            flight->setSTAR(model->index(index.row(), 9).data().toString());
+        }
     }
     else
     {

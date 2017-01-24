@@ -217,6 +217,12 @@ void DialogFlightCreator::on_buttonOK_clicked()
         //Set start time of flight simulation
         flight->setSimStartTime(uiInner->timeEditSimulationStart->time());
 
+        //Set procedures
+        flight->setRunwayDeparture(uiInner->comboBoxRwyDep->currentText());
+        flight->setRunwayDestination(uiInner->comboBoxRwyDes->currentText());
+        flight->setSID(uiInner->comboBoxSID->currentText());
+        flight->setSTAR(uiInner->comboBoxSTAR->currentText());
+
         //Append flight to simulation
         simulation->appendFlight(flight);
 
@@ -397,6 +403,12 @@ void DialogFlightCreator::on_buttonOK_clicked()
 
         //Set start time of flight simulation
         flight->setSimStartTime(uiInner->timeEditSimulationStart->time());
+
+        //Set procedures
+        flight->setRunwayDeparture(uiInner->comboBoxRwyDep->currentText());
+        flight->setRunwayDestination(uiInner->comboBoxRwyDes->currentText());
+        flight->setSID(uiInner->comboBoxSID->currentText());
+        flight->setSTAR(uiInner->comboBoxSTAR->currentText());
 
         emit signalUpdateFlightTag(flight);
         emit signalUpdateFlightList(flight);
@@ -1086,6 +1098,119 @@ void DialogFlightCreator::formSetup(ATCFlight *flight)
 
         uiInner->timeEditSimulationStart->setTime(flight->getSimStartTime());
 
+        setupProcedureBoxes(flight);
+
+        uiInner->comboBoxRwyDep->setCurrentText(flight->getRunwayDeparture());
+        uiInner->comboBoxRwyDes->setCurrentText(flight->getRunwayDestination());
+        uiInner->comboBoxSID->setCurrentText(flight->getSID());
+        uiInner->comboBoxSTAR->setCurrentText(flight->getSTAR());
+    }
+}
+
+void DialogFlightCreator::setupProcedureBoxes(ATCFlight *flight)
+{
+    QVector<ActiveAirport> activeAirports = simulation->getActiveRunways()->getActiveAirports();
+
+    if(departureChanged)
+    {
+        uiInner->comboBoxRwyDep->clear();
+        uiInner->comboBoxSID->clear();
+
+        //Setup departure runways
+        ATCAirport *adep = nullptr;
+        QString activeDep = "";
+
+        if(flight != nullptr)
+        {
+            adep = airspace->findAirport(flight->getFlightPlan()->getRoute().getDeparture());
+        }
+        else
+        {
+            adep = airspace->findAirport(uiInner->lineEditDeparture->text());
+        }
+
+        if(adep != nullptr)
+        {
+            for(int i = 0; i < activeAirports.size(); i++)
+            {
+                if(activeAirports.at(i).airportCode == adep->getName())
+                {
+                    QStringList depRwys = activeAirports.at(i).depRwys;
+                    if(!depRwys.isEmpty()) activeDep = depRwys.at(0);
+                }
+            }
+
+            QStringList runways;
+
+            for(int i = 0; i < adep->getRunwayVectorSize(); i++)
+            {
+                runways.append(adep->getRunway(i)->getRunwayID1());
+                runways.append(adep->getRunway(i)->getRunwayID2());
+            }
+
+            runways.sort();
+
+            for(int i = 0; i < runways.size(); i++)
+            {
+                uiInner->comboBoxRwyDep->addItem(runways.at(i));
+            }
+        }
+
+        uiInner->comboBoxRwyDep->addItem("");
+        uiInner->comboBoxRwyDep->setCurrentText(activeDep);
+
+        departureChanged = false;
+    }
+
+    if(destinationChanged)
+    {
+        uiInner->comboBoxRwyDes->clear();
+        uiInner->comboBoxSTAR->clear();
+
+        //Setup destination runways
+        ATCAirport *ades = nullptr;
+        QString activeArr = "";
+
+        if(flight != nullptr)
+        {
+            ades = airspace->findAirport(flight->getFlightPlan()->getRoute().getDestination());
+        }
+        else
+        {
+            ades = airspace->findAirport(uiInner->lineEditDestination->text());
+        }
+
+        if(ades != nullptr)
+        {
+            for(int i = 0; i < activeAirports.size(); i++)
+            {
+                if(activeAirports.at(i).airportCode == ades->getName())
+                {
+                    QStringList arrRwys = activeAirports.at(i).arrRwys;
+                    if(!arrRwys.isEmpty()) activeArr = arrRwys.at(0);
+                }
+            }
+
+            QStringList runways;
+
+            for(int i = 0; i < ades->getRunwayVectorSize(); i++)
+            {
+                runways.append(ades->getRunway(i)->getRunwayID1());
+                runways.append(ades->getRunway(i)->getRunwayID2());
+            }
+
+            runways.sort();
+
+            for(int i = 0; i < runways.size(); i++)
+            {
+                uiInner->comboBoxRwyDes->addItem(runways.at(i));
+            }
+        }
+
+        uiInner->comboBoxRwyDes->addItem("");
+        uiInner->comboBoxRwyDes->setCurrentText(activeArr);
+
+        destinationChanged = false;
     }
 }
 
@@ -1143,24 +1268,106 @@ void DialogFlightCreator::on_radioButtonHDG_clicked()
 
 void DialogFlightCreator::on_tabWidget_tabBarClicked(int index)
 {
-    if((index == 1) && uiInner->radioButtonOwnNav->isChecked())
+    if(index == 1)
     {
-        uiInner->comboBoxNextFix->clear();
+        setupProcedureBoxes(nullptr);
 
-        uiInner->comboBoxNextFix->addItem(uiInner->lineEditDeparture->text());
-        for(int i = 0; i < model->rowCount(); i++)
+        if(uiInner->radioButtonOwnNav->isChecked())
         {
-            QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
-            if(fix != "DCT") uiInner->comboBoxNextFix->addItem(fix, Qt::DisplayRole);
-        }
-        uiInner->comboBoxNextFix->addItem(uiInner->lineEditDestination->text());
-        if(!uiInner->lineEditAlternate->text().isEmpty()) uiInner->comboBoxNextFix->addItem(uiInner->lineEditAlternate->text());
+            uiInner->comboBoxNextFix->clear();
+            uiInner->comboBoxNextFix->addItem(uiInner->lineEditDeparture->text());
+            for(int i = 0; i < model->rowCount(); i++)
+            {
+                QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
+                if(fix != "DCT") uiInner->comboBoxNextFix->addItem(fix, Qt::DisplayRole);
+            }
+            uiInner->comboBoxNextFix->addItem(uiInner->lineEditDestination->text());
+            if(!uiInner->lineEditAlternate->text().isEmpty()) uiInner->comboBoxNextFix->addItem(uiInner->lineEditAlternate->text());
 
-        if(flight != nullptr) uiInner->comboBoxNextFix->setCurrentIndex(uiInner->comboBoxNextFix->findText(flight->getNextFix()));
+            if(flight != nullptr) uiInner->comboBoxNextFix->setCurrentIndex(uiInner->comboBoxNextFix->findText(flight->getNextFix()));
+        }
     }
 }
 
 void DialogFlightCreator::on_plainTextEditRoute_textChanged()
 {
     routeValid = validateRoute();
+}
+
+void DialogFlightCreator::on_lineEditDeparture_textChanged(const QString &arg1)
+{
+    Q_UNUSED(arg1)
+    departureChanged = true;
+}
+
+void DialogFlightCreator::on_lineEditDestination_textChanged(const QString &arg1)
+{
+    Q_UNUSED(arg1)
+    destinationChanged = true;
+}
+
+void DialogFlightCreator::on_comboBoxRwyDep_currentTextChanged(const QString &arg1)
+{
+    uiInner->comboBoxSID->clear();
+    QString airportCode = uiInner->lineEditDeparture->text();
+
+    QStringList route = uiInner->plainTextEditRoute->toPlainText().split(" ", QString::SkipEmptyParts);
+    QString firstFix;
+    if(!route.isEmpty()) firstFix = route.at(0);
+
+    QString preferredSID;
+    QStringList items;
+
+    for(int i = 0; i < airspace->getSIDsVectorSize(); i++)
+    {
+        ATCProcedureSID *sid = airspace->getSID(i);
+        if((airportCode == sid->getAirport()) && (arg1 == sid->getRunwayID())) items.append(sid->getName());
+        if((airportCode == sid->getAirport()) && (arg1 == sid->getRunwayID()) && (firstFix == sid->getFixName(sid->getFixListSize() - 1))) preferredSID = sid->getName();
+    }
+
+    items.sort();
+    uiInner->comboBoxSID->addItems(items);
+    uiInner->comboBoxSID->addItem("");
+
+    if(uiInner->comboBoxSID->findText(preferredSID) >= 0)
+    {
+        uiInner->comboBoxSID->setCurrentText(preferredSID);
+    }
+    else
+    {
+        uiInner->comboBoxSID->setCurrentText("");
+    }
+}
+
+void DialogFlightCreator::on_comboBoxRwyDes_currentTextChanged(const QString &arg1)
+{
+    uiInner->comboBoxSTAR->clear();
+    QString airportCode = uiInner->lineEditDestination->text();
+
+    QStringList route = uiInner->plainTextEditRoute->toPlainText().split(" ", QString::SkipEmptyParts);
+    QString lastFix;
+    if(!route.isEmpty()) lastFix = route.at(route.size() - 1);
+
+    QString preferredSTAR;
+    QStringList items;
+
+    for(int i = 0; i < airspace->getSTARsVectorSize(); i++)
+    {
+        ATCProcedureSTAR *star = airspace->getSTAR(i);
+        if((airportCode == star->getAirport()) && (arg1 == star->getRunwayID())) items.append(star->getName());
+        if((airportCode == star->getAirport()) && (arg1 == star->getRunwayID()) && (lastFix == star->getFixName(0))) preferredSTAR = star->getName();
+    }
+
+    items.sort();
+    uiInner->comboBoxSTAR->addItems(items);
+    uiInner->comboBoxSTAR->addItem("");
+
+    if(uiInner->comboBoxSTAR->findText(preferredSTAR) >= 0)
+    {
+        uiInner->comboBoxSTAR->setCurrentText(preferredSTAR);
+    }
+    else
+    {
+        uiInner->comboBoxSTAR->setCurrentText("");
+    }
 }

@@ -443,7 +443,7 @@ QComboBox QAbstractItemView
       </rect>
      </property>
     </widget>
-    <widget class="QLabel" name="labelCallsign_2">
+    <widget class="QLabel" name="labelFlightRules">
      <property name="geometry">
       <rect>
        <x>190</x>
@@ -754,7 +754,7 @@ QScrollBar::sub-page:vertical
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>30</y>
+       <y>130</y>
        <width>551</width>
        <height>221</height>
       </rect>
@@ -939,9 +939,9 @@ QScrollBar::sub-page:vertical
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>270</y>
+       <y>360</y>
        <width>551</width>
-       <height>81</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="title">
@@ -950,8 +950,8 @@ QScrollBar::sub-page:vertical
      <widget class="QRadioButton" name="radioButtonOwnNav">
       <property name="geometry">
        <rect>
-        <x>120</x>
-        <y>30</y>
+        <x>140</x>
+        <y>3</y>
         <width>160</width>
         <height>25</height>
        </rect>
@@ -963,8 +963,8 @@ QScrollBar::sub-page:vertical
      <widget class="QRadioButton" name="radioButtonHDG">
       <property name="geometry">
        <rect>
-        <x>260</x>
-        <y>30</y>
+        <x>290</x>
+        <y>3</y>
         <width>160</width>
         <height>25</height>
        </rect>
@@ -978,7 +978,7 @@ QScrollBar::sub-page:vertical
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>370</y>
+       <y>400</y>
        <width>551</width>
        <height>181</height>
       </rect>
@@ -1142,6 +1142,239 @@ QScrollBar::sub-page:vertical
        <rect>
         <x>190</x>
         <y>140</y>
+        <width>120</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QComboBox
+{
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	font: 13px;
+}
+
+QComboBox QAbstractItemView
+{	
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+    selection-background-color: #060064;
+	font: 13px;
+}
+
+QComboBox::disabled
+{
+	color: #c8c8c8;
+	background-color: #050505;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #111111;
+	font: 13px;
+}</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBoxProcedures">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>551</width>
+       <height>101</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Procedures:</string>
+     </property>
+     <widget class="QLabel" name="labelRwyDep">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>20</y>
+        <width>120</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Dep. Rwy:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="labelRwyDes">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>60</y>
+        <width>120</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Des. Rwy:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBoxRwyDep">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>20</y>
+        <width>60</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QComboBox
+{
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	font: 13px;
+}
+
+QComboBox QAbstractItemView
+{	
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+    selection-background-color: #060064;
+	font: 13px;
+}
+
+QComboBox::disabled
+{
+	color: #c8c8c8;
+	background-color: #050505;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #111111;
+	font: 13px;
+}</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBoxRwyDes">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>60</y>
+        <width>60</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QComboBox
+{
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	font: 13px;
+}
+
+QComboBox QAbstractItemView
+{	
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+    selection-background-color: #060064;
+	font: 13px;
+}
+
+QComboBox::disabled
+{
+	color: #c8c8c8;
+	background-color: #050505;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #111111;
+	font: 13px;
+}</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="labelSID">
+      <property name="geometry">
+       <rect>
+        <x>260</x>
+        <y>20</y>
+        <width>60</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>SID:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="labelSTAR">
+      <property name="geometry">
+       <rect>
+        <x>260</x>
+        <y>60</y>
+        <width>60</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>STAR:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBoxSID">
+      <property name="geometry">
+       <rect>
+        <x>330</x>
+        <y>20</y>
+        <width>120</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QComboBox
+{
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	font: 13px;
+}
+
+QComboBox QAbstractItemView
+{	
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+    selection-background-color: #060064;
+	font: 13px;
+}
+
+QComboBox::disabled
+{
+	color: #c8c8c8;
+	background-color: #050505;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #111111;
+	font: 13px;
+}</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBoxSTAR">
+      <property name="geometry">
+       <rect>
+        <x>330</x>
+        <y>60</y>
         <width>120</width>
         <height>25</height>
        </rect>
