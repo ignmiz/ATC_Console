@@ -185,6 +185,9 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
 
             flight->setRunwayDeparture(model->index(index.row(), 5).data().toString());
             flight->setSID(model->index(index.row(), 6).data().toString());
+
+            //REBUILD FIX LIST
+            //REPAINT ROUTE PREDICTION (CALL DISPLAY SLOT TWICE IF IT ALREADY EXISTS)
         }
         else if(index.column() == 6)
         {

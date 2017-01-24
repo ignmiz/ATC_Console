@@ -147,13 +147,33 @@ void DialogFlightCreator::on_buttonOK_clicked()
 
         //Flight - fix list
         QStringList fixList;
+        ATCProcedureSID *sid = airspace->findSID(uiInner->comboBoxSID->currentText());
+        ATCProcedureSTAR *star = airspace->findSTAR(uiInner->comboBoxSTAR->currentText());
 
         fixList.append(departure);
+
+        if(sid != nullptr)
+        {
+            for(int i = 0; i < sid->getFixListSize(); i++)
+            {
+                if(sid->getFixName(i) != routeStr.at(0)) fixList.append(sid->getFixName(i));
+            }
+        }
+
         for(int i = 0; i < model->rowCount(); i++)
         {
             QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
             if(fix != "DCT") fixList.append(fix);
         }
+
+        if(star != nullptr)
+        {
+            for(int i = 0; i < star->getFixListSize(); i++)
+            {
+                if(star->getFixName(i) != routeStr.at(routeStr.size() - 1)) fixList.append(star->getFixName(i));
+            }
+        }
+
         fixList.append(destination);
         if(!alternate.isEmpty()) fixList.append(alternate);
 
@@ -334,13 +354,33 @@ void DialogFlightCreator::on_buttonOK_clicked()
 
         //Flight - fix list
         QStringList fixList;
+        ATCProcedureSID *sid = airspace->findSID(uiInner->comboBoxSID->currentText());
+        ATCProcedureSTAR *star = airspace->findSTAR(uiInner->comboBoxSTAR->currentText());
 
         fixList.append(departure);
+
+        if(sid != nullptr)
+        {
+            for(int i = 0; i < sid->getFixListSize(); i++)
+            {
+                if(sid->getFixName(i) != routeStr.at(0)) fixList.append(sid->getFixName(i));
+            }
+        }
+
         for(int i = 0; i < model->rowCount(); i++)
         {
             QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
             if(fix != "DCT") fixList.append(fix);
         }
+
+        if(star != nullptr)
+        {
+            for(int i = 0; i < star->getFixListSize(); i++)
+            {
+                if(star->getFixName(i) != routeStr.at(routeStr.size() - 1)) fixList.append(star->getFixName(i));
+            }
+        }
+
         fixList.append(destination);
         if(!alternate.isEmpty()) fixList.append(alternate);
 
@@ -765,6 +805,10 @@ bool DialogFlightCreator::validateRoute()
         }
 
         uiInner->tableViewValidator->scrollToBottom();
+    }
+    else
+    {
+        error = true;
     }
 
     uiInner->tableViewValidator->setColumnWidth(0, 75);
@@ -1214,6 +1258,55 @@ void DialogFlightCreator::setupProcedureBoxes(ATCFlight *flight)
     }
 }
 
+void DialogFlightCreator::refreshFixList()
+{
+    ATCProcedureSID *sid = airspace->findSID(uiInner->comboBoxSID->currentText());
+    ATCProcedureSTAR *star = airspace->findSTAR(uiInner->comboBoxSTAR->currentText());
+    QStringList route = uiInner->plainTextEditRoute->toPlainText().split(" ", QString::SkipEmptyParts);
+
+    uiInner->comboBoxNextFix->clear();
+    uiInner->comboBoxNextFix->addItem(uiInner->lineEditDeparture->text());
+
+    if(sid != nullptr)
+    {
+        for(int i = 0; i < sid->getFixListSize(); i++)
+        {
+            if(!route.isEmpty())
+            {
+                if(sid->getFixName(i) != route.at(0)) uiInner->comboBoxNextFix->addItem(sid->getFixName(i));
+            }
+            else
+            {
+                uiInner->comboBoxNextFix->addItem(sid->getFixName(i));
+            }
+        }
+    }
+
+    for(int i = 0; i < model->rowCount(); i++)
+    {
+        QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
+        if(fix != "DCT") uiInner->comboBoxNextFix->addItem(fix, Qt::DisplayRole);
+    }
+
+    if(star != nullptr)
+    {
+        for(int i = 0; i < star->getFixListSize(); i++)
+        {
+            if(!route.empty())
+            {
+                if(star->getFixName(i) != route.at(route.size() - 1)) uiInner->comboBoxNextFix->addItem(star->getFixName(i));
+            }
+            else
+            {
+                uiInner->comboBoxNextFix->addItem(star->getFixName(i));
+            }
+        }
+    }
+
+    uiInner->comboBoxNextFix->addItem(uiInner->lineEditDestination->text());
+    if(!uiInner->lineEditAlternate->text().isEmpty()) uiInner->comboBoxNextFix->addItem(uiInner->lineEditAlternate->text());
+}
+
 void DialogFlightCreator::on_buttonSetCallsign_clicked()
 {
     setCallsign();
@@ -1246,16 +1339,7 @@ void DialogFlightCreator::on_radioButtonOwnNav_clicked()
     uiInner->spinBoxHeadingRes->clear();
 
     uiInner->comboBoxNextFix->setEnabled(true);
-    uiInner->comboBoxNextFix->clear();
-
-    uiInner->comboBoxNextFix->addItem(uiInner->lineEditDeparture->text());
-    for(int i = 0; i < model->rowCount(); i++)
-    {
-        QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
-        if(fix != "DCT") uiInner->comboBoxNextFix->addItem(fix, Qt::DisplayRole);
-    }
-    uiInner->comboBoxNextFix->addItem(uiInner->lineEditDestination->text());
-    if(!uiInner->lineEditAlternate->text().isEmpty()) uiInner->comboBoxNextFix->addItem(uiInner->lineEditAlternate->text());
+    refreshFixList();
 }
 
 void DialogFlightCreator::on_radioButtonHDG_clicked()
@@ -1274,15 +1358,7 @@ void DialogFlightCreator::on_tabWidget_tabBarClicked(int index)
 
         if(uiInner->radioButtonOwnNav->isChecked())
         {
-            uiInner->comboBoxNextFix->clear();
-            uiInner->comboBoxNextFix->addItem(uiInner->lineEditDeparture->text());
-            for(int i = 0; i < model->rowCount(); i++)
-            {
-                QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
-                if(fix != "DCT") uiInner->comboBoxNextFix->addItem(fix, Qt::DisplayRole);
-            }
-            uiInner->comboBoxNextFix->addItem(uiInner->lineEditDestination->text());
-            if(!uiInner->lineEditAlternate->text().isEmpty()) uiInner->comboBoxNextFix->addItem(uiInner->lineEditAlternate->text());
+            refreshFixList();
 
             if(flight != nullptr) uiInner->comboBoxNextFix->setCurrentIndex(uiInner->comboBoxNextFix->findText(flight->getNextFix()));
         }
@@ -1337,6 +1413,8 @@ void DialogFlightCreator::on_comboBoxRwyDep_currentTextChanged(const QString &ar
     {
         uiInner->comboBoxSID->setCurrentText("");
     }
+
+    if(uiInner->comboBoxNextFix->isEnabled()) refreshFixList();
 }
 
 void DialogFlightCreator::on_comboBoxRwyDes_currentTextChanged(const QString &arg1)
@@ -1370,4 +1448,18 @@ void DialogFlightCreator::on_comboBoxRwyDes_currentTextChanged(const QString &ar
     {
         uiInner->comboBoxSTAR->setCurrentText("");
     }
+
+    if(uiInner->comboBoxNextFix->isEnabled()) refreshFixList();
+}
+
+void DialogFlightCreator::on_comboBoxSID_currentTextChanged(const QString &arg1)
+{
+    Q_UNUSED(arg1)
+    if(uiInner->comboBoxNextFix->isEnabled()) refreshFixList();
+}
+
+void DialogFlightCreator::on_comboBoxSTAR_currentTextChanged(const QString &arg1)
+{
+    Q_UNUSED(arg1)
+    if(uiInner->comboBoxNextFix->isEnabled()) refreshFixList();
 }

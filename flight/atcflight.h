@@ -114,6 +114,9 @@ signals:
     void signalDisplayRoute(ATCFlight *flight);
     void signalClearFlightElements(ATCFlight *flight);
 
+public slots:
+    void slotDisplayRoute();
+
 private slots:
     void slotCreateDialogAltitude(QPoint point);
     void slotCreateDialogSpeed(QPoint point);
@@ -121,7 +124,6 @@ private slots:
     void slotCreateDialogRoute(QPoint point);
     void slotCreateDialogHandoff(QPoint point);
     void slotCreateDialogFlightPlan();
-    void slotDisplayRoute();
 
 private:
     ATCFlightPlan *plan = nullptr;

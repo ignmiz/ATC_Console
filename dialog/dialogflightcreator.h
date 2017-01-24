@@ -54,6 +54,8 @@ private slots:
 
     void on_comboBoxRwyDep_currentTextChanged(const QString &arg1);
     void on_comboBoxRwyDes_currentTextChanged(const QString &arg1);
+    void on_comboBoxSID_currentTextChanged(const QString &arg1);
+    void on_comboBoxSTAR_currentTextChanged(const QString &arg1);
 
 private:
     Ui::DialogFlightCreator *uiInner;
@@ -84,6 +86,7 @@ private:
     void formSetup(ATCFlight *flight);
 
     void setupProcedureBoxes(ATCFlight *flight);
+    void refreshFixList();
 };
 
 #endif // DIALOGFLIGHTCREATOR_H
