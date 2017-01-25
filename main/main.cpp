@@ -14,9 +14,7 @@ int main(int argc, char *argv[])
     ATCPaths paths;
     ATCFlightFactory *flightFactory = new ATCFlightFactory(paths);
 
-    ATCSimulation *simulation = new ATCSimulation();
-
-    MainWindow mainWindow(flightFactory, simulation);
+    MainWindow mainWindow(flightFactory);
     mainWindow.show();    
 
     return a.exec();

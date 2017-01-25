@@ -43,6 +43,11 @@ enum AngularUnits
     Deg, Rad
 };
 
+enum SimCreationMode
+{
+    New, Edit
+};
+
 }
 
 

@@ -1,9 +1,10 @@
 #include "dialogflight.h"
 #include "ui_dialogflight.h"
 
-DialogFlight::DialogFlight(ATCSimulation *simulation, ATCAirspace *airspace, QWidget *parent) :
-    simulation(simulation),
+DialogFlight::DialogFlight(ATCSimulation *sim, ATCAirspace *airspace, ATC::SimCreationMode m, QWidget *parent) :
+    simulation(sim),
     airspace(airspace),
+    mode(m),
     ATCDialog(parent, "Flight Creator", 600, 650),
     uiInner(new Ui::DialogFlight)
 {
@@ -18,6 +19,11 @@ DialogFlight::~DialogFlight()
     if(model != nullptr) delete model;
     if(procedureDelegate != nullptr) delete procedureDelegate;
     delete uiInner;
+}
+
+ATCSimulation *DialogFlight::getSimulation()
+{
+    return simulation;
 }
 
 void DialogFlight::slotUpdateFlightList(ATCFlight *flight)
@@ -40,7 +46,9 @@ void DialogFlight::on_buttonCreateFlight_clicked()
 
 void DialogFlight::on_buttonReady_clicked()
 {
-    //TO BE IMPLEMENTED
+    if(mode == ATC::New) emit signalSimulation(simulation);
+    emit closed();
+    close();
 }
 
 void DialogFlight::on_buttonCancel_clicked()
@@ -145,32 +153,10 @@ void DialogFlight::appendRow(ATCFlight *flight, QStandardItemModel *model)
     adep->setTextAlignment(Qt::AlignCenter);
     row.append(adep);
 
-//    QString activeDep = "";
-//    for(int i = 0; i < activeAirports.size(); i++)
-//    {
-//        if(activeAirports.at(i).airportCode == flight->getFlightPlan()->getRoute().getDeparture())
-//        {
-//            QStringList depRwys = activeAirports.at(i).depRwys;
-//            if(!depRwys.isEmpty()) activeDep = depRwys.at(0);
-//        }
-//    }
-
     QStandardItem *depRwy = new QStandardItem(flight->getRunwayDeparture());
     depRwy->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
     depRwy->setTextAlignment(Qt::AlignCenter);
     row.append(depRwy);
-
-//    QString procedureSID = "";
-//    for(int i = 0; i < airspace->getSIDsVectorSize(); i++)
-//    {
-//        ATCProcedureSID *currentSID = airspace->getSID(i);
-//        if((route.getDeparture() == currentSID->getAirport()) &&
-//           (route.getRoute().at(0) == currentSID->getFixName(currentSID->getFixListSize() - 1)) &&
-//           (activeDep == currentSID->getRunwayID()))
-//        {
-//            procedureSID = currentSID->getName();
-//        }
-//    }
 
     QStandardItem *sid = new QStandardItem(flight->getSID());
     sid->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
@@ -182,32 +168,10 @@ void DialogFlight::appendRow(ATCFlight *flight, QStandardItemModel *model)
     ades->setTextAlignment(Qt::AlignCenter);
     row.append(ades);
 
-//    QString activeArr = "";
-//    for(int i = 0; i < activeAirports.size(); i++)
-//    {
-//        if(activeAirports.at(i).airportCode == flight->getFlightPlan()->getRoute().getDestination())
-//        {
-//            QStringList arrRwys = activeAirports.at(i).arrRwys;
-//            if(!arrRwys.isEmpty()) activeArr = arrRwys.at(0);
-//        }
-//    }
-
     QStandardItem *desRwy = new QStandardItem(flight->getRunwayDestination());
     desRwy->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
     desRwy->setTextAlignment(Qt::AlignCenter);
     row.append(desRwy);
-
-//    QString procedureSTAR = "";
-//    for(int i = 0; i < airspace->getSTARsVectorSize(); i++)
-//    {
-//        ATCProcedureSTAR *currentSTAR = airspace->getSTAR(i);
-//        if((route.getDestination() == currentSTAR->getAirport()) &&
-//           (route.getRoute().at(route.getRoute().size() - 1) == currentSTAR->getFixName(0)) &&
-//           (activeArr == currentSTAR->getRunwayID()))
-//        {
-//            procedureSTAR = currentSTAR->getName();
-//        }
-//    }
 
     QStandardItem *star = new QStandardItem(flight->getSTAR());
     star->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);

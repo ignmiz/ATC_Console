@@ -113,3 +113,21 @@ void ATCFlightTag::setText(QGraphicsSimpleTextItem *t)
 {
     text = t;
 }
+
+void ATCFlightTag::hideTag()
+{
+    diamond->hide();
+    leader->hide();
+    tagBox->hide();
+    connector->hide();
+    text->hide();
+}
+
+void ATCFlightTag::showTag()
+{
+    diamond->show();
+    leader->show();
+    tagBox->show();
+    connector->show();
+    text->show();
+}

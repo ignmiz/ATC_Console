@@ -6,17 +6,15 @@
 #include <QTimer>
 #include <QDebug>
 
-MainWindow::MainWindow(ATCFlightFactory *flightFactory, ATCSimulation *simulation, QWidget *parent) :
+MainWindow::MainWindow(ATCFlightFactory *flightFactory, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    flightFactory(flightFactory),
-    simulation(simulation)
+    flightFactory(flightFactory)
 {
     ui->setupUi(this);
     dialogTextConsole = new DialogTextConsole(this);
 
     ui->situationalDisplay->setFlightFactory(flightFactory);
-    ui->situationalDisplay->setSimulation(simulation);
     ui->situationalDisplay->setParent(this);
 
     paths = ui->situationalDisplay->getPaths();
@@ -31,7 +29,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete flightFactory;
-    delete simulation;
+    if(simulation != nullptr) delete simulation;
 }
 
 bool MainWindow::isDialogTextConsoleVisible() const
@@ -52,7 +50,7 @@ void MainWindow::on_buttonMainMenu_clicked()
         setFlagDialogMainMenuExists(true);
         setSituationalDisplayFocus();
 
-        connect(dialogMainMenu, SIGNAL(signalConstructDialogFlight()), this, SLOT(slotConstructDialogFlight()));        
+        connect(dialogMainMenu, SIGNAL(signalConstructDialogFlightNew()), this, SLOT(slotConstructDialogFlightNew()));
     }
 }
 
@@ -110,7 +108,7 @@ void MainWindow::dialogMainMenuClosed()
     disconnect(dialogMainMenu, SIGNAL(closed()), this, SLOT(dialogMainMenuClosed()));
     disconnect(dialogMainMenu, SIGNAL(changeFocusToDisplay()), this, SLOT(changeFocusToDisplay()));
 
-    disconnect(dialogMainMenu, SIGNAL(signalConstructDialogFlight()), this, SLOT(slotConstructDialogFlight()));
+    disconnect(dialogMainMenu, SIGNAL(signalConstructDialogFlightNew()), this, SLOT(slotConstructDialogFlightNew()));
 }
 
 void MainWindow::dialogSectorSetupClosed()
@@ -132,27 +130,59 @@ void MainWindow::changeFocusToDisplay()
     setSituationalDisplayFocus();
 }
 
-void MainWindow::slotConstructDialogFlight()
+void MainWindow::slotSimulation(ATCSimulation *sim)
+{
+    if(simulation != nullptr) delete simulation;
+
+    simulation = sim;
+    ui->situationalDisplay->setSimulation(sim);
+}
+
+void MainWindow::slotConstructDialogFlightNew()
 {
     dialogMainMenu->hide();
 
-    dialogFlight = new DialogFlight(simulation, airspaceData, this);
+    dialogFlight = new DialogFlight(new ATCSimulation(), airspaceData, ATC::New, this);
     dialogFlight->show();
+
+    tempSimulation = dialogFlight->getSimulation();
+
+    if(simulation != nullptr)   //Hide all data tags & routes
+    {
+        for(int i = 0; i < simulation->getFlightsVectorSize(); i++)
+        {
+            ATCFlight *current = simulation->getFlight(i);
+
+            current->getFlightTag()->hideTag();
+            if(current->getRoutePrediction() != nullptr) emit current->signalDisplayRoute(current);
+        }
+    }
 
     connect(dialogFlight, SIGNAL(closed()), this, SLOT(slotCloseDialogFlight()));
     connect(dialogFlight, SIGNAL(signalConstructDialogFlightCreator()), this, SLOT(slotConstructDialogFlightCreator()));
     connect(dialogFlight, SIGNAL(signalConstructDialogFlightCreator(ATCFlight*)), this, SLOT(slotConstructDialogFlightCreator(ATCFlight*)));
     connect(dialogFlight, SIGNAL(signalConstructDialogActiveRunways()), this, SLOT(slotConstructDialogActiveRunways()));
+    connect(dialogFlight, SIGNAL(signalSimulation(ATCSimulation*)), this, SLOT(slotSimulation(ATCSimulation*)));
 }
 
 void MainWindow::slotCloseDialogFlight()
 {
-    disconnect(dialogFlight, SIGNAL(closed()), this, SLOT(slotCloseDialogFlight()));
-    disconnect(dialogFlight, SIGNAL(signalConstructDialogFlightCreator()), this, SLOT(slotConstructDialogFlightCreator()));
-    disconnect(dialogFlight, SIGNAL(signalConstructDialogFlightCreator(ATCFlight*)), this, SLOT(slotConstructDialogFlightCreator(ATCFlight*)));
-
     dialogFlight = nullptr;
+    if((tempSimulation != simulation) && (tempSimulation != nullptr))   //When DialogFlight@New was cancelled or closed
+    {
+        delete tempSimulation;
 
+        if(simulation != nullptr)   //Show all data tags
+        {
+            for(int i = 0; i < simulation->getFlightsVectorSize(); i++)
+            {
+                ATCFlight *current = simulation->getFlight(i);
+                current->getFlightTag()->showTag();
+            }
+        }
+    }
+
+    tempSimulation = nullptr;
     dialogMainMenu->show();
 }
 
@@ -177,7 +207,15 @@ void MainWindow::slotConstructDialogFlightCreator()
 {
     dialogFlight->hide();
 
-    dialogFlightCreator = new DialogFlightCreator(airspaceData, settings, flightFactory, simulation, this);
+    if(tempSimulation != nullptr) //New simulation option, new flight
+    {
+        dialogFlightCreator = new DialogFlightCreator(airspaceData, settings, flightFactory, tempSimulation, this);
+    }
+    else //Edit simulation option, new flight
+    {
+        dialogFlightCreator = new DialogFlightCreator(airspaceData, settings, flightFactory, simulation, this);
+    }
+
     dialogFlightCreator->show();
 
     connectDialogFlightCreatorSlots();
@@ -187,7 +225,15 @@ void MainWindow::slotConstructDialogFlightCreator(ATCFlight *flight)
 {
     dialogFlight->hide();
 
-    dialogFlightCreator = new DialogFlightCreator(flight, airspaceData, settings, flightFactory, simulation, this);
+    if(tempSimulation != nullptr) //New simulation option, edit flight
+    {
+        dialogFlightCreator = new DialogFlightCreator(flight, airspaceData, settings, flightFactory, tempSimulation, this);
+    }
+    else //Edit simulation option, edit flight
+    {
+        dialogFlightCreator = new DialogFlightCreator(flight, airspaceData, settings, flightFactory, simulation, this);
+    }
+
     dialogFlightCreator->show();
 
     connectDialogFlightCreatorSlots();

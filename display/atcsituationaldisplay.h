@@ -100,6 +100,9 @@ public slots:
 
     void slotApplySettings();
 
+    void slotClearFlightElements(ATCFlight *flight);
+    void slotClearAllFlightElements();
+
 private slots:
     void slotGetLocation();
 
@@ -129,9 +132,6 @@ private slots:
     void slotDisplayRoute(ATCFlight *flight);
     void slotClearRoute(ATCFlight *flight);
     void slotUpdateRoute(ATCFlight *flight);
-
-    void slotClearFlightElements(ATCFlight *flight);
-    void slotClearAllFlightElements();
 
 private:
     ATCAirspace *airspaceData = nullptr;

@@ -16,7 +16,7 @@ DialogMainMenu::~DialogMainMenu()
 
 void DialogMainMenu::on_buttonNewSimulation_clicked()
 {
-    emit signalConstructDialogFlight();
+    emit signalConstructDialogFlightNew();
 }
 
 void DialogMainMenu::on_buttonLoadSimulaiton_clicked()

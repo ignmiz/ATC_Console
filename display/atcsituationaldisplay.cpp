@@ -53,6 +53,9 @@ ATCSituationalDisplay::~ATCSituationalDisplay()
 
     if(dialogAltitude != nullptr) delete dialogAltitude;
     if(dialogSpeed != nullptr) delete dialogSpeed;
+    if(dialogHeading != nullptr) delete dialogHeading;
+    if(dialogRoute != nullptr) delete dialogRoute;
+    if(dialogHandoff != nullptr) delete dialogHandoff;
 
     scene->clear();
 }

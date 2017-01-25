@@ -28,7 +28,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(ATCFlightFactory *flightFactory, ATCSimulation *simulation, QWidget *parent = 0);
+    explicit MainWindow(ATCFlightFactory *flightFactory, QWidget *parent = 0);
     ~MainWindow();
 
     bool isDialogTextConsoleVisible() const;
@@ -56,7 +56,9 @@ private slots:
 
     void changeFocusToDisplay();
 
-    void slotConstructDialogFlight();
+    void slotSimulation(ATCSimulation *sim);
+
+    void slotConstructDialogFlightNew();
     void slotCloseDialogFlight();
 
     void slotCreateDialogFlightPlan(ATCFlight *flight);
@@ -86,7 +88,8 @@ private:
     ATCAirspace *airspaceData;
     ATCSettings *settings;
     ATCFlightFactory *flightFactory;
-    ATCSimulation *simulation;
+    ATCSimulation *simulation = nullptr;
+    ATCSimulation *tempSimulation = nullptr;
 
     bool flagDialogMainMenuExists = false;
     bool flagDialogSectorSetupExists = false;

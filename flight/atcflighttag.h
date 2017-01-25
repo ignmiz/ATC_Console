@@ -42,6 +42,9 @@ public:
 
     void setText(QGraphicsSimpleTextItem *text);
 
+    void hideTag();
+    void showTag();
+
 private:
     ATC::TagType type;
 

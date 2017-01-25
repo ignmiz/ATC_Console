@@ -16,7 +16,7 @@ public:
     ~DialogMainMenu();
 
 signals:
-    void signalConstructDialogFlight();
+    void signalConstructDialogFlightNew();
 
 private slots:
     ATC_MOUSE_HANDLER
