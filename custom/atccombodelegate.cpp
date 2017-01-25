@@ -159,12 +159,12 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
         model->setData(index, cb->currentText(), Qt::DisplayRole);
 
         ATCFlight *flight = simulation->getFlight(model->index(index.row(), 1).data().toString());
+        QStringList route = flight->getFlightPlan()->getRoute().getRoute();
 
         if(index.column() == 5)
         {
             QString rwy = index.data().toString();
             QString adep = flight->getFlightPlan()->getRoute().getDeparture();
-            QStringList route = flight->getFlightPlan()->getRoute().getRoute();
 
             QString firstFix;
             if(!route.empty()) firstFix = route.at(0);
@@ -186,18 +186,94 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             flight->setRunwayDeparture(model->index(index.row(), 5).data().toString());
             flight->setSID(model->index(index.row(), 6).data().toString());
 
-            //REBUILD FIX LIST
-            //REPAINT ROUTE PREDICTION (CALL DISPLAY SLOT TWICE IF IT ALREADY EXISTS)
+            //Rebuild fix list
+            QStringList fixList;
+            ATCProcedureSID *sid = airspace->findSID(flight->getSID());
+            ATCProcedureSTAR *star = airspace->findSTAR(flight->getSTAR());
+
+            fixList.append(flight->getFlightPlan()->getRoute().getDeparture());
+
+            if(sid != nullptr)
+            {
+                for(int i = 0; i < sid->getFixListSize(); i++)
+                {
+                    if(sid->getFixName(i) != route.at(0)) fixList.append(sid->getFixName(i));
+                }
+            }
+
+            for(int i = 0; i < flight->getMainFixList().size(); i++)
+            {
+                fixList.append(flight->getMainFixList().at(i));
+            }
+
+            if(star != nullptr)
+            {
+                for(int i = 0; i < star->getFixListSize(); i++)
+                {
+                    if(star->getFixName(i) != route.at(route.size() - 1)) fixList.append(star->getFixName(i));
+                }
+            }
+
+            fixList.append(flight->getFlightPlan()->getRoute().getDestination());
+            if(!flight->getFlightPlan()->getRoute().getAlternate().isEmpty()) fixList.append(flight->getFlightPlan()->getRoute().getAlternate());
+
+            flight->setFixList(fixList);
+
+            //Repaint route prediction
+            if(flight->getRoutePrediction() != nullptr)
+            {
+                flight->slotDisplayRoute();     //First call deletes existing route prediction
+                flight->slotDisplayRoute();     //Second call creates new, updated route prediction
+            }
         }
         else if(index.column() == 6)
         {
             flight->setSID(model->index(index.row(), 6).data().toString());
+
+            //Rebuild fix list
+            QStringList fixList;
+            ATCProcedureSID *sid = airspace->findSID(flight->getSID());
+            ATCProcedureSTAR *star = airspace->findSTAR(flight->getSTAR());
+
+            fixList.append(flight->getFlightPlan()->getRoute().getDeparture());
+
+            if(sid != nullptr)
+            {
+                for(int i = 0; i < sid->getFixListSize(); i++)
+                {
+                    if(sid->getFixName(i) != route.at(0)) fixList.append(sid->getFixName(i));
+                }
+            }
+
+            for(int i = 0; i < flight->getMainFixList().size(); i++)
+            {
+                fixList.append(flight->getMainFixList().at(i));
+            }
+
+            if(star != nullptr)
+            {
+                for(int i = 0; i < star->getFixListSize(); i++)
+                {
+                    if(star->getFixName(i) != route.at(route.size() - 1)) fixList.append(star->getFixName(i));
+                }
+            }
+
+            fixList.append(flight->getFlightPlan()->getRoute().getDestination());
+            if(!flight->getFlightPlan()->getRoute().getAlternate().isEmpty()) fixList.append(flight->getFlightPlan()->getRoute().getAlternate());
+
+            flight->setFixList(fixList);
+
+            //Repaint route prediction
+            if(flight->getRoutePrediction() != nullptr)
+            {
+                flight->slotDisplayRoute();     //First call deletes existing route prediction
+                flight->slotDisplayRoute();     //Second call creates new, updated route prediction
+            }
         }
         else if(index.column() == 8)
         {
             QString rwy = index.data().toString();
             QString ades = flight->getFlightPlan()->getRoute().getDestination();
-            QStringList route = flight->getFlightPlan()->getRoute().getRoute();
 
             QString lastFix;
             if(!route.empty()) lastFix = route.at(route.size() - 1);
@@ -218,10 +294,90 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
 
             flight->setRunwayDestination(model->index(index.row(), 8).data().toString());
             flight->setSTAR(model->index(index.row(), 9).data().toString());
+
+            //Rebuild fix list
+            QStringList fixList;
+            ATCProcedureSID *sid = airspace->findSID(flight->getSID());
+            ATCProcedureSTAR *star = airspace->findSTAR(flight->getSTAR());
+
+            fixList.append(flight->getFlightPlan()->getRoute().getDeparture());
+
+            if(sid != nullptr)
+            {
+                for(int i = 0; i < sid->getFixListSize(); i++)
+                {
+                    if(sid->getFixName(i) != route.at(0)) fixList.append(sid->getFixName(i));
+                }
+            }
+
+            for(int i = 0; i < flight->getMainFixList().size(); i++)
+            {
+                fixList.append(flight->getMainFixList().at(i));
+            }
+
+            if(star != nullptr)
+            {
+                for(int i = 0; i < star->getFixListSize(); i++)
+                {
+                    if(star->getFixName(i) != route.at(route.size() - 1)) fixList.append(star->getFixName(i));
+                }
+            }
+
+            fixList.append(flight->getFlightPlan()->getRoute().getDestination());
+            if(!flight->getFlightPlan()->getRoute().getAlternate().isEmpty()) fixList.append(flight->getFlightPlan()->getRoute().getAlternate());
+
+            flight->setFixList(fixList);
+
+            //Repaint route prediction
+            if(flight->getRoutePrediction() != nullptr)
+            {
+                flight->slotDisplayRoute();     //First call deletes existing route prediction
+                flight->slotDisplayRoute();     //Second call creates new, updated route prediction
+            }
         }
         else if(index.column() == 9)
         {
             flight->setSTAR(model->index(index.row(), 9).data().toString());
+
+            //Rebuild fix list
+            QStringList fixList;
+            ATCProcedureSID *sid = airspace->findSID(flight->getSID());
+            ATCProcedureSTAR *star = airspace->findSTAR(flight->getSTAR());
+
+            fixList.append(flight->getFlightPlan()->getRoute().getDeparture());
+
+            if(sid != nullptr)
+            {
+                for(int i = 0; i < sid->getFixListSize(); i++)
+                {
+                    if(sid->getFixName(i) != route.at(0)) fixList.append(sid->getFixName(i));
+                }
+            }
+
+            for(int i = 0; i < flight->getMainFixList().size(); i++)
+            {
+                fixList.append(flight->getMainFixList().at(i));
+            }
+
+            if(star != nullptr)
+            {
+                for(int i = 0; i < star->getFixListSize(); i++)
+                {
+                    if(star->getFixName(i) != route.at(route.size() - 1)) fixList.append(star->getFixName(i));
+                }
+            }
+
+            fixList.append(flight->getFlightPlan()->getRoute().getDestination());
+            if(!flight->getFlightPlan()->getRoute().getAlternate().isEmpty()) fixList.append(flight->getFlightPlan()->getRoute().getAlternate());
+
+            flight->setFixList(fixList);
+
+            //Repaint route prediction
+            if(flight->getRoutePrediction() != nullptr)
+            {
+                flight->slotDisplayRoute();     //First call deletes existing route prediction
+                flight->slotDisplayRoute();     //Second call creates new, updated route prediction
+            }
         }
     }
     else
@@ -232,6 +388,7 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
 
 void ATCComboDelegate::slotCloseDelegate(QString text)
 {
+    Q_UNUSED(text)
     QComboBox* cb = qobject_cast<QComboBox*>(sender());
 
     emit commitData(cb);

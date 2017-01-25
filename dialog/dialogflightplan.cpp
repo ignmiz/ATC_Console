@@ -538,17 +538,48 @@ void DialogFlightPlan::on_buttonOK_clicked()
 
         //Flight - fix list
         QStringList fixList;
+        ATCProcedureSID *sid = airspace->findSID(flight->getSID());
+        ATCProcedureSTAR *star = airspace->findSTAR(flight->getSTAR());
 
         fixList.append(departure);
+
+        if(sid != nullptr)
+        {
+            for(int i = 0; i < sid->getFixListSize(); i++)
+            {
+                if(sid->getFixName(i) != routeStr.at(0)) fixList.append(sid->getFixName(i));
+            }
+        }
+
         for(int i = 0; i < model->rowCount(); i++)
         {
             QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
             if(fix != "DCT") fixList.append(fix);
         }
+
+        if(star != nullptr)
+        {
+            for(int i = 0; i < star->getFixListSize(); i++)
+            {
+                if(star->getFixName(i) != routeStr.at(routeStr.size() - 1)) fixList.append(star->getFixName(i));
+            }
+        }
+
         fixList.append(destination);
         if(!alternate.isEmpty()) fixList.append(alternate);
 
         flight->setFixList(fixList);
+
+        //Flight - main fix list
+        QStringList mainFixList;
+
+        for(int i = 0; i < model->rowCount(); i++)
+        {
+            QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
+            if(fix != "DCT") mainFixList.append(fix);
+        }
+
+        flight->setMainFixList(mainFixList);
 
         //Assign assigned SSR
         flight->setAssignedSquawk(uiInner->lineEditSquawk->text());

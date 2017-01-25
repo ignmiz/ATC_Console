@@ -179,6 +179,17 @@ void DialogFlightCreator::on_buttonOK_clicked()
 
         flight->setFixList(fixList);
 
+        //Flight - main fix list
+        QStringList mainFixList;
+
+        for(int i = 0; i < model->rowCount(); i++)
+        {
+            QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
+            if(fix != "DCT") mainFixList.append(fix);
+        }
+
+        flight->setMainFixList(mainFixList);
+
         //Assign selected SSR
         flight->setSquawk(uiInner->lineEditSquawkCurrent->text());
 
@@ -385,6 +396,17 @@ void DialogFlightCreator::on_buttonOK_clicked()
         if(!alternate.isEmpty()) fixList.append(alternate);
 
         flight->setFixList(fixList);
+
+        //Flight - main fix list
+        QStringList mainFixList;
+
+        for(int i = 0; i < model->rowCount(); i++)
+        {
+            QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
+            if(fix != "DCT") mainFixList.append(fix);
+        }
+
+        flight->setMainFixList(mainFixList);
 
         //Assign selected SSR
         flight->setSquawk(uiInner->lineEditSquawkCurrent->text());
