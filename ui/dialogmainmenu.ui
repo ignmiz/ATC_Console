@@ -39,224 +39,80 @@
     <string>Cancel</string>
    </property>
   </widget>
-  <widget class="QLabel" name="labelSimulationType">
+  <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>130</x>
-     <y>100</y>
-     <width>150</width>
-     <height>16</height>
+     <x>20</x>
+     <y>40</y>
+     <width>600</width>
+     <height>60</height>
     </rect>
    </property>
-   <property name="text">
-    <string>Simulation type:</string>
+   <property name="styleSheet">
+    <string notr="true">QGroupBox
+{
+	color: #c8c8c8;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	font: 13px;
+}</string>
    </property>
-  </widget>
-  <widget class="QLabel" name="labelSelectSector">
-   <property name="geometry">
-    <rect>
-     <x>130</x>
-     <y>140</y>
-     <width>150</width>
-     <height>16</height>
-    </rect>
+   <property name="title">
+    <string>Scenario</string>
    </property>
-   <property name="text">
-    <string>Select sector:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="labelStartTime">
-   <property name="geometry">
-    <rect>
-     <x>130</x>
-     <y>340</y>
-     <width>150</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Start time:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="labelRunUpTime">
-   <property name="geometry">
-    <rect>
-     <x>130</x>
-     <y>380</y>
-     <width>150</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Run-up time:</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="comboSimulationType">
-   <property name="geometry">
-    <rect>
-     <x>350</x>
-     <y>100</y>
-     <width>120</width>
-     <height>24</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="comboSelectSector">
-   <property name="geometry">
-    <rect>
-     <x>350</x>
-     <y>140</y>
-     <width>120</width>
-     <height>24</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QTimeEdit" name="timeStartTime">
-   <property name="geometry">
-    <rect>
-     <x>350</x>
-     <y>340</y>
-     <width>118</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="displayFormat">
-    <string>HH:mm</string>
-   </property>
-  </widget>
-  <widget class="QTimeEdit" name="timeRunUpTime">
-   <property name="geometry">
-    <rect>
-     <x>350</x>
-     <y>380</y>
-     <width>118</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="displayFormat">
-    <string>HH:mm</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="buttonRandomize">
-   <property name="geometry">
-    <rect>
-     <x>230</x>
-     <y>430</y>
-     <width>80</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Randomize</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="labelOperations">
-   <property name="geometry">
-    <rect>
-     <x>120</x>
-     <y>270</y>
-     <width>150</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Operations per hour:</string>
-   </property>
-  </widget>
-  <widget class="QSpinBox" name="spinOperations">
-   <property name="geometry">
-    <rect>
-     <x>350</x>
-     <y>260</y>
-     <width>101</width>
-     <height>25</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="labelLandingRunway">
-   <property name="geometry">
-    <rect>
-     <x>130</x>
-     <y>190</y>
-     <width>150</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Landing runway:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="labelTakeoffRunway">
-   <property name="geometry">
-    <rect>
-     <x>130</x>
-     <y>230</y>
-     <width>150</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Takeoff runway:</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="comboLandingRunway">
-   <property name="geometry">
-    <rect>
-     <x>350</x>
-     <y>190</y>
-     <width>120</width>
-     <height>24</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="comboTakeoffRunway">
-   <property name="geometry">
-    <rect>
-     <x>350</x>
-     <y>230</y>
-     <width>120</width>
-     <height>24</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="buttonNewSimulation">
-   <property name="geometry">
-    <rect>
-     <x>70</x>
-     <y>50</y>
-     <width>150</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>New Simulation</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="buttonLoadSimulaiton">
-   <property name="geometry">
-    <rect>
-     <x>249</x>
-     <y>50</y>
-     <width>150</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Load Simulation</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="buttonEditSimulation">
-   <property name="geometry">
-    <rect>
-     <x>430</x>
-     <y>50</y>
-     <width>150</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Edit Simulation</string>
-   </property>
+   <widget class="QPushButton" name="buttonEditSimulation">
+    <property name="geometry">
+     <rect>
+      <x>305</x>
+      <y>20</y>
+      <width>120</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Edit</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonExportSimulation">
+    <property name="geometry">
+     <rect>
+      <x>435</x>
+      <y>20</y>
+      <width>120</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Export</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonNewSimulation">
+    <property name="geometry">
+     <rect>
+      <x>45</x>
+      <y>20</y>
+      <width>120</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>New</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonLoadSimulaiton">
+    <property name="geometry">
+     <rect>
+      <x>175</x>
+      <y>20</y>
+      <width>120</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Load</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>
