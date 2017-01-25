@@ -349,3 +349,23 @@ void DialogFlight::slotEdit(QModelIndex index)
         uiInner->tableViewFlights->edit(index);
     }
 }
+
+void DialogFlight::on_tableViewFlights_clicked(const QModelIndex &index)
+{
+    if(index.column() == 10)
+    {
+        ATCFlight *flight = simulation->getFlight(model->index(index.row(), 1).data().toString());
+        ATCRoutePrediction *prediction = flight->getRoutePrediction();
+
+        if(prediction == nullptr)
+        {
+            model->itemFromIndex(index)->setBackground(QBrush(Qt::blue));
+        }
+        else
+        {
+            model->itemFromIndex(index)->setBackground(QBrush(Qt::black));
+        }
+
+        flight->slotDisplayRoute();
+    }
+}

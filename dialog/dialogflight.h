@@ -32,6 +32,7 @@ private slots:
     ATC_MOUSE_HANDLER
 
     void slotUpdateFlightList(ATCFlight *flight);
+    void slotEdit(QModelIndex index);
 
     void on_buttonReady_clicked();
     void on_buttonCancel_clicked();
@@ -41,9 +42,8 @@ private slots:
     void on_buttonDeleteFlight_clicked();
     void on_buttonDeleteAll_clicked();
 
+    void on_tableViewFlights_clicked(const QModelIndex &index);
     void on_buttonActiveRunways_clicked();
-
-    void slotEdit(QModelIndex index);
 
 private:
     Ui::DialogFlight *uiInner;
