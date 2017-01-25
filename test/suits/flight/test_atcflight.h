@@ -26,6 +26,7 @@ private slots:
     void test_setSimStartTime();
     void test_setTag();
     void test_setFixList();
+    void test_setMainFixList();
     void test_setRoutePrediction();
     void test_setRunwayDeparture();
     void test_setRunwayDestination();

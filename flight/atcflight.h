@@ -75,6 +75,7 @@ public:
     QString getNextFix();
     QTime getSimStartTime();
     QStringList& getFixList();
+    QStringList& getMainFixList();
 
     QString getRunwayDeparture();
     QString getRunwayDestination();
@@ -95,6 +96,7 @@ public:
     void setNextFix(QString fix);
     void setSimStartTime(QTime time);
     void setFixList(QStringList list);
+    void setMainFixList(QStringList list);
 
     void setRunwayDeparture(QString rwy);
     void setRunwayDestination(QString rwy);
@@ -140,7 +142,8 @@ private:
 
     int hdgRestriction;
     QString nextFix;
-    QStringList fixList;
+    QStringList fixList;        //List with SID & STAR fixes
+    QStringList mainFixList;    //Only filed route fixes
 
     QTime simStart;
 

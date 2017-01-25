@@ -297,6 +297,20 @@ void Test_ATCFlight::test_setFixList()
     QVERIFY(foo.getFixList() == list);
 }
 
+void Test_ATCFlight::test_setMainFixList()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+
+    QStringList list;
+    list << "TEST1" << "TEST2";
+    foo.setMainFixList(list);
+
+    QVERIFY(foo.getMainFixList() == list);
+}
+
 void Test_ATCFlight::test_setRoutePrediction()
 {
     State state;

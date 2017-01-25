@@ -77,6 +77,11 @@ QStringList &ATCFlight::getFixList()
     return fixList;
 }
 
+QStringList &ATCFlight::getMainFixList()
+{
+    return mainFixList;
+}
+
 QString ATCFlight::getRunwayDeparture()
 {
     return depRwy;
@@ -161,6 +166,11 @@ void ATCFlight::setSimStartTime(QTime time)
 void ATCFlight::setFixList(QStringList list)
 {
     fixList = list;
+}
+
+void ATCFlight::setMainFixList(QStringList list)
+{
+    mainFixList = list;
 }
 
 void ATCFlight::setRunwayDeparture(QString rwy)
