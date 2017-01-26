@@ -639,6 +639,12 @@ void ATCSituationalDisplay::slotGetLocation()
     viewport()->setCursor(acftCursor);
 }
 
+void ATCSituationalDisplay::slotGetLocation(QStringList fixList)
+{
+    slotGetLocation();
+    slotDisplayRoute(fixList);
+}
+
 void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
 {
     createFlightTag(flight);
@@ -1035,6 +1041,74 @@ void ATCSituationalDisplay::slotDisplayRoute(ATCFlight *flight)
             visibleRoutes.append(prediction);
         }
     }
+}
+
+void ATCSituationalDisplay::slotDisplayRoute(QStringList fixList)
+{
+    //Calculate positions of leg fixes & leg lines
+    tempPrediction = new ATCRoutePrediction();
+    QVector<QPointF> polyVertices;
+
+    ATCNavFix *fix;
+    ATCBeaconVOR *vor;
+    ATCAirport *airport;
+    ATCBeaconNDB *ndb;
+
+    for(int i = 0; i < fixList.size(); i++)
+    {
+        if((fix = airspaceData->findFix(fixList.at(i))) != nullptr)
+        {
+            polyVertices.append(*fix->getScenePosition());
+        }
+        else if((airport = airspaceData->findAirport(fixList.at(i))) != nullptr)
+        {
+            polyVertices.append(*airport->getScenePosition());
+        }
+        else if((vor = airspaceData->findVOR(fixList.at(i))) != nullptr)
+        {
+            polyVertices.append(*vor->getScenePosition());
+        }
+        else if((ndb = airspaceData->findNDB(fixList.at(i))) != nullptr)
+        {
+            polyVertices.append(*ndb->getScenePosition());
+        }
+    }
+
+    QPainterPath path;
+    path.addPolygon(polyVertices);
+
+    QGraphicsPathItem *poly = new QGraphicsPathItem(path);
+    poly->setPen(QPen(settings->ROUTE_COLOR, settings->ROUTE_LINE_WIDTH/currentScale));
+
+    tempPrediction->setPolygon(poly);
+
+    //Create labels
+    for(int i = 0; i < fixList.size(); i++)
+    {
+        QGraphicsSimpleTextItem *label = new QGraphicsSimpleTextItem(fixList.at(i));
+        tempPrediction->appendLabel(label);
+    }
+
+    //Display route prediction
+    tempPrediction->getPolygon()->setPen(QPen(settings->ROUTE_COLOR, settings->ROUTE_LINE_WIDTH / currentScale));
+    scene->addItem(tempPrediction->getPolygon());
+
+    QBrush textBrush(Qt::white);
+
+    QFont textFont("Arial");
+    textFont.setPointSizeF(settings->ROUTE_LABEL_HEIGHT / currentScale);
+
+    for(int i = 0; i < tempPrediction->getLabels().size(); i++)
+    {
+        tempPrediction->getLabels().at(i)->setBrush(textBrush);
+        tempPrediction->getLabels().at(i)->setFont(textFont);
+        tempPrediction->getLabels().at(i)->setPos(polyVertices.at(i).x() + settings->ROUTE_LABEL_DX / currentScale,
+                                              polyVertices.at(i).y() + settings->ROUTE_LABEL_DY / currentScale);
+
+        scene->addItem(tempPrediction->getLabels().at(i));
+    }
+
+    visibleRoutes.append(tempPrediction);
 }
 
 void ATCSituationalDisplay::slotClearRoute(ATCFlight *flight)
@@ -4208,6 +4282,7 @@ void ATCSituationalDisplay::mousePressEvent(QMouseEvent *event)
         emit signalShowFlightCreator();
         viewport()->setCursor(Qt::CrossCursor);
 
+        //Map from radar screen to lat/lon
         QPointF point = mapToScene(event->pos());
 
         double mercatorXrot = translateFromLocalX(point.x());
@@ -4221,6 +4296,18 @@ void ATCSituationalDisplay::mousePressEvent(QMouseEvent *event)
 
         emit signalDisplayClicked(lon, lat);
 
+        //Delete temp route prediction
+        scene->removeItem(tempPrediction->getPolygon());
+        for(int i = 0; i < tempPrediction->getLabels().size(); i++)
+        {
+            scene->removeItem(tempPrediction->getLabels().at(i));
+        }
+
+        visibleRoutes.remove(visibleRoutes.size() - 1);
+        delete tempPrediction;
+        tempPrediction = nullptr;
+
+        //Change flag
         flagGetLocation = false;
     }
 

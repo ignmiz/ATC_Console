@@ -23,7 +23,7 @@ public:
     ~DialogFlightCreator();
 
 signals:
-    void signalGetLocation();
+    void signalGetLocation(QStringList fixList);
     void signalCreateFlightTag(ATCFlight *flight);
     void signalUpdateFlightTag(ATCFlight *flight);
     void signalUpdateFlightList(ATCFlight *flight);
@@ -87,6 +87,7 @@ private:
 
     void setupProcedureBoxes(ATCFlight *flight);
     void refreshFixList();
+    QStringList getFixList();
 };
 
 #endif // DIALOGFLIGHTCREATOR_H

@@ -17,6 +17,9 @@ public:
     void setPolygon(QGraphicsPathItem *poly);
     void appendLabel(QGraphicsSimpleTextItem *text);
 
+    void hideRoute();
+    void showRoute();
+
 private:
     QGraphicsPathItem *polygon = nullptr;
     QVector<QGraphicsSimpleTextItem*> labels;

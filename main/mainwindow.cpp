@@ -259,7 +259,7 @@ void MainWindow::slotConstructDialogFlightCreator(ATCFlight *flight)
 void MainWindow::slotCloseDialogFlightCreator()
 {
     disconnect(dialogFlightCreator, SIGNAL(closed()), this, SLOT(slotCloseDialogFlightCreator()));
-    disconnect(dialogFlightCreator, SIGNAL(signalGetLocation()), ui->situationalDisplay, SLOT(slotGetLocation()));
+    disconnect(dialogFlightCreator, SIGNAL(signalGetLocation(QStringList)), ui->situationalDisplay, SLOT(slotGetLocation(QStringList)));
     disconnect(ui->situationalDisplay, SIGNAL(signalShowFlightCreator()), dialogFlightCreator, SLOT(slotShowFlightCreator()));
     disconnect(ui->situationalDisplay, SIGNAL(signalDisplayClicked(double,double)), dialogFlightCreator, SLOT(slotDisplayClicked(double,double)));
     disconnect(dialogFlightCreator, SIGNAL(signalCreateFlightTag(ATCFlight*)), ui->situationalDisplay, SLOT(slotCreateFlightTag(ATCFlight*)));
@@ -316,7 +316,7 @@ void MainWindow::mainWindowSetup()
 void MainWindow::connectDialogFlightCreatorSlots()
 {
     connect(dialogFlightCreator, SIGNAL(closed()), this, SLOT(slotCloseDialogFlightCreator()));
-    connect(dialogFlightCreator, SIGNAL(signalGetLocation()), ui->situationalDisplay, SLOT(slotGetLocation()));
+    connect(dialogFlightCreator, SIGNAL(signalGetLocation(QStringList)), ui->situationalDisplay, SLOT(slotGetLocation(QStringList)));
     connect(ui->situationalDisplay, SIGNAL(signalShowFlightCreator()), dialogFlightCreator, SLOT(slotShowFlightCreator()));
     connect(ui->situationalDisplay, SIGNAL(signalDisplayClicked(double,double)), dialogFlightCreator, SLOT(slotDisplayClicked(double,double)));
     connect(dialogFlightCreator, SIGNAL(signalCreateFlightTag(ATCFlight*)), ui->situationalDisplay, SLOT(slotCreateFlightTag(ATCFlight*)));

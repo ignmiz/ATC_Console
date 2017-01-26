@@ -105,6 +105,7 @@ public slots:
 
 private slots:
     void slotGetLocation();
+    void slotGetLocation(QStringList fixList);
 
     void slotCreateFlightTag(ATCFlight *flight);
     void slotUpdateFlightTag(ATCFlight *flight);
@@ -130,6 +131,7 @@ private slots:
     void slotDialogHandoffCloseOnClick();
 
     void slotDisplayRoute(ATCFlight *flight);
+    void slotDisplayRoute(QStringList fixList);
     void slotClearRoute(ATCFlight *flight);
     void slotUpdateRoute(ATCFlight *flight);
 
@@ -149,7 +151,6 @@ private:
     double sectorCentreY;
 
     QGraphicsScene *scene = nullptr;
-
     QCursor acftCursor;
 
     bool flagGetLocation = false;
@@ -169,6 +170,8 @@ private:
 
     QVector<ATCFlightTag*> visibleTags;
     QVector<ATCRoutePrediction*> visibleRoutes;
+
+    ATCRoutePrediction *tempPrediction = nullptr;
 
     DialogAltitude *dialogAltitude = nullptr;
     bool dialogAltitudeExists = false;

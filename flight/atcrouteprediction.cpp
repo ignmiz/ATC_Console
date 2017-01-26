@@ -35,3 +35,21 @@ void ATCRoutePrediction::appendLabel(QGraphicsSimpleTextItem *text)
 {
     labels.append(text);
 }
+
+void ATCRoutePrediction::hideRoute()
+{
+    if(polygon != nullptr) polygon->hide();
+    for(int i = 0; i < labels.size(); i++)
+    {
+        labels.at(i)->hide();
+    }
+}
+
+void ATCRoutePrediction::showRoute()
+{
+    if(polygon != nullptr) polygon->show();
+    for(int i = 0; i < labels.size(); i++)
+    {
+        labels.at(i)->show();
+    }
+}

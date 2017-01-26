@@ -496,7 +496,11 @@ void DialogFlightCreator::on_buttonSetRoute_clicked()
 
 void DialogFlightCreator::on_buttonGetLocation_clicked()
 {
-    emit signalGetLocation();
+    if(flight != nullptr)
+    {
+        if(flight->getRoutePrediction() != nullptr) flight->getRoutePrediction()->hideRoute();
+    }
+    emit signalGetLocation(getFixList());
     hide();
 }
 
@@ -1329,6 +1333,46 @@ void DialogFlightCreator::refreshFixList()
     if(!uiInner->lineEditAlternate->text().isEmpty()) uiInner->comboBoxNextFix->addItem(uiInner->lineEditAlternate->text());
 }
 
+QStringList DialogFlightCreator::getFixList()
+{
+    QStringList fixList;
+    ATCProcedureSID *sid = airspace->findSID(uiInner->comboBoxSID->currentText());
+    ATCProcedureSTAR *star = airspace->findSTAR(uiInner->comboBoxSTAR->currentText());
+    QString departure = uiInner->lineEditDeparture->text();
+    QString destination = uiInner->lineEditDestination->text();
+    QString alternate = uiInner->lineEditAlternate->text();
+    QStringList routeStr = uiInner->plainTextEditRoute->toPlainText().split(" ", QString::SkipEmptyParts);
+
+    fixList.append(departure);
+
+    if(sid != nullptr)
+    {
+        for(int i = 0; i < sid->getFixListSize(); i++)
+        {
+            if(sid->getFixName(i) != routeStr.at(0)) fixList.append(sid->getFixName(i));
+        }
+    }
+
+    for(int i = 0; i < model->rowCount(); i++)
+    {
+        QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
+        if(fix != "DCT") fixList.append(fix);
+    }
+
+    if(star != nullptr)
+    {
+        for(int i = 0; i < star->getFixListSize(); i++)
+        {
+            if(star->getFixName(i) != routeStr.at(routeStr.size() - 1)) fixList.append(star->getFixName(i));
+        }
+    }
+
+    fixList.append(destination);
+    if(!alternate.isEmpty()) fixList.append(alternate);
+
+    return fixList;
+}
+
 void DialogFlightCreator::on_buttonSetCallsign_clicked()
 {
     setCallsign();
@@ -1346,6 +1390,11 @@ void DialogFlightCreator::on_buttonSetTAS_clicked()
 
 void DialogFlightCreator::slotShowFlightCreator()
 {
+    if(flight != nullptr)
+    {
+        if(flight->getRoutePrediction() != nullptr) flight->getRoutePrediction()->showRoute();
+    }
+
     show();
 }
 
