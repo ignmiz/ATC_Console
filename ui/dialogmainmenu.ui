@@ -64,7 +64,7 @@
    <widget class="QPushButton" name="buttonEditSimulation">
     <property name="geometry">
      <rect>
-      <x>305</x>
+      <x>175</x>
       <y>20</y>
       <width>120</width>
       <height>25</height>
@@ -100,17 +100,17 @@
      <string>New</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="buttonLoadSimulaiton">
+   <widget class="QPushButton" name="buttonImportSimulation">
     <property name="geometry">
      <rect>
-      <x>175</x>
+      <x>305</x>
       <y>20</y>
       <width>120</width>
       <height>25</height>
      </rect>
     </property>
     <property name="text">
-     <string>Load</string>
+     <string>Import</string>
     </property>
    </widget>
   </widget>

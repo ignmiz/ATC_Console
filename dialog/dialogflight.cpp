@@ -95,6 +95,14 @@ void DialogFlight::dialogFlightSetup()
 
     uiInner->tableViewFlights->setEditTriggers(QAbstractItemView::NoEditTriggers);
     connect(uiInner->tableViewFlights, SIGNAL(clicked(QModelIndex)), this, SLOT(slotEdit(QModelIndex)));
+
+    if(mode == ATC::Edit)
+    {
+        for(int i = 0; i < simulation->getFlightsVectorSize(); i++)
+        {
+            appendRow(simulation->getFlight(i), model);
+        }
+    }
 }
 
 void DialogFlight::appendRow(ATCFlight *flight, QStandardItemModel *model)
@@ -300,7 +308,7 @@ void DialogFlight::on_buttonDeleteAll_clicked()
 
 void DialogFlight::on_buttonActiveRunways_clicked()
 {
-    emit signalConstructDialogActiveRunways();
+    emit signalConstructDialogActiveRunways(mode);
 }
 
 void DialogFlight::slotEdit(QModelIndex index)

@@ -51,6 +51,7 @@ void MainWindow::on_buttonMainMenu_clicked()
         setSituationalDisplayFocus();
 
         connect(dialogMainMenu, SIGNAL(signalConstructDialogFlightNew()), this, SLOT(slotConstructDialogFlightNew()));
+        connect(dialogMainMenu, SIGNAL(signalConstructDialogFlightEdit()), this, SLOT(slotConstructDialogFlightEdit()));
     }
 }
 
@@ -161,8 +162,24 @@ void MainWindow::slotConstructDialogFlightNew()
     connect(dialogFlight, SIGNAL(closed()), this, SLOT(slotCloseDialogFlight()));
     connect(dialogFlight, SIGNAL(signalConstructDialogFlightCreator()), this, SLOT(slotConstructDialogFlightCreator()));
     connect(dialogFlight, SIGNAL(signalConstructDialogFlightCreator(ATCFlight*)), this, SLOT(slotConstructDialogFlightCreator(ATCFlight*)));
-    connect(dialogFlight, SIGNAL(signalConstructDialogActiveRunways()), this, SLOT(slotConstructDialogActiveRunways()));
+    connect(dialogFlight, SIGNAL(signalConstructDialogActiveRunways(ATC::SimCreationMode)), this, SLOT(slotConstructDialogActiveRunways(ATC::SimCreationMode)));
     connect(dialogFlight, SIGNAL(signalSimulation(ATCSimulation*)), this, SLOT(slotSimulation(ATCSimulation*)));
+}
+
+void MainWindow::slotConstructDialogFlightEdit()
+{
+    if(simulation != nullptr)
+    {
+        dialogMainMenu->hide();
+
+        dialogFlight = new DialogFlight(simulation, airspaceData, ATC::Edit, this);
+        dialogFlight->show();
+
+        connect(dialogFlight, SIGNAL(closed()), this, SLOT(slotCloseDialogFlight()));
+        connect(dialogFlight, SIGNAL(signalConstructDialogFlightCreator()), this, SLOT(slotConstructDialogFlightCreator()));
+        connect(dialogFlight, SIGNAL(signalConstructDialogFlightCreator(ATCFlight*)), this, SLOT(slotConstructDialogFlightCreator(ATCFlight*)));
+        connect(dialogFlight, SIGNAL(signalConstructDialogActiveRunways(ATC::SimCreationMode)), this, SLOT(slotConstructDialogActiveRunways(ATC::SimCreationMode)));
+    }
 }
 
 void MainWindow::slotCloseDialogFlight()
@@ -252,11 +269,19 @@ void MainWindow::slotCloseDialogFlightCreator()
     dialogFlight->show();
 }
 
-void MainWindow::slotConstructDialogActiveRunways()
+void MainWindow::slotConstructDialogActiveRunways(ATC::SimCreationMode m)
 {
     dialogFlight->hide();
 
-    dialogActiveRunways = new DialogActiveRunways(airspaceData, simulation->getActiveRunways(), this);
+    if(m == ATC::New)
+    {
+        dialogActiveRunways = new DialogActiveRunways(airspaceData, tempSimulation->getActiveRunways(), this);
+    }
+    else
+    {
+        dialogActiveRunways = new DialogActiveRunways(airspaceData, simulation->getActiveRunways(), this);
+    }
+
     dialogActiveRunways->show();
 
     connect(dialogActiveRunways, SIGNAL(closed()), this, SLOT(slotCloseDialogActiveRunways()));

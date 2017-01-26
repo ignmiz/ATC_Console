@@ -59,6 +59,7 @@ private slots:
     void slotSimulation(ATCSimulation *sim);
 
     void slotConstructDialogFlightNew();
+    void slotConstructDialogFlightEdit();
     void slotCloseDialogFlight();
 
     void slotCreateDialogFlightPlan(ATCFlight *flight);
@@ -68,7 +69,7 @@ private slots:
     void slotConstructDialogFlightCreator(ATCFlight *flight);
     void slotCloseDialogFlightCreator();
 
-    void slotConstructDialogActiveRunways();
+    void slotConstructDialogActiveRunways(ATC::SimCreationMode m);
     void slotCloseDialogActiveRunways();
 
 private:

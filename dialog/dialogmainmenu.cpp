@@ -19,12 +19,17 @@ void DialogMainMenu::on_buttonNewSimulation_clicked()
     emit signalConstructDialogFlightNew();
 }
 
-void DialogMainMenu::on_buttonLoadSimulaiton_clicked()
+void DialogMainMenu::on_buttonEditSimulation_clicked()
+{
+    emit signalConstructDialogFlightEdit();
+}
+
+void DialogMainMenu::on_buttonImportSimulation_clicked()
 {
     //TO BE IMPLEMENTED
 }
 
-void DialogMainMenu::on_buttonEditSimulation_clicked()
+void DialogMainMenu::on_buttonExportSimulation_clicked()
 {
-    //TO BE IMPLEMENTED
+
 }

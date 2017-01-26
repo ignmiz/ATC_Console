@@ -29,7 +29,7 @@ signals:
     void signalConstructDialogFlightCreator();
     void signalConstructDialogFlightCreator(ATCFlight *flight);
 
-    void signalConstructDialogActiveRunways();
+    void signalConstructDialogActiveRunways(ATC::SimCreationMode m);
 
     void signalSimulation(ATCSimulation *sim);
 

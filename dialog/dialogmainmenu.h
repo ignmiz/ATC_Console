@@ -17,13 +17,15 @@ public:
 
 signals:
     void signalConstructDialogFlightNew();
+    void signalConstructDialogFlightEdit();
 
 private slots:
     ATC_MOUSE_HANDLER
 
     void on_buttonNewSimulation_clicked();
-    void on_buttonLoadSimulaiton_clicked();
     void on_buttonEditSimulation_clicked();
+    void on_buttonImportSimulation_clicked();
+    void on_buttonExportSimulation_clicked();
 
 private:
     Ui::DialogMainMenu *uiInner;
