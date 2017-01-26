@@ -2,6 +2,7 @@ DEFAULT SYMBOLOGY = ../../ATC_Console/ATC_Console/config/DefaultSymbology.sym
 EXPORT SYMBOLOGY = ../../ATC_Console/ATC_Console/config/user
 DEFAULT DISPLAY = ../../ATC_Console/ATC_Console/config/DefaultDisplay.dis
 EXPORT DISPLAY = ../../ATC_Console/ATC_Console/config/user
+EXPORT SCENARIO = ../../ATC_Console/ATC_Console/config/user
 
 SCT = ../../ATC_Console/ATC_Console/config/EPWW_175_20160428.sct
 ESE = ../../ATC_Console/ATC_Console/config/EPWW_175_20160428.ese

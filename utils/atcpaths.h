@@ -22,6 +22,8 @@ public:
     QString DISPLAY_DFLT_PATH;
     QString DISPLAY_EXPORT_PATH;
 
+    QString SCENARIO_EXPORT_PATH;
+
     QString SCT_PATH;
     QString ESE_PATH;
 

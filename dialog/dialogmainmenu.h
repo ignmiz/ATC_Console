@@ -2,6 +2,11 @@
 #define DIALOGMAINMENU_H
 
 #include "atcdialog.h"
+#include "atcpaths.h"
+#include "atcsimulation.h"
+
+#include <QFile>
+#include <QFileDialog>
 
 namespace Ui {
 class DialogMainMenu;
@@ -18,6 +23,7 @@ public:
 signals:
     void signalConstructDialogFlightNew();
     void signalConstructDialogFlightEdit();
+    void signalExportScenario();
 
 private slots:
     ATC_MOUSE_HANDLER
@@ -29,6 +35,7 @@ private slots:
 
 private:
     Ui::DialogMainMenu *uiInner;
+
 };
 
 #endif // DIALOGMAINMENU_H

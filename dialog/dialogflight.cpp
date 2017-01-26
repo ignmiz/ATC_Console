@@ -5,7 +5,7 @@ DialogFlight::DialogFlight(ATCSimulation *sim, ATCAirspace *airspace, ATC::SimCr
     simulation(sim),
     airspace(airspace),
     mode(m),
-    ATCDialog(parent, "Flight Creator", 600, 650),
+    ATCDialog(parent, "Simulation Creator", 600, 650),
     uiInner(new Ui::DialogFlight)
 {
     uiInner->setupUi(this);

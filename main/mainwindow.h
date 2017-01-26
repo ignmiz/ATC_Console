@@ -18,6 +18,7 @@
 #include "atcsettings.h"
 #include "atcflightfactory.h"
 #include "atcsimulation.h"
+#include "atcmath.h"
 
 namespace Ui {
 class MainWindow;
@@ -71,6 +72,8 @@ private slots:
 
     void slotConstructDialogActiveRunways(ATC::SimCreationMode m);
     void slotCloseDialogActiveRunways();
+
+    void slotExportScenario();
 
 private:
     Ui::MainWindow *ui;

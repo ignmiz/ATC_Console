@@ -52,6 +52,7 @@ void MainWindow::on_buttonMainMenu_clicked()
 
         connect(dialogMainMenu, SIGNAL(signalConstructDialogFlightNew()), this, SLOT(slotConstructDialogFlightNew()));
         connect(dialogMainMenu, SIGNAL(signalConstructDialogFlightEdit()), this, SLOT(slotConstructDialogFlightEdit()));
+        connect(dialogMainMenu, SIGNAL(signalExportScenario()), this, SLOT(slotExportScenario()));
     }
 }
 
@@ -106,24 +107,16 @@ void MainWindow::on_buttonShowConsole_clicked()
 void MainWindow::dialogMainMenuClosed()
 {
     setFlagDialogMainMenuExists(false);
-    disconnect(dialogMainMenu, SIGNAL(closed()), this, SLOT(dialogMainMenuClosed()));
-    disconnect(dialogMainMenu, SIGNAL(changeFocusToDisplay()), this, SLOT(changeFocusToDisplay()));
-
-    disconnect(dialogMainMenu, SIGNAL(signalConstructDialogFlightNew()), this, SLOT(slotConstructDialogFlightNew()));
 }
 
 void MainWindow::dialogSectorSetupClosed()
 {
     setFlagDialogSectorSetupExists(false);
-    disconnect(dialogSectorSetup, SIGNAL(closed()), this, SLOT(dialogSectorSetupClosed()));
-    disconnect(dialogSectorSetup, SIGNAL(changeFocusToDisplay()), this, SLOT(changeFocusToDisplay()));
 }
 
 void MainWindow::dialogSettingsClosed()
 {
     setFlagDialogSettingExists(false);
-    disconnect(dialogSettings, SIGNAL(closed()), this, SLOT(dialogSectorSetupClosed()));
-    disconnect(dialogSettings, SIGNAL(changeFocusToDisplay()), this, SLOT(changeFocusToDisplay()));
 }
 
 void MainWindow::changeFocusToDisplay()
@@ -291,6 +284,98 @@ void MainWindow::slotCloseDialogActiveRunways()
 {
     dialogActiveRunways = nullptr;
     dialogFlight->show();
+}
+
+void MainWindow::slotExportScenario()
+{
+    if(simulation != nullptr)
+    {
+        ATCPaths paths;
+
+        QString filePath = QFileDialog::getSaveFileName(this, tr("Export to..."), paths.SCENARIO_EXPORT_PATH, tr("Text files(*.scn)"));
+        if(filePath.isEmpty()) return;
+
+        QStringList pathElements = filePath.split("/", QString::KeepEmptyParts);
+        QString fileName = pathElements.at(pathElements.size() - 1).trimmed();
+        QString nameWithoutExtension = fileName.split(".", QString::KeepEmptyParts).at(0).trimmed();
+
+        QFile file(filePath);
+
+        if(!file.open(QFile::WriteOnly | QFile::Text))
+        {
+            QMessageBox msgBox;
+            msgBox.setText("DialogMainMenu: Failed to open path: " + filePath);
+            msgBox.exec();
+
+            return;
+        }
+
+        QTextStream out(&file);
+
+        out << "[INFO]" << endl;
+        out << "NAME = " << nameWithoutExtension << endl;
+        out << endl;
+
+        out << "[RUNWAY]" << endl;
+        QVector<ActiveAirport> activeAirports = simulation->getActiveRunways()->getActiveAirports();
+        for(int i = 0; i < activeAirports.size(); i++)
+        {
+            ActiveAirport current = activeAirports.at(i);
+
+            out << "ICAO = " << current.airportCode << endl;
+            out << "DEP = " << (current.dep ? "1" : "0") << endl;
+            out << "ARR = " << (current.arr ? "1" : "0") << endl;
+            out << "DEP RWY = " << (current.depRwys.isEmpty() ? "NIL" : current.depRwys.join(" ")) << endl;
+            out << "ARR RWY = " << (current.arrRwys.isEmpty() ? "NIL" : current.arrRwys.join(" ")) << endl;
+            out << endl;
+        }
+        out << endl;
+
+        out << "[FLIGHTS]" << endl  ;
+        QVector<ATCFlight*> flights = simulation->getFlightsVector();
+        for(int i = 0; i < flights.size(); i++)
+        {
+            ATCFlight *current = flights.at(i);
+            ATC::NavMode mode = current->getNavMode();
+
+            out << "COMPANY = " << current->getFlightPlan()->getCompany()->getCode() << endl;
+            out << "FLIGHT NO = " << current->getFlightPlan()->getFlightNumber() << endl;
+            out << "TYPE = " << current->getFlightPlan()->getType()->getAcType().ICAOcode << endl;
+            out << "ADEP = " << current->getFlightPlan()->getRoute().getDeparture() << endl;
+            out << "ADES = " << current->getFlightPlan()->getRoute().getDestination() << endl;
+            out << "AALT = " << current->getFlightPlan()->getRoute().getAlternate() << endl;
+            out << "ROUTE = " << current->getFlightPlan()->getRoute().getRoute().join(" ") << endl;
+            out << "FILED TAS = " << QString::number(current->getFlightPlan()->getTAS()) << endl;
+            out << "RFL = " << current->getFlightPlan()->getAltitude() << endl;
+            out << "DEP TIME = " << current->getFlightPlan()->getDepartureTime().toString("HH:mm") << endl;
+            out << "ENR TIME = " << current->getFlightPlan()->getEnrouteTime().toString("HH:mm") << endl;
+            out << "FUEL TIME = " << current->getFlightPlan()->getFuelTime().toString("HH:mm") << endl;
+            out << "FIX LIST = " << current->getFixList().join(" ") << endl;
+            out << "MAIN FIX LIST = " << current->getMainFixList().join(" ") << endl;
+            out << "ASSR = " << current->getAssignedSquawk() << endl;
+            out << "PSSR = " << current->getSquawk() << endl;
+            out << "NAV TYPE = " << (mode == ATC::Nav ? "NAV" : "HDG") << endl;
+            out << "POS = " << QString::number(ATCMath::rad2deg(current->getState().y)) << " " << QString::number(ATCMath::rad2deg(current->getState().x)) << endl;
+            out << "AFL = " << QString::number(ATCMath::m2ft(current->getState().h)) << endl;
+            out << "TAS = " << QString::number(ATCMath::mps2kt(current->getState().v)) << endl;
+            out << "THDG = " << QString::number(ATCMath::rad2deg(current->getState().hdg)) << endl;
+            out << "CFL = " << current->getTargetAltitude() << endl;
+            out << "SPEED RES = " << (current->getTargetSpeed().isEmpty() ? "NIL" : current->getTargetSpeed()) << endl;
+            out << "MHDG RES = " << (mode == ATC::Nav ? "NIL" : QString::number(current->getHdgRestriction())) << endl;
+            out << "NEXT FIX = " << (mode == ATC::Nav ? current->getNextFix() : "NIL") << endl;
+            out << "SIM TIME = " << current->getSimStartTime().toString("HH:mm:ss") << endl;
+            out << "RWY DEP = " << current->getRunwayDeparture() << endl;
+            out << "RWY ARR = " << current->getRunwayDestination() << endl;
+            out << "SID = " << current->getSID() << endl;
+            out << "STAR = " << current->getSTAR() << endl;
+            out << endl;
+        }
+        out << endl;
+
+        QMessageBox msgBox(this);
+        msgBox.setText("Scenario successfuly exported to: " + filePath);
+        msgBox.exec();
+    }
 }
 
 void MainWindow::on_buttonClose_clicked()

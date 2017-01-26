@@ -31,5 +31,5 @@ void DialogMainMenu::on_buttonImportSimulation_clicked()
 
 void DialogMainMenu::on_buttonExportSimulation_clicked()
 {
-
+    emit signalExportScenario();
 }

@@ -40,6 +40,10 @@ ATCPaths::ATCPaths()
             {
                 DISPLAY_EXPORT_PATH = stringList.at(1).trimmed();
             }
+            else if(stringList.at(0).trimmed() == "EXPORT SCENARIO")
+            {
+                SCENARIO_EXPORT_PATH = stringList.at(1).trimmed();
+            }
             else if(stringList.at(0).trimmed() == "SCT")
             {
                 SCT_PATH = stringList.at(1).trimmed();
@@ -110,6 +114,7 @@ void ATCPaths::exportPaths()
     out << "EXPORT SYMBOLOGY = " << SYMBOLOGY_EXPORT_PATH << endl;
     out << "DEFAULT DISPLAY = " << DISPLAY_DFLT_PATH << endl;
     out << "EXPORT DISPLAY = " << DISPLAY_EXPORT_PATH << endl;
+    out << "EXPORT SCENARIO = " << SCENARIO_EXPORT_PATH << endl;
     out << "" << endl;
     out << "SCT = " << SCT_PATH << endl;
     out << "ESE = " << ESE_PATH << endl;

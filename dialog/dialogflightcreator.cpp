@@ -1097,10 +1097,6 @@ void DialogFlightCreator::formSetup(ATCFlight *flight)
 
         uiInner->plainTextEditRoute->setPlainText(routeStr);
 
-        uiInner->timeEditDepTime->setEnabled(false);
-        uiInner->timeEditEnrTime->setEnabled(false);
-        uiInner->timeEditFuelTime->setEnabled(false);
-
         uiInner->lineEditLatitude->setText(QString::number(ATCMath::rad2deg(flight->getState().y)));
         uiInner->lineEditLongitude->setText(QString::number(ATCMath::rad2deg(flight->getState().x)));
 
