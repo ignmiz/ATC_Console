@@ -46,7 +46,12 @@ void DialogFlight::on_buttonCreateFlight_clicked()
 
 void DialogFlight::on_buttonReady_clicked()
 {
-    if(mode == ATC::New) emit signalSimulation(simulation);
+    if(mode == ATC::New)
+    {
+        emit signalSimulation(simulation);
+        emit signalActiveScenarioPath("From simulation creator, not saved yet");
+    }
+
     emit closed();
     close();
 }

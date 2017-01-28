@@ -55,6 +55,9 @@ void MainWindow::on_buttonMainMenu_clicked()
         connect(dialogMainMenu, SIGNAL(signalImportScenario()), this, SLOT(slotImportScenario()));
         connect(dialogMainMenu, SIGNAL(signalExportScenario()), this, SLOT(slotExportScenario()));
         connect(this, SIGNAL(signalCreateFlightTag(ATCFlight*)), ui->situationalDisplay, SLOT(slotCreateFlightTag(ATCFlight*)));
+        connect(this, SIGNAL(signalActiveScenarioPath(QString)), dialogMainMenu, SLOT(slotActiveScenarioPath(QString)));
+
+        if(simulation == nullptr) emit signalActiveScenarioPath("No scenario selected");
     }
 }
 
@@ -159,6 +162,7 @@ void MainWindow::slotConstructDialogFlightNew()
     connect(dialogFlight, SIGNAL(signalConstructDialogFlightCreator(ATCFlight*)), this, SLOT(slotConstructDialogFlightCreator(ATCFlight*)));
     connect(dialogFlight, SIGNAL(signalConstructDialogActiveRunways(ATC::SimCreationMode)), this, SLOT(slotConstructDialogActiveRunways(ATC::SimCreationMode)));
     connect(dialogFlight, SIGNAL(signalSimulation(ATCSimulation*)), this, SLOT(slotSimulation(ATCSimulation*)));
+    connect(dialogFlight, SIGNAL(signalActiveScenarioPath(QString)), dialogMainMenu, SLOT(slotActiveScenarioPath(QString)));
 }
 
 void MainWindow::slotConstructDialogFlightEdit()
@@ -536,6 +540,8 @@ void MainWindow::slotImportScenario()
         emit signalCreateFlightTag(simulation->getFlight(i));
     }
 
+    emit signalActiveScenarioPath(filePath);
+
     QMessageBox msgBox(this);
     msgBox.setText("Scenario successfuly imported from: " + filePath);
     msgBox.exec();
@@ -626,6 +632,8 @@ void MainWindow::slotExportScenario()
             out << endl;
         }
         out << endl;
+
+        emit signalActiveScenarioPath(filePath);
 
         QMessageBox msgBox(this);
         msgBox.setText("Scenario successfuly exported to: " + filePath);

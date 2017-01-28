@@ -2,11 +2,13 @@
 #include "ui_dialogmainmenu.h"
 
 DialogMainMenu::DialogMainMenu(QWidget *parent) :
-    ATCDialog(parent, "Main Menu", 640, 480),
+    ATCDialog(parent, "Main Menu", 600, 650),
     uiInner(new Ui::DialogMainMenu)
 {
     uiInner->setupUi(this);
     windowSetup();
+
+    uiInner->lineEditActiveScenario->setReadOnly(true);
 }
 
 DialogMainMenu::~DialogMainMenu()
@@ -32,4 +34,9 @@ void DialogMainMenu::on_buttonImportSimulation_clicked()
 void DialogMainMenu::on_buttonExportSimulation_clicked()
 {
     emit signalExportScenario();
+}
+
+void DialogMainMenu::slotActiveScenarioPath(QString path)
+{
+    uiInner->lineEditActiveScenario->setText(path);
 }

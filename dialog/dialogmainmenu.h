@@ -34,6 +34,8 @@ private slots:
     void on_buttonImportSimulation_clicked();
     void on_buttonExportSimulation_clicked();
 
+    void slotActiveScenarioPath(QString path);
+
 private:
     Ui::DialogMainMenu *uiInner;
 

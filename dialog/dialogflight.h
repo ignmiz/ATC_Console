@@ -32,6 +32,7 @@ signals:
     void signalConstructDialogActiveRunways(ATC::SimCreationMode m);
 
     void signalSimulation(ATCSimulation *sim);
+    void signalActiveScenarioPath(QString path);
 
 private slots:
     ATC_MOUSE_HANDLER

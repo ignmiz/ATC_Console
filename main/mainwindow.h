@@ -48,6 +48,7 @@ public:
 
 signals:
     void signalCreateFlightTag(ATCFlight *flight);
+    void signalActiveScenarioPath(QString path);
 
 private slots:
     void on_buttonMainMenu_clicked();

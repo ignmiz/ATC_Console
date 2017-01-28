@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>480</height>
+    <width>600</width>
+    <height>650</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QPushButton" name="buttonStart">
    <property name="geometry">
     <rect>
-     <x>350</x>
-     <y>430</y>
+     <x>360</x>
+     <y>560</y>
      <width>80</width>
      <height>25</height>
     </rect>
@@ -30,7 +30,7 @@
    <property name="geometry">
     <rect>
      <x>480</x>
-     <y>430</y>
+     <y>560</y>
      <width>80</width>
      <height>25</height>
     </rect>
@@ -44,8 +44,8 @@
     <rect>
      <x>20</x>
      <y>40</y>
-     <width>600</width>
-     <height>60</height>
+     <width>560</width>
+     <height>95</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -64,7 +64,7 @@
    <widget class="QPushButton" name="buttonEditSimulation">
     <property name="geometry">
      <rect>
-      <x>175</x>
+      <x>160</x>
       <y>20</y>
       <width>120</width>
       <height>25</height>
@@ -77,7 +77,7 @@
    <widget class="QPushButton" name="buttonExportSimulation">
     <property name="geometry">
      <rect>
-      <x>435</x>
+      <x>400</x>
       <y>20</y>
       <width>120</width>
       <height>25</height>
@@ -90,7 +90,7 @@
    <widget class="QPushButton" name="buttonNewSimulation">
     <property name="geometry">
      <rect>
-      <x>45</x>
+      <x>40</x>
       <y>20</y>
       <width>120</width>
       <height>25</height>
@@ -103,7 +103,7 @@
    <widget class="QPushButton" name="buttonImportSimulation">
     <property name="geometry">
      <rect>
-      <x>305</x>
+      <x>280</x>
       <y>20</y>
       <width>120</width>
       <height>25</height>
@@ -111,6 +111,43 @@
     </property>
     <property name="text">
      <string>Import</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelActiveScenario">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>50</y>
+      <width>110</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Active scenario:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEditActiveScenario">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>50</y>
+      <width>360</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit
+{
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	font: 13px;
+}</string>
     </property>
    </widget>
   </widget>
