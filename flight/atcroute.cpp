@@ -32,6 +32,21 @@ ATCRoute::~ATCRoute()
 
 }
 
+void ATCRoute::setDeparture(QString code)
+{
+    departure = code;
+}
+
+void ATCRoute::setDestination(QString code)
+{
+    destination = code;
+}
+
+void ATCRoute::setRoute(QStringList list)
+{
+    route = list;
+}
+
 void ATCRoute::setAlternate(QString alt)
 {
     alternate = alt;

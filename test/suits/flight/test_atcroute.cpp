@@ -39,3 +39,27 @@ void Test_ATCRoute::test_setGetAlternate()
     foo.setAlternate("EPKT");
     QVERIFY(foo.getAlternate() == "EPKT");
 }
+
+void Test_ATCRoute::test_setDeparture()
+{
+    ATCRoute foo;
+    foo.setDeparture("EPWA");
+    QVERIFY(foo.getDeparture() == "EPWA");
+}
+
+void Test_ATCRoute::test_setDestination()
+{
+    ATCRoute foo;
+    foo.setDestination("EPWA");
+    QVERIFY(foo.getDestination() == "EPWA");
+}
+
+void Test_ATCRoute::test_setRoute()
+{
+    QStringList route;
+    route << "EVINA" << "M985" << "POBOK";
+
+    ATCRoute foo;
+    foo.setRoute(route);
+    QVERIFY(foo.getRoute() == route);
+}
