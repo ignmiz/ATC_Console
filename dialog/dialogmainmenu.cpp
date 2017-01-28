@@ -26,7 +26,7 @@ void DialogMainMenu::on_buttonEditSimulation_clicked()
 
 void DialogMainMenu::on_buttonImportSimulation_clicked()
 {
-    //TO BE IMPLEMENTED
+    emit signalImportScenario();
 }
 
 void DialogMainMenu::on_buttonExportSimulation_clicked()

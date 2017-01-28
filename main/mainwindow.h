@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QGraphicsScene>
+#include <QString>
+#include <QStringList>
 
 #include "dialogtextconsole.h"
 #include "dialogmainmenu.h"
@@ -44,6 +46,9 @@ public:
 
     void setSituationalDisplayFocus();
 
+signals:
+    void signalCreateFlightTag(ATCFlight *flight);
+
 private slots:
     void on_buttonMainMenu_clicked();
     void on_buttonSctSetup_clicked();
@@ -73,6 +78,7 @@ private slots:
     void slotConstructDialogActiveRunways(ATC::SimCreationMode m);
     void slotCloseDialogActiveRunways();
 
+    void slotImportScenario();
     void slotExportScenario();
 
 private:

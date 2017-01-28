@@ -23,6 +23,7 @@ public:
 signals:
     void signalConstructDialogFlightNew();
     void signalConstructDialogFlightEdit();
+    void signalImportScenario();
     void signalExportScenario();
 
 private slots:
