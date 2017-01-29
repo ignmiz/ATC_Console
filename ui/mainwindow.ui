@@ -130,7 +130,7 @@
      <string>121.088</string>
     </property>
    </widget>
-   <widget class="ATCButtonMainWindow" name="buttonTime">
+   <widget class="ATCClock" name="buttonTime">
     <property name="geometry">
      <rect>
       <x>340</x>
@@ -144,9 +144,6 @@
       <horstretch>0</horstretch>
       <verstretch>0</verstretch>
      </sizepolicy>
-    </property>
-    <property name="text">
-     <string>23:22:18</string>
     </property>
    </widget>
    <widget class="ATCButtonMainWindow" name="buttonInboundList">
@@ -407,6 +404,11 @@
    <class>ATCSituationalDisplay</class>
    <extends>QGraphicsView</extends>
    <header>atcsituationaldisplay.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ATCClock</class>
+   <extends>QPushButton</extends>
+   <header>atcclock.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -108,7 +108,8 @@ SOURCES += \
     atcrouteprediction.cpp \
     dialogactiverunways.cpp \
     atcactiverunways.cpp \
-    atccombodelegate.cpp
+    atccombodelegate.cpp \
+    atcclock.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -178,7 +179,8 @@ HEADERS  += \
     atcrouteprediction.h \
     dialogactiverunways.h \
     atcactiverunways.h \
-    atccombodelegate.h
+    atccombodelegate.h \
+    atcclock.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
