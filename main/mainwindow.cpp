@@ -41,23 +41,33 @@ void MainWindow::on_buttonMainMenu_clicked()
 {
     if(!getFlagDialogMainMenuExists())
     {
-        dialogMainMenu = new DialogMainMenu(this);
-        dialogMainMenu->show();
+        QTime *time = ui->buttonTime->getTime();
 
-        connect(dialogMainMenu, SIGNAL(closed()), this, SLOT(dialogMainMenuClosed()));
-        connect(dialogMainMenu, SIGNAL(changeFocusToDisplay()), this, SLOT(changeFocusToDisplay()));
+        dialogMainMenu = new DialogMainMenu(time, this);
+        dialogMainMenu->show();
 
         setFlagDialogMainMenuExists(true);
         setSituationalDisplayFocus();
 
+        connect(dialogMainMenu, SIGNAL(closed()), this, SLOT(dialogMainMenuClosed()));
+        connect(dialogMainMenu, SIGNAL(changeFocusToDisplay()), this, SLOT(changeFocusToDisplay()));
         connect(dialogMainMenu, SIGNAL(signalConstructDialogFlightNew()), this, SLOT(slotConstructDialogFlightNew()));
         connect(dialogMainMenu, SIGNAL(signalConstructDialogFlightEdit()), this, SLOT(slotConstructDialogFlightEdit()));
         connect(dialogMainMenu, SIGNAL(signalImportScenario()), this, SLOT(slotImportScenario()));
         connect(dialogMainMenu, SIGNAL(signalExportScenario()), this, SLOT(slotExportScenario()));
-        connect(this, SIGNAL(signalCreateFlightTag(ATCFlight*)), ui->situationalDisplay, SLOT(slotCreateFlightTag(ATCFlight*)));
         connect(this, SIGNAL(signalActiveScenarioPath(QString)), dialogMainMenu, SLOT(slotActiveScenarioPath(QString)));
 
-        if(simulation == nullptr) emit signalActiveScenarioPath("No scenario selected");
+        connect(this, SIGNAL(signalCreateFlightTag(ATCFlight*)), ui->situationalDisplay, SLOT(slotCreateFlightTag(ATCFlight*)));
+
+        if(simulation == nullptr)
+        {
+            emit signalActiveScenarioPath("No scenario selected");
+        }
+        else
+        {
+            emit signalActiveScenarioPath(simulationPath);
+            dialogMainMenu->slotSetSimStartTime(simulationTime);
+        }
     }
 }
 
@@ -112,6 +122,8 @@ void MainWindow::on_buttonShowConsole_clicked()
 void MainWindow::dialogMainMenuClosed()
 {
     setFlagDialogMainMenuExists(false);
+
+    disconnect(this, SIGNAL(signalCreateFlightTag(ATCFlight*)), ui->situationalDisplay, SLOT(slotCreateFlightTag(ATCFlight*)));
 }
 
 void MainWindow::dialogSectorSetupClosed()
@@ -135,6 +147,12 @@ void MainWindow::slotSimulation(ATCSimulation *sim)
 
     simulation = sim;
     ui->situationalDisplay->setSimulation(sim);
+}
+
+void MainWindow::slotActiveScenarioPath(QString path)
+{
+    simulationPath = path;
+    simulationTime = dialogMainMenu->getSimStartTime();
 }
 
 void MainWindow::slotConstructDialogFlightNew()
@@ -163,6 +181,7 @@ void MainWindow::slotConstructDialogFlightNew()
     connect(dialogFlight, SIGNAL(signalConstructDialogActiveRunways(ATC::SimCreationMode)), this, SLOT(slotConstructDialogActiveRunways(ATC::SimCreationMode)));
     connect(dialogFlight, SIGNAL(signalSimulation(ATCSimulation*)), this, SLOT(slotSimulation(ATCSimulation*)));
     connect(dialogFlight, SIGNAL(signalActiveScenarioPath(QString)), dialogMainMenu, SLOT(slotActiveScenarioPath(QString)));
+    connect(dialogFlight, SIGNAL(signalActiveScenarioPath(QString)), this, SLOT(slotActiveScenarioPath(QString)));
 }
 
 void MainWindow::slotConstructDialogFlightEdit()
@@ -341,6 +360,17 @@ void MainWindow::slotImportScenario()
             else if(textLine.contains("[FLIGHTS]", Qt::CaseInsensitive))
             {
                 flag = "[FLIGHTS]";
+            }
+            else if(flag == "[INFO]")
+            {
+                if(stringList.at(0).trimmed() == "TIME")
+                {
+                    int h = stringList.at(1).trimmed().split(":", QString::SkipEmptyParts).at(0).toInt();
+                    int m = stringList.at(1).trimmed().split(":", QString::SkipEmptyParts).at(1).toInt();
+                    int s = stringList.at(1).trimmed().split(":", QString::SkipEmptyParts).at(2).toInt();
+
+                    dialogMainMenu->slotSetSimStartTime(QTime(h, m, s));
+                }
             }
             else if(flag == "[RUNWAYS]")
             {
@@ -541,6 +571,8 @@ void MainWindow::slotImportScenario()
     }
 
     emit signalActiveScenarioPath(filePath);
+    simulationPath = filePath;
+    simulationTime = dialogMainMenu->getSimStartTime();
 
     QMessageBox msgBox(this);
     msgBox.setText("Scenario successfuly imported from: " + filePath);
@@ -575,6 +607,7 @@ void MainWindow::slotExportScenario()
 
         out << "[INFO]" << endl;
         out << "NAME = " << nameWithoutExtension << endl;
+        out << "TIME = " << dialogMainMenu->getSimStartTime().toString("HH:mm:ss") << endl;
         out << endl;
 
         out << "[RUNWAYS]" << endl;
@@ -634,6 +667,8 @@ void MainWindow::slotExportScenario()
         out << endl;
 
         emit signalActiveScenarioPath(filePath);
+        simulationPath = filePath;
+        simulationTime = dialogMainMenu->getSimStartTime();
 
         QMessageBox msgBox(this);
         msgBox.setText("Scenario successfuly exported to: " + filePath);

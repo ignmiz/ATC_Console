@@ -1,19 +1,31 @@
 #include "dialogmainmenu.h"
 #include "ui_dialogmainmenu.h"
 
-DialogMainMenu::DialogMainMenu(QWidget *parent) :
+DialogMainMenu::DialogMainMenu(QTime *startTime, QWidget *parent) :
     ATCDialog(parent, "Main Menu", 600, 650),
+    startTime(startTime),
     uiInner(new Ui::DialogMainMenu)
 {
     uiInner->setupUi(this);
     windowSetup();
 
     uiInner->lineEditActiveScenario->setReadOnly(true);
+    uiInner->timeEditStart->setTime(*startTime);
 }
 
 DialogMainMenu::~DialogMainMenu()
 {
     delete uiInner;
+}
+
+QTime DialogMainMenu::getSimStartTime()
+{
+    return QTime(uiInner->timeEditStart->time());
+}
+
+void DialogMainMenu::slotSetSimStartTime(QTime time)
+{
+    uiInner->timeEditStart->setTime(time);
 }
 
 void DialogMainMenu::on_buttonNewSimulation_clicked()

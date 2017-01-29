@@ -45,7 +45,7 @@
      <x>20</x>
      <y>40</y>
      <width>560</width>
-     <height>95</height>
+     <height>125</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -126,7 +126,7 @@
      <string>Active scenario:</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEditActiveScenario">
@@ -146,8 +146,50 @@
 	border-style: inset;
 	border-width: 2px;
 	border-color: #141414;
+	selection-background-color: #060064;
 	font: 13px;
 }</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelStartTime">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>80</y>
+      <width>110</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Time setting:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QTimeEdit" name="timeEditStart">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>80</y>
+      <width>120</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QTimeEdit:enabled
+{
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	selection-background-color: #060064;
+	font: 13px;
+}</string>
+    </property>
+    <property name="displayFormat">
+     <string>HH:mm:ss</string>
     </property>
    </widget>
   </widget>

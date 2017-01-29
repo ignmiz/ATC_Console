@@ -1,5 +1,6 @@
 [INFO]
 NAME = scenario
+TIME = 15:30:10
 
 [RUNWAYS]
 ICAO = EPBY

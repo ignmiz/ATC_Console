@@ -17,14 +17,19 @@ class DialogMainMenu : public ATCDialog
     Q_OBJECT
 
 public:
-    explicit DialogMainMenu(QWidget *parent = 0);
+    explicit DialogMainMenu(QTime *startTime, QWidget *parent = 0);
     ~DialogMainMenu();
+
+    QTime getSimStartTime();
 
 signals:
     void signalConstructDialogFlightNew();
     void signalConstructDialogFlightEdit();
     void signalImportScenario();
     void signalExportScenario();
+
+public slots:
+    void slotSetSimStartTime(QTime time);
 
 private slots:
     ATC_MOUSE_HANDLER
@@ -38,6 +43,7 @@ private slots:
 
 private:
     Ui::DialogMainMenu *uiInner;
+    QTime *startTime;
 
 };
 

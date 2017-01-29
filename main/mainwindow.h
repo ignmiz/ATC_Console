@@ -64,6 +64,7 @@ private slots:
     void changeFocusToDisplay();
 
     void slotSimulation(ATCSimulation *sim);
+    void slotActiveScenarioPath(QString path);
 
     void slotConstructDialogFlightNew();
     void slotConstructDialogFlightEdit();
@@ -101,6 +102,9 @@ private:
     ATCFlightFactory *flightFactory;
     ATCSimulation *simulation = nullptr;
     ATCSimulation *tempSimulation = nullptr;
+
+    QString simulationPath;
+    QTime simulationTime;
 
     bool flagDialogMainMenuExists = false;
     bool flagDialogSectorSetupExists = false;
