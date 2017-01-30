@@ -13,30 +13,30 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="buttonStart">
+  <widget class="QPushButton" name="buttonStop">
    <property name="geometry">
     <rect>
-     <x>360</x>
-     <y>560</y>
-     <width>80</width>
+     <x>340</x>
+     <y>610</y>
+     <width>120</width>
      <height>25</height>
     </rect>
    </property>
    <property name="text">
-    <string>Start</string>
+    <string>Stop</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="buttonCancel">
+  <widget class="QPushButton" name="buttonCloseMenu">
    <property name="geometry">
     <rect>
-     <x>480</x>
-     <y>560</y>
-     <width>80</width>
+     <x>470</x>
+     <y>610</y>
+     <width>120</width>
      <height>25</height>
     </rect>
    </property>
    <property name="text">
-    <string>Cancel</string>
+    <string>Close</string>
    </property>
   </widget>
   <widget class="QGroupBox" name="groupBox">
@@ -192,6 +192,19 @@
      <string>HH:mm:ss</string>
     </property>
    </widget>
+  </widget>
+  <widget class="QPushButton" name="buttonStart">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>610</y>
+     <width>120</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Start</string>
+   </property>
   </widget>
  </widget>
  <resources/>

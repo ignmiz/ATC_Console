@@ -20,6 +20,7 @@
 #include "atcsettings.h"
 #include "atcflightfactory.h"
 #include "atcsimulation.h"
+#include "atcsimulationcontroller.h"
 #include "atcmath.h"
 
 namespace Ui {
@@ -83,6 +84,9 @@ private slots:
     void slotImportScenario();
     void slotExportScenario();
 
+    void slotStartSimulation();
+    void slotStopSimulation();
+
 private:
     Ui::MainWindow *ui;
     DialogTextConsole *dialogTextConsole;
@@ -100,8 +104,10 @@ private:
     ATCAirspace *airspaceData;
     ATCSettings *settings;
     ATCFlightFactory *flightFactory;
+
     ATCSimulation *simulation = nullptr;
     ATCSimulation *tempSimulation = nullptr;
+    ATCSimulationController *simController = nullptr;
 
     QString simulationPath;
     QTime simulationTime;

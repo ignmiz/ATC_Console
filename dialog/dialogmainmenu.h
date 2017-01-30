@@ -28,6 +28,9 @@ signals:
     void signalImportScenario();
     void signalExportScenario();
 
+    void signalStartSimulation();
+    void signalStopSimulation();
+
 public slots:
     void slotSetSimStartTime(QTime time);
 
@@ -38,6 +41,10 @@ private slots:
     void on_buttonEditSimulation_clicked();
     void on_buttonImportSimulation_clicked();
     void on_buttonExportSimulation_clicked();
+
+    void on_buttonStart_clicked();
+    void on_buttonStop_clicked();
+    void on_buttonCloseMenu_clicked();
 
     void slotActiveScenarioPath(QString path);
 

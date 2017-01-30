@@ -1,6 +1,8 @@
 #ifndef ATCCONST_H
 #define ATCCONST_H
 
+#include <QtGlobal>
+
 class ATCConst
 {
 public:
@@ -25,6 +27,8 @@ public:
     static const int SCENE_WIDTH = DISPLAY_WIDTH * SCENE_FACTOR;
     static const int SCENE_HEIGHT = DISPLAY_HEIGHT * SCENE_FACTOR;
     static const double SECTOR_SHRINK_FACTOR;
+
+    static const qint64 DT = 100 * 1000000;
 };
 
 #endif // ATCCONST_H

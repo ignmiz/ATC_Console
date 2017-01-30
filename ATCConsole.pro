@@ -98,7 +98,8 @@ SOURCES += main.cpp\
     dialogactiverunways.cpp \
     atcactiverunways.cpp \
     atccombodelegate.cpp \
-    atcclock.cpp
+    atcclock.cpp \
+    atcsimulationcontroller.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -168,7 +169,8 @@ HEADERS  += mainwindow.h \
     dialogactiverunways.h \
     atcactiverunways.h \
     atccombodelegate.h \
-    atcclock.h
+    atcclock.h \
+    atcsimulationcontroller.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \

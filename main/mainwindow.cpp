@@ -29,7 +29,9 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete flightFactory;
+
     if(simulation != nullptr) delete simulation;
+    if(simController != nullptr) delete simController;
 }
 
 bool MainWindow::isDialogTextConsoleVisible() const
@@ -55,6 +57,8 @@ void MainWindow::on_buttonMainMenu_clicked()
         connect(dialogMainMenu, SIGNAL(signalConstructDialogFlightEdit()), this, SLOT(slotConstructDialogFlightEdit()));
         connect(dialogMainMenu, SIGNAL(signalImportScenario()), this, SLOT(slotImportScenario()));
         connect(dialogMainMenu, SIGNAL(signalExportScenario()), this, SLOT(slotExportScenario()));
+        connect(dialogMainMenu, SIGNAL(signalStartSimulation()), this, SLOT(slotStartSimulation()));
+        connect(dialogMainMenu, SIGNAL(signalStopSimulation()), this, SLOT(slotStopSimulation()));
         connect(this, SIGNAL(signalActiveScenarioPath(QString)), dialogMainMenu, SLOT(slotActiveScenarioPath(QString)));
 
         connect(this, SIGNAL(signalCreateFlightTag(ATCFlight*)), ui->situationalDisplay, SLOT(slotCreateFlightTag(ATCFlight*)));
@@ -564,6 +568,7 @@ void MainWindow::slotImportScenario()
 
     if(simulation != nullptr) delete simulation;
     simulation = newSim;
+    ui->situationalDisplay->setSimulation(simulation);
 
     for(int i = 0; i < simulation->getFlightsVectorSize(); i++)
     {
@@ -669,10 +674,35 @@ void MainWindow::slotExportScenario()
         emit signalActiveScenarioPath(filePath);
         simulationPath = filePath;
         simulationTime = dialogMainMenu->getSimStartTime();
+        ui->situationalDisplay->setSimulation(simulation);
 
         QMessageBox msgBox(this);
         msgBox.setText("Scenario successfuly exported to: " + filePath);
         msgBox.exec();
+    }
+}
+
+void MainWindow::slotStartSimulation()
+{
+    if(simulation != nullptr)
+    {
+        simController = new ATCSimulationController(simulation);
+        simController->start();
+
+        emit dialogMainMenu->closed();
+        dialogMainMenu->close();
+    }
+}
+
+void MainWindow::slotStopSimulation()
+{
+    if(simController != nullptr)
+    {
+        simController->stop();
+        delete simController;
+        simController = nullptr;
+
+        simulation->moveToThread(QThread::currentThread());
     }
 }
 

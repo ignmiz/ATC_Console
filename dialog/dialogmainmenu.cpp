@@ -48,6 +48,22 @@ void DialogMainMenu::on_buttonExportSimulation_clicked()
     emit signalExportScenario();
 }
 
+void DialogMainMenu::on_buttonStart_clicked()
+{
+    emit signalStartSimulation();
+}
+
+void DialogMainMenu::on_buttonStop_clicked()
+{
+    emit signalStopSimulation();
+}
+
+void DialogMainMenu::on_buttonCloseMenu_clicked()
+{
+    emit closed();
+    close();
+}
+
 void DialogMainMenu::slotActiveScenarioPath(QString path)
 {
     uiInner->lineEditActiveScenario->setText(path);

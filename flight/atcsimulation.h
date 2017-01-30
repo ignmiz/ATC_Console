@@ -1,10 +1,15 @@
 #ifndef ATCSIMULATION_H
 #define ATCSIMULATION_H
 
+#include "atcconst.h"
 #include "atcactiverunways.h"
 #include "atcflight.h"
 
+#include <QElapsedTimer>
 #include <QObject>
+#include <QThread>
+#include <QDebug>
+#include <QtMath>
 
 class ATCSimulation : public QObject
 {
@@ -26,9 +31,18 @@ public:
     void removeFlight(QString callsign);
     void clearFlights();
 
+public slots:
+    void slotStartSimulation();
+    void slotStopSimulation();
+
+private slots:
+    void slotProgressState();
+
 private:
     ATCActiveRunways *activeRunways = nullptr;
     QVector<ATCFlight*> flights;
+
+    bool simLoop = false;
 };
 
 #endif // ATCSIMULATION_H

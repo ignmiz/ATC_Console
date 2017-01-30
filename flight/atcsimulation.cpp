@@ -87,3 +87,38 @@ void ATCSimulation::clearFlights()
 {
     flights.clear();
 }
+
+void ATCSimulation::slotStartSimulation()
+{
+    simLoop = true;
+
+    qint64 dt = ATCConst::DT;
+
+    QElapsedTimer timer;
+    qint64 elapsedTime;
+    qint64 diff;
+
+    while(simLoop)
+    {
+        timer.start();
+        slotProgressState();
+        elapsedTime = timer.nsecsElapsed();
+
+        diff = dt - elapsedTime;
+
+        qDebug() << "Elapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
+        QThread::usleep(qFloor(diff / 1000));
+    }
+}
+
+void ATCSimulation::slotStopSimulation()
+{
+    simLoop = false;
+}
+
+void ATCSimulation::slotProgressState()
+{
+    for(int i = 0; i < 25000; i++)
+    {
+    }
+}
