@@ -109,6 +109,16 @@ bool ATCMath::compareDouble(double numActual, double numModel, double allowedErr
     }
 }
 
+double ATCMath::min(double a, double b)
+{
+    return (a < b) ? a : b;
+}
+
+double ATCMath::max(double a, double b)
+{
+    return (a > b) ? a : b;
+}
+
 ISA ATCMath::atmosISA(double h)
 {
     ISA isa;
@@ -215,7 +225,7 @@ ISA ATCMath::atmosISA(double h)
     return isa;
 }
 
-double ATCMath::crossoverAltitude(double CAS, double M)
+double ATCMath::crossoverAltitude(double casMPS, double M)
 {
     ISA isa = atmosISA(0);
 
@@ -226,7 +236,7 @@ double ATCMath::crossoverAltitude(double CAS, double M)
     double betaTrop = -0.0065;
     double g0 = 9.80665;
 
-    double deltaTrans = (qPow((1 + (kappa-1)/2 * qPow(CAS/a0, 2)), kappa/(kappa - 1)) - 1) / (qPow((1 + (kappa-1)/2 * qPow(M, 2)), kappa/(kappa-1)) - 1);
+    double deltaTrans = (qPow((1 + (kappa-1)/2 * qPow(casMPS/a0, 2)), kappa/(kappa - 1)) - 1) / (qPow((1 + (kappa-1)/2 * qPow(M, 2)), kappa/(kappa-1)) - 1);
     double thetaTrans = qPow(deltaTrans, -1 * betaTrop * R / g0);
     double HpTrans = 1000 / 6.5 * t0 * (1 - thetaTrans);
 
@@ -266,3 +276,345 @@ double ATCMath::normalizeAngle(double angle, ATC::AngularUnits unitType)
 
     return normAngle;
 }
+
+double ATCMath::randomMass(int mMin, int mMax)
+{
+    qsrand(QDateTime::currentMSecsSinceEpoch());
+
+    return mMin + qrand() % (mMax - mMin + 1);
+}
+
+double ATCMath::recalculateSpeed(double vRef, double m, double mRef)
+{
+    return vRef * sqrt(m / mRef);
+}
+
+double ATCMath::recalculateReductionFactor(double Cred, double m, double mMin, double mMax)
+{
+    return 1 - Cred * (mMax - m) / (mMax - mMin);
+}
+
+double ATCMath::nominalSpeedCL(double currentAltM, BADA::SpeedHoldMode shm, ATC::EngineType engine, double vStallTO, double vCL1, double vCL2, double machCL, double a, double rho, double p)
+{
+    double Vnom;
+    double CVmin = ATCConst::C_V_MIN;
+
+    if(engine == ATC::Jet)
+    {
+        if(shm == BADA::Mach)
+        {
+            Vnom = machCL;
+        }
+        else if((currentAltM >= 3048) && (shm == BADA::CAS)) //Above 10000ft
+        {
+            Vnom = vCL2;
+        }
+        else if((currentAltM >= 1828.8) && (currentAltM < 3048)) //6000ft - 10000ft
+        {
+            Vnom = ATCMath::min(vCL1, 250);
+        }
+        else if((currentAltM >= 1524) && (currentAltM < 1828.8)) //5000ft - 6000ft
+        {
+            Vnom = CVmin * vStallTO + ATCConst::V_CL5;
+        }
+        else if((currentAltM >= 1219.2) && (currentAltM < 1524)) //4000ft - 5000ft
+        {
+            Vnom = CVmin * vStallTO + ATCConst::V_CL4;
+        }
+        else if((currentAltM >= 914.4) && (currentAltM < 1219.2)) //3000ft - 4000ft
+        {
+            Vnom = CVmin * vStallTO + ATCConst::V_CL3;
+        }
+        else if((currentAltM >= 457.2) && (currentAltM < 914.4)) //1500ft - 3000ft
+        {
+            Vnom = CVmin * vStallTO + ATCConst::V_CL2;
+        }
+        else if(currentAltM < 457.2) //Below 1500ft
+        {
+            Vnom = CVmin * vStallTO + ATCConst::V_CL1;
+        }
+    }
+    else
+    {
+        if(shm == BADA::Mach)
+        {
+            Vnom = machCL;
+        }
+        else if((currentAltM >= 3048) && (shm == BADA::CAS)) //Above 10000ft
+        {
+            Vnom = vCL2;
+        }
+        else if((currentAltM >= 457.2) && (currentAltM < 3048)) //1500ft - 10000ft
+        {
+            Vnom = ATCMath::min(vCL1, 250);
+        }
+        else if((currentAltM >= 304.8) && (currentAltM < 457.2)) //1000ft - 1500ft
+        {
+            Vnom = CVmin * vStallTO + ATCConst::V_CL8;
+        }
+        else if((currentAltM >= 152.4) && (currentAltM < 304.8)) //500ft - 1000ft
+        {
+            Vnom = CVmin * vStallTO + ATCConst::V_CL7;
+        }
+        else if(currentAltM < 152.4) //Below 500ft
+        {
+            Vnom = CVmin * vStallTO + ATCConst::V_CL6;
+        }
+    }
+
+    return ATCMath::nominalSpeed2tas(Vnom, shm, a, rho, p);
+}
+
+double ATCMath::nominalSpeedCR(double currentAltM, BADA::SpeedHoldMode shm, ATC::EngineType engine, double vCR1, double vCR2, double machCR, double a, double rho, double p)
+{
+    double Vnom;
+
+    if(engine == ATC::Jet)
+    {
+        if(shm == BADA::Mach)
+        {
+            Vnom = machCR;
+        }
+        else if((currentAltM >= 4267.2) && (shm == BADA::CAS)) //Above 14000ft
+        {
+            Vnom = vCR2;
+        }
+        else if((currentAltM >= 1828.8) && (currentAltM < 4267.2)) //6000ft - 14000ft
+        {
+            Vnom = ATCMath::min(vCR1, 250);
+        }
+        else if((currentAltM >= 914.4) && (currentAltM < 1828.8)) //3000ft - 6000ft
+        {
+            Vnom = ATCMath::min(vCR1, 220);
+        }
+        else if(currentAltM < 914.4) //Below 3000ft
+        {
+            Vnom = ATCMath::min(vCR1, 170);
+        }
+    }
+    else
+    {
+        if(shm == BADA::Mach)
+        {
+            Vnom = machCR;
+        }
+        else if((currentAltM >= 3048) && (shm == BADA::CAS)) //Above 10000ft
+        {
+            Vnom = vCR2;
+        }
+        else if((currentAltM >= 1828.8) && (currentAltM < 3048)) //6000ft - 10000ft
+        {
+            Vnom = ATCMath::min(vCR1, 250);
+        }
+        else if((currentAltM >= 914.4) && (currentAltM < 1828.8)) //3000ft - 6000ft
+        {
+            Vnom = ATCMath::min(vCR1, 180);
+        }
+        else if(currentAltM < 914.4) //Below 3000ft
+        {
+            Vnom = ATCMath::min(vCR1, 150);
+        }
+    }
+
+    return ATCMath::nominalSpeed2tas(Vnom, shm, a, rho, p);
+}
+
+double ATCMath::nominalSpeedDS(double currentAltM, BADA::SpeedHoldMode shm, ATC::EngineType engine, double vStallLD, double vDS1, double vDS2, double machDS, double a, double rho, double p)
+{
+    double Vnom;
+    double CVmin = ATCConst::C_V_MIN;
+
+    if((engine == ATC::Jet) || (engine == ATC::Turboprop))
+    {
+        if(shm == BADA::Mach)
+        {
+            Vnom = machDS;
+        }
+        else if((currentAltM >= 3048) && (shm == BADA::CAS)) //Above 10000ft
+        {
+            Vnom = vDS2;
+        }
+        else if((currentAltM >= 1828.8) && (currentAltM < 3048)) //6000ft - 10000ft
+        {
+            Vnom = ATCMath::min(vDS1, 250);
+        }
+        else if((currentAltM >= 914.4) && (currentAltM < 1828.8)) //3000ft - 6000ft
+        {
+            Vnom = ATCMath::min(vDS1, 220);
+        }
+        else if((currentAltM >= 609.6) && (currentAltM < 914.4)) //2000ft - 3000ft
+        {
+            Vnom = CVmin * vStallLD + ATCConst::V_DES4;
+        }
+        else if((currentAltM >= 457.2) && (currentAltM < 609.6)) //1500ft - 2000ft
+        {
+            Vnom = CVmin * vStallLD + ATCConst::V_DES3;
+        }
+        else if((currentAltM >= 304.8) && (currentAltM < 457.2)) //1000ft - 1500ft
+        {
+            Vnom = CVmin * vStallLD + ATCConst::V_DES2;
+        }
+        else if(currentAltM < 304.8) //Below 1000ft
+        {
+            Vnom = CVmin * vStallLD + ATCConst::V_DES1;
+        }
+    }
+    else
+    {
+        if(shm == BADA::Mach)
+        {
+            Vnom = machDS;
+        }
+        else if((currentAltM >= 3048) && (shm == BADA::CAS)) //Above 10000ft
+        {
+            Vnom = vDS2;
+        }
+        else if((currentAltM >= 457.2) && (currentAltM < 3048)) //1500ft - 10000ft
+        {
+            Vnom = vDS1;
+        }
+        else if((currentAltM >= 304.8) && (currentAltM < 457.2)) //1000ft - 1500ft
+        {
+            Vnom = CVmin * vStallLD + ATCConst::V_DES7;
+        }
+        else if((currentAltM >= 152.4) && (currentAltM < 304.8)) //500ft - 1000ft
+        {
+            Vnom = CVmin * vStallLD + ATCConst::V_DES6;
+        }
+        else if(currentAltM < 152.4) //Below 500ft
+        {
+            Vnom = CVmin * vStallLD + ATCConst::V_DES5;
+        }
+    }
+
+    return ATCMath::nominalSpeed2tas(Vnom, shm, a, rho, p);
+}
+
+double ATCMath::nominalSpeed2tas(double vNom, BADA::SpeedHoldMode shm, double a, double rho, double p)
+{
+    double tasNomMPS;
+
+    if(shm == BADA::CAS)
+    {
+        tasNomMPS = ATCMath::cas2tas(ATCMath::kt2mps(vNom), p, rho);
+    }
+    else
+    {
+        tasNomMPS = a * vNom;
+    }
+
+    return tasNomMPS;
+}
+
+BADA::ClimbMode ATCMath::assignCM(double currentAltM, double targetAltM)
+{
+    double diff = currentAltM - targetAltM;
+
+    if(qFabs(diff) <= 1)
+    {
+        return BADA::Level;
+    }
+    else if(diff > 0)
+    {
+        return BADA::Descend;
+    }
+    else if(diff < 0)
+    {
+        return BADA::Climb;
+    }
+
+    return BADA::ErrorCM;
+}
+
+BADA::FlightPhase ATCMath::assignFP(double currentAltM, double altDesM, double tasMPS, double Vdes1KT, double p, double rho)
+{
+    double casKT = ATCMath::mps2kt(ATCMath::tas2cas(tasMPS, p, rho));
+
+    double v1KT;
+    double v2KT;
+
+    (Vdes1KT > 220) ? (v1KT = 230) : (v1KT = Vdes1KT + 10);
+    (Vdes1KT > 250) ? (v2KT = 260) : (v2KT = Vdes1KT + 10);
+
+    if(currentAltM >= altDesM)
+    {
+        return BADA::UpperDescent;
+    }
+    else if((currentAltM < altDesM) && ((casKT >= v2KT) || (currentAltM >= 2438.4))) //8000ft
+    {
+        return BADA::LowerDescent;
+    }
+    else if(((casKT < v2KT) && (currentAltM < 2438.4)) && ((casKT >= v1KT) || (currentAltM >= 914.4)))
+    {
+        return BADA::Approach;
+    }
+    else if((casKT < v1KT) && (currentAltM < 914.4)) //3000ft
+    {
+        return BADA::Landing;
+    }
+
+    return BADA::ErrorFP;
+}
+
+BADA::ReducedPowerMode ATCMath::assignRPM(double currentAltM, double altMax)
+{
+    if(currentAltM >= 0.8 * altMax)
+    {
+        return BADA::Off;
+    }
+    else
+    {
+        return BADA::On;
+    }
+
+    return BADA::ErrorRPM;
+}
+
+BADA::SpeedHoldMode ATCMath::assignSHM(double currentAltM, BADA::ClimbMode cm, double xoverAltClbM, double xoverAltCrsM, double xoverAltDesM)
+{
+    if(((cm == BADA::Level) && (currentAltM >= xoverAltCrsM)) ||
+       ((cm == BADA::Descend) && (currentAltM >= xoverAltDesM)) ||
+       ((cm == BADA::Climb) && (currentAltM >= xoverAltClbM)))
+    {
+        return BADA::Mach;
+    }
+    else
+    {
+        return BADA::CAS;
+    }
+
+    return BADA::ErrorSHM;
+}
+
+BADA::TroposphereMode ATCMath::assignTRM(double currentAltM)
+{
+    if(currentAltM <= 11000)
+    {
+        return BADA::Low;
+    }
+    else
+    {
+        return BADA::High;
+    }
+
+    return BADA::ErrorTRM;
+}
+
+BADA::AccelerationMode ATCMath::assignAM(double tasMPS, double tasNomMPS)
+{
+    if(qFabs(tasMPS - tasNomMPS) <= 1)
+    {
+        return BADA::Constant;
+    }
+    else if(tasMPS - tasNomMPS > 1)
+    {
+        return BADA::Decelerate;
+    }
+    else if(tasMPS - tasNomMPS < -1)
+    {
+        return BADA::Accelerate;
+    }
+
+    return BADA::ErrorAM;
+}
+

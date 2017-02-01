@@ -2,6 +2,7 @@
 #define TEST_ATCMATH_H
 
 #include "atcmath.h"
+#include "atcpaths.h"
 
 #include <QObject>
 #include <QTest>
@@ -34,10 +35,29 @@ private slots:
 
     void test_compareDouble();
 
+    void test_min();
+    void test_max();
+
     void test_atmosISA();
 
     void test_crossoverAltitude();
     void test_normalizeAngle();
+
+    void test_randomMass();
+    void test_recalculateSpeed();
+    void test_recalculateReductionFactor();
+
+    void test_nominalSpeedCL();
+    void test_nominalSpeedCR();
+    void test_nominalSpeedDS();
+    void test_nominalSpeed2tas();
+
+    void test_assignCM();
+    void test_assignFP();
+    void test_assignRPM();
+    void test_assignSHM();
+    void test_assignTRM();
+    void test_assignAM();
 };
 
 #endif // TEST_ATCMATH_H
