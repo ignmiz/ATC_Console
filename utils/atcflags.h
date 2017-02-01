@@ -53,32 +53,32 @@ namespace BADA
 {
     enum AccelerationMode
     {
-        Accelerate, Decelerate, Constant
+        Accelerate, Decelerate, Constant, ErrorAM
     };
 
     enum ClimbMode
     {
-        Climb, Descend, Level
+        Climb, Descend, Level, ErrorCM
     };
 
     enum SpeedHoldMode
     {
-        CAS, Mach
+        CAS, Mach, ErrorSHM
     };
 
     enum FlightPhase
     {
-        UpperDescent, LowerDescent, Approach, Landing
+        UpperDescent, LowerDescent, Approach, Landing, ErrorFP
     };
 
     enum ReducedPowerMode
     {
-        On, Off
+        On, Off, ErrorRPM
     };
 
     enum TroposphereMode
     {
-        Low, High
+        Low, High, ErrorTRM
     };
 }
 
