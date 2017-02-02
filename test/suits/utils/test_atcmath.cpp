@@ -259,6 +259,36 @@ void Test_ATCMath::test_normalizeAngle()
     QVERIFY(ATCMath::compareDouble(ATCMath::normalizeAngle(angle, ATC::Rad), ATCMath::deg2rad(320), error));
 }
 
+void Test_ATCMath::test_ESF()
+{
+    double temp = ATCMath::atmosISA(0).T;
+    double error = 1e-8;
+
+    //Level
+    QVERIFY(ATCMath::ESF(BADA::Level, BADA::Constant, BADA::CAS, BADA::Low, 0.8, temp, 0) == 0);
+    QVERIFY(ATCMath::ESF(BADA::Level, BADA::Constant, BADA::CAS, BADA::High, 0.8, temp, 0) == 0);
+    QVERIFY(ATCMath::ESF(BADA::Level, BADA::Constant, BADA::Mach, BADA::Low, 0.8, temp, 0) == 0);
+    QVERIFY(ATCMath::ESF(BADA::Level, BADA::Constant, BADA::Mach, BADA::High, 0.8, temp, 0) == 0);
+    QVERIFY(ATCMath::ESF(BADA::Level, BADA::Decelerate, BADA::Mach, BADA::Low, 0.8, temp, 0) == 0);
+    QVERIFY(ATCMath::ESF(BADA::Level, BADA::Accelerate, BADA::Mach, BADA::Low, 0.8, temp, 0) == 0);
+
+    //Descend
+    QVERIFY(ATCMath::compareDouble(ATCMath::ESF(BADA::Descend, BADA::Constant, BADA::CAS, BADA::Low, 0.8, temp, 0), 0.767595351517540, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::ESF(BADA::Descend, BADA::Constant, BADA::CAS, BADA::High, 0.8, temp, 0), 0.720457142712908, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::ESF(BADA::Descend, BADA::Constant, BADA::Mach, BADA::Low, 0.8, temp, 0), 1.093180365868351, error));
+    QVERIFY(ATCMath::ESF(BADA::Descend, BADA::Constant, BADA::Mach, BADA::High, 0.8, temp, 0) == 1);
+    QVERIFY(ATCMath::ESF(BADA::Descend, BADA::Decelerate, BADA::Mach, BADA::Low, 0.8, temp, 0) == 0.3);
+    QVERIFY(ATCMath::ESF(BADA::Descend, BADA::Accelerate, BADA::Mach, BADA::Low, 0.8, temp, 0) == 1.7);
+
+    //Climb
+    QVERIFY(ATCMath::compareDouble(ATCMath::ESF(BADA::Climb, BADA::Constant, BADA::CAS, BADA::Low, 0.8, temp, 0), 0.767595351517540, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::ESF(BADA::Climb, BADA::Constant, BADA::CAS, BADA::High, 0.8, temp, 0), 0.720457142712908, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::ESF(BADA::Climb, BADA::Constant, BADA::Mach, BADA::Low, 0.8, temp, 0), 1.093180365868351, error));
+    QVERIFY(ATCMath::ESF(BADA::Climb, BADA::Constant, BADA::Mach, BADA::High, 0.8, temp, 0) == 1);
+    QVERIFY(ATCMath::ESF(BADA::Climb, BADA::Decelerate, BADA::Mach, BADA::Low, 0.8, temp, 0) == 1.7);
+    QVERIFY(ATCMath::ESF(BADA::Climb, BADA::Accelerate, BADA::Mach, BADA::Low, 0.8, temp, 0) == 0.3);
+}
+
 void Test_ATCMath::test_randomMass()
 {
     ATCPaths paths;
@@ -295,7 +325,7 @@ void Test_ATCMath::test_nominalSpeedCL()
 
     double CVmin = ATCConst::C_V_MIN;
 
-    double error = 10e-8;
+    double error = 1e-8;
 
     //Jet
     QVERIFY(ATCMath::nominalSpeedCL(12000, BADA::Mach, ATC::Jet, 120, 260, 280, 0.8, a, rho, p) == 0.8 * a);
@@ -347,7 +377,7 @@ void Test_ATCMath::test_nominalSpeedCR()
     double rho = ATCMath::atmosISA(0).rho;
     double p = ATCMath::atmosISA(0).p;
 
-    double error = 10e-8;
+    double error = 1e-8;
 
     //Jet
     QVERIFY(ATCMath::nominalSpeedCR(12000, BADA::Mach, ATC::Jet, 260, 280, 0.8, a, rho, p) == 0.8 * a);
@@ -397,7 +427,7 @@ void Test_ATCMath::test_nominalSpeedDS()
 
     double CVmin = ATCConst::C_V_MIN;
 
-    double error = 10e-8;
+    double error = 1e-8;
 
     //Jet
     QVERIFY(ATCMath::nominalSpeedDS(12000, BADA::Mach, ATC::Jet, 120, 260, 280, 0.8, a, rho, p) == 0.8 * a);

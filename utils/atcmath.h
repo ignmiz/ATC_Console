@@ -57,7 +57,7 @@ public:
     static double crossoverAltitude(double casMPS, double M);
     static double normalizeAngle(double angle, ATC::AngularUnits unitType);
 
-    static double ESF();                    //DUMMY
+    static double ESF(BADA::ClimbMode cm, BADA::AccelerationMode am, BADA::SpeedHoldMode shm, BADA::TroposphereMode trm, double mach, double temp, double dTemp);
     static double projectAcftPosOnPath();   //DUMMY
 
     static double randomMass(int mMin, int mMax);

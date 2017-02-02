@@ -277,6 +277,95 @@ double ATCMath::normalizeAngle(double angle, ATC::AngularUnits unitType)
     return normAngle;
 }
 
+double ATCMath::ESF(BADA::ClimbMode cm, BADA::AccelerationMode am, BADA::SpeedHoldMode shm, BADA::TroposphereMode trm, double mach, double temp, double dTemp)
+{
+    double betaTrop = ATCConst::betaTrop;
+    double kappa = ATCConst::kappa;
+    double R = ATCConst::R;
+    double g0 = ATCConst::g0;
+
+    double ESF;
+
+    if(cm == BADA::Level)
+    {
+        ESF = 0;
+    }
+    else if(cm == BADA::Descend)
+    {
+        if(am == BADA::Constant)
+        {
+            if(shm == BADA::CAS)
+            {
+                if(trm == BADA::Low)
+                {
+                    ESF = qPow(1 + (kappa*R*betaTrop)/(2*g0) * qPow(mach, 2) * (temp - dTemp)/temp + qPow(1 + (kappa-1)/2 * qPow(mach, 2), -1/(kappa-1)) * (qPow(1 + (kappa-1)/2 * qPow(mach, 2), kappa/(kappa-1)) -1), -1);
+                }
+                else //High
+                {
+                    ESF = qPow(1 + qPow(1 + (kappa-1)/2 * qPow(mach, 2), -1/(kappa-1)) * (qPow(1 + (kappa-1)/2 * qPow(mach, 2), kappa/(kappa-1)) - 1), -1);
+                }
+            }
+            else
+            {
+                if(trm == BADA::Low)
+                {
+                    ESF = qPow(1 + (kappa*R*betaTrop)/(2*g0) * qPow(mach, 2) * (temp - dTemp)/temp, -1);
+                }
+                else //High
+                {
+                    ESF = 1;
+                }
+            }
+        }
+        else if(am == BADA::Decelerate)
+        {
+            ESF = 0.3;
+        }
+        else //Accelerate
+        {
+            ESF = 1.7;
+        }
+    }
+    else //Climb
+    {
+        if(am == BADA::Constant)
+        {
+            if(shm == BADA::CAS)
+            {
+                if(trm == BADA::Low)
+                {
+                    ESF = qPow(1 + (kappa*R*betaTrop)/(2*g0) * qPow(mach, 2) * (temp - dTemp)/temp + qPow(1 + (kappa-1)/2 * qPow(mach, 2), -1/(kappa-1)) * (qPow(1 + (kappa-1)/2 * qPow(mach, 2), kappa/(kappa-1)) -1), -1);
+                }
+                else //High
+                {
+                    ESF = qPow(1 + qPow(1 + (kappa-1)/2 * qPow(mach, 2), -1/(kappa-1)) * (qPow(1 + (kappa-1)/2 * qPow(mach, 2), kappa/(kappa-1)) - 1), -1);
+                }
+            }
+            else
+            {
+                if(trm == BADA::Low)
+                {
+                    ESF = qPow(1 + (kappa*R*betaTrop)/(2*g0) * qPow(mach, 2) * (temp - dTemp)/temp, -1);
+                }
+                else //High
+                {
+                    ESF = 1;
+                }
+            }
+        }
+        else if(am == BADA::Decelerate)
+        {
+            ESF = 1.7;
+        }
+        else //Accelerate
+        {
+            ESF = 0.3;
+        }
+    }
+
+    return ESF;
+}
+
 double ATCMath::randomMass(int mMin, int mMax)
 {
     qsrand(QDateTime::currentMSecsSinceEpoch());

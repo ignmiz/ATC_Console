@@ -42,6 +42,7 @@ private slots:
 
     void test_crossoverAltitude();
     void test_normalizeAngle();
+    void test_ESF();
 
     void test_randomMass();
     void test_recalculateSpeed();
