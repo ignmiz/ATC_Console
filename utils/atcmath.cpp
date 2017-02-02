@@ -123,16 +123,16 @@ ISA ATCMath::atmosISA(double h)
 {
     ISA isa;
 
-    double betaTrop = -0.0065;
-    double betaStrat1 = 0.001;
-    double betaStrat2 = 0.0028;
-    double betaMeso1 = -0.0028;
-    double betaMeso2 = -0.002;
+    double betaTrop = ATCConst::betaTrop;
+    double betaStrat1 = ATCConst::betaStrat1;
+    double betaStrat2 = ATCConst::betaStrat2;
+    double betaMeso1 = ATCConst::betaMeso1;
+    double betaMeso2 = ATCConst::betaMeso2;
 
-    double kappa = 1.4;
-    double R = 287.05287;
+    double kappa = ATCConst::kappa;
+    double R = ATCConst::R;
 
-    double gN = 9.80665;
+    double gN = ATCConst::g0;
 
     //Calculate temperature
     if((h >= -2000) && (h < 11000))

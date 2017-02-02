@@ -5,20 +5,46 @@ ATCConst::ATCConst()
 
 }
 
+//General
 const double ATCConst::PI = 3.14159265359;
 
+//Conversion (depreciated)
 const double ATCConst::DEG_2_RAD = ATCConst::PI / 180;
 const double ATCConst::RAD_2_DEG = 180 / ATCConst::PI;
 
 const double ATCConst::NM_2_M = 1852;
 
+//Magnetism & Ellipsoid
 const double ATCConst::AVG_DECLINATION = 5;
 
 const double ATCConst::WGS84_RADIUS = 6378137;
 const double ATCConst::WGS84_FIRST_ECCENTRICITY = 0.08181919092890624;
 
+//Scene & Display
+const int ATCConst::DISPLAY_WIDTH = 1920;
+const int ATCConst::DISPLAY_HEIGHT = 1020;
+
+const int ATCConst::SCENE_FACTOR = 100;
+const int ATCConst::SCENE_WIDTH = ATCConst::DISPLAY_WIDTH * ATCConst::SCENE_FACTOR;
+const int ATCConst::SCENE_HEIGHT = ATCConst::DISPLAY_HEIGHT * ATCConst::SCENE_FACTOR;
 const double ATCConst::SECTOR_SHRINK_FACTOR = 2;
 
+//Simulation Performance
+const qint64 ATCConst::DT = 100 * 1000000;
+
+//Environment
+const double ATCConst::betaTrop = -0.0065;
+const double ATCConst::betaStrat1 = 0.001;
+const double ATCConst::betaStrat2 = 0.0028;
+const double ATCConst::betaMeso1 = -0.0028;
+const double ATCConst::betaMeso2 = -0.002;
+
+const double ATCConst::kappa = 1.4;
+const double ATCConst::R = 287.05287;
+
+const double ATCConst::g0 = 9.80665;
+
+//BADA GPF Parameters Extract
 const double ATCConst::ACC_LONG_MAX = 2;    //ftps^2
 const double ATCConst::ACC_NORM_MAX = 5;    //ftps^2
 

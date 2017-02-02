@@ -11,27 +11,41 @@ public:
     //General
     static const double PI;
 
+    //Conversion (depreciated)
     static const double DEG_2_RAD;
     static const double RAD_2_DEG;
 
     static const double NM_2_M;
 
-    //Scene & Display
+    //Magnetism & Ellipsoid
     static const double AVG_DECLINATION;
 
     static const double WGS84_RADIUS;
     static const double WGS84_FIRST_ECCENTRICITY;
 
-    static const int DISPLAY_WIDTH = 1920;
-    static const int DISPLAY_HEIGHT = 1020;
+    //Scene & Display
+    static const int DISPLAY_WIDTH;
+    static const int DISPLAY_HEIGHT;
 
-    static const int SCENE_FACTOR = 100;
-    static const int SCENE_WIDTH = DISPLAY_WIDTH * SCENE_FACTOR;
-    static const int SCENE_HEIGHT = DISPLAY_HEIGHT * SCENE_FACTOR;
+    static const int SCENE_FACTOR;
+    static const int SCENE_WIDTH;
+    static const int SCENE_HEIGHT;
     static const double SECTOR_SHRINK_FACTOR;
 
     //Simulation Performance
-    static const qint64 DT = 100 * 1000000;
+    static const qint64 DT;
+
+    //Environment
+    static const double betaTrop;
+    static const double betaStrat1;
+    static const double betaStrat2;
+    static const double betaMeso1;
+    static const double betaMeso2;
+
+    static const double kappa;
+    static const double R;
+
+    static const double g0;
 
     //BADA GPF Parameters Extract
     static const double ACC_LONG_MAX;
