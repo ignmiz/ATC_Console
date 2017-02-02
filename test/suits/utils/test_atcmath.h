@@ -42,7 +42,10 @@ private slots:
 
     void test_crossoverAltitude();
     void test_normalizeAngle();
+
     void test_ESF();
+    void test_pathAngle();
+    void test_bankAngle();
 
     void test_randomMass();
     void test_recalculateSpeed();
@@ -52,6 +55,13 @@ private slots:
     void test_nominalSpeedCR();
     void test_nominalSpeedDS();
     void test_nominalSpeed2tas();
+
+    void test_liftCoefficient();
+    void test_dragCoefficient();
+
+    void test_lift();
+    void test_drag();
+    void test_thrust();
 
     void test_assignCM();
     void test_assignFP();

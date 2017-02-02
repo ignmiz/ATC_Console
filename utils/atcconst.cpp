@@ -17,8 +17,11 @@ const double ATCConst::NM_2_M = 1852;
 //Magnetism & Ellipsoid
 const double ATCConst::AVG_DECLINATION = 5;
 
-const double ATCConst::WGS84_RADIUS = 6378137;
+const double ATCConst::WGS84_A = 6378137;
+const double ATCConst::WGS84_B = 6356752.314245;
+const double ATCConst::WGS84_AVG_RADIUS = 6367435.679716;
 const double ATCConst::WGS84_FIRST_ECCENTRICITY = 0.08181919092890624;
+const double ATCConst::WGS84_INVERSE_FLATTENING = 298.257223563;
 
 //Scene & Display
 const int ATCConst::DISPLAY_WIDTH = 1920;
@@ -31,6 +34,8 @@ const double ATCConst::SECTOR_SHRINK_FACTOR = 2;
 
 //Simulation Performance
 const qint64 ATCConst::DT = 100 * 1000000;
+const double ATCConst::k1 = 0.005;
+const double ATCConst::k2 = -33;
 
 //Environment
 const double ATCConst::betaTrop = -0.0065;

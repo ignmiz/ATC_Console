@@ -2413,9 +2413,9 @@ void ATCSituationalDisplay::calculateExtendedCentrelines()
                 coord centreEnd1;
                 coord centreEnd2;
 
-                centreEnd1.x = rwy1.x + settings->RUNWAY_CENTELINE_LENGTH * ATCConst::NM_2_M / (ATCConst::WGS84_RADIUS * qCos(rwy1.y * ATCConst::DEG_2_RAD)) * ATCConst::RAD_2_DEG;
+                centreEnd1.x = rwy1.x + settings->RUNWAY_CENTELINE_LENGTH * ATCConst::NM_2_M / (ATCConst::WGS84_A * qCos(rwy1.y * ATCConst::DEG_2_RAD)) * ATCConst::RAD_2_DEG;
                 centreEnd1.y = rwy1.y;
-                centreEnd2.x = rwy2.x + settings->RUNWAY_CENTELINE_LENGTH * ATCConst::NM_2_M / (ATCConst::WGS84_RADIUS * qCos(rwy2.y * ATCConst::DEG_2_RAD)) * ATCConst::RAD_2_DEG;
+                centreEnd2.x = rwy2.x + settings->RUNWAY_CENTELINE_LENGTH * ATCConst::NM_2_M / (ATCConst::WGS84_A * qCos(rwy2.y * ATCConst::DEG_2_RAD)) * ATCConst::RAD_2_DEG;
                 centreEnd2.y = rwy2.y;
 
                 rwyCoords1.append(rwy1);
@@ -2571,9 +2571,9 @@ void ATCSituationalDisplay::calculateCentrelineTicks()
 
                     double localScale = qCos((rwy1.y + rwy2.y) / 2 * ATCConst::DEG_2_RAD);
 
-                    tick1mid.x = rwy1.x + (settings->TICK_FIRST_DISTANCE + k * settings->TICK_SEPARATION) * ATCConst::NM_2_M / (ATCConst::WGS84_RADIUS * qCos(rwy1.y * ATCConst::DEG_2_RAD)) * ATCConst::RAD_2_DEG;
+                    tick1mid.x = rwy1.x + (settings->TICK_FIRST_DISTANCE + k * settings->TICK_SEPARATION) * ATCConst::NM_2_M / (ATCConst::WGS84_A * qCos(rwy1.y * ATCConst::DEG_2_RAD)) * ATCConst::RAD_2_DEG;
                     tick1mid.y = rwy1.y;
-                    tick2mid.x = rwy2.x + (settings->TICK_FIRST_DISTANCE + k * settings->TICK_SEPARATION) * ATCConst::NM_2_M / (ATCConst::WGS84_RADIUS * qCos(rwy2.y * ATCConst::DEG_2_RAD)) * ATCConst::RAD_2_DEG;
+                    tick2mid.x = rwy2.x + (settings->TICK_FIRST_DISTANCE + k * settings->TICK_SEPARATION) * ATCConst::NM_2_M / (ATCConst::WGS84_A * qCos(rwy2.y * ATCConst::DEG_2_RAD)) * ATCConst::RAD_2_DEG;
                     tick2mid.y = rwy2.y;
 
                     //Project to 2D
@@ -2611,11 +2611,11 @@ void ATCSituationalDisplay::calculateCentrelineTicks()
 
                     if (((k % static_cast<int>(settings->TICK_MAJOR_SEPARATION / settings->TICK_SEPARATION)) == 0) && (k >= (settings->TICK_FIRST_MAJOR_AT - settings->TICK_FIRST_DISTANCE) / settings->TICK_SEPARATION))
                     {
-                        deltaTickLon = mercatorProjectionLon(settings->TICK_MAJOR_LENGTH * ATCConst::NM_2_M / 2 / (ATCConst::WGS84_RADIUS * localScale) * ATCConst::RAD_2_DEG);
+                        deltaTickLon = mercatorProjectionLon(settings->TICK_MAJOR_LENGTH * ATCConst::NM_2_M / 2 / (ATCConst::WGS84_A * localScale) * ATCConst::RAD_2_DEG);
                     }
                     else
                     {
-                        deltaTickLon = mercatorProjectionLon(settings->TICK_MINOR_LENGTH * ATCConst::NM_2_M / 2 / (ATCConst::WGS84_RADIUS * localScale) * ATCConst::RAD_2_DEG);
+                        deltaTickLon = mercatorProjectionLon(settings->TICK_MINOR_LENGTH * ATCConst::NM_2_M / 2 / (ATCConst::WGS84_A * localScale) * ATCConst::RAD_2_DEG);
                     }
 
                     tick1start.x = deltaTickLon * qCos(ATCConst::PI - azimuth + ATCConst::PI) + tick1mid.x;
@@ -3301,7 +3301,7 @@ QGraphicsLineItem *ATCSituationalDisplay::createLeader(ATCFlightTag *tag, double
 {
     double leaderStartLon = lon;
     double leaderStartLat = lat;
-    double leaderEndLon = lon + ATCMath::rad2deg(ATCMath::nm2m(settings->TAG_LEADER_LENGTH) / (ATCConst::WGS84_RADIUS * qCos(ATCMath::deg2rad(lat))));
+    double leaderEndLon = lon + ATCMath::rad2deg(ATCMath::nm2m(settings->TAG_LEADER_LENGTH) / (ATCConst::WGS84_A * qCos(ATCMath::deg2rad(lat))));
     double leaderEndLat = lat;
 
     leaderStartLon = mercatorProjectionLon(leaderStartLon);

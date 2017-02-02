@@ -366,6 +366,27 @@ double ATCMath::ESF(BADA::ClimbMode cm, BADA::AccelerationMode am, BADA::SpeedHo
     return ESF;
 }
 
+double ATCMath::pathAngle(double thrust, double drag, double ESF, double m)
+{
+    return qAsin((thrust - drag) * ESF / (m * ATCConst::g0));
+}
+
+double ATCMath::bankAngle(double k1, double k2, double errorXTrack, double errorHdg, double bankLimitRad)
+{
+    double phi = k1 * errorXTrack + k2 * errorHdg;
+
+    if(phi < - bankLimitRad)
+    {
+        phi = -bankLimitRad;
+    }
+    else if(phi > bankLimitRad)
+    {
+        phi = bankLimitRad;
+    }
+
+    return phi;
+}
+
 double ATCMath::randomMass(int mMin, int mMax)
 {
     qsrand(QDateTime::currentMSecsSinceEpoch());
@@ -593,6 +614,70 @@ double ATCMath::nominalSpeed2tas(double vNom, BADA::SpeedHoldMode shm, double a,
     }
 
     return tasNomMPS;
+}
+
+double ATCMath::liftCoefficient(double m, double rho, double tasMPS, double S, double phiRad)
+{
+    return 2 * m * ATCConst::g0 / (rho * qPow(tasMPS, 2) * S * qCos(phiRad));
+}
+
+double ATCMath::dragCoefficient(double CL, double CD0, double CD2, double dCD0)
+{
+    return CD0 + dCD0 + CD2 * qPow(CL, 2);
+}
+
+double ATCMath::lift(double rho, double tasMPS, double S, double CL)
+{
+    return 0.5 * rho * qPow(tasMPS, 2) * S * CL;
+}
+
+double ATCMath::drag(double rho, double tasMPS, double S, double CD)
+{
+    return 0.5 * rho * qPow(tasMPS, 2) * S * CD;
+}
+
+double ATCMath::thrust(double tasMPS, double currentAltM, double drag, BADA::ClimbMode cm, BADA::AccelerationMode am, BADA::ReducedPowerMode rpm, ATC::EngineType engine, double CTc1, double CTc2, double CTc3, double CTdes, double Cpowred)
+{
+    double TMaxClimb;
+    double Thrust;
+
+    //Calculate TMaxClimb
+    if(engine == ATC::Jet)
+    {
+        TMaxClimb = CTc1 * (1 - currentAltM / CTc2 + CTc3 * qPow(currentAltM, 2));
+    }
+    else if(engine == ATC::Turboprop)
+    {
+        TMaxClimb = (CTc1 / tasMPS) * (1 - currentAltM / CTc2) + CTc3;
+    }
+    else //Piston
+    {
+        TMaxClimb = CTc1 * (1 - currentAltM / CTc2) + CTc3;
+    }
+
+    //Calculate Thrust
+    if((cm == BADA::Climb) && (rpm == BADA::Off))
+    {
+        Thrust = TMaxClimb;
+    }
+    else if((cm == BADA::Climb) && (rpm == BADA::On))
+    {
+        Thrust = TMaxClimb * Cpowred - drag * (1 - Cpowred);
+    }
+    else if((cm == BADA::Descend) || ((cm == BADA::Level) && (am == BADA::Decelerate)))
+    {
+        Thrust = CTdes * TMaxClimb;
+    }
+    else if((cm == BADA::Level) && (am == BADA::Accelerate))
+    {
+        Thrust = 0.95 * TMaxClimb;
+    }
+    else if((cm == BADA::Level) && (am == BADA::Constant))
+    {
+        Thrust = drag;
+    }
+
+    return Thrust;
 }
 
 BADA::ClimbMode ATCMath::assignCM(double currentAltM, double targetAltM)

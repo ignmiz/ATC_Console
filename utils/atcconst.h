@@ -20,8 +20,11 @@ public:
     //Magnetism & Ellipsoid
     static const double AVG_DECLINATION;
 
-    static const double WGS84_RADIUS;
+    static const double WGS84_A;
+    static const double WGS84_B;
+    static const double WGS84_AVG_RADIUS;
     static const double WGS84_FIRST_ECCENTRICITY;
+    static const double WGS84_INVERSE_FLATTENING;
 
     //Scene & Display
     static const int DISPLAY_WIDTH;
@@ -34,6 +37,8 @@ public:
 
     //Simulation Performance
     static const qint64 DT;
+    static const double k1;
+    static const double k2;
 
     //Environment
     static const double betaTrop;

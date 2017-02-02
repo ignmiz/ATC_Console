@@ -289,6 +289,19 @@ void Test_ATCMath::test_ESF()
     QVERIFY(ATCMath::ESF(BADA::Climb, BADA::Accelerate, BADA::Mach, BADA::Low, 0.8, temp, 0) == 0.3);
 }
 
+void Test_ATCMath::test_pathAngle()
+{
+    QVERIFY(ATCMath::compareDouble(ATCMath::pathAngle(2000, 1500, 1.7, 100), 1.048666174, 1e-8));
+    QVERIFY(ATCMath::compareDouble(ATCMath::pathAngle(2000, 1500, 0, 100), 0, 1e-8));
+}
+
+void Test_ATCMath::test_bankAngle()
+{
+    QVERIFY(ATCMath::bankAngle(1, -20, 1, 0.01, 20) == 0.8);
+    QVERIFY(ATCMath::bankAngle(1, -20, 1, 20, 20) == -20);
+    QVERIFY(ATCMath::bankAngle(1, -20, 1, -20, 20) == 20);
+}
+
 void Test_ATCMath::test_randomMass()
 {
     ATCPaths paths;
@@ -483,6 +496,60 @@ void Test_ATCMath::test_nominalSpeed2tas()
     QVERIFY(ATCMath::nominalSpeed2tas(0.8, BADA::Mach, 300, 1, 101325) == 240);
     QVERIFY(ATCMath::compareDouble(ATCMath::nominalSpeed2tas(200, BADA::CAS, ATCMath::atmosISA(0).a, ATCMath::atmosISA(0).rho, ATCMath::atmosISA(0).p), ATCMath::kt2mps(200), 10e-8));
 
+}
+
+void Test_ATCMath::test_liftCoefficient()
+{
+    double error = 1e-8;
+
+    QVERIFY(ATCMath::compareDouble(ATCMath::liftCoefficient(100, 1.5, 20, 100, 0), 0.032688833333333, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::liftCoefficient(100, 1.5, 20, 100, ATCMath::deg2rad(30)), 0.037745813448990, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::liftCoefficient(100, 1.5, 20, 100, ATCMath::deg2rad(-30)), 0.037745813448990, error));
+}
+
+void Test_ATCMath::test_dragCoefficient()
+{
+    QVERIFY(ATCMath::dragCoefficient(0.5, 1, 2, 0) == 1.5);
+    QVERIFY(ATCMath::dragCoefficient(0.5, 1, 2, 0.5) == 2);
+}
+
+void Test_ATCMath::test_lift()
+{
+    QVERIFY(ATCMath::lift(0.5, 20, 100, 0.75) == 7500);
+}
+
+void Test_ATCMath::test_drag()
+{
+    QVERIFY(ATCMath::lift(0.5, 20, 100, 0.04) == 400);
+}
+
+void Test_ATCMath::test_thrust()
+{
+    double error = 1e-8;
+
+    //Jet
+    QVERIFY(ATCMath::thrust(100, 2000, 10000, BADA::Climb, BADA::Accelerate, BADA::Off, ATC::Jet, 10000, 2, 0.001, 0.1, 0.4) == 30010000);
+    QVERIFY(ATCMath::thrust(100, 2000, 10000, BADA::Climb, BADA::Accelerate, BADA::On, ATC::Jet, 10000, 2, 0.001, 0.1, 0.4) == 11998000);
+    QVERIFY(ATCMath::thrust(100, 2000, 10000, BADA::Descend, BADA::Accelerate, BADA::On, ATC::Jet, 10000, 2, 0.001, 0.1, 0.4) == 3001000);
+    QVERIFY(ATCMath::thrust(100, 2000, 10000, BADA::Level, BADA::Decelerate, BADA::On, ATC::Jet, 10000, 2, 0.001, 0.1, 0.4) == 3001000);
+    QVERIFY(ATCMath::thrust(100, 2000, 10000, BADA::Level, BADA::Accelerate, BADA::On, ATC::Jet, 10000, 2, 0.001, 0.1, 0.4) == 28509500);
+    QVERIFY(ATCMath::thrust(100, 2000, 10000, BADA::Level, BADA::Constant, BADA::On, ATC::Jet, 10000, 2, 0.001, 0.1, 0.4) == 10000);
+
+    //Turboprop
+    QVERIFY(ATCMath::thrust(100, 2000, 10000, BADA::Climb, BADA::Accelerate, BADA::Off, ATC::Turboprop, 10000, 2, 0.001, 0.1, 0.4) == -99899.999);
+    QVERIFY(ATCMath::thrust(100, 2000, 10000, BADA::Climb, BADA::Accelerate, BADA::On, ATC::Turboprop, 10000, 2, 0.001, 0.1, 0.4) == -45959.9996);
+    QVERIFY(ATCMath::thrust(100, 2000, 10000, BADA::Descend, BADA::Accelerate, BADA::On, ATC::Turboprop, 10000, 2, 0.001, 0.1, 0.4) == -9989.9999);
+    QVERIFY(ATCMath::thrust(100, 2000, 10000, BADA::Level, BADA::Decelerate, BADA::On, ATC::Turboprop, 10000, 2, 0.001, 0.1, 0.4) == -9989.9999);
+    QVERIFY(ATCMath::thrust(100, 2000, 10000, BADA::Level, BADA::Accelerate, BADA::On, ATC::Turboprop, 10000, 2, 0.001, 0.1, 0.4) == -94904.99905);
+    QVERIFY(ATCMath::thrust(100, 2000, 10000, BADA::Level, BADA::Constant, BADA::On, ATC::Turboprop, 10000, 2, 0.001, 0.1, 0.4) == 10000);
+
+    //Piston
+    QVERIFY(ATCMath::compareDouble(ATCMath::thrust(100, 2000, 10000, BADA::Climb, BADA::Accelerate, BADA::Off, ATC::Piston, 10000, 2, 0.001, 0.1, 0.4), -9990000, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::thrust(100, 2000, 10000, BADA::Climb, BADA::Accelerate, BADA::On, ATC::Piston, 10000, 2, 0.001, 0.1, 0.4), -4002000, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::thrust(100, 2000, 10000, BADA::Descend, BADA::Accelerate, BADA::On, ATC::Piston, 10000, 2, 0.001, 0.1, 0.4), -999000, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::thrust(100, 2000, 10000, BADA::Level, BADA::Decelerate, BADA::On, ATC::Piston, 10000, 2, 0.001, 0.1, 0.4), -999000, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::thrust(100, 2000, 10000, BADA::Level, BADA::Accelerate, BADA::On, ATC::Piston, 10000, 2, 0.001, 0.1, 0.4), -9490500, error));
+    QVERIFY(ATCMath::thrust(100, 2000, 10000, BADA::Level, BADA::Constant, BADA::On, ATC::Piston, 10000, 2, 0.001, 0.1, 0.4) == 10000);
 }
 
 void Test_ATCMath::test_assignCM()

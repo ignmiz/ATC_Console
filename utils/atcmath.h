@@ -54,27 +54,42 @@ public:
 
     //Simulation Functions
     static ISA atmosISA(double h);
+
     static double crossoverAltitude(double casMPS, double M);
     static double normalizeAngle(double angle, ATC::AngularUnits unitType);
 
     static double ESF(BADA::ClimbMode cm, BADA::AccelerationMode am, BADA::SpeedHoldMode shm, BADA::TroposphereMode trm, double mach, double temp, double dTemp);
+    static double pathAngle(double thrust, double drag, double ESF, double m);
+    static double bankAngle(double k1, double k2, double errorXTrack, double errorHdg, double bankLimitRad);
+
+    static double DTA();                    //DUMMY
     static double projectAcftPosOnPath();   //DUMMY
+    static double headingError();           //DUMMY
 
     static double randomMass(int mMin, int mMax);
     static double recalculateSpeed(double vRef, double m, double mRef);
     static double recalculateReductionFactor(double Cred, double m, double mMin, double mMax);
 
-    static double nominalSpeedCL(double currentAltM, BADA::SpeedHoldMode shm, ATC::EngineType engine, double vStallTO, double vCL1, double vCL2, double machCL, double a, double rho, double p); //TEST NEEDED
-    static double nominalSpeedCR(double currentAltM, BADA::SpeedHoldMode shm, ATC::EngineType engine, double vCR1, double vCR2, double machCR, double a, double rho, double p); //TEST NEEDED
-    static double nominalSpeedDS(double currentAltM, BADA::SpeedHoldMode shm, ATC::EngineType engine, double vStallLD, double vDS1, double vDS2, double machDS, double a, double rho, double p); //TEST NEEDED
-    static double nominalSpeed2tas(double vNom, BADA::SpeedHoldMode shm, double a, double rho, double p); //TEST NEEDED
+    static double nominalSpeedCL(double currentAltM, BADA::SpeedHoldMode shm, ATC::EngineType engine, double vStallTO, double vCL1, double vCL2, double machCL, double a, double rho, double p);
+    static double nominalSpeedCR(double currentAltM, BADA::SpeedHoldMode shm, ATC::EngineType engine, double vCR1, double vCR2, double machCR, double a, double rho, double p);
+    static double nominalSpeedDS(double currentAltM, BADA::SpeedHoldMode shm, ATC::EngineType engine, double vStallLD, double vDS1, double vDS2, double machDS, double a, double rho, double p);
+    static double nominalSpeed2tas(double vNom, BADA::SpeedHoldMode shm, double a, double rho, double p);
+
+    static double liftCoefficient(double m, double rho, double tasMPS, double S, double phiRad);
+    static double dragCoefficient(double CL, double CD0, double CD2, double dCD0);
+
+    static double lift(double rho, double tasMPS, double S, double CL);
+    static double drag(double rho, double tasMPS, double S, double CD);
+    static double thrust(double tasMPS, double currentAltM, double drag, BADA::ClimbMode cm, BADA::AccelerationMode am, BADA::ReducedPowerMode rpm, ATC::EngineType engine, double CTc1, double CTc2, double CTc3, double CTdes, double Cpowred);
+
+    static double calculateState();     //DUMMY
 
     static BADA::ClimbMode assignCM(double currentAltM, double targetAltM);
     static BADA::FlightPhase assignFP(double currentAltM, double altDesM, double tasMPS, double Vdes1KT, double p, double rho);
     static BADA::ReducedPowerMode assignRPM(double currentAltM, double altMax);
     static BADA::SpeedHoldMode assignSHM(double currentAltM, BADA::ClimbMode cm, double xoverAltClbM, double xoverAltCrsM, double xoverAltDesM);
     static BADA::TroposphereMode assignTRM(double currentAltM);
-    static BADA::AccelerationMode assignAM(double tasMPS, double tasNomMPS); //TEST NEEDED
+    static BADA::AccelerationMode assignAM(double tasMPS, double tasNomMPS);
 
 private:
 

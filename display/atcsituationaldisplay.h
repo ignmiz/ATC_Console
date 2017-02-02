@@ -264,11 +264,11 @@ private:
     void loadInitialDisplay(QString path);
     void interpretDisplayFile(QString path);
 
-    double mercatorProjectionLon(double longitude, double referenceLongitude = 0, double scale = ATCConst::WGS84_RADIUS);
-    double mercatorProjectionLat(double latitude, double scale = ATCConst::WGS84_RADIUS);
+    double mercatorProjectionLon(double longitude, double referenceLongitude = 0, double scale = ATCConst::WGS84_A);
+    double mercatorProjectionLat(double latitude, double scale = ATCConst::WGS84_A);
 
-    double inverseMercatorLon(double mercatorX, double referenceLongitude = 0, double scale = ATCConst::WGS84_RADIUS);
-    double inverseMercatorLat(double mercatorY, double error, double scale = ATCConst::WGS84_RADIUS);
+    double inverseMercatorLon(double mercatorX, double referenceLongitude = 0, double scale = ATCConst::WGS84_A);
+    double inverseMercatorLat(double mercatorY, double error, double scale = ATCConst::WGS84_A);
 
     double rotateX(double coordX, double coordY, double angleDeg);
     double rotateY(double coordX, double coordY, double angleDeg);
