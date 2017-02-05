@@ -6,20 +6,31 @@
 
 QT       += core gui positioning
 
-VPATH += ./custom \
+CONFIG += c++14
+
+CONFIG(debug): LIBS += -L"$$_PRO_FILE_PWD_/lib/" -lGeographic_d
+CONFIG(release): LIBS += -L"$$_PRO_FILE_PWD_/lib/" -lGeographic
+
+VPATH += ./bin \
+    ./custom \
     ./dialog \
     ./display \
     ./flight \
+    ./include \
+    ./lib \
     ./main \
     ./nav \
     ./settings \
     ./ui \
     ./utils
 
-INCLUDEPATH += ./custom \
+INCLUDEPATH += ./bin \
+    ./custom \
     ./dialog \
     ./display \
     ./flight \
+    ./include \
+    ./lib \
     ./main \
     ./nav \
     ./settings \
@@ -170,7 +181,49 @@ HEADERS  += mainwindow.h \
     atcactiverunways.h \
     atccombodelegate.h \
     atcclock.h \
-    atcsimulationcontroller.h
+    atcsimulationcontroller.h \
+    include/GeographicLib/Accumulator.hpp \
+    include/GeographicLib/AlbersEqualArea.hpp \
+    include/GeographicLib/AzimuthalEquidistant.hpp \
+    include/GeographicLib/CassiniSoldner.hpp \
+    include/GeographicLib/CircularEngine.hpp \
+    include/GeographicLib/Config.h \
+    include/GeographicLib/Constants.hpp \
+    include/GeographicLib/DMS.hpp \
+    include/GeographicLib/Ellipsoid.hpp \
+    include/GeographicLib/EllipticFunction.hpp \
+    include/GeographicLib/GARS.hpp \
+    include/GeographicLib/Geocentric.hpp \
+    include/GeographicLib/GeoCoords.hpp \
+    include/GeographicLib/Geodesic.hpp \
+    include/GeographicLib/GeodesicExact.hpp \
+    include/GeographicLib/GeodesicLine.hpp \
+    include/GeographicLib/GeodesicLineExact.hpp \
+    include/GeographicLib/Geohash.hpp \
+    include/GeographicLib/Geoid.hpp \
+    include/GeographicLib/Georef.hpp \
+    include/GeographicLib/Gnomonic.hpp \
+    include/GeographicLib/GravityCircle.hpp \
+    include/GeographicLib/GravityModel.hpp \
+    include/GeographicLib/LambertConformalConic.hpp \
+    include/GeographicLib/LocalCartesian.hpp \
+    include/GeographicLib/MagneticCircle.hpp \
+    include/GeographicLib/MagneticModel.hpp \
+    include/GeographicLib/Math.hpp \
+    include/GeographicLib/MGRS.hpp \
+    include/GeographicLib/NormalGravity.hpp \
+    include/GeographicLib/OSGB.hpp \
+    include/GeographicLib/PolarStereographic.hpp \
+    include/GeographicLib/PolygonArea.hpp \
+    include/GeographicLib/Rhumb.hpp \
+    include/GeographicLib/SphericalEngine.hpp \
+    include/GeographicLib/SphericalHarmonic.hpp \
+    include/GeographicLib/SphericalHarmonic1.hpp \
+    include/GeographicLib/SphericalHarmonic2.hpp \
+    include/GeographicLib/TransverseMercator.hpp \
+    include/GeographicLib/TransverseMercatorExact.hpp \
+    include/GeographicLib/Utility.hpp \
+    include/GeographicLib/UTMUPS.hpp
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
