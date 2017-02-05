@@ -47,6 +47,10 @@ private slots:
     void test_pathAngle();
     void test_bankAngle();
 
+    void test_DTA();
+    void test_projectAcftPosOnPath();
+    void test_normalizeHdgError();
+
     void test_randomMass();
     void test_recalculateSpeed();
     void test_recalculateReductionFactor();

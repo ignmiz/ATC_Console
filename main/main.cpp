@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     ATCFlightFactory *flightFactory = new ATCFlightFactory(paths);
 
     MainWindow mainWindow(flightFactory);
-    mainWindow.show();    
+    mainWindow.show();
 
     return a.exec();
 }

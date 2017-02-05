@@ -302,6 +302,108 @@ void Test_ATCMath::test_bankAngle()
     QVERIFY(ATCMath::bankAngle(1, -20, 1, -20, 20) == 20);
 }
 
+void Test_ATCMath::test_DTA()
+{
+    double error = 1e-8;
+
+    double v = 100;
+    double bankLimit = ATCMath::deg2rad(30);
+    double dHdg = ATCMath::deg2rad(90);
+    double flyOverDst = 100;
+
+    QVERIFY(ATCMath::compareDouble(ATCMath::DTA(v, bankLimit, dHdg, flyOverDst), 1766.20029, error));
+
+    dHdg = ATCMath::deg2rad(-90);
+    QVERIFY(ATCMath::compareDouble(ATCMath::DTA(v, bankLimit, dHdg, flyOverDst), 1766.20029, error));
+
+    dHdg = ATCMath::deg2rad(160);
+    QVERIFY(ATCMath::compareDouble(ATCMath::DTA(v, bankLimit, dHdg, flyOverDst), flyOverDst, error));
+
+    dHdg = ATCMath::deg2rad(0);
+    QVERIFY(ATCMath::compareDouble(ATCMath::DTA(v, bankLimit, dHdg, flyOverDst), 0, error));
+}
+
+void Test_ATCMath::test_projectAcftPosOnPath()
+{
+    double error = 1e-8;
+
+    GeographicLib::Geodesic wgs = GeographicLib::Geodesic::WGS84();
+
+    double fix1Lat = 0;
+    double fix1Lon = 0;
+
+    double fix2Lat = 0;
+    double fix2Lon = 90;
+
+    double acftLat = 0;
+    double acftLon = 0;
+
+    double heading = 90;
+
+    double xtrackError;
+    double hdgError;
+    double dstToNext;
+
+    ATCMath::projectAcftPosOnPath(wgs, fix1Lat, fix1Lon, fix2Lat, fix2Lon, acftLat, acftLon, heading, xtrackError, hdgError, dstToNext);
+    QVERIFY(xtrackError == 0);
+    QVERIFY(hdgError == 0);
+    QVERIFY(ATCMath::compareDouble(dstToNext, 10018754.17, error));
+
+    acftLon = 45;
+    heading = 360;
+
+    ATCMath::projectAcftPosOnPath(wgs, fix1Lat, fix1Lon, fix2Lat, fix2Lon, acftLat, acftLon, heading, xtrackError, hdgError, dstToNext);
+    QVERIFY(xtrackError == 0);
+    QVERIFY(ATCMath::compareDouble(hdgError, ATCMath::deg2rad(-90), error));
+    QVERIFY(ATCMath::compareDouble(dstToNext, 5009377.086, error));
+
+    acftLon = 90;
+    heading = 180;
+
+    ATCMath::projectAcftPosOnPath(wgs, fix1Lat, fix1Lon, fix2Lat, fix2Lon, acftLat, acftLon, heading, xtrackError, hdgError, dstToNext);
+    QVERIFY(xtrackError == 0);
+    QVERIFY(ATCMath::compareDouble(hdgError, ATCMath::deg2rad(90), error));
+    QVERIFY(ATCMath::compareDouble(dstToNext, 0, error));
+
+    fix1Lat = -1;
+    fix1Lon = 0;
+
+    fix2Lat = 1;
+    fix2Lon = 0;
+
+    acftLat = 0;
+    acftLon = 30;
+
+    heading = 360;
+
+    ATCMath::projectAcftPosOnPath(wgs, fix1Lat, fix1Lon, fix2Lat, fix2Lon, acftLat, acftLon, heading, xtrackError, hdgError, dstToNext);
+    QVERIFY(ATCMath::compareDouble(xtrackError, -3339584.724, 1e-5));
+    QVERIFY(ATCMath::compareDouble(hdgError, ATCMath::deg2rad(0), error));
+
+    heading = 45;
+
+    ATCMath::projectAcftPosOnPath(wgs, fix1Lat, fix1Lon, fix2Lat, fix2Lon, acftLat, acftLon, heading, xtrackError, hdgError, dstToNext);
+    QVERIFY(ATCMath::compareDouble(xtrackError, -3339584.724, 1e-5));
+    QVERIFY(ATCMath::compareDouble(hdgError, ATCMath::deg2rad(45), error));
+}
+
+void Test_ATCMath::test_normalizeHdgError()
+{
+    double error = 1e-8;
+    double hdg = ATCMath::deg2rad(30);
+
+    ATCMath::normalizeHdgError(hdg);
+    QVERIFY(ATCMath::compareDouble(hdg, ATCMath::deg2rad(30), error));
+
+    hdg = ATCMath::deg2rad(210);
+    ATCMath::normalizeHdgError(hdg);
+    QVERIFY(ATCMath::compareDouble(hdg, ATCMath::deg2rad(-150), error));
+
+    hdg = ATCMath::deg2rad(-270);
+    ATCMath::normalizeHdgError(hdg);
+    QVERIFY(ATCMath::compareDouble(hdg, ATCMath::deg2rad(90), error));
+}
+
 void Test_ATCMath::test_randomMass()
 {
     ATCPaths paths;

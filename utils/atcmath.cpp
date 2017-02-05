@@ -245,7 +245,7 @@ double ATCMath::crossoverAltitude(double casMPS, double M)
 
 double ATCMath::normalizeAngle(double angle, ATC::AngularUnits unitType)
 {
-    double normAngle;
+    double normalized;
 
     if(unitType == ATC::Rad)
     {
@@ -253,11 +253,11 @@ double ATCMath::normalizeAngle(double angle, ATC::AngularUnits unitType)
 
         if(angle > 0)
         {
-            normAngle = angle - k * 2 * ATCConst::PI;
+            normalized = angle - k * 2 * ATCConst::PI;
         }
         else
         {
-            normAngle = angle + (k + 1) * 2 * ATCConst::PI;
+            normalized = angle + (k + 1) * 2 * ATCConst::PI;
         }
     }
     else
@@ -266,15 +266,15 @@ double ATCMath::normalizeAngle(double angle, ATC::AngularUnits unitType)
 
         if(angle > 0)
         {
-            normAngle = angle - k * 360;
+            normalized = angle - k * 360;
         }
         else
         {
-            normAngle = angle + (k + 1) * 360;
+            normalized = angle + (k + 1) * 360;
         }
     }
 
-    return normAngle;
+    return normalized;
 }
 
 double ATCMath::ESF(BADA::ClimbMode cm, BADA::AccelerationMode am, BADA::SpeedHoldMode shm, BADA::TroposphereMode trm, double mach, double temp, double dTemp)
@@ -385,6 +385,65 @@ double ATCMath::bankAngle(double k1, double k2, double errorXTrack, double error
     }
 
     return phi;
+}
+
+double ATCMath::DTA(double vMPS, double bankLimitRad, double dHdgRad, double flyOverDstM)
+{
+    double g = ATCConst::g0;
+
+    double r = qPow(vMPS, 2) / (g * qTan(bankLimitRad));
+    double DTA = r * qTan(qFabs(dHdgRad) / 2);
+
+    //DTA limit due early turn at large heading changes
+    if(DTA > 2 * r) DTA = flyOverDstM;
+
+    return DTA;
+}
+
+void ATCMath::projectAcftPosOnPath(GeographicLib::Geodesic &geo, double fix1Lat, double fix1Lon, double fix2Lat, double fix2Lon, double acftLat, double acftLon, double acftHdg, double &xtrackError, double &headingError, double &dstToNext)
+{
+    //INPUT: All angles in degrees, all distances in metres
+    //Output: xtrackError, dstToNext: metres, headingError: radians
+
+    using namespace GeographicLib;
+    double R = ATCConst::WGS84_AVG_RADIUS;
+
+    double dst1to2;         //Distance from Fix1 to Fix2
+    double azimuth1to2;     //True heading from Fix1 to Fix2 @ Fix1
+    double azimuth2to1;     //True heading from Fix2 to Fix1 + 180deg (inverse), not used in calculations, just for function compliance
+    geo.Inverse(fix1Lat, fix1Lon, fix2Lat, fix2Lon, dst1to2, azimuth1to2, azimuth2to1);
+
+    double dst1toAcft;      //Distance from Fix1 to Aircraft
+    double azimuth1toAcft;  //True heading from Fix1 to Aircraft @ Fix1
+    double azimuth2toAcft;  //True heading from Aircraft to Fix1 + 180deg (inverse), not used in calculations, just for function compliance
+    geo.Inverse(fix1Lat, fix1Lon, acftLat, acftLon, dst1toAcft, azimuth1toAcft, azimuth2toAcft);
+
+    double azimuthDiff = azimuth1to2 - azimuth1toAcft;
+
+    xtrackError = R * qAsin(qSin(dst1toAcft / R) * qSin(ATCMath::deg2rad(azimuthDiff)));
+    double dst1toProjectionBase = R * qAcos(qCos(dst1toAcft / R) / qCos(xtrackError / R));
+
+    dstToNext = dst1to2 - dst1toProjectionBase;
+
+    double projectionBaseLat;
+    double projectionBaseLon;
+    double azimuthProjectionBaseTo1;    //Forward azimuth
+    geo.Direct(fix1Lat, fix1Lon, azimuth1to2, dst1toProjectionBase, projectionBaseLat, projectionBaseLon, azimuthProjectionBaseTo1);
+
+    headingError = ATCMath::deg2rad(acftHdg - azimuthProjectionBaseTo1);
+    normalizeHdgError(headingError);
+}
+
+void ATCMath::normalizeHdgError(double &hdgErrorRad)
+{
+    if(hdgErrorRad > ATCConst::PI)
+    {
+        hdgErrorRad = hdgErrorRad - 2 * ATCConst::PI;
+    }
+    else if(hdgErrorRad < -ATCConst::PI)
+    {
+        hdgErrorRad = hdgErrorRad + 2 * ATCConst::PI;
+    }
 }
 
 double ATCMath::randomMass(int mMin, int mMax)

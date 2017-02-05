@@ -6,6 +6,8 @@
 #include "atcaircrafttype.h"
 #include "atcflight.h"
 
+#include "GeographicLib/Geodesic.hpp"
+
 #include <QDateTime>
 #include <QtMath>
 
@@ -62,9 +64,9 @@ public:
     static double pathAngle(double thrust, double drag, double ESF, double m);
     static double bankAngle(double k1, double k2, double errorXTrack, double errorHdg, double bankLimitRad);
 
-    static double DTA();                    //DUMMY
-    static double projectAcftPosOnPath();   //DUMMY
-    static double headingError();           //DUMMY
+    static double DTA(double vMPS, double bankLimitRad, double dHdgRad, double flyOverDstM);
+    static void projectAcftPosOnPath(GeographicLib::Geodesic &geo, double rtFix1Lat, double rtFix1Lon, double rtFix2Lat, double rtFix2Lon, double acftLat, double acftLon, double acftHdg, double &xtrackError, double &headingError, double &dstToNext);
+    static void normalizeHdgError(double &hdgErrorRad);
 
     static double randomMass(int mMin, int mMax);
     static double recalculateSpeed(double vRef, double m, double mRef);
