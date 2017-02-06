@@ -739,6 +739,38 @@ double ATCMath::thrust(double tasMPS, double currentAltM, double drag, BADA::Cli
     return Thrust;
 }
 
+double ATCMath::ellipsoidRadius(double currentAltM, double latRad)
+{
+    double e = ATCConst::WGS84_FIRST_ECCENTRICITY;
+
+    return ATCConst::WGS84_A * qSqrt(1 - qPow(e, 2)) / qSqrt(qPow(qSin(latRad), 2) + (1 - qPow(e, 2)) * qPow(qCos(latRad), 2)) + currentAltM;
+}
+
+double ATCMath::stateLonDot(double vMPS, double trueHdgRad, double gammaRad, double latRad, double radiusM)
+{
+    return vMPS * qSin(trueHdgRad) * qCos(gammaRad) / (radiusM * qCos(latRad));
+}
+
+double ATCMath::stateLatDot(double vMPS, double trueHdgRad, double gammaRad, double radiusM)
+{
+    return vMPS * qCos(trueHdgRad) * qCos(gammaRad) / radiusM;
+}
+
+double ATCMath::stateHDot(double vMPS, double gammaRad)
+{
+    return vMPS * qSin(gammaRad);
+}
+
+double ATCMath::stateVDot(double thrust, double drag, double m, double ESF)
+{
+    return (thrust - drag) / m * (1 - ESF);
+}
+
+double ATCMath::stateHdgDot(double lift, double m, double vMPS, double bankRad)
+{
+    return lift / (m * vMPS) * qSin(bankRad);
+}
+
 BADA::ClimbMode ATCMath::assignCM(double currentAltM, double targetAltM)
 {
     double diff = currentAltM - targetAltM;

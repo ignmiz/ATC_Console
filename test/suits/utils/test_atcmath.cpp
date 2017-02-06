@@ -654,6 +654,159 @@ void Test_ATCMath::test_thrust()
     QVERIFY(ATCMath::thrust(100, 2000, 10000, BADA::Level, BADA::Constant, BADA::On, ATC::Piston, 10000, 2, 0.001, 0.1, 0.4) == 10000);
 }
 
+void Test_ATCMath::test_ellipsoidRadius()
+{
+    double error = 1e-8;
+
+    QVERIFY(ATCMath::compareDouble(ATCMath::ellipsoidRadius(0, ATCMath::deg2rad(0)), ATCConst::WGS84_A, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::ellipsoidRadius(2500, ATCMath::deg2rad(0)), ATCConst::WGS84_A + 2500, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::ellipsoidRadius(0, ATCMath::deg2rad(90)), ATCConst::WGS84_B, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::ellipsoidRadius(2500, ATCMath::deg2rad(90)), ATCConst::WGS84_B + 2500, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::ellipsoidRadius(0, ATCMath::deg2rad(30)), 6372770.60112581, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::ellipsoidRadius(0, ATCMath::deg2rad(45)), 6367417.72494398, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::ellipsoidRadius(0, ATCMath::deg2rad(60)), 6362078.31475710, error));
+}
+
+void Test_ATCMath::test_stateLonDot()
+{
+    double error = 1e-8;
+
+    double v = 100;
+    double hdg = ATCMath::deg2rad(0);
+    double gamma = ATCMath::deg2rad(0);
+    double lat = ATCMath::deg2rad(0);
+    double r = ATCMath::ellipsoidRadius(0, lat);
+
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLonDot(v, hdg, gamma, lat, r), 0, error));
+
+    hdg = ATCMath::deg2rad(45);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLonDot(v, hdg, gamma, lat, r), 1.108641569e-5, error));
+
+    hdg = ATCMath::deg2rad(90);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLonDot(v, hdg, gamma, lat, r), 1.567855943e-5, error));
+
+    gamma = ATCMath::deg2rad(90);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLonDot(v, hdg, gamma, lat, r), 0, error));
+
+    gamma = ATCMath::deg2rad(45);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLonDot(v, hdg, gamma, lat, r), 1.108641569e-5, error));
+
+    lat = ATCMath::deg2rad(30);
+    r = ATCMath::ellipsoidRadius(0, lat);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLonDot(v, hdg, gamma, lat, r), 1.281227008e-5, error));
+
+    lat = ATCMath::deg2rad(45);
+    r = ATCMath::ellipsoidRadius(0, lat);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLonDot(v, hdg, gamma, lat, r), 1.570495361e-05, error));
+
+    lat = ATCMath::deg2rad(60);
+    r = ATCMath::ellipsoidRadius(0, lat);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLonDot(v, hdg, gamma, lat, r), 2.222879840e-05, error));
+
+    lat = ATCMath::deg2rad(75);
+    r = ATCMath::ellipsoidRadius(0, lat);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLonDot(v, hdg, gamma, lat, r), 4.296908273e-05, error));
+
+    lat = ATCMath::deg2rad(80);
+    r = ATCMath::ellipsoidRadius(0, lat);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLonDot(v, hdg, gamma, lat, r), 6.405243501e-05, error));
+
+    lat = ATCMath::deg2rad(85);
+    r = ATCMath::ellipsoidRadius(0, lat);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLonDot(v, hdg, gamma, lat, r), 1.276270296e-04, error));
+}
+
+void Test_ATCMath::test_stateLatDot()
+{
+    double error = 1e-8;
+
+    double v = 100;
+    double hdg = ATCMath::deg2rad(90);
+    double gamma = ATCMath::deg2rad(0);
+
+    double lat = ATCMath::deg2rad(0);
+    double r = ATCMath::ellipsoidRadius(0, lat);
+
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLatDot(v, hdg, gamma, r), 0, error));
+
+    hdg = ATCMath::deg2rad(45);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLatDot(v, hdg, gamma, r), 1.108641569e-05, error));
+
+    hdg = ATCMath::deg2rad(0);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLatDot(v, hdg, gamma, r), 1.567855943e-05, error));
+
+    gamma = ATCMath::deg2rad(90);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLatDot(v, hdg, gamma, r), 0, error));
+
+    gamma = ATCMath::deg2rad(45);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLatDot(v, hdg, gamma, r), 1.108641569e-05, error));
+
+    lat = ATCMath::deg2rad(30);
+    r = ATCMath::ellipsoidRadius(0, lat);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLatDot(v, hdg, gamma, r), 1.109575137e-05, error));
+
+    lat = ATCMath::deg2rad(45);
+    r = ATCMath::ellipsoidRadius(0, lat);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLatDot(v, hdg, gamma, r), 1.110507920e-05, error));
+
+    lat = ATCMath::deg2rad(60);
+    r = ATCMath::ellipsoidRadius(0, lat);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLatDot(v, hdg, gamma, r), 1.111439920e-05, error));
+
+    lat = ATCMath::deg2rad(75);
+    r = ATCMath::ellipsoidRadius(0, lat);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLatDot(v, hdg, gamma, r), 1.112121696e-05, error));
+
+    lat = ATCMath::deg2rad(80);
+    r = ATCMath::ellipsoidRadius(0, lat);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLatDot(v, hdg, gamma, r), 1.112258862e-05, error));
+
+    lat = ATCMath::deg2rad(85);
+    r = ATCMath::ellipsoidRadius(0, lat);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLatDot(v, hdg, gamma, r), 1.112342856e-05, error));
+
+    lat = ATCMath::deg2rad(90);
+    r = ATCMath::ellipsoidRadius(0, lat);
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateLatDot(v, hdg, gamma, r), 1.112371139e-05, error));
+}
+
+void Test_ATCMath::test_stateHDot()
+{
+    double error = 1e-8;
+
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateHDot(100, 0), 0, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateHDot(100, ATCMath::deg2rad(30)), 50, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateHDot(100, ATCMath::deg2rad(45)), 70.71067812, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateHDot(100, ATCMath::deg2rad(60)), 86.60254038, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateHDot(100, ATCMath::deg2rad(90)), 100, error));
+}
+
+void Test_ATCMath::test_stateVDot()
+{
+    double error = 1e-8;
+
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateVDot(200, 100, 25, 0), 4, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateVDot(100, 100, 25, 0), 0, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateVDot(200, 50, 25, 0), 6, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateVDot(200, 100, 50, 0), 2, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateVDot(200, 100, 25, 0.5), 2, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateVDot(200, 100, 25, 1), 0, error));
+}
+
+void Test_ATCMath::test_stateHdgDot()
+{
+    double error = 1e-8;
+
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateHdgDot(100, 10, 10, ATCMath::deg2rad(0)), 0, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateHdgDot(100, 10, 10, ATCMath::deg2rad(30)), 0.5, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateHdgDot(100, 10, 10, ATCMath::deg2rad(45)), 0.7071067812, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateHdgDot(100, 10, 10, ATCMath::deg2rad(60)), 0.8660254038, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateHdgDot(100, 10, 10, ATCMath::deg2rad(90)), 1, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateHdgDot(50, 10, 10, ATCMath::deg2rad(90)), 0.5, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateHdgDot(100, 5, 10, ATCMath::deg2rad(90)), 2, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::stateHdgDot(100, 10, 5, ATCMath::deg2rad(90)), 2, error));
+}
+
 void Test_ATCMath::test_assignCM()
 {
     QVERIFY(ATCMath::assignCM(10000, 10000) == BADA::Level);

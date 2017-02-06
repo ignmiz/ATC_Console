@@ -84,7 +84,13 @@ public:
     static double drag(double rho, double tasMPS, double S, double CD);
     static double thrust(double tasMPS, double currentAltM, double drag, BADA::ClimbMode cm, BADA::AccelerationMode am, BADA::ReducedPowerMode rpm, ATC::EngineType engine, double CTc1, double CTc2, double CTc3, double CTdes, double Cpowred);
 
-    static double calculateState();     //DUMMY
+    static double ellipsoidRadius(double currentAltM, double latRad);
+
+    static double stateLonDot(double vMPS, double trueHdgRad, double gammaRad, double latRad, double radiusM);
+    static double stateLatDot(double vMPS, double trueHdgRad, double gammaRad, double radiusM);
+    static double stateHDot(double vMPS, double gammaRad);
+    static double stateVDot(double thrust, double drag, double m, double ESF);
+    static double stateHdgDot(double lift, double m, double vMPS, double bankRad);
 
     static BADA::ClimbMode assignCM(double currentAltM, double targetAltM);
     static BADA::FlightPhase assignFP(double currentAltM, double altDesM, double tasMPS, double Vdes1KT, double p, double rho);

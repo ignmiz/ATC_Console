@@ -67,6 +67,14 @@ private slots:
     void test_drag();
     void test_thrust();
 
+    void test_ellipsoidRadius();
+
+    void test_stateLonDot();
+    void test_stateLatDot();
+    void test_stateHDot();
+    void test_stateVDot();
+    void test_stateHdgDot();
+
     void test_assignCM();
     void test_assignFP();
     void test_assignRPM();
