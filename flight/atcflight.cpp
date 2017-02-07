@@ -42,6 +42,11 @@ State& ATCFlight::getState()
     return state;
 }
 
+Temp &ATCFlight::getTemp()
+{
+    return temp;
+}
+
 ATC::NavMode ATCFlight::getNavMode()
 {
     return mode;
@@ -131,6 +136,11 @@ void ATCFlight::setAssignedSquawk(QString sq)
 void ATCFlight::setState(State st)
 {
     state = st;
+}
+
+void ATCFlight::setTemp(Temp tp)
+{
+    temp = tp;
 }
 
 void ATCFlight::setNavMode(ATC::NavMode m)

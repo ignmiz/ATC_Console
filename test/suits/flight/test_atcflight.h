@@ -18,6 +18,7 @@ private slots:
     void test_setSquawk();
     void test_setAssignedSquawk();
     void test_setState();
+    void test_setTemp();
     void test_setNavMode();
     void test_setTargetAltitude();
     void test_setTargetSpeed();

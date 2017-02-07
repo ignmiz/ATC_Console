@@ -8,6 +8,7 @@
 
 #include <QString>
 #include <QObject>
+#include <QPair>
 
 struct State
 {
@@ -25,6 +26,25 @@ struct State
     BADA::AccelerationMode am;
 };
 
+struct Temp //Structure for temporary data (such as mass) and simulation preallocated data members
+{
+    double m;
+
+    double Cpowred;
+
+    double vStallCR;
+    double vStallIC;
+    double vStallTO;
+    double vStallAP;
+    double vStallLD;
+
+    double xoverAltClbM;
+    double xoverAltCrsM;
+    double xoverAltDesM;
+
+    QVector<QPair<double, double>> waypoints;
+};
+
 class ATCFlight : public QObject
 {
     Q_OBJECT
@@ -39,6 +59,7 @@ public:
     QString getSquawk();
     QString getAssignedSquawk();
     State& getState();
+    Temp& getTemp();
     ATC::NavMode getNavMode();
     QString getTargetAltitude();
     QString getTargetSpeed();
@@ -60,6 +81,7 @@ public:
     void setSquawk(QString sq);
     void setAssignedSquawk(QString sq);
     void setState(State st);
+    void setTemp(Temp tp);
     void setNavMode(ATC::NavMode m);
     void setTargetAltitude(QString altitude);
     void setTargetSpeed(QString speed);
@@ -103,6 +125,7 @@ private:
     QString squawk;
     QString assignedSquawk;
     State state;
+    Temp temp;
 
     ATCFlightTag *tag = nullptr;
     ATCRoutePrediction *prediction = nullptr;

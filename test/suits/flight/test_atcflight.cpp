@@ -202,6 +202,45 @@ void Test_ATCFlight::test_setState()
     QVERIFY(foo.getState().am == BADA::Constant);
 }
 
+void Test_ATCFlight::test_setTemp()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+
+    Temp temp;
+    temp.m = 100;
+    temp.Cpowred = 0.5;
+    temp.vStallAP = 1;
+    temp.vStallCR = 2;
+    temp.vStallIC = 3;
+    temp.vStallLD = 4;
+    temp.vStallTO = 5;
+    temp.xoverAltClbM = 50;
+    temp.xoverAltCrsM = 60;
+    temp.xoverAltDesM = 70;
+    temp.waypoints.append(QPair<double, double>(0.5, 0.8));
+    temp.waypoints.append(QPair<double, double>(0.6, 0.9));
+
+    foo.setTemp(temp);
+    QVERIFY(foo.getTemp().m = 100);
+    QVERIFY(foo.getTemp().Cpowred = 0.5);
+    QVERIFY(foo.getTemp().vStallAP = 1);
+    QVERIFY(foo.getTemp().vStallCR = 2);
+    QVERIFY(foo.getTemp().vStallIC = 3);
+    QVERIFY(foo.getTemp().vStallLD = 4);
+    QVERIFY(foo.getTemp().vStallTO = 5);
+    QVERIFY(foo.getTemp().xoverAltClbM = 50);
+    QVERIFY(foo.getTemp().xoverAltCrsM = 60);
+    QVERIFY(foo.getTemp().xoverAltDesM = 70);
+    QVERIFY(foo.getTemp().waypoints.size() == 2);
+    QVERIFY(foo.getTemp().waypoints.at(0).first == 0.5);
+    QVERIFY(foo.getTemp().waypoints.at(0).second == 0.8);
+    QVERIFY(foo.getTemp().waypoints.at(1).first == 0.6);
+    QVERIFY(foo.getTemp().waypoints.at(1).second == 0.9);
+}
+
 void Test_ATCFlight::test_setNavMode()
 {
     State state;
