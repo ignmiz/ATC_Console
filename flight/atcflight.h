@@ -4,39 +4,10 @@
 #include "atcflightplan.h"
 #include "atcflighttag.h"
 #include "atcrouteprediction.h"
+#include "atcflags.h"
 
 #include <QString>
 #include <QObject>
-
-enum CM
-{
-    CM_C, CM_D, CM_L
-};
-
-enum FP
-{
-    FP_UD, FP_LD, FP_AP, FP_LA
-};
-
-enum RPM
-{
-    RPM_ON, RPM_OFF
-};
-
-enum SHM
-{
-    SHM_M, SHM_C
-};
-
-enum TRM
-{
-    TRM_L, TRM_H
-};
-
-enum AM
-{
-    AM_A, AM_D, AM_C
-};
 
 struct State
 {
@@ -46,12 +17,12 @@ struct State
     double v;
     double hdg;
 
-    CM cm;
-    FP fp;
-    RPM rpm;
-    SHM shm;
-    TRM trm;
-    AM am;
+    BADA::ClimbMode cm;
+    BADA::FlightPhase fp;
+    BADA::ReducedPowerMode rpm;
+    BADA::SpeedHoldMode shm;
+    BADA::TroposphereMode trm;
+    BADA::AccelerationMode am;
 };
 
 class ATCFlight : public QObject

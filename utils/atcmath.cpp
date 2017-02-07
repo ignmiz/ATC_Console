@@ -402,7 +402,7 @@ double ATCMath::DTA(double vMPS, double bankLimitRad, double dHdgRad, double fly
 
 void ATCMath::projectAcftPosOnPath(GeographicLib::Geodesic &geo, double fix1Lat, double fix1Lon, double fix2Lat, double fix2Lon, double acftLat, double acftLon, double acftHdg, double &xtrackError, double &headingError, double &dstToNext)
 {
-    //INPUT: All angles in degrees, all distances in metres
+    //INPUT: Fix coordinates in degrees, aircraft coords & heading in radians, all distances in metres
     //Output: xtrackError, dstToNext: metres, headingError: radians
 
     using namespace GeographicLib;
@@ -416,7 +416,7 @@ void ATCMath::projectAcftPosOnPath(GeographicLib::Geodesic &geo, double fix1Lat,
     double dst1toAcft;      //Distance from Fix1 to Aircraft
     double azimuth1toAcft;  //True heading from Fix1 to Aircraft @ Fix1
     double azimuth2toAcft;  //True heading from Aircraft to Fix1 + 180deg (inverse), not used in calculations, just for function compliance
-    geo.Inverse(fix1Lat, fix1Lon, acftLat, acftLon, dst1toAcft, azimuth1toAcft, azimuth2toAcft);
+    geo.Inverse(fix1Lat, fix1Lon, ATCMath::rad2deg(acftLat), ATCMath::rad2deg(acftLon), dst1toAcft, azimuth1toAcft, azimuth2toAcft);
 
     double azimuthDiff = azimuth1to2 - azimuth1toAcft;
 
@@ -430,7 +430,7 @@ void ATCMath::projectAcftPosOnPath(GeographicLib::Geodesic &geo, double fix1Lat,
     double azimuthProjectionBaseTo1;    //Forward azimuth
     geo.Direct(fix1Lat, fix1Lon, azimuth1to2, dst1toProjectionBase, projectionBaseLat, projectionBaseLon, azimuthProjectionBaseTo1);
 
-    headingError = ATCMath::deg2rad(acftHdg - azimuthProjectionBaseTo1);
+    headingError = acftHdg - ATCMath::deg2rad(azimuthProjectionBaseTo1);
     normalizeHdgError(headingError);
 }
 

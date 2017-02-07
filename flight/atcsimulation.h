@@ -4,12 +4,12 @@
 #include "atcconst.h"
 #include "atcactiverunways.h"
 #include "atcflight.h"
+#include "atcmath.h"
 
 #include <QElapsedTimer>
 #include <QObject>
 #include <QThread>
 #include <QDebug>
-#include <QtMath>
 
 class ATCSimulation : public QObject
 {
@@ -35,14 +35,18 @@ public slots:
     void slotStartSimulation();
     void slotStopSimulation();
 
-private slots:
-    void slotProgressState();
-
 private:
     ATCActiveRunways *activeRunways = nullptr;
     QVector<ATCFlight*> flights;
 
     bool simLoop = false;
+
+    void progressState(GeographicLib::Geodesic &geo);
+
+    ISA calculateEnvironment(ATCFlight *flight);
+    void assignDiscreteState(ATCFlight *flight, ISA &isa);
+    void assignContinuousState(ATCFlight *flight, ISA &isa, GeographicLib::Geodesic &geo);
+
 };
 
 #endif // ATCSIMULATION_H

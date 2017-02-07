@@ -34,8 +34,11 @@ const double ATCConst::SECTOR_SHRINK_FACTOR = 2;
 
 //Simulation Performance
 const qint64 ATCConst::DT = 100 * 1000000;
+
 const double ATCConst::k1 = 0.005;
 const double ATCConst::k2 = -33;
+
+const double ATCConst::FLY_OVER_DST = 185.2;
 
 //Environment
 const double ATCConst::betaTrop = -0.0065;
@@ -53,6 +56,7 @@ const double ATCConst::g0 = 9.80665;
 const double ATCConst::ACC_LONG_MAX = 2;    //ftps^2
 const double ATCConst::ACC_NORM_MAX = 5;    //ftps^2
 
+//const double ATCConst::NOM_BANK_ANGLE = ATCMath::deg2rad(30);
 const double ATCConst::NOM_BANK_ANGLE = 30;
 
 const double ATCConst::C_DES_EXP = 1.6;

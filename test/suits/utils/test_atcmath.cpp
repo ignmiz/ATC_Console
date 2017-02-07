@@ -338,7 +338,7 @@ void Test_ATCMath::test_projectAcftPosOnPath()
     double acftLat = 0;
     double acftLon = 0;
 
-    double heading = 90;
+    double heading = ATCMath::deg2rad(90);
 
     double xtrackError;
     double hdgError;
@@ -349,16 +349,16 @@ void Test_ATCMath::test_projectAcftPosOnPath()
     QVERIFY(hdgError == 0);
     QVERIFY(ATCMath::compareDouble(dstToNext, 10018754.17, error));
 
-    acftLon = 45;
-    heading = 360;
+    acftLon = ATCMath::deg2rad(45);
+    heading = ATCMath::deg2rad(360);
 
     ATCMath::projectAcftPosOnPath(wgs, fix1Lat, fix1Lon, fix2Lat, fix2Lon, acftLat, acftLon, heading, xtrackError, hdgError, dstToNext);
     QVERIFY(xtrackError == 0);
     QVERIFY(ATCMath::compareDouble(hdgError, ATCMath::deg2rad(-90), error));
     QVERIFY(ATCMath::compareDouble(dstToNext, 5009377.086, error));
 
-    acftLon = 90;
-    heading = 180;
+    acftLon = ATCMath::deg2rad(90);
+    heading = ATCMath::deg2rad(180);
 
     ATCMath::projectAcftPosOnPath(wgs, fix1Lat, fix1Lon, fix2Lat, fix2Lon, acftLat, acftLon, heading, xtrackError, hdgError, dstToNext);
     QVERIFY(xtrackError == 0);
@@ -371,16 +371,16 @@ void Test_ATCMath::test_projectAcftPosOnPath()
     fix2Lat = 1;
     fix2Lon = 0;
 
-    acftLat = 0;
-    acftLon = 30;
+    acftLat = ATCMath::deg2rad(0);
+    acftLon = ATCMath::deg2rad(30);
 
-    heading = 360;
+    heading = ATCMath::deg2rad(360);
 
     ATCMath::projectAcftPosOnPath(wgs, fix1Lat, fix1Lon, fix2Lat, fix2Lon, acftLat, acftLon, heading, xtrackError, hdgError, dstToNext);
     QVERIFY(ATCMath::compareDouble(xtrackError, -3339584.724, 1e-5));
     QVERIFY(ATCMath::compareDouble(hdgError, ATCMath::deg2rad(0), error));
 
-    heading = 45;
+    heading = ATCMath::deg2rad(45);
 
     ATCMath::projectAcftPosOnPath(wgs, fix1Lat, fix1Lon, fix2Lat, fix2Lon, acftLat, acftLon, heading, xtrackError, hdgError, dstToNext);
     QVERIFY(ATCMath::compareDouble(xtrackError, -3339584.724, 1e-5));

@@ -12,12 +12,12 @@ void Test_ATCFlightFactory::test_newFlight()
     state.h = 3;
     state.v = 4;
     state.hdg = 5;
-    state.cm = CM_C;
-    state.fp = FP_AP;
-    state.rpm = RPM_OFF;
-    state.shm = SHM_C;
-    state.trm = TRM_H;
-    state.am = AM_A;
+    state.cm = BADA::Climb;
+    state.fp = BADA::Approach;
+    state.rpm = BADA::Off;
+    state.shm = BADA::CAS;
+    state.trm = BADA::High;
+    state.am = BADA::Accelerate;
 
     ATCFlight *flight = factory.newFlight(state);
     QVERIFY(flight->getState().x == 1);
@@ -25,12 +25,12 @@ void Test_ATCFlightFactory::test_newFlight()
     QVERIFY(flight->getState().h == 3);
     QVERIFY(flight->getState().v == 4);
     QVERIFY(flight->getState().hdg == 5);
-    QVERIFY(flight->getState().cm == CM_C);
-    QVERIFY(flight->getState().fp == FP_AP);
-    QVERIFY(flight->getState().rpm == RPM_OFF);
-    QVERIFY(flight->getState().shm == SHM_C);
-    QVERIFY(flight->getState().trm == TRM_H);
-    QVERIFY(flight->getState().am == AM_A);
+    QVERIFY(flight->getState().cm == BADA::Climb);
+    QVERIFY(flight->getState().fp == BADA::Approach);
+    QVERIFY(flight->getState().rpm == BADA::Off);
+    QVERIFY(flight->getState().shm == BADA::CAS);
+    QVERIFY(flight->getState().trm == BADA::High);
+    QVERIFY(flight->getState().am == BADA::Accelerate);
 
     delete flight;
 
@@ -44,12 +44,12 @@ void Test_ATCFlightFactory::test_newFlight()
     QVERIFY(flight->getState().h == 3);
     QVERIFY(flight->getState().v == 4);
     QVERIFY(flight->getState().hdg == 5);
-    QVERIFY(flight->getState().cm == CM_C);
-    QVERIFY(flight->getState().fp == FP_AP);
-    QVERIFY(flight->getState().rpm == RPM_OFF);
-    QVERIFY(flight->getState().shm == SHM_C);
-    QVERIFY(flight->getState().trm == TRM_H);
-    QVERIFY(flight->getState().am == AM_A);
+    QVERIFY(flight->getState().cm == BADA::Climb);
+    QVERIFY(flight->getState().fp == BADA::Approach);
+    QVERIFY(flight->getState().rpm == BADA::Off);
+    QVERIFY(flight->getState().shm == BADA::CAS);
+    QVERIFY(flight->getState().trm == BADA::High);
+    QVERIFY(flight->getState().am == BADA::Accelerate);
 
     delete flight;
 
@@ -64,12 +64,12 @@ void Test_ATCFlightFactory::test_newFlight()
     QVERIFY(flight->getState().h == 3);
     QVERIFY(flight->getState().v == 4);
     QVERIFY(flight->getState().hdg == 5);
-    QVERIFY(flight->getState().cm == CM_C);
-    QVERIFY(flight->getState().fp == FP_AP);
-    QVERIFY(flight->getState().rpm == RPM_OFF);
-    QVERIFY(flight->getState().shm == SHM_C);
-    QVERIFY(flight->getState().trm == TRM_H);
-    QVERIFY(flight->getState().am == AM_A);
+    QVERIFY(flight->getState().cm == BADA::Climb);
+    QVERIFY(flight->getState().fp == BADA::Approach);
+    QVERIFY(flight->getState().rpm == BADA::Off);
+    QVERIFY(flight->getState().shm == BADA::CAS);
+    QVERIFY(flight->getState().trm == BADA::High);
+    QVERIFY(flight->getState().am == BADA::Accelerate);
 
     delete flight;
 }

@@ -11,12 +11,12 @@ void Test_ATCSimulation::test_getFlight()
     state.h = 3;
     state.v = 4;
     state.hdg = 5;
-    state.cm = CM_C;
-    state.fp = FP_AP;
-    state.rpm = RPM_OFF;
-    state.shm = SHM_C;
-    state.trm = TRM_H;
-    state.am = AM_A;
+    state.cm = BADA::Climb;
+    state.fp = BADA::Approach;
+    state.rpm = BADA::Off;
+    state.shm = BADA::CAS;
+    state.trm = BADA::High;
+    state.am = BADA::Accelerate;
 
     ATCFlight *flight1 = new ATCFlight(state);
     ATCFlight *flight2 = new ATCFlight(state);
@@ -73,12 +73,12 @@ void Test_ATCSimulation::test_removeFlight()
     state.h = 3;
     state.v = 4;
     state.hdg = 5;
-    state.cm = CM_C;
-    state.fp = FP_AP;
-    state.rpm = RPM_OFF;
-    state.shm = SHM_C;
-    state.trm = TRM_H;
-    state.am = AM_A;
+    state.cm = BADA::Climb;
+    state.fp = BADA::Approach;
+    state.rpm = BADA::Off;
+    state.shm = BADA::CAS;
+    state.trm = BADA::High;
+    state.am = BADA::Accelerate;
 
     ATCFlight *flight1 = new ATCFlight(state);
     ATCFlight *flight2 = new ATCFlight(state);

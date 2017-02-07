@@ -37,8 +37,11 @@ public:
 
     //Simulation Performance
     static const qint64 DT;
+
     static const double k1;
     static const double k2;
+
+    static const double FLY_OVER_DST;
 
     //Environment
     static const double betaTrop;

@@ -9,12 +9,12 @@ void Test_ATCFlight::test_constructObject()
     state.h = 3;
     state.v = 4;
     state.hdg = 5;
-    state.cm = CM_C;
-    state.fp = FP_AP;
-    state.rpm = RPM_OFF;
-    state.shm = SHM_C;
-    state.trm = TRM_H;
-    state.am = AM_A;
+    state.cm = BADA::Climb;
+    state.fp = BADA::Approach;
+    state.rpm = BADA::Off;
+    state.shm = BADA::CAS;
+    state.trm = BADA::High;
+    state.am = BADA::Accelerate;
 
     QString sq = "1234";
 
@@ -32,12 +32,12 @@ void Test_ATCFlight::test_constructObject()
     QVERIFY(foo.getState().h == 3);
     QVERIFY(foo.getState().v == 4);
     QVERIFY(foo.getState().hdg == 5);
-    QVERIFY(foo.getState().cm == CM_C);
-    QVERIFY(foo.getState().fp == FP_AP);
-    QVERIFY(foo.getState().rpm == RPM_OFF);
-    QVERIFY(foo.getState().shm == SHM_C);
-    QVERIFY(foo.getState().trm == TRM_H);
-    QVERIFY(foo.getState().am == AM_A);
+    QVERIFY(foo.getState().cm == BADA::Climb);
+    QVERIFY(foo.getState().fp == BADA::Approach);
+    QVERIFY(foo.getState().rpm == BADA::Off);
+    QVERIFY(foo.getState().shm == BADA::CAS);
+    QVERIFY(foo.getState().trm == BADA::High);
+    QVERIFY(foo.getState().am == BADA::Accelerate);
 }
 
 void Test_ATCFlight::test_setFlightPlan()
@@ -48,12 +48,12 @@ void Test_ATCFlight::test_setFlightPlan()
     state.h = 3;
     state.v = 4;
     state.hdg = 5;
-    state.cm = CM_C;
-    state.fp = FP_AP;
-    state.rpm = RPM_OFF;
-    state.shm = SHM_C;
-    state.trm = TRM_H;
-    state.am = AM_A;
+    state.cm = BADA::Climb;
+    state.fp = BADA::Approach;
+    state.rpm = BADA::Off;
+    state.shm = BADA::CAS;
+    state.trm = BADA::High;
+    state.am = BADA::Accelerate;
 
     QString sq = "1234";
 
@@ -71,12 +71,12 @@ void Test_ATCFlight::test_setFlightPlan()
     QVERIFY(foo.getState().h == 3);
     QVERIFY(foo.getState().v == 4);
     QVERIFY(foo.getState().hdg == 5);
-    QVERIFY(foo.getState().cm == CM_C);
-    QVERIFY(foo.getState().fp == FP_AP);
-    QVERIFY(foo.getState().rpm == RPM_OFF);
-    QVERIFY(foo.getState().shm == SHM_C);
-    QVERIFY(foo.getState().trm == TRM_H);
-    QVERIFY(foo.getState().am == AM_A);
+    QVERIFY(foo.getState().cm == BADA::Climb);
+    QVERIFY(foo.getState().fp == BADA::Approach);
+    QVERIFY(foo.getState().rpm == BADA::Off);
+    QVERIFY(foo.getState().shm == BADA::CAS);
+    QVERIFY(foo.getState().trm == BADA::High);
+    QVERIFY(foo.getState().am == BADA::Accelerate);
 
     ATCFlightPlan *newFpl = factory.newFlightPlan(ATC::IFR, "EPWA", "EPPO", "F350", QTime(12, 0, 0, 0));
     foo.setFlightPlan(newFpl);
@@ -91,12 +91,12 @@ void Test_ATCFlight::test_setSquawk()
     state.h = 3;
     state.v = 4;
     state.hdg = 5;
-    state.cm = CM_C;
-    state.fp = FP_AP;
-    state.rpm = RPM_OFF;
-    state.shm = SHM_C;
-    state.trm = TRM_H;
-    state.am = AM_A;
+    state.cm = BADA::Climb;
+    state.fp = BADA::Approach;
+    state.rpm = BADA::Off;
+    state.shm = BADA::CAS;
+    state.trm = BADA::High;
+    state.am = BADA::Accelerate;
 
     QString sq = "1234";
 
@@ -114,12 +114,12 @@ void Test_ATCFlight::test_setSquawk()
     QVERIFY(foo.getState().h == 3);
     QVERIFY(foo.getState().v == 4);
     QVERIFY(foo.getState().hdg == 5);
-    QVERIFY(foo.getState().cm == CM_C);
-    QVERIFY(foo.getState().fp == FP_AP);
-    QVERIFY(foo.getState().rpm == RPM_OFF);
-    QVERIFY(foo.getState().shm == SHM_C);
-    QVERIFY(foo.getState().trm == TRM_H);
-    QVERIFY(foo.getState().am == AM_A);
+    QVERIFY(foo.getState().cm == BADA::Climb);
+    QVERIFY(foo.getState().fp == BADA::Approach);
+    QVERIFY(foo.getState().rpm == BADA::Off);
+    QVERIFY(foo.getState().shm == BADA::CAS);
+    QVERIFY(foo.getState().trm == BADA::High);
+    QVERIFY(foo.getState().am == BADA::Accelerate);
 
     QString newSq = "3456";
     foo.setSquawk(newSq);
@@ -145,12 +145,12 @@ void Test_ATCFlight::test_setState()
     state.h = 3;
     state.v = 4;
     state.hdg = 5;
-    state.cm = CM_C;
-    state.fp = FP_AP;
-    state.rpm = RPM_OFF;
-    state.shm = SHM_C;
-    state.trm = TRM_H;
-    state.am = AM_A;
+    state.cm = BADA::Climb;
+    state.fp = BADA::Approach;
+    state.rpm = BADA::Off;
+    state.shm = BADA::CAS;
+    state.trm = BADA::High;
+    state.am = BADA::Accelerate;
 
     QString sq = "1234";
 
@@ -168,12 +168,12 @@ void Test_ATCFlight::test_setState()
     QVERIFY(foo.getState().h == 3);
     QVERIFY(foo.getState().v == 4);
     QVERIFY(foo.getState().hdg == 5);
-    QVERIFY(foo.getState().cm == CM_C);
-    QVERIFY(foo.getState().fp == FP_AP);
-    QVERIFY(foo.getState().rpm == RPM_OFF);
-    QVERIFY(foo.getState().shm == SHM_C);
-    QVERIFY(foo.getState().trm == TRM_H);
-    QVERIFY(foo.getState().am == AM_A);
+    QVERIFY(foo.getState().cm == BADA::Climb);
+    QVERIFY(foo.getState().fp == BADA::Approach);
+    QVERIFY(foo.getState().rpm == BADA::Off);
+    QVERIFY(foo.getState().shm == BADA::CAS);
+    QVERIFY(foo.getState().trm == BADA::High);
+    QVERIFY(foo.getState().am == BADA::Accelerate);
 
     State newState;
     newState.x = 10;
@@ -181,12 +181,12 @@ void Test_ATCFlight::test_setState()
     newState.h = 30;
     newState.v = 40;
     newState.hdg = 50;
-    newState.cm = CM_D;
-    newState.fp = FP_LA;
-    newState.rpm = RPM_ON;
-    newState.shm = SHM_M;
-    newState.trm = TRM_L;
-    newState.am = AM_C;
+    newState.cm = BADA::Descend;
+    newState.fp = BADA::Landing;
+    newState.rpm = BADA::On;
+    newState.shm = BADA::Mach;
+    newState.trm = BADA::Low;
+    newState.am = BADA::Constant;
 
     foo.setState(newState);
     QVERIFY(foo.getState().x == 10);
@@ -194,12 +194,12 @@ void Test_ATCFlight::test_setState()
     QVERIFY(foo.getState().h == 30);
     QVERIFY(foo.getState().v == 40);
     QVERIFY(foo.getState().hdg == 50);
-    QVERIFY(foo.getState().cm == CM_D);
-    QVERIFY(foo.getState().fp == FP_LA);
-    QVERIFY(foo.getState().rpm == RPM_ON);
-    QVERIFY(foo.getState().shm == SHM_M);
-    QVERIFY(foo.getState().trm == TRM_L);
-    QVERIFY(foo.getState().am == AM_C);
+    QVERIFY(foo.getState().cm == BADA::Descend);
+    QVERIFY(foo.getState().fp == BADA::Landing);
+    QVERIFY(foo.getState().rpm == BADA::On);
+    QVERIFY(foo.getState().shm == BADA::Mach);
+    QVERIFY(foo.getState().trm == BADA::Low);
+    QVERIFY(foo.getState().am == BADA::Constant);
 }
 
 void Test_ATCFlight::test_setNavMode()
