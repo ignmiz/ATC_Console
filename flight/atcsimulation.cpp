@@ -91,11 +91,13 @@ void ATCSimulation::clearFlights()
 void ATCSimulation::slotStartSimulation()
 {
     GeographicLib::Geodesic geo = GeographicLib::Geodesic::WGS84();
-    qint64 dt = ATCConst::DT;
+    qint64 dt = ATCConst::DT * 1e9;
 
     QElapsedTimer timer;
     qint64 elapsedTime;
     qint64 diff;
+
+    preallocateTempData();
 
     simLoop = true;
 
@@ -107,7 +109,7 @@ void ATCSimulation::slotStartSimulation()
 
         diff = dt - elapsedTime;
 
-        qDebug() << "Elapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
+//        qDebug() << "Elapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
         QThread::usleep(qFloor(diff / 1000));
     }
 }
@@ -115,6 +117,44 @@ void ATCSimulation::slotStartSimulation()
 void ATCSimulation::slotStopSimulation()
 {
     simLoop = false;
+}
+
+void ATCSimulation::preallocateTempData()
+{
+    for(int i = 0; i < flights.size(); i++)
+    {
+        ATCFlight *flight = flights.at(i);
+        ATCAircraftType *type = flight->getFlightPlan()->getType();
+
+        Temp temp;
+
+        temp.m = ATCMath::randomMass(qFloor(1.2 * type->getMass().min * 1000), qFloor(type->getMass().ref * 1000));
+
+        if(type->getAcType().engineType == ATC::Jet)
+        {
+            temp.Cpowred = ATCMath::recalculateReductionFactor(0.15, temp.m, type->getMass().min * 1000, type->getMass().max * 1000);
+        }
+        else if(type->getAcType().engineType == ATC::Turboprop)
+        {
+            temp.Cpowred = ATCMath::recalculateReductionFactor(0.25, temp.m, type->getMass().min * 1000, type->getMass().max * 1000);
+        }
+        else //Piston
+        {
+            temp.Cpowred = ATCMath::recalculateReductionFactor(0, temp.m, type->getMass().min * 1000, type->getMass().max * 1000);
+        }
+
+        temp.vStallCR = ATCMath::recalculateSpeed(type->getAeroCR().V_stall, temp.m, type->getMass().ref * 1000);
+        temp.vStallIC = ATCMath::recalculateSpeed(type->getAeroIC().V_stall, temp.m, type->getMass().ref * 1000);
+        temp.vStallTO = ATCMath::recalculateSpeed(type->getAeroTO().V_stall, temp.m, type->getMass().ref * 1000);
+        temp.vStallAP = ATCMath::recalculateSpeed(type->getAeroAP().V_stall, temp.m, type->getMass().ref * 1000);
+        temp.vStallLD = ATCMath::recalculateSpeed(type->getAeroLD().V_stall, temp.m, type->getMass().ref * 1000);
+
+        temp.xoverAltClbM = ATCMath::crossoverAltitude(ATCMath::kt2mps(type->getVelocity().V_CL2_AV), type->getVelocity().M_CL_AV);
+        temp.xoverAltCrsM = ATCMath::crossoverAltitude(ATCMath::kt2mps(type->getVelocity().V_CR2_AV), type->getVelocity().M_CR_AV);
+        temp.xoverAltDesM = ATCMath::crossoverAltitude(ATCMath::kt2mps(type->getVelocity().V_DS2_AV), type->getVelocity().M_DS_AV);
+
+        flight->setTemp(temp);
+    }
 }
 
 void ATCSimulation::progressState(GeographicLib::Geodesic &geo)
@@ -137,40 +177,66 @@ ISA ATCSimulation::calculateEnvironment(ATCFlight *flight)
 void ATCSimulation::assignDiscreteState(ATCFlight *flight, ISA &isa)
 {
     State state = flight->getState();
-    double targetAltitude = ATCMath::ft2m(flight->getTargetAltitude().mid(1, -1).toDouble());
+    Temp temp = flight->getTemp();
+    double targetAltitude = ATCMath::ft2m(flight->getTargetAltitude().mid(1, -1).toDouble()) * 100;
 
     ATCAircraftType *type = flight->getFlightPlan()->getType();
 
     state.cm = ATCMath::assignCM(state.h, targetAltitude);
-    state.fp = ATCMath::assignFP(state.h, targetAltitude, state.v, type->getVelocity().V_DS1_AV, isa.p, isa.rho);
+    state.fp = ATCMath::assignFP(state.h, ATCMath::ft2m(type->getThrust().h_pdes), state.v, type->getVelocity().V_DS1_AV, isa.p, isa.rho);
     state.rpm = ATCMath::assignRPM(state.h, type->getEnvelope().h_max_MTOW);
-    state.shm = ATCMath::assignSHM(state.h, state.cm, 10000, 10000, 10000); //TEMP, NEED TO INCLUDE CROSSOVER ALTITUDES!
-    state.trm = ATCMath::assignTRM(state.h);
-
-    //Cpowred ?? YES, BUT NOT NECESSARY HERE
-
-    //Vstall recalculation?
+    state.shm = ATCMath::assignSHM(state.h, state.cm, temp.xoverAltClbM, temp.xoverAltCrsM, temp.xoverAltDesM);
 
     double Vnom;
-
-    switch(state.cm)
+    QString targetSpeed = flight->getTargetSpeed();
+    if(targetSpeed.isEmpty() || (targetSpeed == "---"))
     {
-        case BADA::Level:
-            Vnom = ATCMath::nominalSpeedCR(state.h, state.shm, type->getAcType().engineType, type->getVelocity().V_CR1_AV, type->getVelocity().V_CR2_AV, type->getVelocity().M_CR_AV, isa.a, isa.rho, isa.p);
-            break;
+        switch(state.cm)
+        {
+            case BADA::Level:
+                Vnom = ATCMath::nominalSpeedCR(state.h, state.shm, type->getAcType().engineType, type->getVelocity().V_CR1_AV, type->getVelocity().V_CR2_AV, type->getVelocity().M_CR_AV, isa.a, isa.rho, isa.p);
+                break;
 
-        case BADA::Descend:
-            Vnom = ATCMath::nominalSpeedDS(state.h, state.shm, type->getAcType().engineType, type->getAeroTO().V_stall, type->getVelocity().V_DS1_AV, type->getVelocity().V_DS2_AV, type->getVelocity().M_DS_AV, isa.a, isa.rho, isa.p);
-            break;
+            case BADA::Descend:
+                Vnom = ATCMath::nominalSpeedDS(state.h, state.shm, type->getAcType().engineType, temp.vStallTO, type->getVelocity().V_DS1_AV, type->getVelocity().V_DS2_AV, type->getVelocity().M_DS_AV, isa.a, isa.rho, isa.p);
+                break;
 
-        case BADA::Climb:
-            Vnom = ATCMath::nominalSpeedCL(state.h, state.shm, type->getAcType().engineType, type->getAeroTO().V_stall, type->getVelocity().V_CL1_AV, type->getVelocity().V_CL2_AV, type->getVelocity().M_CL_AV, isa.a, isa.rho, isa.p);
-            break;
+            case BADA::Climb:
+                Vnom = ATCMath::nominalSpeedCL(state.h, state.shm, type->getAcType().engineType, temp.vStallTO, type->getVelocity().V_CL1_AV, type->getVelocity().V_CL2_AV, type->getVelocity().M_CL_AV, isa.a, isa.rho, isa.p);
+                break;
+        }
+    }
+    else
+    {
+        if(targetSpeed.at(1) == ".")
+        {
+            Vnom = isa.a * targetSpeed.toDouble();
+        }
+        else
+        {
+            Vnom = ATCMath::cas2tas(ATCMath::kt2mps(targetSpeed.toDouble()), isa.p, isa.rho);
+        }
     }
 
+    double vMin;
+    if((state.fp == BADA::UpperDescent) || (state.fp == BADA::LowerDescent))
+    {
+        vMin = ATCConst::C_V_MIN * ATCMath::kt2mps(temp.vStallCR);
+    }
+    else if(state.fp == BADA::Approach)
+    {
+        vMin = ATCConst::C_V_MIN * ATCMath::kt2mps(temp.vStallAP);
+    }
+    else
+    {
+        vMin = ATCConst::C_V_MIN * ATCMath::kt2mps(temp.vStallLD);
+    }
+    if(Vnom < vMin) Vnom = vMin;
     state.am = ATCMath::assignAM(state.v, Vnom);
 
     flight->setState(state);
+//    qDebug() << state.x << "\t" << state.y << "\t" << state.h << "\t" << targetAltitude << "\t" << state.v << "\t" << Vnom << "\t" << ATCMath::rad2deg(state.hdg);
+//    qDebug() << state.cm << state.fp << state.rpm << state.trm << state.shm << state.am;
 }
 
 void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, GeographicLib::Geodesic &geo)
@@ -179,23 +245,25 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
     //Route needs to be preprocessed before the main loop
 
     State state = flight->getState();
+    Temp temp = flight->getTemp();
     ATCAircraftType *type = flight->getFlightPlan()->getType();
 
-    double m = 40000; //TEMP    HOW TO HANDLE MASS?
-    double dHdg = ATCMath::deg2rad(90); //TEMP
+    double m = temp.m;
+    double dHdg = ATCMath::deg2rad(90); //TEMP How to handle waypoints?
 
-    double DTA = ATCMath::DTA(state.v, ATCConst::NOM_BANK_ANGLE, dHdg, ATCConst::FLY_OVER_DST);
+    double DTA = ATCMath::DTA(state.v, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE), dHdg, ATCConst::FLY_OVER_DST);
 
-    double fix1lat = ATCMath::rad2deg(state.y) - 5;
-    double fix1lon = ATCMath::rad2deg(state.x) - 5;
+    double fix1lat = 53.311488301522090; //Prev fix
+    double fix1lon = 19.066717619024995;
 
-    double fix2lat = ATCMath::rad2deg(state.y) + 5;
-    double fix2lon = ATCMath::rad2deg(state.x) + 5;
+    double fix2lat = 53.311488301522090 + 15; //Next fix
+    double fix2lon = 19.066717619024995 + 15;
 
     double xtrackError;
     double headingError;
     double dstToNext;
-    ATCMath::projectAcftPosOnPath(geo, fix1lat, fix1lon, fix2lat, fix2lon, state.y, state.x, state.hdg, xtrackError, headingError,  dstToNext);
+    ATCMath::projectAcftPosOnPath(geo, fix1lat, fix1lon, fix2lat, fix2lon, state.y, state.x, state.hdg, xtrackError, headingError, dstToNext);
+//    qDebug() << xtrackError << ATCMath::rad2deg(headingError) << dstToNext;
 
     //SWITCH WAYPOINT CONDITION? here or one step earlier?
 
@@ -205,39 +273,38 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
     double lift = ATCMath::lift(isa.rho, state.v, type->getSurface(), CL);
 
     double CD;
-    if(state.fp == BADA::Approach) //revise order of cases?
+
+    if((state.fp == BADA::UpperDescent) || state.fp == (BADA::LowerDescent))
+    {
+        CD = ATCMath::dragCoefficient(CL, type->getAeroCR().CD0, type->getAeroCR().CD2, 0);
+    }
+    else if(state.fp == BADA::Approach)
     {
         CD = ATCMath::dragCoefficient(CL, type->getAeroAP().CD0, type->getAeroAP().CD2, 0);
     }
-    else if(state.fp == BADA::Landing)
-    {
-        CD = ATCMath::dragCoefficient(CL, type->getAeroLD().CD0, type->getAeroLD().CD2, type->getCDldg());
-    }
     else
     {
-        CD = ATCMath::dragCoefficient(CL, type->getAeroCR().CD0, type->getAeroCR().CD2, type->getCDldg());
+        CD = ATCMath::dragCoefficient(CL, type->getAeroLD().CD0, type->getAeroLD().CD2, type->getCDldg());
     }
 
     double drag = ATCMath::drag(isa.rho, state.v, type->getSurface(), CD);
 
-    double Cpowred = 0.3; //Cpowred calculation here?
-
     double thrust;
     if(state.fp == BADA::UpperDescent)
     {
-        thrust = ATCMath::thrust(state.v, state.h, drag, state.cm, state.am, state.rpm, type->getAcType().engineType, type->getThrust().C_Tc1, type->getThrust().C_Tc2, type->getThrust().C_Tc3, type->getThrust().C_Tdes_high, Cpowred);
+        thrust = ATCMath::thrust(state.v, state.h, drag, state.cm, state.am, state.rpm, type->getAcType().engineType, type->getThrust().C_Tc1, type->getThrust().C_Tc2, type->getThrust().C_Tc3, type->getThrust().C_Tdes_high, temp.Cpowred);
     }
     else if(state.fp == BADA::LowerDescent)
     {
-        thrust = ATCMath::thrust(state.v, state.h, drag, state.cm, state.am, state.rpm, type->getAcType().engineType, type->getThrust().C_Tc1, type->getThrust().C_Tc2, type->getThrust().C_Tc3, type->getThrust().C_Tdes_low, Cpowred);
+        thrust = ATCMath::thrust(state.v, state.h, drag, state.cm, state.am, state.rpm, type->getAcType().engineType, type->getThrust().C_Tc1, type->getThrust().C_Tc2, type->getThrust().C_Tc3, type->getThrust().C_Tdes_low, temp.Cpowred);
     }
     else if(state.fp == BADA::Approach)
     {
-        thrust = ATCMath::thrust(state.v, state.h, drag, state.cm, state.am, state.rpm, type->getAcType().engineType, type->getThrust().C_Tc1, type->getThrust().C_Tc2, type->getThrust().C_Tc3, type->getThrust().C_Tdes_app, Cpowred);
+        thrust = ATCMath::thrust(state.v, state.h, drag, state.cm, state.am, state.rpm, type->getAcType().engineType, type->getThrust().C_Tc1, type->getThrust().C_Tc2, type->getThrust().C_Tc3, type->getThrust().C_Tdes_app, temp.Cpowred);
     }
     else
     {
-        thrust = ATCMath::thrust(state.v, state.h, drag, state.cm, state.am, state.rpm, type->getAcType().engineType, type->getThrust().C_Tc1, type->getThrust().C_Tc2, type->getThrust().C_Tc3, type->getThrust().C_Tdes_ldg, Cpowred);
+        thrust = ATCMath::thrust(state.v, state.h, drag, state.cm, state.am, state.rpm, type->getAcType().engineType, type->getThrust().C_Tc1, type->getThrust().C_Tc2, type->getThrust().C_Tc3, type->getThrust().C_Tdes_ldg, temp.Cpowred);
     }
 
     double Mach = state.v / isa.a;
@@ -250,20 +317,13 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
     double yNext = state.y + ATCMath::stateLatDot(state.v, state.hdg, pathAngle, radius) * ATCConst::DT;
     double hNext = state.h + ATCMath::stateHDot(state.v, pathAngle) * ATCConst::DT;
     double vNext = state.v + ATCMath::stateVDot(thrust, drag, m, ESF) * ATCConst::DT;
-    double hdgNext = state.hdg + ATCMath::stateHdgDot(lift, m, state.v, bankAngle) * ATCConst::DT;
+    double hdgNext = ATCMath::normalizeAngle(state.hdg + ATCMath::stateHdgDot(lift, m, state.v, bankAngle) * ATCConst::DT, ATC::Rad);
 
-//    state.x = xNext;
-//    state.y = yNext;
-//    state.h = hNext;
-//    state.v = vNext;
-//    state.hdg = hdgNext;
+    state.x = xNext;
+    state.y = yNext;
+    state.h = hNext;
+    state.v = vNext;
+    state.hdg = hdgNext;
 
-    State temp = state;
-    temp.x = xNext;
-    temp.y = yNext;
-    temp.h = hNext;
-    temp.v = vNext;
-    temp.hdg = hdgNext;
-
-    flight->setState(temp);
+    flight->setState(state);
 }

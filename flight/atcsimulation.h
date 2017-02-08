@@ -41,6 +41,8 @@ private:
 
     bool simLoop = false;
 
+
+    void preallocateTempData();
     void progressState(GeographicLib::Geodesic &geo);
 
     ISA calculateEnvironment(ATCFlight *flight);

@@ -26,7 +26,7 @@ struct State
     BADA::AccelerationMode am;
 };
 
-struct Temp //Structure for temporary data (such as mass) and simulation preallocated data members
+struct Temp //Structure for temporary, constant data members preallocated before simulation
 {
     double m;
 
@@ -42,7 +42,7 @@ struct Temp //Structure for temporary data (such as mass) and simulation preallo
     double xoverAltCrsM;
     double xoverAltDesM;
 
-    QVector<QPair<double, double>> waypoints;
+    QVector<QPair<double, double>> waypoints;   //Here or in main structure?
 };
 
 class ATCFlight : public QObject

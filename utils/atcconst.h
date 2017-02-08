@@ -36,7 +36,7 @@ public:
     static const double SECTOR_SHRINK_FACTOR;
 
     //Simulation Performance
-    static const qint64 DT;
+    static const double DT;
 
     static const double k1;
     static const double k2;

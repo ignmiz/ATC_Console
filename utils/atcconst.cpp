@@ -33,7 +33,7 @@ const int ATCConst::SCENE_HEIGHT = ATCConst::DISPLAY_HEIGHT * ATCConst::SCENE_FA
 const double ATCConst::SECTOR_SHRINK_FACTOR = 2;
 
 //Simulation Performance
-const qint64 ATCConst::DT = 100 * 1000000;
+const double ATCConst::DT = 0.1;
 
 const double ATCConst::k1 = 0.005;
 const double ATCConst::k2 = -33;
