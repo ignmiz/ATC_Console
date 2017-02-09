@@ -97,16 +97,19 @@ void ATCSimulation::slotStartSimulation()
     qint64 elapsedTime;
     qint64 diff;
 
-    preallocateTempData();
+    double counter = 0;
 
+    preallocateTempData();
     simLoop = true;
 
     while(simLoop)
     {
         timer.start();
-        progressState(geo);
-        elapsedTime = timer.nsecsElapsed();
 
+        progressState(geo);
+        incrementUpdateCounter(counter);
+
+        elapsedTime = timer.nsecsElapsed();
         diff = dt - elapsedTime;
 
 //        qDebug() << "Elapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
@@ -235,7 +238,7 @@ void ATCSimulation::assignDiscreteState(ATCFlight *flight, ISA &isa)
     state.am = ATCMath::assignAM(state.v, Vnom);
 
     flight->setState(state);
-//    qDebug() << state.x << "\t" << state.y << "\t" << state.h << "\t" << targetAltitude << "\t" << state.v << "\t" << Vnom << "\t" << ATCMath::rad2deg(state.hdg);
+//    qDebug() << QString::number(ATCMath::rad2deg(state.x), 'g', 10) << "\t" << QString::number(ATCMath::rad2deg(state.y), 'g', 10) << "\t" << ATCMath::m2ft(state.h) << "\t" << ATCMath::m2ft(targetAltitude) << "\t" << ATCMath::mps2kt(state.v) << "\t" << ATCMath::mps2kt(Vnom) << "\t" << ATCMath::rad2deg(state.hdg);
 //    qDebug() << state.cm << state.fp << state.rpm << state.trm << state.shm << state.am;
 }
 
@@ -326,4 +329,14 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
     state.hdg = hdgNext;
 
     flight->setState(state);
+}
+
+void ATCSimulation::incrementUpdateCounter(double &counter)
+{
+    counter += ATCConst::DT;
+    if(counter >= ATCConst::REFRESH_INTERVAL)
+    {
+        counter = 0;
+        emit signalUpdateTags();
+    }
 }

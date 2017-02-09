@@ -689,6 +689,8 @@ void MainWindow::slotStartSimulation()
         simController = new ATCSimulationController(simulation);
         simController->start();
 
+        connect(simulation, SIGNAL(signalUpdateTags()), ui->situationalDisplay, SLOT(slotUpdateTags()));
+
         emit dialogMainMenu->closed();
         dialogMainMenu->close();
     }
@@ -701,6 +703,8 @@ void MainWindow::slotStopSimulation()
         simController->stop();
         delete simController;
         simController = nullptr;
+
+        disconnect(simulation, SIGNAL(signalUpdateTags()), ui->situationalDisplay, SLOT(slotUpdateTags()));
 
         simulation->moveToThread(QThread::currentThread());
     }

@@ -34,6 +34,7 @@ const double ATCConst::SECTOR_SHRINK_FACTOR = 2;
 
 //Simulation Performance
 const double ATCConst::DT = 0.1;
+const double ATCConst::REFRESH_INTERVAL = 3;
 
 const double ATCConst::k1 = 0.005;
 const double ATCConst::k2 = -33;

@@ -31,6 +31,9 @@ public:
     void removeFlight(QString callsign);
     void clearFlights();
 
+signals:
+    void signalUpdateTags();
+
 public slots:
     void slotStartSimulation();
     void slotStopSimulation();
@@ -48,6 +51,8 @@ private:
     ISA calculateEnvironment(ATCFlight *flight);
     void assignDiscreteState(ATCFlight *flight, ISA &isa);
     void assignContinuousState(ATCFlight *flight, ISA &isa, GeographicLib::Geodesic &geo);
+
+    void incrementUpdateCounter(double &counter);
 
 };
 

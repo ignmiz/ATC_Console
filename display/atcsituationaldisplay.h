@@ -18,6 +18,7 @@
 #include <QGraphicsView>
 #include <QTimer>
 #include <QVector>
+#include <QDebug>
 
 struct coord
 {
@@ -135,6 +136,8 @@ private slots:
     void slotClearRoute(ATCFlight *flight);
     void slotUpdateRoute(ATCFlight *flight);
 
+    void slotUpdateTags();
+
 private:
     ATCAirspace *airspaceData = nullptr;
     ATCSettings *settings = nullptr;
@@ -251,7 +254,7 @@ private:
     void createFlightTag(ATCFlight *flight);
 
     void createTagType(ATCFlight *flight);
-    QGraphicsRectItem* createDiamond(ATCFlightTag *tag, double lon, double lat);
+    ATCTagDiamond *createDiamond(ATCFlightTag *tag, double lon, double lat);
     QGraphicsLineItem* createLeader(ATCFlightTag* tag, double lon, double lat, double trueHdg);
     QGraphicsLineItem* createConnector(ATCFlightTag *tag);
     ATCTagRect* createTagBox(ATCFlightTag *tag);
@@ -278,6 +281,9 @@ private:
 
     double translateFromLocalX(double localX);
     double translateFromLocalY(double localY);
+
+    QPointF geo2local(double latRad, double lonRad, double angleDeg, double scale = ATCConst::WGS84_A, double refLon = 0);
+    QPointF rotatePoint(QPointF pt, double angle, ATC::AngularUnits units);
 
     void calculateSectorParameters();
 

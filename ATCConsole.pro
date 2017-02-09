@@ -110,7 +110,8 @@ SOURCES += main.cpp\
     atcactiverunways.cpp \
     atccombodelegate.cpp \
     atcclock.cpp \
-    atcsimulationcontroller.cpp
+    atcsimulationcontroller.cpp \
+    atctagdiamond.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -223,7 +224,8 @@ HEADERS  += mainwindow.h \
     include/GeographicLib/TransverseMercator.hpp \
     include/GeographicLib/TransverseMercatorExact.hpp \
     include/GeographicLib/Utility.hpp \
-    include/GeographicLib/UTMUPS.hpp
+    include/GeographicLib/UTMUPS.hpp \
+    atctagdiamond.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \

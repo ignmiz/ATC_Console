@@ -1136,6 +1136,52 @@ void ATCSituationalDisplay::slotUpdateRoute(ATCFlight *flight)
     slotDisplayRoute(flight);
 }
 
+void ATCSituationalDisplay::slotUpdateTags()
+{
+    for(int i = 0; i < simulation->getFlightsVectorSize(); i++)
+    {
+        ATCFlight *flight = simulation->getFlight(i);
+        ATCFlightTag *tag = flight->getFlightTag();
+
+        State state = flight->getState();
+
+        //Update diamond position
+        QPointF diamond = geo2local(state.y, state.x, ATCConst::AVG_DECLINATION);
+        tag->moveTo(diamond);
+
+        //Update leader line length & orientation
+        double startLon = ATCMath::rad2deg(state.x);
+        double startLat = ATCMath::rad2deg(state.y);
+        double endLon = ATCMath::rad2deg(state.x + ATCMath::nm2m(settings->TAG_LEADER_LENGTH) / (ATCConst::WGS84_A * qCos(state.y)));
+        double endLat = ATCMath::rad2deg(state.y);
+
+        startLon = mercatorProjectionLon(startLon);
+        startLat = mercatorProjectionLat(startLat);
+        endLon = mercatorProjectionLon(endLon);
+        endLat = mercatorProjectionLat(endLat);
+
+        double delta = qFabs(endLon - startLon);
+
+        endLon = startLon + delta * qSin(state.hdg);
+        endLat = startLat + delta * qCos(state.hdg);
+
+        double xStart = rotateX(startLon, startLat, ATCConst::AVG_DECLINATION);
+        double yStart = rotateY(startLon, startLat, ATCConst::AVG_DECLINATION);
+        double xEnd = rotateX(endLon, endLat, ATCConst::AVG_DECLINATION);
+        double yEnd = rotateY(endLon, endLat, ATCConst::AVG_DECLINATION);
+
+        xStart = translateToLocalX(xStart);
+        yStart = translateToLocalY(yStart);
+        xEnd = translateToLocalX(xEnd);
+        yEnd = translateToLocalY(yEnd);
+
+        tag->getLeader()->setLine(QLineF(xStart, yStart, xEnd, yEnd));
+
+        //Update etiquettes
+        //If exist, update route predictions
+    }
+}
+
 void ATCSituationalDisplay::slotClearFlightElements(ATCFlight *flight)
 {
     for(int i = 0; i < visibleTags.size(); i++)
@@ -1572,14 +1618,15 @@ void ATCSituationalDisplay::rescaleTags()
                 boxHeight = settings->TAG_BOX_HEIGHT_FULL / currentScale;
             }
 
-            QGraphicsRectItem *diamond = visibleTags.at(i)->getDiamond();
+            ATCTagDiamond *diamond = visibleTags.at(i)->getDiamond();
             QGraphicsLineItem *connector = visibleTags.at(i)->getConnector();
             ATCTagRect *tagBox = visibleTags.at(i)->getTagBox();
 
             QPointF currentPosition = visibleTags.at(i)->getDiamondPosition();
 
-            QRectF rect(currentPosition.x() - sideLength/2, currentPosition.y() - sideLength/2, sideLength, sideLength);
-            diamond->setRect(rect);
+            diamond->setRect(currentPosition.x() - sideLength/2, currentPosition.y() - sideLength/2, sideLength, sideLength);
+            QPointF topLeft = diamond->mapToScene(diamond->rect().topLeft());
+            diamond->moveBy(currentPosition.x() - topLeft.x() - sideLength/2, currentPosition.y() - topLeft.y() - sideLength/2);
 
             QPointF initial = connector->line().p2();
 
@@ -3236,12 +3283,13 @@ void ATCSituationalDisplay::createFlightTag(ATCFlight *flight)
     double latitude = ATCMath::rad2deg(flight->getState().y);
 
     createTagType(flight);
-    QGraphicsRectItem *diamond = createDiamond(tag, longitude, latitude);
+    ATCTagDiamond *diamond = createDiamond(tag, longitude, latitude);
     QGraphicsLineItem *leader = createLeader(tag, longitude, latitude, flight->getState().hdg);
     QGraphicsLineItem *connector = createConnector(tag);
     QGraphicsSimpleTextItem *text = createTagText(tag);
     ATCTagRect *tagBox = createTagBox(tag);
 
+    diamond->setConnector(connector);
     tagBox->setConnector(connector);
     tagBox->setText(text);
     text->setParentItem(tagBox);
@@ -3271,7 +3319,7 @@ void ATCSituationalDisplay::createTagType(ATCFlight *flight)
     }
 }
 
-QGraphicsRectItem* ATCSituationalDisplay::createDiamond(ATCFlightTag *tag, double lon, double lat)
+ATCTagDiamond* ATCSituationalDisplay::createDiamond(ATCFlightTag *tag, double lon, double lat)
 {
     double x = mercatorProjectionLon(lon);
     double y = mercatorProjectionLat(lat);
@@ -3287,7 +3335,7 @@ QGraphicsRectItem* ATCSituationalDisplay::createDiamond(ATCFlightTag *tag, doubl
     QPen pen(Qt::green);
     QBrush brush(Qt::green);
 
-    QGraphicsRectItem *diamond = new QGraphicsRectItem(x - width/2, y - width/2, width, width);
+    ATCTagDiamond *diamond = new ATCTagDiamond(x - width/2, y - width/2, width, width, settings, &currentScale);
     diamond->setPen(pen);
     diamond->setBrush(brush);
 
@@ -4095,6 +4143,30 @@ double ATCSituationalDisplay::translateFromLocalX(double localX)
 double ATCSituationalDisplay::translateFromLocalY(double localY)
 {
     return -1 * localY / scaleFactor + sectorCentreY;
+}
+
+QPointF ATCSituationalDisplay::geo2local(double latRad, double lonRad, double angleDeg, double scale, double refLon)
+{
+    double xProjected = mercatorProjectionLon(ATCMath::rad2deg(lonRad), refLon, scale);
+    double yProjected = mercatorProjectionLat(ATCMath::rad2deg(latRad), scale);
+
+    double xRotated = rotateX(xProjected, yProjected, angleDeg);
+    double yRotated = rotateY(xProjected, yProjected, angleDeg);
+
+    double xLocal = translateToLocalX(xRotated);
+    double yLocal = translateToLocalY(yRotated);
+
+    return QPointF(xLocal, yLocal);
+}
+
+QPointF ATCSituationalDisplay::rotatePoint(QPointF pt, double angle, ATC::AngularUnits units)
+{
+    if(units == ATC::Deg) angle = ATCMath::deg2rad(angle);
+
+    double x = pt.x() * qCos(angle) - pt.y() * qSin(angle);
+    double y = pt.x() * qSin(angle) + pt.y() * qCos(angle);
+
+    return(QPointF(x, y));
 }
 
 void ATCSituationalDisplay::calculateSectorParameters()

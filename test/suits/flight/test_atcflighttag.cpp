@@ -18,7 +18,11 @@ void Test_ATCFlightTag::test_setDiamond()
     ATCFlightTag foo;
     QVERIFY(foo.getDiamond() == nullptr);
 
-    QGraphicsRectItem *rect = new QGraphicsRectItem();
+    ATCPaths paths;
+    ATCSettings settings(&paths);
+    double scale = 1;
+
+    ATCTagDiamond *rect = new ATCTagDiamond(1, 2, 3, 4, &settings, &scale);
     foo.setDiamond(rect);
     QVERIFY(foo.getDiamond() == rect);
 }

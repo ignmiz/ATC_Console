@@ -19,7 +19,7 @@ ATC::TagType& ATCFlightTag::getTagType()
     return type;
 }
 
-QGraphicsRectItem* ATCFlightTag::getDiamond()
+ATCTagDiamond *ATCFlightTag::getDiamond()
 {
     return diamond;
 }
@@ -69,7 +69,7 @@ void ATCFlightTag::setTagType(ATC::TagType t)
     type = t;
 }
 
-void ATCFlightTag::setDiamond(QGraphicsRectItem *rect)
+void ATCFlightTag::setDiamond(ATCTagDiamond *rect)
 {
     diamond = rect;
 }
@@ -107,6 +107,17 @@ void ATCFlightTag::setDX(double deltaX)
 void ATCFlightTag::setDY(double deltaY)
 {
     dy = deltaY;
+}
+
+void ATCFlightTag::moveTo(QPointF &pos)
+{
+    double dx = pos.x() - diamondPos.x();
+    double dy = pos.y() - diamondPos.y();
+
+    diamond->moveBy(dx, dy);
+    tagBox->moveBy(dx, dy);
+
+    setDiamondPosition(pos);
 }
 
 void ATCFlightTag::setText(QGraphicsSimpleTextItem *t)

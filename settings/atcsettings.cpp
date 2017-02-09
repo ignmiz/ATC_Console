@@ -760,6 +760,7 @@ void ATCSettings::exportSymbology(QString path)
     out << "[TAG]" << endl;
     out << "DIAMOND WIDTH = " << TAG_DIAMOND_WIDTH << endl;
     out << "DIAMOND DIAMETER = " << TAG_DIAMOND_DIA << endl;
+    out << "DIAMOND LINE = " << TAG_DIAMOND_LINE << endl;
     out << "LEADER LENGTH = " << TAG_LEADER_LENGTH << endl;
     out << "LEADER WIDTH = " << TAG_LEADER_WIDTH << endl;
     out << "BOX WIDTH = " << TAG_BOX_WIDTH << endl;
