@@ -261,6 +261,7 @@ private:
     QGraphicsSimpleTextItem* createTagText(ATCFlightTag *tag);
     void createEtiquettes(ATCFlight *flight);
     void updateEtiquettesQuick(ATCFlight *flight);
+    void updateRoutePrediction(ATCFlight *flight);
 
     void assignTagPositions();
 

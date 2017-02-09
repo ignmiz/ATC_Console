@@ -1142,6 +1142,7 @@ void ATCSituationalDisplay::slotUpdateTags()
     {
         ATCFlight *flight = simulation->getFlight(i);
         ATCFlightTag *tag = flight->getFlightTag();
+        ATCRoutePrediction *prediction = flight->getRoutePrediction();
 
         State state = flight->getState();
 
@@ -1181,6 +1182,7 @@ void ATCSituationalDisplay::slotUpdateTags()
         updateEtiquettesQuick(flight);
 
         //If exist, update route predictions
+        if((prediction != nullptr) && (flight->getNavMode() == ATC::Nav)) updateRoutePrediction(flight);
     }
 }
 
@@ -3703,6 +3705,19 @@ void ATCSituationalDisplay::updateEtiquettesQuick(ATCFlight *flight)
     {
         flight->getFlightTag()->getTagBox()->setShort();
     }
+}
+
+void ATCSituationalDisplay::updateRoutePrediction(ATCFlight *flight)
+{
+    QGraphicsPathItem *pathItem = flight->getRoutePrediction()->getPolygon();
+    QPainterPath path = pathItem->path();
+
+    QPolygonF pathPoly = path.toSubpathPolygons().at(0);
+    pathPoly.replace(0, flight->getFlightTag()->getDiamondPosition());
+
+    QPainterPath newPath;
+    newPath.addPolygon(pathPoly);
+    pathItem->setPath(newPath);
 }
 
 void ATCSituationalDisplay::assignTagPositions()
