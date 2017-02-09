@@ -260,7 +260,7 @@ private:
     ATCTagRect* createTagBox(ATCFlightTag *tag);
     QGraphicsSimpleTextItem* createTagText(ATCFlightTag *tag);
     void createEtiquettes(ATCFlight *flight);
-
+    void updateEtiquettesQuick(ATCFlight *flight);
 
     void assignTagPositions();
 

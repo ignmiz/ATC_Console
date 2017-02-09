@@ -23,6 +23,8 @@ public:
     QString getShortEtiquette();
     QString getLongEtiquette();
 
+    bool isHovered();
+
     void setShortEtiquette(QString &string);
     void setLongEtiquette(QString &string);
 
@@ -53,6 +55,8 @@ private:
     QGraphicsSimpleTextItem *text;
     ATCSettings *settings;
     double *scale;
+
+    bool hovered = false;
 
     QString shortEtiquette;
     QString longEtiquette;

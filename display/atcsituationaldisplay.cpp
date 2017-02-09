@@ -1178,6 +1178,8 @@ void ATCSituationalDisplay::slotUpdateTags()
         tag->getLeader()->setLine(QLineF(xStart, yStart, xEnd, yEnd));
 
         //Update etiquettes
+        updateEtiquettesQuick(flight);
+
         //If exist, update route predictions
     }
 }
@@ -3628,6 +3630,78 @@ void ATCSituationalDisplay::createEtiquettes(ATCFlight *flight)
     else
     {
         flight->getFlightTag()->getText()->setText(longEtiquette);
+    }
+}
+
+void ATCSituationalDisplay::updateEtiquettesQuick(ATCFlight *flight)
+{
+    QString shortEtiquette = flight->getFlightTag()->getTagBox()->getShortEtiquette();
+    QString longEtiquette = flight->getFlightTag()->getTagBox()->getLongEtiquette();
+    State state = flight->getState();
+
+    QString groundSpd = QString::number(qRound(ATCMath::mps2kt(state.v)));
+
+    for(int i = 0; i < groundSpd.size(); i++)
+    {
+        shortEtiquette[i + 10] = groundSpd.at(i);
+        longEtiquette[i + 10] = groundSpd.at(i);
+    }
+
+    QString altitude = QString::number(qRound(ATCMath::m2ft(state.h) / 100));
+
+    if(altitude.size() == 2)
+    {
+        altitude = "0" + altitude;
+    }
+    else if(altitude.size() == 1)
+    {
+        altitude = "00" + altitude;
+    }
+
+    QString nextFix = flight->getNextFix();
+
+    if(state.cm == BADA::Level)
+    {
+        shortEtiquette[19] = ' ';
+        longEtiquette[19] = ' ';
+    }
+    else if(state.cm == BADA::Descend)
+    {
+        shortEtiquette[19] = QChar(0x2193);
+        longEtiquette[19] = QChar(0x2193);
+    }
+    else
+    {
+        shortEtiquette[19] = QChar(0x2191);
+        longEtiquette[19] = QChar(0x2191);
+    }
+
+    for(int i = 0; i < altitude.size(); i++)
+    {
+        shortEtiquette[i + 16] = altitude.at(i);
+        longEtiquette[i + 16] = altitude.at(i);
+    }
+
+    if(flight->getNavMode() == ATC::Nav)
+    {
+        for(int i = 0; i < nextFix.size(); i++)
+        {
+            shortEtiquette[i + 24] = nextFix.at(i);
+            longEtiquette[i + 24] = nextFix.at(i);
+        }
+    }
+
+    flight->getFlightTag()->getTagBox()->setShortEtiquette(shortEtiquette);
+    flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
+
+
+    if((flight->getFlightTag()->getTagType() == ATC::Full) || flight->getFlightTag()->getTagBox()->isHovered())
+    {
+        flight->getFlightTag()->getTagBox()->setLong();
+    }
+    else if(flight->getFlightTag()->getTagType() == ATC::Short)
+    {
+        flight->getFlightTag()->getTagBox()->setShort();
     }
 }
 

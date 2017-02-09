@@ -30,6 +30,11 @@ QString ATCTagRect::getLongEtiquette()
     return longEtiquette;
 }
 
+bool ATCTagRect::isHovered()
+{
+    return hovered;
+}
+
 void ATCTagRect::setShortEtiquette(QString &string)
 {
     shortEtiquette = string;
@@ -154,6 +159,7 @@ void ATCTagRect::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
         setOpacity(1);
     }
 
+    hovered = true;
     event->accept();
 }
 
@@ -173,6 +179,7 @@ void ATCTagRect::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 
     setBrush(QBrush(settings->TAG_BOX_COLOR));
 
+    hovered = false;
     event->accept();
 }
 
