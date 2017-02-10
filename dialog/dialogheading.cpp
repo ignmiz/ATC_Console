@@ -28,6 +28,7 @@ void DialogHeading::slotClicked(const QModelIndex &index)
     QString headingString = index.data(Qt::DisplayRole).toString();
 
     flight->setHdgRestriction(headingString.toInt());
+    flight->setDCT(false);
 
     QString shortEtiquette = flight->getFlightTag()->getTagBox()->getShortEtiquette();
     QString longEtiquette = flight->getFlightTag()->getTagBox()->getLongEtiquette();

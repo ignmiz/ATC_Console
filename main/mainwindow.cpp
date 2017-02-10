@@ -689,6 +689,7 @@ void MainWindow::slotStartSimulation()
         simController = new ATCSimulationController(simulation);
         simController->start();
 
+        simulation->setAirspace(airspaceData);
         connect(simulation, SIGNAL(signalUpdateTags()), ui->situationalDisplay, SLOT(slotUpdateTags()));
 
         emit dialogMainMenu->closed();

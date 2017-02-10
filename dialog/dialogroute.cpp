@@ -28,6 +28,8 @@ void DialogRoute::slotClicked(const QModelIndex &index)
     QString nextFix = index.data(Qt::DisplayRole).toString();
 
     flight->setNextFix(nextFix);
+    flight->setWaypointIndex(index.row());
+    flight->setDCT(true);
 
     QString shortEtiquette = flight->getFlightTag()->getTagBox()->getShortEtiquette();
     QString longEtiquette = flight->getFlightTag()->getTagBox()->getLongEtiquette();

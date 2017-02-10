@@ -1,6 +1,7 @@
 #ifndef ATCSIMULATION_H
 #define ATCSIMULATION_H
 
+#include "atcairspace.h"
 #include "atcconst.h"
 #include "atcactiverunways.h"
 #include "atcflight.h"
@@ -26,6 +27,7 @@ public:
     QVector<ATCFlight*>& getFlightsVector();
     int getFlightsVectorSize();
 
+    void setAirspace(ATCAirspace *a);
     void appendFlight(ATCFlight *flight);
 
     void removeFlight(QString callsign);
@@ -39,11 +41,11 @@ public slots:
     void slotStopSimulation();
 
 private:
+    ATCAirspace *airspace;
     ATCActiveRunways *activeRunways = nullptr;
     QVector<ATCFlight*> flights;
 
     bool simLoop = false;
-
 
     void preallocateTempData();
     void progressState(GeographicLib::Geodesic &geo);

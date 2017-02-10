@@ -61,6 +61,11 @@ int ATCSimulation::getFlightsVectorSize()
     return flights.size();
 }
 
+void ATCSimulation::setAirspace(ATCAirspace *a)
+{
+    airspace = a;
+}
+
 void ATCSimulation::appendFlight(ATCFlight *flight)
 {
     flights.append(flight);
@@ -157,6 +162,46 @@ void ATCSimulation::preallocateTempData()
         temp.xoverAltDesM = ATCMath::crossoverAltitude(ATCMath::kt2mps(type->getVelocity().V_DS2_AV), type->getVelocity().M_DS_AV);
 
         flight->setTemp(temp);
+
+        QStringList fixList = flight->getFixList();
+        for(int i = 0; i < fixList.size(); i++)
+        {
+            ATCNavFix *fix = nullptr;
+            ATCBeaconVOR *vor = nullptr;
+            ATCAirport *airport = nullptr;
+            ATCBeaconNDB *ndb = nullptr;
+
+            double lat;
+            double lon;
+
+            if((fix = airspace->findFix(fixList.at(i))) != nullptr)
+            {
+                lat = fix->latitude();
+                lon = fix->longitude();
+            }
+            else if((airport = airspace->findAirport(fixList.at(i))) != nullptr)
+            {
+                lat = airport->latitude();
+                lon = airport->longitude();
+            }
+            else if((vor = airspace->findVOR(fixList.at(i))) != nullptr)
+            {
+                lat = vor->latitude();
+                lon = vor->longitude();
+            }
+            else if((ndb = airspace->findNDB(fixList.at(i))) != nullptr)
+            {
+                lat = ndb->latitude();
+                lon = ndb->longitude();
+            }
+
+            flight->appendWaypoint(QPair<double, double>(lat, lon));
+            if(fixList.at(i) == flight->getNextFix())
+            {
+                flight->setWaypointIndex(i);
+                flight->setDCT(true);
+            }
+        }
     }
 }
 
@@ -244,9 +289,6 @@ void ATCSimulation::assignDiscreteState(ATCFlight *flight, ISA &isa)
 
 void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, GeographicLib::Geodesic &geo)
 {
-    //What to do with Hdg navigation?
-    //Route needs to be preprocessed before the main loop
-
     State state = flight->getState();
     Temp temp = flight->getTemp();
     ATCAircraftType *type = flight->getFlightPlan()->getType();
@@ -259,18 +301,31 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
         double dHdg = ATCMath::deg2rad(90); //TEMP How to handle waypoints?
         double DTA = ATCMath::DTA(state.v, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE), dHdg, ATCConst::FLY_OVER_DST);
 
-        double fix1lat = 53.311488301522090; //Prev fix
-        double fix1lon = 19.066717619024995;
-
-        double fix2lat = 53.311488301522090 + 15; //Next fix
-        double fix2lon = 19.066717619024995 + 15;
-
         double xtrackError;
         double headingError;
         double dstToNext;
-        ATCMath::projectAcftPosOnPath(geo, fix1lat, fix1lon, fix2lat, fix2lon, state.y, state.x, state.hdg, xtrackError, headingError, dstToNext);
-//        qDebug() << xtrackError << ATCMath::rad2deg(headingError) << dstToNext;
 
+        if(flight->isDCT())
+        {
+            double fix1lat = ATCMath::rad2deg(state.y);
+            double fix1lon = ATCMath::rad2deg(state.x);
+
+            QPair<double, double> waypointDCT = flight->getWaypoint(flight->getWaypointIndex());
+
+            ATCMath::projectAcftPosOnPath(geo, fix1lat, fix1lon, waypointDCT.first, waypointDCT.second, state.y, state.x, state.hdg, xtrackError, headingError, dstToNext);
+        }
+        else
+        {
+            double fix1lat = 53.311488301522090; //Prev fix
+            double fix1lon = 19.066717619024995;
+
+            double fix2lat = 53.311488301522090 + 15; //Next fix
+            double fix2lon = 19.066717619024995 + 15;
+
+            ATCMath::projectAcftPosOnPath(geo, fix1lat, fix1lon, fix2lat, fix2lon, state.y, state.x, state.hdg, xtrackError, headingError, dstToNext);
+        }
+
+//        qDebug() << xtrackError << ATCMath::rad2deg(headingError) << dstToNext;
         bankAngle = ATCMath::bankAngle(ATCConst::k1, ATCConst::k2, xtrackError, headingError, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE));
     }
     else
@@ -281,7 +336,7 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
         bankAngle = ATCMath::bankAngle(0, ATCConst::k2, 0, headingError, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE));
     }
 
-    //SWITCH WAYPOINT CONDITION? here or one step earlier?
+    //SWITCH WAYPOINT CONDITION? here or one step earlier? After dct set dct flag to false and update etiquette
 
     double CL = ATCMath::liftCoefficient(m, isa.rho, state.v, type->getSurface(), bankAngle);
     double lift = ATCMath::lift(isa.rho, state.v, type->getSurface(), CL);
