@@ -112,7 +112,7 @@ void ATCSimulation::slotStartSimulation()
         elapsedTime = timer.nsecsElapsed();
         diff = dt - elapsedTime;
 
-        qDebug() << "Elapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
+//        qDebug() << "Elapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
         QThread::usleep(qFloor(diff / 1000));
     }
 }
@@ -238,7 +238,7 @@ void ATCSimulation::assignDiscreteState(ATCFlight *flight, ISA &isa)
     state.am = ATCMath::assignAM(state.v, Vnom);
 
     flight->setState(state);
-//    qDebug() << QString::number(ATCMath::rad2deg(state.x), 'g', 10) << "\t" << QString::number(ATCMath::rad2deg(state.y), 'g', 10) << "\t" << ATCMath::m2ft(state.h) << "\t" << ATCMath::m2ft(targetAltitude) << "\t" << ATCMath::mps2kt(state.v) << "\t" << ATCMath::mps2kt(Vnom) << "\t" << ATCMath::rad2deg(state.hdg);
+    qDebug() << QString::number(ATCMath::rad2deg(state.x), 'g', 10) << "\t" << QString::number(ATCMath::rad2deg(state.y), 'g', 10) << "\t" << ATCMath::m2ft(state.h) << "\t" << ATCMath::m2ft(targetAltitude) << "\t" << ATCMath::mps2kt(state.v) << "\t" << ATCMath::mps2kt(Vnom) << "\t" << ATCMath::rad2deg(state.hdg);
 //    qDebug() << state.cm << state.fp << state.rpm << state.trm << state.shm << state.am;
 }
 
@@ -252,25 +252,36 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
     ATCAircraftType *type = flight->getFlightPlan()->getType();
 
     double m = temp.m;
-    double dHdg = ATCMath::deg2rad(90); //TEMP How to handle waypoints?
 
-    double DTA = ATCMath::DTA(state.v, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE), dHdg, ATCConst::FLY_OVER_DST);
+    double bankAngle;
+    if(flight->getNavMode() == ATC::Nav)
+    {
+        double dHdg = ATCMath::deg2rad(90); //TEMP How to handle waypoints?
+        double DTA = ATCMath::DTA(state.v, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE), dHdg, ATCConst::FLY_OVER_DST);
 
-    double fix1lat = 53.311488301522090; //Prev fix
-    double fix1lon = 19.066717619024995;
+        double fix1lat = 53.311488301522090; //Prev fix
+        double fix1lon = 19.066717619024995;
 
-    double fix2lat = 53.311488301522090 + 15; //Next fix
-    double fix2lon = 19.066717619024995 + 15;
+        double fix2lat = 53.311488301522090 + 15; //Next fix
+        double fix2lon = 19.066717619024995 + 15;
 
-    double xtrackError;
-    double headingError;
-    double dstToNext;
-    ATCMath::projectAcftPosOnPath(geo, fix1lat, fix1lon, fix2lat, fix2lon, state.y, state.x, state.hdg, xtrackError, headingError, dstToNext);
-//    qDebug() << xtrackError << ATCMath::rad2deg(headingError) << dstToNext;
+        double xtrackError;
+        double headingError;
+        double dstToNext;
+        ATCMath::projectAcftPosOnPath(geo, fix1lat, fix1lon, fix2lat, fix2lon, state.y, state.x, state.hdg, xtrackError, headingError, dstToNext);
+//        qDebug() << xtrackError << ATCMath::rad2deg(headingError) << dstToNext;
+
+        bankAngle = ATCMath::bankAngle(ATCConst::k1, ATCConst::k2, xtrackError, headingError, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE));
+    }
+    else
+    {
+        double targetHdg = flight->getHdgRestriction();
+        double headingError = state.hdg - ATCMath::deg2rad(targetHdg + ATCConst::AVG_DECLINATION);
+        ATCMath::normalizeHdgError(headingError);
+        bankAngle = ATCMath::bankAngle(0, ATCConst::k2, 0, headingError, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE));
+    }
 
     //SWITCH WAYPOINT CONDITION? here or one step earlier?
-
-    double bankAngle = ATCMath::bankAngle(ATCConst::k1, ATCConst::k2, xtrackError, headingError, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE));
 
     double CL = ATCMath::liftCoefficient(m, isa.rho, state.v, type->getSurface(), bankAngle);
     double lift = ATCMath::lift(isa.rho, state.v, type->getSurface(), CL);
