@@ -117,6 +117,31 @@ ATCRoutePrediction *ATCFlight::getRoutePrediction()
     return prediction;
 }
 
+QVector<QPair<double, double>> &ATCFlight::getWaypoints()
+{
+    return waypoints;
+}
+
+QPair<double, double> ATCFlight::getWaypoint(int i)
+{
+    return waypoints.at(i);
+}
+
+int ATCFlight::getWaypointsVectorSize()
+{
+    return waypoints.size();
+}
+
+int ATCFlight::getWaypointIndex()
+{
+    return waypointIndex;
+}
+
+bool ATCFlight::isDCT()
+{
+    return dct;
+}
+
 void ATCFlight::setFlightPlan(ATCFlightPlan *fpl)
 {
     delete plan;
@@ -211,6 +236,21 @@ void ATCFlight::setFlightTag(ATCFlightTag *t)
 void ATCFlight::setRoutePrediction(ATCRoutePrediction *pred)
 {
     prediction = pred;
+}
+
+void ATCFlight::appendWaypoint(QPair<double, double> wp)
+{
+    waypoints.append(wp);
+}
+
+void ATCFlight::setWaypointIndex(int i)
+{
+    waypointIndex = i;
+}
+
+void ATCFlight::setDCT(bool flag)
+{
+    dct = flag;
 }
 
 void ATCFlight::slotCreateDialogAltitude(QPoint point)

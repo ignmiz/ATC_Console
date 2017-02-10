@@ -220,8 +220,6 @@ void Test_ATCFlight::test_setTemp()
     temp.xoverAltClbM = 50;
     temp.xoverAltCrsM = 60;
     temp.xoverAltDesM = 70;
-    temp.waypoints.append(QPair<double, double>(0.5, 0.8));
-    temp.waypoints.append(QPair<double, double>(0.6, 0.9));
 
     foo.setTemp(temp);
     QVERIFY(foo.getTemp().m = 100);
@@ -234,11 +232,6 @@ void Test_ATCFlight::test_setTemp()
     QVERIFY(foo.getTemp().xoverAltClbM = 50);
     QVERIFY(foo.getTemp().xoverAltCrsM = 60);
     QVERIFY(foo.getTemp().xoverAltDesM = 70);
-    QVERIFY(foo.getTemp().waypoints.size() == 2);
-    QVERIFY(foo.getTemp().waypoints.at(0).first == 0.5);
-    QVERIFY(foo.getTemp().waypoints.at(0).second == 0.8);
-    QVERIFY(foo.getTemp().waypoints.at(1).first == 0.6);
-    QVERIFY(foo.getTemp().waypoints.at(1).second == 0.9);
 }
 
 void Test_ATCFlight::test_setNavMode()
@@ -412,5 +405,47 @@ void Test_ATCFlight::test_setSTAR()
     QString procedure = "OLILA5G";
     foo.setSTAR(procedure);
     QVERIFY(foo.getSTAR() == procedure);
+}
+
+void Test_ATCFlight::test_appendWaypoint()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+
+    foo.appendWaypoint(QPair<double, double>(0.5, 0.8));
+    foo.appendWaypoint(QPair<double, double>(0.6, 0.9));
+    QVERIFY(foo.getWaypointsVectorSize() == 2);
+    QVERIFY(foo.getWaypoint(0) == (QPair<double, double>(0.5, 0.8)));
+    QVERIFY(foo.getWaypoint(1) == (QPair<double, double>(0.6, 0.9)));
+
+    QVector<QPair<double, double>> waypoints = foo.getWaypoints();
+    QVERIFY(waypoints.size() == 2);
+    QVERIFY(waypoints.at(0) == (QPair<double, double>(0.5, 0.8)));
+    QVERIFY(waypoints.at(1) == (QPair<double, double>(0.6, 0.9)));
+}
+
+void Test_ATCFlight::test_setWaypointIndex()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+
+    foo.setWaypointIndex(1);
+    QVERIFY(foo.getWaypointIndex() == 1);
+}
+
+void Test_ATCFlight::test_setDCT()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+    QVERIFY(foo.isDCT() == false);
+
+    foo.setDCT(true);
+    QVERIFY(foo.isDCT() == true);
 }
 

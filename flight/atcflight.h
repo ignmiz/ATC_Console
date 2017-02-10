@@ -41,8 +41,6 @@ struct Temp //Structure for temporary, constant data members preallocated before
     double xoverAltClbM;
     double xoverAltCrsM;
     double xoverAltDesM;
-
-    QVector<QPair<double, double>> waypoints;   //Here or in main structure?
 };
 
 class ATCFlight : public QObject
@@ -77,6 +75,12 @@ public:
     ATCFlightTag* getFlightTag();
     ATCRoutePrediction* getRoutePrediction();
 
+    QVector<QPair<double, double>>& getWaypoints();
+    QPair<double, double> getWaypoint(int i);
+    int getWaypointsVectorSize();
+    int getWaypointIndex();
+    bool isDCT();
+
     void setFlightPlan(ATCFlightPlan *fpl);
     void setSquawk(QString sq);
     void setAssignedSquawk(QString sq);
@@ -98,6 +102,10 @@ public:
 
     void setFlightTag(ATCFlightTag *t);
     void setRoutePrediction(ATCRoutePrediction *pred);
+
+    void appendWaypoint(QPair<double, double> wp);
+    void setWaypointIndex(int i);
+    void setDCT(bool flag);
 
 signals:
     void signalCreateDialogAltitude(ATCFlight *flight, QPoint point);
@@ -145,6 +153,10 @@ private:
     QString desRwy;
     QString sid;
     QString star;
+
+    QVector<QPair<double, double>> waypoints; //Format: lat, lon
+    int waypointIndex;
+    bool dct = false;
 };
 
 #endif // ATCFLIGHT_H
