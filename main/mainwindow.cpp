@@ -525,7 +525,7 @@ void MainWindow::slotImportScenario()
                 }
                 else if(stringList.at(0).trimmed() == "SPEED RES")
                 {
-                    if(stringList.size() == 2) flight->setTargetAltitude(stringList.at(1).trimmed());
+                    if(stringList.size() == 2) flight->setTargetSpeed(stringList.at(1).trimmed());
                 }
                 else if(stringList.at(0).trimmed() == "MHDG RES")
                 {

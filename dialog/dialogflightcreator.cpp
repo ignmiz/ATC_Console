@@ -1132,9 +1132,9 @@ void DialogFlightCreator::formSetup(ATCFlight *flight)
             }
         }
 
-        uiInner->lineEditTASCurrent->setText(QString::number(ATCMath::mps2kt(flight->getState().v)));
+        uiInner->lineEditTASCurrent->setText(QString::number(qRound(ATCMath::mps2kt(flight->getState().v))));
         uiInner->lineEditSquawkCurrent->setText(flight->getSquawk());
-        uiInner->spinBoxTrueHDG->setValue(ATCMath::rad2deg(flight->getState().hdg));
+        uiInner->spinBoxTrueHDG->setValue(qRound(ATCMath::rad2deg(flight->getState().hdg)));
 
         uiInner->lineEditAltitudeRes->setText(flight->getTargetAltitude());
         uiInner->lineEditSpeedRes->setText(flight->getTargetSpeed());

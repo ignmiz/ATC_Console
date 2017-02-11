@@ -113,8 +113,6 @@ void DialogFlight::dialogFlightSetup()
 void DialogFlight::appendRow(ATCFlight *flight, QStandardItemModel *model)
 {
     QList<QStandardItem*> row;
-    QVector<ActiveAirport> activeAirports = simulation->getActiveRunways()->getActiveAirports();
-    ATCRoute route(flight->getFlightPlan()->getRoute());
 
     QStandardItem *startTime = new QStandardItem(flight->getSimStartTime().toString("HH:mm:ss"));
     startTime->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
@@ -211,7 +209,7 @@ void DialogFlight::appendRow(ATCFlight *flight, QStandardItemModel *model)
     afl->setTextAlignment(Qt::AlignCenter);
     row.append(afl);
 
-    QStandardItem *tas = new QStandardItem(QString::number(ATCMath::mps2kt(flight->getState().v)));
+    QStandardItem *tas = new QStandardItem(QString::number(qRound(ATCMath::mps2kt(flight->getState().v))));
     tas->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
     tas->setTextAlignment(Qt::AlignCenter);
     row.append(tas);
