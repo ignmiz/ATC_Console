@@ -34,6 +34,7 @@ private slots:
     void test_setSID();
     void test_setSTAR();
     void test_appendWaypoint();
+    void test_appendProjectedWaypoint();
     void test_setWaypointIndex();
     void test_setDCT();
 };

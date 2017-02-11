@@ -426,6 +426,25 @@ void Test_ATCFlight::test_appendWaypoint()
     QVERIFY(waypoints.at(1) == (QPair<double, double>(0.6, 0.9)));
 }
 
+void Test_ATCFlight::test_appendProjectedWaypoint()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+
+    foo.appendProjectedWaypoint(QPair<double, double>(0.5, 0.8));
+    foo.appendProjectedWaypoint(QPair<double, double>(0.6, 0.9));
+    QVERIFY(foo.getProjectedWaypointsVectorSize() == 2);
+    QVERIFY(foo.getProjectedWaypoint(0) == (QPair<double, double>(0.5, 0.8)));
+    QVERIFY(foo.getProjectedWaypoint(1) == (QPair<double, double>(0.6, 0.9)));
+
+    QVector<QPair<double, double>> waypoints = foo.getProjectedWaypoints();
+    QVERIFY(waypoints.size() == 2);
+    QVERIFY(waypoints.at(0) == (QPair<double, double>(0.5, 0.8)));
+    QVERIFY(waypoints.at(1) == (QPair<double, double>(0.6, 0.9)));
+}
+
 void Test_ATCFlight::test_setWaypointIndex()
 {
     State state;

@@ -76,8 +76,11 @@ public:
     ATCRoutePrediction* getRoutePrediction();
 
     QVector<QPair<double, double>>& getWaypoints();
+    QVector<QPair<double, double>>& getProjectedWaypoints();
     QPair<double, double> getWaypoint(int i);
+    QPair<double, double> getProjectedWaypoint(int i);
     int getWaypointsVectorSize();
+    int getProjectedWaypointsVectorSize();
     int getWaypointIndex();
     bool isDCT();
 
@@ -104,6 +107,7 @@ public:
     void setRoutePrediction(ATCRoutePrediction *pred);
 
     void appendWaypoint(QPair<double, double> wp);
+    void appendProjectedWaypoint(QPair<double, double> wp);
     void setWaypointIndex(int i);
     void setDCT(bool flag);
 
@@ -155,6 +159,7 @@ private:
     QString star;
 
     QVector<QPair<double, double>> waypoints; //Format: lat, lon
+    QVector<QPair<double, double>> projectedWaypoints; //Format: x, y
     int waypointIndex;
     bool dct = false;
 };

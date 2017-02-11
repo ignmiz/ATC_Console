@@ -122,14 +122,29 @@ QVector<QPair<double, double>> &ATCFlight::getWaypoints()
     return waypoints;
 }
 
+QVector<QPair<double, double> > &ATCFlight::getProjectedWaypoints()
+{
+    return projectedWaypoints;
+}
+
 QPair<double, double> ATCFlight::getWaypoint(int i)
 {
     return waypoints.at(i);
 }
 
+QPair<double, double> ATCFlight::getProjectedWaypoint(int i)
+{
+    return projectedWaypoints.at(i);
+}
+
 int ATCFlight::getWaypointsVectorSize()
 {
     return waypoints.size();
+}
+
+int ATCFlight::getProjectedWaypointsVectorSize()
+{
+    return projectedWaypoints.size();
 }
 
 int ATCFlight::getWaypointIndex()
@@ -241,6 +256,11 @@ void ATCFlight::setRoutePrediction(ATCRoutePrediction *pred)
 void ATCFlight::appendWaypoint(QPair<double, double> wp)
 {
     waypoints.append(wp);
+}
+
+void ATCFlight::appendProjectedWaypoint(QPair<double, double> wp)
+{
+    projectedWaypoints.append(wp);
 }
 
 void ATCFlight::setWaypointIndex(int i)
