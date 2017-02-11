@@ -431,18 +431,18 @@ void ATCMath::projectAcftPosOnPath(GeographicLib::Geodesic &geo, double fix1Lat,
     geo.Direct(fix1Lat, fix1Lon, azimuth1to2, dst1toProjectionBase, projectionBaseLat, projectionBaseLon, azimuthProjectionBaseTo1);
 
     headingError = acftHdg - ATCMath::deg2rad(azimuthProjectionBaseTo1);
-    normalizeHdgError(headingError);
+    normalizeHdgChange(headingError);
 }
 
-void ATCMath::normalizeHdgError(double &hdgErrorRad)
+void ATCMath::normalizeHdgChange(double &dHdg)
 {
-    if(hdgErrorRad > ATCConst::PI)
+    if(dHdg > ATCConst::PI)
     {
-        hdgErrorRad = hdgErrorRad - 2 * ATCConst::PI;
+        dHdg = dHdg - 2 * ATCConst::PI;
     }
-    else if(hdgErrorRad < -ATCConst::PI)
+    else if(dHdg < -ATCConst::PI)
     {
-        hdgErrorRad = hdgErrorRad + 2 * ATCConst::PI;
+        dHdg = dHdg + 2 * ATCConst::PI;
     }
 }
 

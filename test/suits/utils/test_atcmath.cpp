@@ -392,15 +392,15 @@ void Test_ATCMath::test_normalizeHdgError()
     double error = 1e-8;
     double hdg = ATCMath::deg2rad(30);
 
-    ATCMath::normalizeHdgError(hdg);
+    ATCMath::normalizeHdgChange(hdg);
     QVERIFY(ATCMath::compareDouble(hdg, ATCMath::deg2rad(30), error));
 
     hdg = ATCMath::deg2rad(210);
-    ATCMath::normalizeHdgError(hdg);
+    ATCMath::normalizeHdgChange(hdg);
     QVERIFY(ATCMath::compareDouble(hdg, ATCMath::deg2rad(-150), error));
 
     hdg = ATCMath::deg2rad(-270);
-    ATCMath::normalizeHdgError(hdg);
+    ATCMath::normalizeHdgChange(hdg);
     QVERIFY(ATCMath::compareDouble(hdg, ATCMath::deg2rad(90), error));
 }
 
