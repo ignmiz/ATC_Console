@@ -3686,10 +3686,21 @@ void ATCSituationalDisplay::updateEtiquettesQuick(ATCFlight *flight)
 
     if(flight->getNavMode() == ATC::Nav)
     {
-        for(int i = 0; i < nextFix.size(); i++)
+        if(flight->isDCT())
         {
-            shortEtiquette[i + 24] = nextFix.at(i);
-            longEtiquette[i + 24] = nextFix.at(i);
+            for(int i = 0; i < nextFix.size(); i++)
+            {
+                shortEtiquette[i + 24] = nextFix.at(i);
+                longEtiquette[i + 24] = nextFix.at(i);
+            }
+        }
+        else
+        {
+            for(int i = 0; i < 5; i++)
+            {
+                shortEtiquette[i + 24] = ' ';
+                longEtiquette[i + 24] = ' ';
+            }
         }
     }
 

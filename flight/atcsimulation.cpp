@@ -174,28 +174,40 @@ void ATCSimulation::preallocateTempData()
             double lat;
             double lon;
 
+            double x;
+            double y;
+
             if((fix = airspace->findFix(fixList.at(i))) != nullptr)
             {
                 lat = fix->latitude();
                 lon = fix->longitude();
+                x = fix->getScenePosition()->x();
+                y = fix->getScenePosition()->y();
             }
             else if((airport = airspace->findAirport(fixList.at(i))) != nullptr)
             {
                 lat = airport->latitude();
                 lon = airport->longitude();
+                x = airport->getScenePosition()->x();
+                y = airport->getScenePosition()->y();
             }
             else if((vor = airspace->findVOR(fixList.at(i))) != nullptr)
             {
                 lat = vor->latitude();
                 lon = vor->longitude();
+                x = vor->getScenePosition()->x();
+                y = vor->getScenePosition()->y();
             }
             else if((ndb = airspace->findNDB(fixList.at(i))) != nullptr)
             {
                 lat = ndb->latitude();
                 lon = ndb->longitude();
+                x = ndb->getScenePosition()->x();
+                y = ndb->getScenePosition()->y();
             }
 
             flight->appendWaypoint(QPair<double, double>(lat, lon));
+            flight->appendProjectedWaypoint(QPair<double, double>(x, y));
             if(fixList.at(i) == flight->getNextFix())
             {
                 flight->setWaypointIndex(i);
@@ -283,7 +295,7 @@ void ATCSimulation::assignDiscreteState(ATCFlight *flight, ISA &isa)
     state.am = ATCMath::assignAM(state.v, Vnom);
 
     flight->setState(state);
-    qDebug() << QString::number(ATCMath::rad2deg(state.x), 'g', 10) << "\t" << QString::number(ATCMath::rad2deg(state.y), 'g', 10) << "\t" << ATCMath::m2ft(state.h) << "\t" << ATCMath::m2ft(targetAltitude) << "\t" << ATCMath::mps2kt(state.v) << "\t" << ATCMath::mps2kt(Vnom) << "\t" << ATCMath::rad2deg(state.hdg);
+//    qDebug() << QString::number(ATCMath::rad2deg(state.x), 'g', 10) << "\t" << QString::number(ATCMath::rad2deg(state.y), 'g', 10) << "\t" << ATCMath::m2ft(state.h) << "\t" << ATCMath::m2ft(targetAltitude) << "\t" << ATCMath::mps2kt(state.v) << "\t" << ATCMath::mps2kt(Vnom) << "\t" << ATCMath::rad2deg(state.hdg);
 //    qDebug() << state.cm << state.fp << state.rpm << state.trm << state.shm << state.am;
 }
 
@@ -298,8 +310,7 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
     double bankAngle;
     if(flight->getNavMode() == ATC::Nav)
     {
-        double dHdg = ATCMath::deg2rad(90); //TEMP How to handle waypoints?
-        double DTA = ATCMath::DTA(state.v, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE), dHdg, ATCConst::FLY_OVER_DST);
+        int waypointIndex = flight->getWaypointIndex();
 
         double xtrackError;
         double headingError;
@@ -310,33 +321,83 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
             double fix1lat = ATCMath::rad2deg(state.y);
             double fix1lon = ATCMath::rad2deg(state.x);
 
-            QPair<double, double> waypointDCT = flight->getWaypoint(flight->getWaypointIndex());
-
+            QPair<double, double> waypointDCT = flight->getWaypoint(waypointIndex);
             ATCMath::projectAcftPosOnPath(geo, fix1lat, fix1lon, waypointDCT.first, waypointDCT.second, state.y, state.x, state.hdg, xtrackError, headingError, dstToNext);
         }
         else
         {
-            double fix1lat = 53.311488301522090; //Prev fix
-            double fix1lon = 19.066717619024995;
+            if(flight->getWaypointIndex() >= 1)
+            {
+                QPair<double, double> previous = flight->getWaypoint(waypointIndex - 1);
+                QPair<double, double> current = flight->getWaypoint(waypointIndex);
+                ATCMath::projectAcftPosOnPath(geo, previous.first, previous.second, current.first, current.second, state.y, state.x, state.hdg, xtrackError, headingError, dstToNext);
+            }
+            else
+            {
+                flight->setDCT(true);
 
-            double fix2lat = 53.311488301522090 + 15; //Next fix
-            double fix2lon = 19.066717619024995 + 15;
+                double fix1lat = ATCMath::rad2deg(state.y);
+                double fix1lon = ATCMath::rad2deg(state.x);
 
-            ATCMath::projectAcftPosOnPath(geo, fix1lat, fix1lon, fix2lat, fix2lon, state.y, state.x, state.hdg, xtrackError, headingError, dstToNext);
+                QPair<double, double> waypointDCT = flight->getWaypoint(0);
+                ATCMath::projectAcftPosOnPath(geo, fix1lat, fix1lon, waypointDCT.first, waypointDCT.second, state.y, state.x, state.hdg, xtrackError, headingError, dstToNext);
+            }
         }
 
 //        qDebug() << xtrackError << ATCMath::rad2deg(headingError) << dstToNext;
         bankAngle = ATCMath::bankAngle(ATCConst::k1, ATCConst::k2, xtrackError, headingError, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE));
+
+        if(waypointIndex < flight->getWaypointsVectorSize() - 1)
+        {
+            double dHdg;
+
+            if(flight->isDCT())
+            {
+                QPointF diamond = flight->getFlightTag()->getDiamondPosition();
+                QPair<double, double> current = flight->getProjectedWaypoint(waypointIndex);
+                QPair<double, double> next = flight->getProjectedWaypoint(waypointIndex + 1);
+
+                double legAngleCurrent = qAtan2(current.first - diamond.x(), current.second - diamond.y());
+                double legAngleNext = qAtan2(next.first - current.first, next.second - current.second);
+                dHdg = legAngleNext - legAngleCurrent;
+            }
+            else
+            {
+                QPair<double, double> previous = flight->getProjectedWaypoint(waypointIndex - 1);
+                QPair<double, double> current = flight->getProjectedWaypoint(waypointIndex);
+                QPair<double, double> next = flight->getProjectedWaypoint(waypointIndex + 1);
+
+                double legAngleCurrent = qAtan2(current.first - previous.first, current.second - previous.second);
+                double legAngleNext = qAtan2(next.first - current.first, next.second - current.second);
+                dHdg = legAngleNext - legAngleCurrent;
+            }
+
+            ATCMath::normalizeHdgChange(dHdg);
+            double DTA = ATCMath::DTA(state.v, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE), dHdg, ATCConst::FLY_OVER_DST);
+
+            qDebug() << ATCMath::rad2deg(dHdg) << DTA << dstToNext - DTA;
+            if(dstToNext - DTA < 0)
+            {
+                flight->setWaypointIndex(waypointIndex + 1);
+                flight->setNextFix(flight->getFixList().at(waypointIndex + 1));
+                flight->setDCT(false);
+
+                if(flight->getRoutePrediction() != nullptr)
+                {
+                    emit signalDisplayRoute(flight);
+                    emit signalDisplayRoute(flight);
+                }
+            }
+        }
+
     }
     else
     {
         double targetHdg = flight->getHdgRestriction();
         double headingError = state.hdg - ATCMath::deg2rad(targetHdg + ATCConst::AVG_DECLINATION);
-        ATCMath::normalizeHdgError(headingError);
+        ATCMath::normalizeHdgChange(headingError);
         bankAngle = ATCMath::bankAngle(0, ATCConst::k2, 0, headingError, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE));
     }
-
-    //SWITCH WAYPOINT CONDITION? here or one step earlier? After dct set dct flag to false and update etiquette
 
     double CL = ATCMath::liftCoefficient(m, isa.rho, state.v, type->getSurface(), bankAngle);
     double lift = ATCMath::lift(isa.rho, state.v, type->getSurface(), CL);

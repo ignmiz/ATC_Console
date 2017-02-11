@@ -691,6 +691,7 @@ void MainWindow::slotStartSimulation()
 
         simulation->setAirspace(airspaceData);
         connect(simulation, SIGNAL(signalUpdateTags()), ui->situationalDisplay, SLOT(slotUpdateTags()));
+        connect(simulation, SIGNAL(signalDisplayRoute(ATCFlight*)), ui->situationalDisplay, SLOT(slotDisplayRoute(ATCFlight*)));
 
         emit dialogMainMenu->closed();
         dialogMainMenu->close();
@@ -706,6 +707,7 @@ void MainWindow::slotStopSimulation()
         simController = nullptr;
 
         disconnect(simulation, SIGNAL(signalUpdateTags()), ui->situationalDisplay, SLOT(slotUpdateTags()));
+        disconnect(simulation, SIGNAL(signalDisplayRoute(ATCFlight*)), ui->situationalDisplay, SLOT(slotDisplayRoute(ATCFlight*)));
 
         simulation->moveToThread(QThread::currentThread());
     }
