@@ -87,6 +87,8 @@ private slots:
     void slotStartSimulation();
     void slotStopSimulation();
 
+    void slotSetSimulationStartTime();
+
 private:
     Ui::MainWindow *ui;
     DialogTextConsole *dialogTextConsole;

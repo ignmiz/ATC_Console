@@ -686,12 +686,14 @@ void MainWindow::slotStartSimulation()
 {
     if(simulation != nullptr)
     {
-        simController = new ATCSimulationController(simulation);
-        simController->start();
-
-        simulation->setAirspace(airspaceData);
         connect(simulation, SIGNAL(signalUpdateTags()), ui->situationalDisplay, SLOT(slotUpdateTags()));
         connect(simulation, SIGNAL(signalDisplayRoute(ATCFlight*)), ui->situationalDisplay, SLOT(slotDisplayRoute(ATCFlight*)));
+        connect(simulation, SIGNAL(signalSetSimulationStartTime()), this, SLOT(slotSetSimulationStartTime()));
+
+        simulation->setAirspace(airspaceData);
+
+        simController = new ATCSimulationController(simulation);
+        simController->start();
 
         emit dialogMainMenu->closed();
         dialogMainMenu->close();
@@ -708,9 +710,19 @@ void MainWindow::slotStopSimulation()
 
         disconnect(simulation, SIGNAL(signalUpdateTags()), ui->situationalDisplay, SLOT(slotUpdateTags()));
         disconnect(simulation, SIGNAL(signalDisplayRoute(ATCFlight*)), ui->situationalDisplay, SLOT(slotDisplayRoute(ATCFlight*)));
+        disconnect(simulation, SIGNAL(signalSetSimulationStartTime()), this, SLOT(slotSetSimulationStartTime()));
 
         simulation->moveToThread(QThread::currentThread());
     }
+}
+
+void MainWindow::slotSetSimulationStartTime()
+{
+    int h = simulationTime.hour();
+    int m = simulationTime.minute();
+    int s = simulationTime.second();
+
+    ui->buttonTime->getTime()->setHMS(h, m, s);
 }
 
 void MainWindow::on_buttonClose_clicked()

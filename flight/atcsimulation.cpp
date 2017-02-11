@@ -101,11 +101,12 @@ void ATCSimulation::slotStartSimulation()
     QElapsedTimer timer;
     qint64 elapsedTime;
     qint64 diff;
-
     double counter = 0;
 
     preallocateTempData();
     simLoop = true;
+
+    emit signalSetSimulationStartTime();
 
     while(simLoop)
     {
@@ -117,7 +118,7 @@ void ATCSimulation::slotStartSimulation()
         elapsedTime = timer.nsecsElapsed();
         diff = dt - elapsedTime;
 
-//        qDebug() << "Elapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
+        qDebug() << "Elapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
         QThread::usleep(qFloor(diff / 1000));
     }
 }
@@ -375,7 +376,7 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
             ATCMath::normalizeHdgChange(dHdg);
             double DTA = ATCMath::DTA(state.v, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE), dHdg, ATCConst::FLY_OVER_DST);
 
-            qDebug() << ATCMath::rad2deg(dHdg) << DTA << dstToNext - DTA;
+//            qDebug() << ATCMath::rad2deg(dHdg) << DTA << dstToNext - DTA;
             if(dstToNext - DTA < 0)
             {
                 flight->setWaypointIndex(waypointIndex + 1);
@@ -389,7 +390,6 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
                 }
             }
         }
-
     }
     else
     {

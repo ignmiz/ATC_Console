@@ -36,6 +36,7 @@ public:
 signals:
     void signalUpdateTags();
     void signalDisplayRoute(ATCFlight *flight);
+    void signalSetSimulationStartTime();
 
 public slots:
     void slotStartSimulation();
