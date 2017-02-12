@@ -186,6 +186,16 @@
 	border-color: #141414;
 	selection-background-color: #060064;
 	font: 13px;
+}
+
+QTimeEdit
+{
+	color: #323232;
+	background-color: #050505;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #0a0a0a;
+	font: 13px;
 }</string>
     </property>
     <property name="displayFormat">
@@ -193,10 +203,23 @@
     </property>
    </widget>
   </widget>
-  <widget class="QPushButton" name="buttonStart">
+  <widget class="QPushButton" name="buttonPause">
    <property name="geometry">
     <rect>
      <x>210</x>
+     <y>610</y>
+     <width>120</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Pause</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonStart">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
      <y>610</y>
      <width>120</width>
      <height>25</height>

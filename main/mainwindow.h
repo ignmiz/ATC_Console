@@ -82,9 +82,11 @@ private slots:
     void slotCloseDialogActiveRunways();
 
     void slotImportScenario();
+    void slotImportScenario(QString path);
     void slotExportScenario();
 
     void slotStartSimulation();
+    void slotPauseSimulation();
     void slotStopSimulation();
 
     void slotSetSimulationStartTime();

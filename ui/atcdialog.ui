@@ -65,7 +65,17 @@ QLabel#labelTitle
 	font: bold;
 }
 
-QPushButton
+QPushButton:disabled
+{
+	color: #323232;
+	font: 12px;
+	background-color: #000000;
+	border-style: outset;
+	border-width: 2px;
+	border-color: #3e3e3e;
+}
+
+QPushButton:enabled
 {
 	color: #c8c8c8;
 	font: 12px;

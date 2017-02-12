@@ -45,7 +45,23 @@ void MainWindow::on_buttonMainMenu_clicked()
     {
         QTime *time = ui->buttonTime->getTime();
 
-        dialogMainMenu = new DialogMainMenu(time, this);
+        if(simulation != nullptr)
+        {
+            if(simController != nullptr)
+            {
+                dialogMainMenu = new DialogMainMenu(time, true, true, this);
+            }
+            else
+            {
+                dialogMainMenu = new DialogMainMenu(time, true, false, this);
+            }
+        }
+        else
+        {
+            dialogMainMenu = new DialogMainMenu(time, false, false, this);
+        }
+
+
         dialogMainMenu->show();
 
         setFlagDialogMainMenuExists(true);
@@ -58,6 +74,7 @@ void MainWindow::on_buttonMainMenu_clicked()
         connect(dialogMainMenu, SIGNAL(signalImportScenario()), this, SLOT(slotImportScenario()));
         connect(dialogMainMenu, SIGNAL(signalExportScenario()), this, SLOT(slotExportScenario()));
         connect(dialogMainMenu, SIGNAL(signalStartSimulation()), this, SLOT(slotStartSimulation()));
+        connect(dialogMainMenu, SIGNAL(signalPauseSimulation()), this, SLOT(slotPauseSimulation()));
         connect(dialogMainMenu, SIGNAL(signalStopSimulation()), this, SLOT(slotStopSimulation()));
         connect(this, SIGNAL(signalActiveScenarioPath(QString)), dialogMainMenu, SLOT(slotActiveScenarioPath(QString)));
 
@@ -185,6 +202,7 @@ void MainWindow::slotConstructDialogFlightNew()
     connect(dialogFlight, SIGNAL(signalConstructDialogActiveRunways(ATC::SimCreationMode)), this, SLOT(slotConstructDialogActiveRunways(ATC::SimCreationMode)));
     connect(dialogFlight, SIGNAL(signalSimulation(ATCSimulation*)), this, SLOT(slotSimulation(ATCSimulation*)));
     connect(dialogFlight, SIGNAL(signalActiveScenarioPath(QString)), dialogMainMenu, SLOT(slotActiveScenarioPath(QString)));
+    connect(dialogFlight, SIGNAL(signalSetFlagSimulationValid(bool)), dialogMainMenu, SLOT(slotSetFlagSimulationValid(bool)));
     connect(dialogFlight, SIGNAL(signalActiveScenarioPath(QString)), this, SLOT(slotActiveScenarioPath(QString)));
 }
 
@@ -201,6 +219,7 @@ void MainWindow::slotConstructDialogFlightEdit()
         connect(dialogFlight, SIGNAL(signalConstructDialogFlightCreator()), this, SLOT(slotConstructDialogFlightCreator()));
         connect(dialogFlight, SIGNAL(signalConstructDialogFlightCreator(ATCFlight*)), this, SLOT(slotConstructDialogFlightCreator(ATCFlight*)));
         connect(dialogFlight, SIGNAL(signalConstructDialogActiveRunways(ATC::SimCreationMode)), this, SLOT(slotConstructDialogActiveRunways(ATC::SimCreationMode)));
+        connect(dialogFlight, SIGNAL(signalActiveScenarioPath(QString)), dialogMainMenu, SLOT(slotActiveScenarioPath(QString)));
     }
 }
 
@@ -322,12 +341,22 @@ void MainWindow::slotImportScenario()
     QString filePath = QFileDialog::getOpenFileName(this, tr("Load symbology..."), paths.SCENARIO_EXPORT_PATH, tr("Text files(*.scn)"));
     if(filePath.isEmpty()) return;
 
-    QFile file(filePath);
+    slotImportScenario(filePath);
+    dialogMainMenu->slotSetFlagSimulationValid(true);
+
+    QMessageBox msgBox(this);
+    msgBox.setText("Scenario successfuly imported from: " + filePath);
+    msgBox.exec();
+}
+
+void MainWindow::slotImportScenario(QString path)
+{
+    QFile file(path);
 
     if(!file.open(QFile::ReadOnly | QFile::Text))
     {
         QMessageBox msgBox;
-        msgBox.setText("DialogMainMenu: Failed to open path: " + filePath);
+        msgBox.setText("DialogMainMenu: Failed to open path: " + path);
         msgBox.exec();
 
         return;
@@ -575,13 +604,9 @@ void MainWindow::slotImportScenario()
         emit signalCreateFlightTag(simulation->getFlight(i));
     }
 
-    emit signalActiveScenarioPath(filePath);
-    simulationPath = filePath;
+    emit signalActiveScenarioPath(path);
+    simulationPath = path;
     simulationTime = dialogMainMenu->getSimStartTime();
-
-    QMessageBox msgBox(this);
-    msgBox.setText("Scenario successfuly imported from: " + filePath);
-    msgBox.exec();
 }
 
 void MainWindow::slotExportScenario()
@@ -697,8 +722,33 @@ void MainWindow::slotStartSimulation()
         simController = new ATCSimulationController(simulation);
         simController->start();
 
+        if(simulation->isPaused()) ui->buttonTime->start();
+
         emit dialogMainMenu->closed();
         dialogMainMenu->close();
+    }
+}
+
+void MainWindow::slotPauseSimulation()
+{
+    if(simController != nullptr)
+    {
+        simulation->setPaused(true);
+        simController->stop();
+        ui->buttonTime->stop();
+
+        delete simController;
+        simController = nullptr;
+
+        simulation->subtractFlightTimeouts();
+
+        disconnect(simulation, SIGNAL(signalUpdateTags()), ui->situationalDisplay, SLOT(slotUpdateTags()));
+        disconnect(simulation, SIGNAL(signalDisplayRoute(ATCFlight*)), ui->situationalDisplay, SLOT(slotDisplayRoute(ATCFlight*)));
+        disconnect(simulation, SIGNAL(signalSetSimulationStartTime()), this, SLOT(slotSetSimulationStartTime()));
+        disconnect(simulation, SIGNAL(signalShowFlightTag(ATCFlightTag*)), ui->situationalDisplay, SLOT(slotShowFlightTag(ATCFlightTag*)));
+        disconnect(simulation, SIGNAL(signalHideFlightTag(ATCFlightTag*)), ui->situationalDisplay, SLOT(slotHideFlightTag(ATCFlightTag*)));
+
+        simulation->moveToThread(QThread::currentThread());
     }
 }
 
@@ -717,6 +767,14 @@ void MainWindow::slotStopSimulation()
         disconnect(simulation, SIGNAL(signalHideFlightTag(ATCFlightTag*)), ui->situationalDisplay, SLOT(slotHideFlightTag(ATCFlightTag*)));
 
         simulation->moveToThread(QThread::currentThread());
+
+        delete simulation;
+        simulation = nullptr;
+    }
+    else if(simulation->isPaused())
+    {
+        delete simulation;
+        simulation = nullptr;
     }
 }
 

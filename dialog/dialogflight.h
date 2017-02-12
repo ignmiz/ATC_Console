@@ -33,6 +33,7 @@ signals:
 
     void signalSimulation(ATCSimulation *sim);
     void signalActiveScenarioPath(QString path);
+    void signalSetFlagSimulationValid(bool simValid);
 
 private slots:
     ATC_MOUSE_HANDLER

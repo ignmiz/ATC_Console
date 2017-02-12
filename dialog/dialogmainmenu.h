@@ -17,7 +17,7 @@ class DialogMainMenu : public ATCDialog
     Q_OBJECT
 
 public:
-    explicit DialogMainMenu(QTime *startTime, QWidget *parent = 0);
+    explicit DialogMainMenu(QTime *time, bool simValid, bool simRunning, QWidget *parent = 0);
     ~DialogMainMenu();
 
     QTime getSimStartTime();
@@ -29,10 +29,12 @@ signals:
     void signalExportScenario();
 
     void signalStartSimulation();
+    void signalPauseSimulation();
     void signalStopSimulation();
 
 public slots:
     void slotSetSimStartTime(QTime time);
+    void slotSetFlagSimulationValid(bool simValid);
 
 private slots:
     ATC_MOUSE_HANDLER
@@ -43,6 +45,7 @@ private slots:
     void on_buttonExportSimulation_clicked();
 
     void on_buttonStart_clicked();
+    void on_buttonPause_clicked();
     void on_buttonStop_clicked();
     void on_buttonCloseMenu_clicked();
 
@@ -50,8 +53,10 @@ private slots:
 
 private:
     Ui::DialogMainMenu *uiInner;
-    QTime *startTime;
+    QTime *time;
 
+    bool simulationValid;
+    bool simulationRunning;
 };
 
 #endif // DIALOGMAINMENU_H

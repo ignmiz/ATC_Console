@@ -27,11 +27,16 @@ public:
     QVector<ATCFlight*>& getFlightsVector();
     int getFlightsVectorSize();
 
+    bool isPaused();
+    void setPaused(bool flag);
+
     void setAirspace(ATCAirspace *a);
     void appendFlight(ATCFlight *flight);
 
     void removeFlight(QString callsign);
     void clearFlights();
+
+    void subtractFlightTimeouts();
 
 signals:
     void signalUpdateTags();
@@ -50,7 +55,10 @@ private:
     ATCActiveRunways *activeRunways = nullptr;
     QVector<ATCFlight*> flights;
 
+    QElapsedTimer globalTimer;
+
     bool simLoop = false;
+    bool paused = false;
 
     void preallocateTempData();
     void progressState(GeographicLib::Geodesic &geo, QElapsedTimer &globalTimer);

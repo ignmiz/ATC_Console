@@ -15,6 +15,9 @@ public:
 
     QTime* getTime();
 
+    void start();
+    void stop();
+
 private slots:
     void slotUpdateTime();
 

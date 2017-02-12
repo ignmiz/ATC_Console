@@ -27,6 +27,24 @@ QTime* ATCClock::getTime()
     return time;
 }
 
+void ATCClock::start()
+{
+    if(!timer->isActive())
+    {
+        timer->start(1000);
+        connect(timer, SIGNAL(timeout()), this, SLOT(slotUpdateTime()));
+    }
+}
+
+void ATCClock::stop()
+{
+    if(timer->isActive())
+    {
+        timer->stop();
+        disconnect(timer, SIGNAL(timeout()), this, SLOT(slotUpdateTime()));
+    }
+}
+
 void ATCClock::slotUpdateTime()
 {
     *time = time->addSecs(1);
