@@ -37,6 +37,7 @@ private slots:
     void test_appendProjectedWaypoint();
     void test_setWaypointIndex();
     void test_setDCT();
+    void test_setSimulated();
 };
 
 #endif // TEST_ATCFLIGHT_H

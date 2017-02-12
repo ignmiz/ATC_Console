@@ -633,6 +633,25 @@ void ATCSituationalDisplay::slotApplySettings()
     rescaleAirwaysHigh();
 }
 
+void ATCSituationalDisplay::slotShowFlightTag(ATCFlightTag *tag)
+{
+    if((tag != nullptr) && (!tag->getDiamond()->isVisible()))
+    {
+        tag->showTag();
+        visibleTags.append(tag);
+        rescaleTag(tag);
+    }
+}
+
+void ATCSituationalDisplay::slotHideFlightTag(ATCFlightTag *tag)
+{
+    if(tag != nullptr)
+    {
+        tag->hideTag();
+        removeFromVisible(tag, visibleTags);
+    }
+}
+
 void ATCSituationalDisplay::slotGetLocation()
 {
     flagGetLocation = true;
@@ -1915,6 +1934,106 @@ void ATCSituationalDisplay::rescaleAirwayHigh(ATCAirwayHigh *object)
     for(int i = 0; i < object->getCoordsVectorSize(); i++)
     {
         object->getLine(i)->setPen(currentPen);
+    }
+}
+
+void ATCSituationalDisplay::rescaleTag(ATCFlightTag *tag)
+{
+    double sideLength = settings->TAG_DIAMOND_WIDTH / currentScale;
+    double leaderWidth = settings->TAG_LEADER_WIDTH / currentScale;
+
+    double boxWidth = settings->TAG_BOX_WIDTH / currentScale;
+    double boxHeight;
+
+    double connectorWidth = settings->TAG_CONNECTOR_WIDTH / currentScale;
+
+    double tagFont = settings->TAG_LABEL_HEIGHT / currentScale;
+    double labelMargins = settings->TAG_LABEL_MARGINS / currentScale;
+
+    QPen leaderPen = tag->getLeader()->pen();
+    leaderPen.setWidthF(leaderWidth);
+
+    QPen connectorPen = tag->getConnector()->pen();
+    connectorPen.setWidthF(connectorWidth);
+
+    QFont labelFont = tag->getText()->font();
+    labelFont.setPointSizeF(tagFont);
+
+    if(tag->getTagType() == ATC::Short)
+    {
+        boxHeight = settings->TAG_BOX_HEIGHT / currentScale;
+    }
+    else
+    {
+        boxHeight = settings->TAG_BOX_HEIGHT_FULL / currentScale;
+    }
+
+    ATCTagDiamond *diamond = tag->getDiamond();
+    QGraphicsLineItem *connector = tag->getConnector();
+    ATCTagRect *tagBox = tag->getTagBox();
+
+    QPointF currentPosition = tag->getDiamondPosition();
+
+    diamond->setRect(currentPosition.x() - sideLength/2, currentPosition.y() - sideLength/2, sideLength, sideLength);
+    QPointF topLeft = diamond->mapToScene(diamond->rect().topLeft());
+    diamond->moveBy(currentPosition.x() - topLeft.x() - sideLength/2, currentPosition.y() - topLeft.y() - sideLength/2);
+
+    QPointF initial = connector->line().p2();
+
+    double dx = tag->getDX() / currentScale;
+    double dy = tag->getDY() / currentScale;
+
+    connector->setLine(QLineF(currentPosition.x(), currentPosition.y(), currentPosition.x() + dx, currentPosition.y() + dy));
+    connector->setPen(connectorPen);
+
+    QPointF final = connector->line().p2();
+
+    double rectX = tagBox->rect().x();
+    double rectY = tagBox->rect().y();
+
+    double dw = boxWidth - tagBox->rect().width();
+    double dh = boxHeight - tagBox->rect().height();
+
+    double translationX = final.x() - initial.x() - dw/2;
+    double translationY = final.y() - initial.y() - dh/2;
+
+    tagBox->setRect(rectX, rectY, boxWidth, boxHeight);
+    tagBox->moveBy(translationX, translationY);
+
+    tag->getText()->setPos(rectX + labelMargins, rectY + labelMargins);
+
+    tag->getLeader()->setPen(leaderPen);
+    tag->getText()->setFont(labelFont);
+}
+
+void ATCSituationalDisplay::rescaleRoute(ATCRoutePrediction *route)
+{
+    QPen pen(settings->ROUTE_COLOR, settings->ROUTE_LINE_WIDTH / currentScale);
+
+    QFont textFont("Arial");
+    textFont.setPointSizeF(settings->ROUTE_LABEL_HEIGHT / currentScale);
+
+    QGraphicsPathItem *currentPath = route->getPolygon();
+    QVector<QGraphicsSimpleTextItem*> labels = route->getLabels();
+
+    currentPath->setPen(pen);
+
+    QList<QPointF> pointList = currentPath->path().toFillPolygon().toList();
+
+    for(int j = 0; j < labels.size(); j++)
+    {
+        if(pointList.size() - labels.size() == 1) //ATC::Hdg mode
+        {
+            labels.at(j)->setFont(textFont);
+            labels.at(j)->setPos(pointList.at(j).x() + settings->ROUTE_LABEL_DX / currentScale,
+                                 pointList.at(j).y() + settings->ROUTE_LABEL_DY / currentScale);
+        }
+        else //ATC::Nav mode
+        {
+            labels.at(j)->setFont(textFont);
+            labels.at(j)->setPos(pointList.at(j + 1).x() + settings->ROUTE_LABEL_DX / currentScale,
+                                 pointList.at(j + 1).y() + settings->ROUTE_LABEL_DY / currentScale);
+        }
     }
 }
 
@@ -3300,6 +3419,8 @@ void ATCSituationalDisplay::createFlightTag(ATCFlight *flight)
 
     createEtiquettes(flight);
 
+    assignTagPosition(tag);
+
     scene->addItem(diamond);
     scene->addItem(leader);
     scene->addItem(connector);
@@ -3731,20 +3852,25 @@ void ATCSituationalDisplay::updateRoutePrediction(ATCFlight *flight)
     pathItem->setPath(newPath);
 }
 
+void ATCSituationalDisplay::assignTagPosition(ATCFlightTag *tag)
+{
+    QGraphicsLineItem *connector = tag->getConnector();
+
+    QPointF p1 = connector->line().p1();
+    QPointF p2 = connector->line().p2();
+
+    double dx = (p2.x() - p1.x()) * currentScale;
+    double dy = (p2.y() - p1.y()) * currentScale;
+
+    tag->setDX(dx);
+    tag->setDY(dy);
+}
+
 void ATCSituationalDisplay::assignTagPositions()
 {
     for(int i = 0; i < visibleTags.size(); i++)
     {
-        QGraphicsLineItem *connector = visibleTags.at(i)->getConnector();
-
-        QPointF p1 = connector->line().p1();
-        QPointF p2 = connector->line().p2();
-
-        double dx = (p2.x() - p1.x()) * currentScale;
-        double dy = (p2.y() - p1.y()) * currentScale;
-
-        visibleTags.at(i)->setDX(dx);
-        visibleTags.at(i)->setDY(dy);
+        assignTagPosition(visibleTags.at(i));
     }
 }
 

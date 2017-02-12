@@ -689,6 +689,8 @@ void MainWindow::slotStartSimulation()
         connect(simulation, SIGNAL(signalUpdateTags()), ui->situationalDisplay, SLOT(slotUpdateTags()));
         connect(simulation, SIGNAL(signalDisplayRoute(ATCFlight*)), ui->situationalDisplay, SLOT(slotDisplayRoute(ATCFlight*)));
         connect(simulation, SIGNAL(signalSetSimulationStartTime()), this, SLOT(slotSetSimulationStartTime()));
+        connect(simulation, SIGNAL(signalShowFlightTag(ATCFlightTag*)), ui->situationalDisplay, SLOT(slotShowFlightTag(ATCFlightTag*)));
+        connect(simulation, SIGNAL(signalHideFlightTag(ATCFlightTag*)), ui->situationalDisplay, SLOT(slotHideFlightTag(ATCFlightTag*)));
 
         simulation->setAirspace(airspaceData);
 
@@ -711,6 +713,8 @@ void MainWindow::slotStopSimulation()
         disconnect(simulation, SIGNAL(signalUpdateTags()), ui->situationalDisplay, SLOT(slotUpdateTags()));
         disconnect(simulation, SIGNAL(signalDisplayRoute(ATCFlight*)), ui->situationalDisplay, SLOT(slotDisplayRoute(ATCFlight*)));
         disconnect(simulation, SIGNAL(signalSetSimulationStartTime()), this, SLOT(slotSetSimulationStartTime()));
+        disconnect(simulation, SIGNAL(signalShowFlightTag(ATCFlightTag*)), ui->situationalDisplay, SLOT(slotShowFlightTag(ATCFlightTag*)));
+        disconnect(simulation, SIGNAL(signalHideFlightTag(ATCFlightTag*)), ui->situationalDisplay, SLOT(slotHideFlightTag(ATCFlightTag*)));
 
         simulation->moveToThread(QThread::currentThread());
     }

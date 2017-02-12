@@ -101,6 +101,9 @@ public slots:
 
     void slotApplySettings();
 
+    void slotShowFlightTag(ATCFlightTag *tag);
+    void slotHideFlightTag(ATCFlightTag *tag);
+
     void slotClearFlightElements(ATCFlight *flight);
     void slotClearAllFlightElements();
 
@@ -232,6 +235,8 @@ private:
     void rescaleSID(ATCProcedureSIDSymbol *object);
     void rescaleAirwayLow(ATCAirwayLow *object);
     void rescaleAirwayHigh(ATCAirwayHigh *object);
+    void rescaleTag(ATCFlightTag *tag);
+    void rescaleRoute(ATCRoutePrediction *route);
 
     void projectSectorsARTCCLow();
     void projectSectorsARTCCHigh();
@@ -263,6 +268,7 @@ private:
     void updateEtiquettesQuick(ATCFlight *flight);
     void updateRoutePrediction(ATCFlight *flight);
 
+    void assignTagPosition(ATCFlightTag *tag);
     void assignTagPositions();
 
     void loadInitialDisplay(QString path);

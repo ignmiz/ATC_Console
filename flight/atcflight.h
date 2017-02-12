@@ -83,6 +83,7 @@ public:
     int getProjectedWaypointsVectorSize();
     int getWaypointIndex();
     bool isDCT();
+    bool isSimulated();
 
     void setFlightPlan(ATCFlightPlan *fpl);
     void setSquawk(QString sq);
@@ -110,6 +111,7 @@ public:
     void appendProjectedWaypoint(QPair<double, double> wp);
     void setWaypointIndex(int i);
     void setDCT(bool flag);
+    void setSimulated(bool flag);
 
 signals:
     void signalCreateDialogAltitude(ATCFlight *flight, QPoint point);
@@ -162,6 +164,7 @@ private:
     QVector<QPair<double, double>> projectedWaypoints; //Format: x, y
     int waypointIndex;
     bool dct = false;
+    bool simulated = true;
 };
 
 #endif // ATCFLIGHT_H

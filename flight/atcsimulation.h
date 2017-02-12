@@ -38,6 +38,9 @@ signals:
     void signalDisplayRoute(ATCFlight *flight);
     void signalSetSimulationStartTime();
 
+    void signalShowFlightTag(ATCFlightTag *tag);
+    void signalHideFlightTag(ATCFlightTag *tag);
+
 public slots:
     void slotStartSimulation();
     void slotStopSimulation();
@@ -50,7 +53,7 @@ private:
     bool simLoop = false;
 
     void preallocateTempData();
-    void progressState(GeographicLib::Geodesic &geo);
+    void progressState(GeographicLib::Geodesic &geo, QElapsedTimer &globalTimer);
 
     ISA calculateEnvironment(ATCFlight *flight);
     void assignDiscreteState(ATCFlight *flight, ISA &isa);

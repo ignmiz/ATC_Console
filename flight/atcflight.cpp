@@ -157,6 +157,11 @@ bool ATCFlight::isDCT()
     return dct;
 }
 
+bool ATCFlight::isSimulated()
+{
+    return simulated;
+}
+
 void ATCFlight::setFlightPlan(ATCFlightPlan *fpl)
 {
     delete plan;
@@ -271,6 +276,11 @@ void ATCFlight::setWaypointIndex(int i)
 void ATCFlight::setDCT(bool flag)
 {
     dct = flag;
+}
+
+void ATCFlight::setSimulated(bool flag)
+{
+    simulated = flag;
 }
 
 void ATCFlight::slotCreateDialogAltitude(QPoint point)

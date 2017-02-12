@@ -99,6 +99,8 @@ void ATCSimulation::slotStartSimulation()
     qint64 dt = ATCConst::DT * 1e9;
 
     QElapsedTimer timer;
+    QElapsedTimer globalTimer;
+
     qint64 elapsedTime;
     qint64 diff;
     double counter = 0;
@@ -108,11 +110,12 @@ void ATCSimulation::slotStartSimulation()
 
     emit signalSetSimulationStartTime();
 
+    globalTimer.start();
     while(simLoop)
     {
         timer.start();
 
-        progressState(geo);
+        progressState(geo, globalTimer);
         incrementUpdateCounter(counter);
 
         elapsedTime = timer.nsecsElapsed();
@@ -215,18 +218,37 @@ void ATCSimulation::preallocateTempData()
                 flight->setDCT(true);
             }
         }
+
+        if(flight->getSimStartTime() != QTime(0, 0, 0))
+        {
+            emit signalHideFlightTag(flight->getFlightTag());
+            if(flight->getRoutePrediction() != nullptr) emit signalDisplayRoute(flight);
+            flight->setSimulated(false);
+        }
     }
 }
 
-void ATCSimulation::progressState(GeographicLib::Geodesic &geo)
+void ATCSimulation::progressState(GeographicLib::Geodesic &geo, QElapsedTimer &globalTimer)
 {
     for(int i = 0; i < flights.size(); i++)
     {
         ATCFlight *flight = flights.at(i);
 
-        ISA isa = calculateEnvironment(flight);
-        assignDiscreteState(flight, isa);
-        assignContinuousState(flight, isa, geo);
+        if(flight->isSimulated())
+        {
+            ISA isa = calculateEnvironment(flight);
+            assignDiscreteState(flight, isa);
+            assignContinuousState(flight, isa, geo);
+        }
+        else
+        {
+            if(globalTimer.hasExpired(static_cast<qint64>(QTime(0, 0, 0).msecsTo(flight->getSimStartTime()))))
+            {
+                if(!flight->getFlightTag()->getDiamond()->isVisible()) emit signalShowFlightTag(flight->getFlightTag());
+                flight->setSimulated(true);
+                flight->setSimStartTime(QTime(0, 0, 0));
+            }
+        }
     }
 }
 

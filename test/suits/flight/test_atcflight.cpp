@@ -468,3 +468,15 @@ void Test_ATCFlight::test_setDCT()
     QVERIFY(foo.isDCT() == true);
 }
 
+void Test_ATCFlight::test_setSimulated()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+    QVERIFY(foo.isSimulated() == true);
+
+    foo.setSimulated(false);
+    QVERIFY(foo.isSimulated() == false);
+}
+
