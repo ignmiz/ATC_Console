@@ -8,6 +8,7 @@
 #include "atccombodelegate.h"
 #include "atcflags.h"
 
+#include <QItemSelectionModel>
 #include <QStandardItemModel>
 #include <QDebug>
 
@@ -51,6 +52,9 @@ private slots:
 
     void on_tableViewFlights_clicked(const QModelIndex &index);
     void on_buttonActiveRunways_clicked();
+
+    void slotAdjustUI();
+    void slotAdjustUI(const QItemSelection &selected, const QItemSelection &deselected);
 
 private:
     Ui::DialogFlight *uiInner;

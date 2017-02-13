@@ -37,6 +37,8 @@ void DialogFlight::slotUpdateFlightList(ATCFlight *flight)
         modifyRow(flight, rowToEdit, model);
         rowToEdit = -1;
     }
+
+    slotAdjustUI();
 }
 
 void DialogFlight::on_buttonCreateFlight_clicked()
@@ -109,6 +111,9 @@ void DialogFlight::dialogFlightSetup()
             appendRow(simulation->getFlight(i), model);
         }
     }
+
+    slotAdjustUI();
+    connect(uiInner->tableViewFlights->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(slotAdjustUI(QItemSelection,QItemSelection)));
 }
 
 void DialogFlight::appendRow(ATCFlight *flight, QStandardItemModel *model)
@@ -295,6 +300,8 @@ void DialogFlight::on_buttonDeleteFlight_clicked()
         simulation->removeFlight(callsign);
         model->removeRow(selectionList.at(i).row());
     }
+
+    slotAdjustUI();
 }
 
 void DialogFlight::on_buttonDeleteAll_clicked()
@@ -308,11 +315,50 @@ void DialogFlight::on_buttonDeleteAll_clicked()
 
     simulation->clearFlights();
     model->removeRows(0, model->rowCount());
+
+    slotAdjustUI();
 }
 
 void DialogFlight::on_buttonActiveRunways_clicked()
 {
     emit signalConstructDialogActiveRunways(mode);
+}
+
+void DialogFlight::slotAdjustUI()
+{
+    QItemSelection selection = uiInner->tableViewFlights->selectionModel()->selection();
+
+    if(model->rowCount() == 0)
+    {
+        uiInner->buttonEditFlight->setEnabled(false);
+        uiInner->buttonDeleteFlight->setEnabled(false);
+        uiInner->buttonDeleteAll->setEnabled(false);
+        uiInner->buttonReady->setEnabled(false);
+    }
+    else
+    {
+        if(selection.isEmpty())
+        {
+            uiInner->buttonEditFlight->setEnabled(false);
+            uiInner->buttonDeleteFlight->setEnabled(false);
+        }
+        else
+        {
+            if(selection.size() == 1) uiInner->buttonEditFlight->setEnabled(true);
+            uiInner->buttonDeleteFlight->setEnabled(true);
+        }
+
+        uiInner->buttonReady->setEnabled(true);
+        uiInner->buttonDeleteAll->setEnabled(true);
+    }
+}
+
+void DialogFlight::slotAdjustUI(const QItemSelection &selected, const QItemSelection &deselected)
+{
+    Q_UNUSED(selected)
+    Q_UNUSED(deselected)
+
+    slotAdjustUI();
 }
 
 void DialogFlight::slotEdit(QModelIndex index)
