@@ -2562,6 +2562,7 @@ void ATCSituationalDisplay::calculateExtendedCentrelines()
     QVector<coord> rwyCoords2;
     QVector<coord> centrelineEnd1;
     QVector<coord> centrelineEnd2;
+    QVector<double> azimuths;
 
 //calculate lat and lon of extended centreline ends
     for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
@@ -2617,6 +2618,7 @@ void ATCSituationalDisplay::calculateExtendedCentrelines()
         double deltaProjectedLon2 = centrelineEnd2.at(i).x - rwyCoords2.at(i).x;
 
         double azimuth = qAtan2(rwyCoords2.at(i).x - rwyCoords1.at(i).x, rwyCoords2.at(i).y - rwyCoords1.at(i).y);
+        azimuths.append(azimuth);
 
         centrelineEnd1[i].x = deltaProjectedLon1 * qCos(ATCConst::PI / 2 - azimuth + ATCConst::PI) + rwyCoords1.at(i).x;
         centrelineEnd1[i].y = deltaProjectedLon1 * qSin(ATCConst::PI / 2 - azimuth + ATCConst::PI) + rwyCoords1.at(i).y;
@@ -2682,6 +2684,7 @@ void ATCSituationalDisplay::calculateExtendedCentrelines()
 
                 currentRunway->setExtendedCentreline1(new ATCRunwayExtendedCentreline(centreline1));
                 currentRunway->setExtendedCentreline2(new ATCRunwayExtendedCentreline(centreline2));
+                currentRunway->setAzimuth(azimuths.at(k));
 
                 k++;
             }

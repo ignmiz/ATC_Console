@@ -59,6 +59,11 @@ ATCRunwayExtendedCentreline* ATCRunway::getExtendedCentreline2()
     return extendedCentreline2;
 }
 
+double ATCRunway::getAzimuth()
+{
+    return azimuth;
+}
+
 void ATCRunway::setExtendedCentreline1(ATCRunwayExtendedCentreline *centreline)
 {
     extendedCentreline1 = centreline;
@@ -67,4 +72,9 @@ void ATCRunway::setExtendedCentreline1(ATCRunwayExtendedCentreline *centreline)
 void ATCRunway::setExtendedCentreline2(ATCRunwayExtendedCentreline *centreline)
 {
     extendedCentreline2 = centreline;
+}
+
+void ATCRunway::setAzimuth(double azRad)
+{
+    azimuth = azRad;
 }

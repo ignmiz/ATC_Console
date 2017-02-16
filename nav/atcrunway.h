@@ -20,9 +20,11 @@ public:
     QGeoCoordinate& getEndPoint();
     ATCRunwayExtendedCentreline* getExtendedCentreline1();
     ATCRunwayExtendedCentreline* getExtendedCentreline2();
+    double getAzimuth();
 
     void setExtendedCentreline1(ATCRunwayExtendedCentreline *centreline);
     void setExtendedCentreline2(ATCRunwayExtendedCentreline *centreline);
+    void setAzimuth(double azRad);
 
 private:
     QString rwyID1;
@@ -37,6 +39,7 @@ private:
     ATCRunwayExtendedCentreline *extendedCentreline1 = nullptr;
     ATCRunwayExtendedCentreline *extendedCentreline2 = nullptr;
 
+    double azimuth;
 };
 
 #endif // ATCRUNWAY_H

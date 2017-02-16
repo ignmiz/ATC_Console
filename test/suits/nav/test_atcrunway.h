@@ -23,6 +23,7 @@ private slots:
     void test_getEndPoint();
     void test_setGetExtendedCentreline1();
     void test_setGetExtendedCentreline2();
+    void test_setGetAzimuth();
 };
 
 #endif // TEST_ATCRUNWAY_H

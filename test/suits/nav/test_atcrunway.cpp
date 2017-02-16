@@ -173,3 +173,11 @@ void Test_ATCRunway::test_setGetExtendedCentreline2()
     foo.setExtendedCentreline2(line);
     QVERIFY(foo.getExtendedCentreline2() == line);
 }
+
+void Test_ATCRunway::test_setGetAzimuth()
+{
+    ATCRunway foo("18", "36", 180, 360, 10, 20, 30, 40);
+
+    foo.setAzimuth(0.25);
+    QVERIFY(foo.getAzimuth() == 0.25);
+}
