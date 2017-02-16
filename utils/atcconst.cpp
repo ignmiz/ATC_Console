@@ -39,7 +39,8 @@ const double ATCConst::REFRESH_INTERVAL = 3;
 const double ATCConst::k1 = 0.005;
 const double ATCConst::k2 = -33;
 
-const double ATCConst::FLY_OVER_DST = 185.2;
+const double ATCConst::FLY_OVER_DST = 185.2;    //0.1nm
+const double ATCConst::APP_RANGE = 55560;       //30nm
 
 //Environment
 const double ATCConst::betaTrop = -0.0065;

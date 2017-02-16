@@ -43,6 +43,7 @@ public:
     static const double k2;
 
     static const double FLY_OVER_DST;
+    static const double APP_RANGE;
 
     //Environment
     static const double betaTrop;
