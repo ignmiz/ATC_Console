@@ -403,7 +403,7 @@ double ATCMath::DTA(double vMPS, double bankLimitRad, double dHdgRad, double fly
 void ATCMath::projectAcftPosOnPath(GeographicLib::Geodesic &geo, double fix1Lat, double fix1Lon, double fix2Lat, double fix2Lon, double acftLat, double acftLon, double acftHdg, double &xtrackError, double &headingError, double &dstToNext)
 {
     //INPUT: Fix coordinates in degrees, aircraft coords & heading in radians, all distances in metres
-    //Output: xtrackError, dstToNext: metres, headingError: radians
+    //OUTPUT: xtrackError, dstToNext: metres, headingError: radians
 
     using namespace GeographicLib;
     double R = ATCConst::WGS84_AVG_RADIUS;
@@ -432,6 +432,29 @@ void ATCMath::projectAcftPosOnPath(GeographicLib::Geodesic &geo, double fix1Lat,
 
     headingError = acftHdg - ATCMath::deg2rad(azimuthProjectionBaseTo1);
     normalizeHdgChange(headingError);
+}
+
+void ATCMath::sphericalRhumbIntersection(GeographicLib::Geodesic &geo, double rwyThrLat, double rwyThrLon, double rwyAzimuth, double acftLat, double acftLon, double acftHdg, double &dstAcftToIntersect, double &dstThrToIntersect)
+{
+    //INPUT: rwy coords in degrees, rwy azimuth in radians, aircraft coords & hdg in radians
+    //OUTPUT: dstToIntersect, dstThrToIntersect: distances in metres
+
+    using namespace GeographicLib;
+    double R = ATCConst::WGS84_AVG_RADIUS;
+
+    double azimuthThrToAcft;
+    double azimuthAcftToThr; //Forward azimuth
+    geo.Inverse(rwyThrLat, rwyThrLon, rad2deg(acftLat), rad2deg(acftLon), azimuthThrToAcft, azimuthAcftToThr);
+
+    azimuthThrToAcft = normalizeAngle(azimuthThrToAcft, ATC::Deg);
+    azimuthAcftToThr = normalizeAngle(azimuthAcftToThr, ATC::Deg);
+
+    double azimuthDiffThr = qFabs(deg2rad(azimuthThrToAcft) - normalizeAngle(rwyAzimuth + ATCConst::PI, ATC::Rad));
+    double azimuthDiffAcft = qFabs(acftHdg - normalizeAngle(deg2rad(azimuthAcftToThr + 180), ATC::Rad));   //+180 due forward azimuth
+    double azimuthDiffIntersection = qFabs(normalizeAngle(acftHdg - rwyAzimuth, ATC::Rad));
+
+    dstAcftToIntersect = R * qAcos((qCos(azimuthDiffThr) + qCos(azimuthDiffAcft) * qCos(azimuthDiffIntersection)) / (qSin(azimuthDiffAcft) * qSin(azimuthDiffIntersection)));
+    dstThrToIntersect = R * qAcos((qCos(azimuthDiffAcft) + qCos(azimuthDiffThr) * qCos(azimuthDiffIntersection)) / (qSin(azimuthDiffThr) * qSin(azimuthDiffIntersection)));
 }
 
 void ATCMath::normalizeHdgChange(double &dHdg)

@@ -387,6 +387,37 @@ void Test_ATCMath::test_projectAcftPosOnPath()
     QVERIFY(ATCMath::compareDouble(hdgError, ATCMath::deg2rad(45), error));
 }
 
+void Test_ATCMath::test_sphericalRhumbIntersection()
+{
+    double error = 2 * 1e-3;
+
+    GeographicLib::Geodesic geo = GeographicLib::Geodesic::WGS84();
+
+    double thrLat = 30;
+    double thrLon = 0;
+    double azimuth = ATCMath::deg2rad(360);
+
+    double acftLat = ATCMath::deg2rad(0);
+    double acftLon = ATCMath::deg2rad(-15);
+    double acftHdg = ATCMath::deg2rad(90);
+
+    double dstAcftToIntersect;
+    double dstThrToIntersect;
+
+    ATCMath::sphericalRhumbIntersection(geo, thrLat, thrLon, azimuth, acftLat, acftLon, acftHdg, dstAcftToIntersect, dstThrToIntersect);
+
+    double checkDstAcftToIntersect;
+    double checkDstThrToIntersect;
+
+    double irrelevantAzimuth;
+
+    GeographicLib::Rhumb::WGS84().Inverse(0, -15, 0, 0, checkDstAcftToIntersect, irrelevantAzimuth);
+    GeographicLib::Rhumb::WGS84().Inverse(thrLat, thrLon, 0, 0, checkDstThrToIntersect, irrelevantAzimuth);
+
+    QVERIFY(ATCMath::compareDouble(dstAcftToIntersect, checkDstAcftToIntersect, error));
+    QVERIFY(ATCMath::compareDouble(dstThrToIntersect, checkDstThrToIntersect, error));
+}
+
 void Test_ATCMath::test_normalizeHdgError()
 {
     double error = 1e-8;

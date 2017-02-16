@@ -66,6 +66,7 @@ public:
 
     static double DTA(double vMPS, double bankLimitRad, double dHdgRad, double flyOverDstM);
     static void projectAcftPosOnPath(GeographicLib::Geodesic &geo, double rtFix1Lat, double rtFix1Lon, double rtFix2Lat, double rtFix2Lon, double acftLat, double acftLon, double acftHdg, double &xtrackError, double &headingError, double &dstToNext);
+    static void sphericalRhumbIntersection(GeographicLib::Geodesic &geo, double rwyThrLat, double rwyThrLon, double rwyAzimuth, double acftLat, double acftLon, double acftHdg, double &dstAcftToIntersect, double &dstThrToIntersect);
     static void normalizeHdgChange(double &dHdg);
 
     static double randomMass(int mMin, int mMax);

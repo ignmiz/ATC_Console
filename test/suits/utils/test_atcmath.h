@@ -4,6 +4,8 @@
 #include "atcmath.h"
 #include "atcpaths.h"
 
+#include <GeographicLib/Rhumb.hpp>
+
 #include <QObject>
 #include <QTest>
 
@@ -49,6 +51,7 @@ private slots:
 
     void test_DTA();
     void test_projectAcftPosOnPath();
+    void test_sphericalRhumbIntersection();
     void test_normalizeHdgError();
 
     void test_randomMass();
