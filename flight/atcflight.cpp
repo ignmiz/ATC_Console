@@ -157,6 +157,11 @@ bool ATCFlight::isDCT()
     return dct;
 }
 
+bool ATCFlight::isFinalApp()
+{
+    return finalApp;
+}
+
 bool ATCFlight::isSimulated()
 {
     return simulated;
@@ -276,6 +281,11 @@ void ATCFlight::setWaypointIndex(int i)
 void ATCFlight::setDCT(bool flag)
 {
     dct = flag;
+}
+
+void ATCFlight::setFinalApp(bool flag)
+{
+    finalApp = flag;
 }
 
 void ATCFlight::setSimulated(bool flag)

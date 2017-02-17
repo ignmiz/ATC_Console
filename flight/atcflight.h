@@ -83,6 +83,7 @@ public:
     int getProjectedWaypointsVectorSize();
     int getWaypointIndex();
     bool isDCT();
+    bool isFinalApp();
     bool isSimulated();
 
     void setFlightPlan(ATCFlightPlan *fpl);
@@ -111,6 +112,7 @@ public:
     void appendProjectedWaypoint(QPair<double, double> wp);
     void setWaypointIndex(int i);
     void setDCT(bool flag);
+    void setFinalApp(bool flag);
     void setSimulated(bool flag);
 
 signals:
@@ -164,6 +166,7 @@ private:
     QVector<QPair<double, double>> projectedWaypoints; //Format: x, y
     int waypointIndex;
     bool dct = false;
+    bool finalApp = false;
     bool simulated = true;
 };
 
