@@ -142,6 +142,37 @@ void DialogHeading::dialogHeadingSetup()
             }
         }
     }
+
+    if(flight->isFinalApp())
+    {
+        ui->buttonILS->setStyleSheet(
+                                        "QPushButton"
+                                        "{"
+                                            "color: #c8c8c8;"
+                                            "font: bold 11px;"
+                                            "background-color: #006400;"
+                                            "border-style: outset;"
+                                            "border-width: 2px;"
+                                            "border-color: #3e3e3e;"
+                                        "}"
+                                        ""
+                                        "QPushButton::hover"
+                                        "{"
+                                            "background-color: #007800;"
+                                        "}"
+                                        ""
+                                        "QPushButton::pressed"
+                                        "{"
+                                            "background-color: #008C00;"
+                                        "}"
+                                    );
+        ui->buttonILS->update();
+    }
+    else
+    {
+        if(flight->getRunwayDestination().isEmpty()) ui->buttonILS->setDisabled(true);
+    }
+
 }
 
 void DialogHeading::appendRow(QString text, QStandardItemModel *model)
@@ -149,4 +180,63 @@ void DialogHeading::appendRow(QString text, QStandardItemModel *model)
     QStandardItem *item = new QStandardItem(text);
     item->setTextAlignment(Qt::AlignCenter);
     model->appendRow(item);
+}
+
+void DialogHeading::on_buttonILS_clicked()
+{
+    if(flight->isFinalApp())
+    {
+        flight->setFinalApp(false);
+        ui->buttonILS->setStyleSheet(
+                                        "QPushButton"
+                                        "{"
+                                            "color: #c8c8c8;"
+                                            "font: 10px;"
+                                            "background-color: #000000;"
+                                            "border-style: outset;"
+                                            "border-width: 2px;"
+                                            "border-color: #3e3e3e;"
+                                        "}"
+                                        ""
+                                        "QPushButton::hover"
+                                        "{"
+                                            "background-color: #2d2d2d;"
+                                        "}"
+                                        ""
+                                        "QPushButton::pressed"
+                                        "{"
+                                            "background-color: #3c3c3c;"
+                                        "}"
+                                    );
+        ui->buttonILS->update();
+    }
+    else
+    {
+        if(!flight->getRunwayDestination().isEmpty())
+        {
+            flight->setFinalApp(true);
+            ui->buttonILS->setStyleSheet(
+                                            "QPushButton"
+                                            "{"
+                                                "color: #c8c8c8;"
+                                                "font: bold 11px;"
+                                                "background-color: #006400;"
+                                                "border-style: outset;"
+                                                "border-width: 2px;"
+                                                "border-color: #3e3e3e;"
+                                            "}"
+                                            ""
+                                            "QPushButton::hover"
+                                            "{"
+                                                "background-color: #007800;"
+                                            "}"
+                                            ""
+                                            "QPushButton::pressed"
+                                            "{"
+                                                "background-color: #008C00;"
+                                            "}"
+                                        );
+            ui->buttonILS->update();
+        }
+    }
 }

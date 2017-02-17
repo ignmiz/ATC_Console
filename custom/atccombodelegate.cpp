@@ -295,6 +295,8 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             flight->setRunwayDestination(model->index(index.row(), 8).data().toString());
             flight->setSTAR(model->index(index.row(), 9).data().toString());
 
+            if(flight->getRunwayDestination().isEmpty()) flight->setFinalApp(false);
+
             //Rebuild fix list
             QStringList fixList;
             ATCProcedureSID *sid = airspace->findSID(flight->getSID());
