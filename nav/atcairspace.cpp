@@ -542,6 +542,29 @@ ATCAirport* ATCAirspace::findAirport(QString ICAOname)
     return nullptr;
 }
 
+ATCRunway *ATCAirspace::findRunway(QString airportName, QString rwyID)
+{
+    for(int i = 0; i < airports.size(); i++)
+    {
+        if(airports.at(i)->getName() == airportName)
+        {
+            for(int j = 0; airports.at(i)->getRunwayVectorSize(); j++)
+            {
+                if(airports.at(i)->getRunway(j)->getRunwayID1() == rwyID)
+                {
+                    return airports.at(i)->getRunway(j);
+                }
+                else if(airports.at(i)->getRunway(j)->getRunwayID2() == rwyID)
+                {
+                    return airports.at(i)->getRunway(j);
+                }
+            }
+        }
+    }
+
+    return nullptr;
+}
+
 ATCRunwayExtendedCentreline* ATCAirspace::findCentreline(QString airportName, QString rwyID)
 {
     for(int i = 0; i < airports.size(); i++)
