@@ -44,6 +44,8 @@ public:
 
     static const double FLY_OVER_DST;
     static const double APP_RANGE;
+    static const double APP_ALLOWED_XTRACK_INTERCEPT;
+    static const double APP_ALLOWED_HDG_INTERCEPT;
 
     //Environment
     static const double betaTrop;

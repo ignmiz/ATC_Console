@@ -219,6 +219,59 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
 
             flight->setFixList(fixList);
 
+            //Rebuild waypoints list
+            flight->clearWaypoints();
+            fixList = flight->getFixList();
+            for(int i = 0; i < fixList.size(); i++)
+            {
+                ATCNavFix *fix = nullptr;
+                ATCBeaconVOR *vor = nullptr;
+                ATCAirport *airport = nullptr;
+                ATCBeaconNDB *ndb = nullptr;
+
+                double lat;
+                double lon;
+
+                double x;
+                double y;
+
+                if((fix = airspace->findFix(fixList.at(i))) != nullptr)
+                {
+                    lat = fix->latitude();
+                    lon = fix->longitude();
+                    x = fix->getScenePosition()->x();
+                    y = fix->getScenePosition()->y();
+                }
+                else if((airport = airspace->findAirport(fixList.at(i))) != nullptr)
+                {
+                    lat = airport->latitude();
+                    lon = airport->longitude();
+                    x = airport->getScenePosition()->x();
+                    y = airport->getScenePosition()->y();
+                }
+                else if((vor = airspace->findVOR(fixList.at(i))) != nullptr)
+                {
+                    lat = vor->latitude();
+                    lon = vor->longitude();
+                    x = vor->getScenePosition()->x();
+                    y = vor->getScenePosition()->y();
+                }
+                else if((ndb = airspace->findNDB(fixList.at(i))) != nullptr)
+                {
+                    lat = ndb->latitude();
+                    lon = ndb->longitude();
+                    x = ndb->getScenePosition()->x();
+                    y = ndb->getScenePosition()->y();
+                }
+
+                flight->appendWaypoint(QPair<double, double>(lat, lon));
+                flight->appendProjectedWaypoint(QPair<double, double>(x, y));
+                if(fixList.at(i) == flight->getNextFix())
+                {
+                    flight->setWaypointIndex(i);
+                }
+            }
+
             //Repaint route prediction
             if(flight->getRoutePrediction() != nullptr)
             {
@@ -263,6 +316,59 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
 
             flight->setFixList(fixList);
 
+            //Rebuild waypoints list
+            flight->clearWaypoints();
+            fixList = flight->getFixList();
+            for(int i = 0; i < fixList.size(); i++)
+            {
+                ATCNavFix *fix = nullptr;
+                ATCBeaconVOR *vor = nullptr;
+                ATCAirport *airport = nullptr;
+                ATCBeaconNDB *ndb = nullptr;
+
+                double lat;
+                double lon;
+
+                double x;
+                double y;
+
+                if((fix = airspace->findFix(fixList.at(i))) != nullptr)
+                {
+                    lat = fix->latitude();
+                    lon = fix->longitude();
+                    x = fix->getScenePosition()->x();
+                    y = fix->getScenePosition()->y();
+                }
+                else if((airport = airspace->findAirport(fixList.at(i))) != nullptr)
+                {
+                    lat = airport->latitude();
+                    lon = airport->longitude();
+                    x = airport->getScenePosition()->x();
+                    y = airport->getScenePosition()->y();
+                }
+                else if((vor = airspace->findVOR(fixList.at(i))) != nullptr)
+                {
+                    lat = vor->latitude();
+                    lon = vor->longitude();
+                    x = vor->getScenePosition()->x();
+                    y = vor->getScenePosition()->y();
+                }
+                else if((ndb = airspace->findNDB(fixList.at(i))) != nullptr)
+                {
+                    lat = ndb->latitude();
+                    lon = ndb->longitude();
+                    x = ndb->getScenePosition()->x();
+                    y = ndb->getScenePosition()->y();
+                }
+
+                flight->appendWaypoint(QPair<double, double>(lat, lon));
+                flight->appendProjectedWaypoint(QPair<double, double>(x, y));
+                if(fixList.at(i) == flight->getNextFix())
+                {
+                    flight->setWaypointIndex(i);
+                }
+            }
+
             //Repaint route prediction
             if(flight->getRoutePrediction() != nullptr)
             {
@@ -295,7 +401,49 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             flight->setRunwayDestination(model->index(index.row(), 8).data().toString());
             flight->setSTAR(model->index(index.row(), 9).data().toString());
 
-            if(flight->getRunwayDestination().isEmpty()) flight->setFinalApp(false);
+            if(flight->isCldFinalApp() || flight->isFinalApp())
+            {
+                flight->setCldFinalApp(false);
+                flight->setFinalApp(false);
+            }
+
+            if(!flight->getRunwayDestination().isEmpty())
+            {
+                ATCRunway *runway = airspace->findRunway(flight->getFlightPlan()->getRoute().getDestination(), flight->getRunwayDestination());
+
+                if(runway != nullptr)
+                {
+                    Temp temp = flight->getTemp();
+
+                    double thrLat;
+                    double thrLon;
+                    double azimuth;
+
+                    if(flight->getRunwayDestination().left(2).toInt() <= 18)
+                    {
+                        thrLat = runway->getStartPoint().latitude();
+                        thrLon = runway->getStartPoint().longitude();
+                        azimuth = runway->getAzimuth();
+                    }
+                    else
+                    {
+                        thrLat = runway->getEndPoint().latitude();
+                        thrLon = runway->getEndPoint().longitude();
+                        azimuth = ATCMath::normalizeAngle(runway->getAzimuth() + ATCConst::PI, ATC::Deg);
+                    }
+
+                    temp.rwyDesThr = QPair<double, double>(thrLat, thrLon);
+                    temp.rwyDesAzimuth = azimuth;
+
+                    double rangeLat;
+                    double rangeLon;
+                    GeographicLib::Rhumb rhumb = GeographicLib::Rhumb::WGS84();
+                    rhumb.Direct(thrLat, thrLon, ATCMath::rad2deg(ATCMath::normalizeAngle(azimuth + ATCConst::PI, ATC::Deg)), ATCConst::APP_RANGE, rangeLat, rangeLon);
+                    temp.rwyDesAppRange = QPair<double, double>(rangeLat, rangeLon);
+
+                    flight->setTemp(temp);
+                }
+            }
 
             //Rebuild fix list
             QStringList fixList;
@@ -329,6 +477,59 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             if(!flight->getFlightPlan()->getRoute().getAlternate().isEmpty()) fixList.append(flight->getFlightPlan()->getRoute().getAlternate());
 
             flight->setFixList(fixList);
+
+            //Rebuild waypoints list
+            flight->clearWaypoints();
+            fixList = flight->getFixList();
+            for(int i = 0; i < fixList.size(); i++)
+            {
+                ATCNavFix *fix = nullptr;
+                ATCBeaconVOR *vor = nullptr;
+                ATCAirport *airport = nullptr;
+                ATCBeaconNDB *ndb = nullptr;
+
+                double lat;
+                double lon;
+
+                double x;
+                double y;
+
+                if((fix = airspace->findFix(fixList.at(i))) != nullptr)
+                {
+                    lat = fix->latitude();
+                    lon = fix->longitude();
+                    x = fix->getScenePosition()->x();
+                    y = fix->getScenePosition()->y();
+                }
+                else if((airport = airspace->findAirport(fixList.at(i))) != nullptr)
+                {
+                    lat = airport->latitude();
+                    lon = airport->longitude();
+                    x = airport->getScenePosition()->x();
+                    y = airport->getScenePosition()->y();
+                }
+                else if((vor = airspace->findVOR(fixList.at(i))) != nullptr)
+                {
+                    lat = vor->latitude();
+                    lon = vor->longitude();
+                    x = vor->getScenePosition()->x();
+                    y = vor->getScenePosition()->y();
+                }
+                else if((ndb = airspace->findNDB(fixList.at(i))) != nullptr)
+                {
+                    lat = ndb->latitude();
+                    lon = ndb->longitude();
+                    x = ndb->getScenePosition()->x();
+                    y = ndb->getScenePosition()->y();
+                }
+
+                flight->appendWaypoint(QPair<double, double>(lat, lon));
+                flight->appendProjectedWaypoint(QPair<double, double>(x, y));
+                if(fixList.at(i) == flight->getNextFix())
+                {
+                    flight->setWaypointIndex(i);
+                }
+            }
 
             //Repaint route prediction
             if(flight->getRoutePrediction() != nullptr)
@@ -373,6 +574,59 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             if(!flight->getFlightPlan()->getRoute().getAlternate().isEmpty()) fixList.append(flight->getFlightPlan()->getRoute().getAlternate());
 
             flight->setFixList(fixList);
+
+            //Rebuild waypoints list
+            flight->clearWaypoints();
+            fixList = flight->getFixList();
+            for(int i = 0; i < fixList.size(); i++)
+            {
+                ATCNavFix *fix = nullptr;
+                ATCBeaconVOR *vor = nullptr;
+                ATCAirport *airport = nullptr;
+                ATCBeaconNDB *ndb = nullptr;
+
+                double lat;
+                double lon;
+
+                double x;
+                double y;
+
+                if((fix = airspace->findFix(fixList.at(i))) != nullptr)
+                {
+                    lat = fix->latitude();
+                    lon = fix->longitude();
+                    x = fix->getScenePosition()->x();
+                    y = fix->getScenePosition()->y();
+                }
+                else if((airport = airspace->findAirport(fixList.at(i))) != nullptr)
+                {
+                    lat = airport->latitude();
+                    lon = airport->longitude();
+                    x = airport->getScenePosition()->x();
+                    y = airport->getScenePosition()->y();
+                }
+                else if((vor = airspace->findVOR(fixList.at(i))) != nullptr)
+                {
+                    lat = vor->latitude();
+                    lon = vor->longitude();
+                    x = vor->getScenePosition()->x();
+                    y = vor->getScenePosition()->y();
+                }
+                else if((ndb = airspace->findNDB(fixList.at(i))) != nullptr)
+                {
+                    lat = ndb->latitude();
+                    lon = ndb->longitude();
+                    x = ndb->getScenePosition()->x();
+                    y = ndb->getScenePosition()->y();
+                }
+
+                flight->appendWaypoint(QPair<double, double>(lat, lon));
+                flight->appendProjectedWaypoint(QPair<double, double>(x, y));
+                if(fixList.at(i) == flight->getNextFix())
+                {
+                    flight->setWaypointIndex(i);
+                }
+            }
 
             //Repaint route prediction
             if(flight->getRoutePrediction() != nullptr)

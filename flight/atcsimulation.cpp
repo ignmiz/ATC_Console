@@ -201,6 +201,40 @@ void ATCSimulation::preallocateTempData()
             temp.xoverAltCrsM = ATCMath::crossoverAltitude(ATCMath::kt2mps(type->getVelocity().V_CR2_AV), type->getVelocity().M_CR_AV);
             temp.xoverAltDesM = ATCMath::crossoverAltitude(ATCMath::kt2mps(type->getVelocity().V_DS2_AV), type->getVelocity().M_DS_AV);
 
+            if(!flight->getRunwayDestination().isEmpty())
+            {
+                ATCRunway *runway = airspace->findRunway(flight->getFlightPlan()->getRoute().getDestination(), flight->getRunwayDestination());
+
+                if(runway != nullptr)
+                {
+                    double thrLat;
+                    double thrLon;
+                    double azimuth;
+
+                    if(flight->getRunwayDestination().left(2).toInt() <= 18)
+                    {
+                        thrLat = runway->getStartPoint().latitude();
+                        thrLon = runway->getStartPoint().longitude();
+                        azimuth = runway->getAzimuth();
+                    }
+                    else
+                    {
+                        thrLat = runway->getEndPoint().latitude();
+                        thrLon = runway->getEndPoint().longitude();
+                        azimuth = ATCMath::normalizeAngle(runway->getAzimuth() + ATCConst::PI, ATC::Deg);
+                    }
+
+                    temp.rwyDesThr = QPair<double, double>(thrLat, thrLon);
+                    temp.rwyDesAzimuth = azimuth;
+
+                    double rangeLat;
+                    double rangeLon;
+                    GeographicLib::Rhumb rhumb = GeographicLib::Rhumb::WGS84();
+                    rhumb.Direct(thrLat, thrLon, ATCMath::rad2deg(ATCMath::normalizeAngle(azimuth + ATCConst::PI, ATC::Deg)), ATCConst::APP_RANGE, rangeLat, rangeLon);
+                    temp.rwyDesAppRange = QPair<double, double>(rangeLat, rangeLon);
+                }
+            }
+
             flight->setTemp(temp);
 
             QStringList fixList = flight->getFixList();
@@ -388,9 +422,16 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
         {
             if(flight->getWaypointIndex() >= 1)
             {
-                QPair<double, double> previous = flight->getWaypoint(waypointIndex - 1);
-                QPair<double, double> current = flight->getWaypoint(waypointIndex);
-                ATCMath::projectAcftPosOnPath(geo, previous.first, previous.second, current.first, current.second, state.y, state.x, state.hdg, xtrackError, headingError, dstToNext);
+                if(!flight->isFinalApp())
+                {
+                    QPair<double, double> previous = flight->getWaypoint(waypointIndex - 1);
+                    QPair<double, double> current = flight->getWaypoint(waypointIndex);
+                    ATCMath::projectAcftPosOnPath(geo, previous.first, previous.second, current.first, current.second, state.y, state.x, state.hdg, xtrackError, headingError, dstToNext);
+                }
+                else
+                {
+                    ATCMath::projectAcftPosOnPath(geo, temp.rwyDesAppRange.first, temp.rwyDesAppRange.second, temp.rwyDesThr.first, temp.rwyDesThr.second, state.y, state.x, state.hdg, xtrackError, headingError, dstToNext);
+                }
             }
             else
             {
@@ -404,42 +445,93 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
             }
         }
 
-//        qDebug() << xtrackError << ATCMath::rad2deg(headingError) << dstToNext;
-        bankAngle = ATCMath::bankAngle(ATCConst::k1, ATCConst::k2, xtrackError, headingError, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE));
-
-        if(waypointIndex < flight->getWaypointsVectorSize() - 1)
+        bool alreadyOnAppPath = false;
+        double dstThrToIntersect;
+        if(flight->isCldFinalApp())
         {
+            double appXtrackError;
+            double appHeadingError;
+            double appDstToNext;
+            ATCMath::projectAcftPosOnPath(geo, temp.rwyDesAppRange.first, temp.rwyDesAppRange.second, temp.rwyDesThr.first, temp.rwyDesThr.second, state.y, state.x, state.hdg, appXtrackError, appHeadingError, appDstToNext);
+            ATCMath::sphericalRhumbIntersection(geo, temp.rwyDesThr.first, temp.rwyDesThr.second, temp.rwyDesAzimuth, state.y, state.x, state.hdg, dstToNext, dstThrToIntersect);
+
+            if((qFabs(appXtrackError) < ATCConst::APP_ALLOWED_XTRACK_INTERCEPT) && (qFabs(appHeadingError) < ATCMath::deg2rad(ATCConst::APP_ALLOWED_HDG_INTERCEPT)))
+            {
+                alreadyOnAppPath = true;
+                dstToNext = 0;
+                xtrackError = appXtrackError;
+                headingError = appHeadingError;
+            }
+        }
+
+        bankAngle = ATCMath::bankAngle(ATCConst::k1, ATCConst::k2, xtrackError, headingError, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE));
+//        qDebug() << xtrackError << ATCMath::rad2deg(headingError) << dstToNext;
+
+        if(!flight->isFinalApp() && (waypointIndex < flight->getWaypointsVectorSize() - 1))
+        {
+            double legAngleCurrent;
+            double legAngleNext;
             double dHdg;
 
-            if(flight->isDCT())
+            if(!flight->isCldFinalApp())
             {
-                QPointF diamond = flight->getFlightTag()->getDiamondPosition();
-                QPair<double, double> current = flight->getProjectedWaypoint(waypointIndex);
-                QPair<double, double> next = flight->getProjectedWaypoint(waypointIndex + 1);
+                if(flight->isDCT())
+                {
+                    QPointF diamond = flight->getFlightTag()->getDiamondPosition();
+                    QPair<double, double> current = flight->getProjectedWaypoint(waypointIndex);
+                    QPair<double, double> next = flight->getProjectedWaypoint(waypointIndex + 1);
 
-                double legAngleCurrent = qAtan2(current.first - diamond.x(), current.second - diamond.y());
-                double legAngleNext = qAtan2(next.first - current.first, next.second - current.second);
-                dHdg = legAngleNext - legAngleCurrent;
+                    legAngleCurrent = qAtan2(current.first - diamond.x(), current.second - diamond.y());
+                    legAngleNext = qAtan2(next.first - current.first, next.second - current.second);
+                }
+                else
+                {
+                    QPair<double, double> previous = flight->getProjectedWaypoint(waypointIndex - 1);
+                    QPair<double, double> current = flight->getProjectedWaypoint(waypointIndex);
+                    QPair<double, double> next = flight->getProjectedWaypoint(waypointIndex + 1);
+
+                    legAngleCurrent = qAtan2(current.first - previous.first, current.second - previous.second);
+                    legAngleNext = qAtan2(next.first - current.first, next.second - current.second);
+                }
+            }
+
+            if(!flight->isCldFinalApp())
+            {
+                dHdg = ATCMath::normalizeHdgChange(legAngleNext - legAngleCurrent);
             }
             else
             {
-                QPair<double, double> previous = flight->getProjectedWaypoint(waypointIndex - 1);
-                QPair<double, double> current = flight->getProjectedWaypoint(waypointIndex);
-                QPair<double, double> next = flight->getProjectedWaypoint(waypointIndex + 1);
-
-                double legAngleCurrent = qAtan2(current.first - previous.first, current.second - previous.second);
-                double legAngleNext = qAtan2(next.first - current.first, next.second - current.second);
-                dHdg = legAngleNext - legAngleCurrent;
+                dHdg = ATCMath::normalizeHdgChange(temp.rwyDesAzimuth - state.hdg);
             }
 
-            ATCMath::normalizeHdgChange(dHdg);
             double DTA = ATCMath::DTA(state.v, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE), dHdg, ATCConst::FLY_OVER_DST);
 
 //            qDebug() << ATCMath::rad2deg(dHdg) << DTA << dstToNext - DTA;
-            if(dstToNext - DTA < 0)
+            if(dstToNext - DTA <= 0)
             {
-                flight->setWaypointIndex(waypointIndex + 1);
-                flight->setNextFix(flight->getFixList().at(waypointIndex + 1));
+                double wpt = waypointIndex;
+
+                if(!flight->isCldFinalApp())
+                {
+                    wpt = waypointIndex + 1;
+                }
+                else if(flight->isCldFinalApp() && ((dstThrToIntersect <= ATCConst::APP_RANGE) || alreadyOnAppPath))
+                {
+                    if(flight->getFlightPlan()->getRoute().getAlternate().isEmpty())
+                    {
+                        wpt = flight->getWaypointsVectorSize() - 1;
+                    }
+                    else
+                    {
+                        wpt = flight->getWaypointsVectorSize() - 2;
+                    }
+
+                    flight->setCldFinalApp(false);
+                    flight->setFinalApp(true);
+                }
+
+                flight->setWaypointIndex(wpt);
+                flight->setNextFix(flight->getFixList().at(wpt));
                 flight->setDCT(false);
 
                 if(flight->getRoutePrediction() != nullptr)
@@ -453,8 +545,56 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
     else
     {
         double targetHdg = flight->getHdgRestriction();
-        double headingError = state.hdg - ATCMath::deg2rad(targetHdg + ATCConst::AVG_DECLINATION);
-        ATCMath::normalizeHdgChange(headingError);
+        double headingError = ATCMath::normalizeHdgChange(state.hdg - ATCMath::deg2rad(targetHdg + ATCConst::AVG_DECLINATION));
+
+        if(flight->isCldFinalApp())
+        {
+            bool alreadyOnAppPath = false;
+            double dstThrToIntersect;
+            double dstToNext;
+
+            double appXtrackError;
+            double appHeadingError;
+            double appDstToNext;
+            ATCMath::projectAcftPosOnPath(geo, temp.rwyDesAppRange.first, temp.rwyDesAppRange.second, temp.rwyDesThr.first, temp.rwyDesThr.second, state.y, state.x, state.hdg, appXtrackError, appHeadingError, appDstToNext);
+            ATCMath::sphericalRhumbIntersection(geo, temp.rwyDesThr.first, temp.rwyDesThr.second, temp.rwyDesAzimuth, state.y, state.x, state.hdg, dstToNext, dstThrToIntersect);
+
+            if((qFabs(appXtrackError) < ATCConst::APP_ALLOWED_XTRACK_INTERCEPT) && (qFabs(appHeadingError) < ATCMath::deg2rad(ATCConst::APP_ALLOWED_HDG_INTERCEPT)))
+            {
+                alreadyOnAppPath = true;
+            }
+
+            double dHdg = ATCMath::normalizeHdgChange(temp.rwyDesAzimuth - state.hdg);
+            double DTA = ATCMath::DTA(state.v, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE), dHdg, ATCConst::FLY_OVER_DST);
+
+            if(((dstToNext - DTA <= 0) && (dstThrToIntersect <= ATCConst::APP_RANGE)) || alreadyOnAppPath)
+            {
+                int wpt;
+                if(flight->getFlightPlan()->getRoute().getAlternate().isEmpty())
+                {
+                    wpt = flight->getWaypointsVectorSize() - 1;
+                }
+                else
+                {
+                    wpt = flight->getWaypointsVectorSize() - 2;
+                }
+
+                flight->setCldFinalApp(false);
+                flight->setFinalApp(true);
+
+                flight->setWaypointIndex(wpt);
+                flight->setNextFix(flight->getFixList().at(wpt));
+                flight->setDCT(false);
+                flight->setNavMode(ATC::Nav);
+
+                if(flight->getRoutePrediction() != nullptr)
+                {
+                    emit signalDisplayRoute(flight);
+                    emit signalDisplayRoute(flight);
+                }
+            }
+        }
+
         bankAngle = ATCMath::bankAngle(0, ATCConst::k2, 0, headingError, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE));
     }
 

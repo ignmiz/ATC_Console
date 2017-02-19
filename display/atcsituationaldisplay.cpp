@@ -3817,6 +3817,11 @@ void ATCSituationalDisplay::updateEtiquettesQuick(ATCFlight *flight)
                 shortEtiquette[i + 24] = nextFix.at(i);
                 longEtiquette[i + 24] = nextFix.at(i);
             }
+
+            for(int i = 0; i < 3; i++)
+            {
+                longEtiquette[i + 39] = '-';
+            }
         }
         else
         {
@@ -3825,20 +3830,53 @@ void ATCSituationalDisplay::updateEtiquettesQuick(ATCFlight *flight)
                 shortEtiquette[i + 24] = ' ';
                 longEtiquette[i + 24] = ' ';
             }
+
+            for(int i = 0; i < 3; i++)
+            {
+                longEtiquette[i + 39] = '-';
+            }
         }
     }
 
     flight->getFlightTag()->getTagBox()->setShortEtiquette(shortEtiquette);
     flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
 
+    bool shortTag = false;
+    bool longTag = false;
+    if(flight->getNavMode() == ATC::Nav && (flight->getTargetSpeed().isEmpty() || flight->getTargetSpeed() == "---"))
+    {
+        shortTag = true;
+    }
+    else
+    {
+        longTag = true;
+    }
 
     if((flight->getFlightTag()->getTagType() == ATC::Full) || flight->getFlightTag()->getTagBox()->isHovered())
     {
-        flight->getFlightTag()->getTagBox()->setLong();
+        if(!shortTag || flight->getFlightTag()->getTagBox()->isHovered())
+        {
+            flight->getFlightTag()->getTagBox()->setLong();
+        }
+        else
+        {
+            flight->getFlightTag()->getTagBox()->setShort();
+            flight->getFlightTag()->getTagBox()->rectLong2Short();
+            flight->getFlightTag()->setTagType(ATC::Short);
+        }
     }
     else if(flight->getFlightTag()->getTagType() == ATC::Short)
     {
-        flight->getFlightTag()->getTagBox()->setShort();
+        if(!longTag)
+        {
+            flight->getFlightTag()->getTagBox()->setShort();
+        }
+        else
+        {
+            flight->getFlightTag()->getTagBox()->setLong();
+            flight->getFlightTag()->getTagBox()->rectShort2Long();
+            flight->getFlightTag()->setTagType(ATC::Full);
+        }
     }
 }
 

@@ -393,13 +393,13 @@ void Test_ATCMath::test_sphericalRhumbIntersection()
 
     GeographicLib::Geodesic geo = GeographicLib::Geodesic::WGS84();
 
-    double thrLat = 30;
-    double thrLon = 0;
+    double thrLat = 52;
+    double thrLon = 20;
     double azimuth = ATCMath::deg2rad(360);
 
-    double acftLat = ATCMath::deg2rad(0);
-    double acftLon = ATCMath::deg2rad(-15);
-    double acftHdg = ATCMath::deg2rad(90);
+    double acftLat = ATCMath::deg2rad(51.3);
+    double acftLon = ATCMath::deg2rad(20.2);
+    double acftHdg = ATCMath::deg2rad(270);
 
     double dstAcftToIntersect;
     double dstThrToIntersect;
@@ -411,9 +411,10 @@ void Test_ATCMath::test_sphericalRhumbIntersection()
 
     double irrelevantAzimuth;
 
-    GeographicLib::Rhumb::WGS84().Inverse(0, -15, 0, 0, checkDstAcftToIntersect, irrelevantAzimuth);
-    GeographicLib::Rhumb::WGS84().Inverse(thrLat, thrLon, 0, 0, checkDstThrToIntersect, irrelevantAzimuth);
+    GeographicLib::Rhumb::WGS84().Inverse(51.3, 20.2, 51.3, 20, checkDstAcftToIntersect, irrelevantAzimuth);
+    GeographicLib::Rhumb::WGS84().Inverse(thrLat, thrLon, 51.3, 20, checkDstThrToIntersect, irrelevantAzimuth);
 
+    qDebug() << dstAcftToIntersect << checkDstAcftToIntersect << dstThrToIntersect << checkDstThrToIntersect;
     QVERIFY(ATCMath::compareDouble(dstAcftToIntersect, checkDstAcftToIntersect, error));
     QVERIFY(ATCMath::compareDouble(dstThrToIntersect, checkDstThrToIntersect, error));
 }
@@ -423,15 +424,15 @@ void Test_ATCMath::test_normalizeHdgError()
     double error = 1e-8;
     double hdg = ATCMath::deg2rad(30);
 
-    ATCMath::normalizeHdgChange(hdg);
+    hdg = ATCMath::normalizeHdgChange(hdg);
     QVERIFY(ATCMath::compareDouble(hdg, ATCMath::deg2rad(30), error));
 
     hdg = ATCMath::deg2rad(210);
-    ATCMath::normalizeHdgChange(hdg);
+    hdg = ATCMath::normalizeHdgChange(hdg);
     QVERIFY(ATCMath::compareDouble(hdg, ATCMath::deg2rad(-150), error));
 
     hdg = ATCMath::deg2rad(-270);
-    ATCMath::normalizeHdgChange(hdg);
+    hdg = ATCMath::normalizeHdgChange(hdg);
     QVERIFY(ATCMath::compareDouble(hdg, ATCMath::deg2rad(90), error));
 }
 

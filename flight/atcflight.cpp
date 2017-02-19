@@ -157,6 +157,11 @@ bool ATCFlight::isDCT()
     return dct;
 }
 
+bool ATCFlight::isCldFinalApp()
+{
+    return cldFinalApp;
+}
+
 bool ATCFlight::isFinalApp()
 {
     return finalApp;
@@ -283,6 +288,11 @@ void ATCFlight::setDCT(bool flag)
     dct = flag;
 }
 
+void ATCFlight::setCldFinalApp(bool flag)
+{
+    cldFinalApp = flag;
+}
+
 void ATCFlight::setFinalApp(bool flag)
 {
     finalApp = flag;
@@ -291,6 +301,12 @@ void ATCFlight::setFinalApp(bool flag)
 void ATCFlight::setSimulated(bool flag)
 {
     simulated = flag;
+}
+
+void ATCFlight::clearWaypoints()
+{
+    waypoints.clear();
+    projectedWaypoints.clear();
 }
 
 void ATCFlight::slotCreateDialogAltitude(QPoint point)

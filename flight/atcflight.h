@@ -41,6 +41,10 @@ struct Temp //Structure for temporary, constant data members preallocated before
     double xoverAltClbM;
     double xoverAltCrsM;
     double xoverAltDesM;
+
+    QPair<double, double> rwyDesThr;
+    QPair<double, double> rwyDesAppRange;
+    double rwyDesAzimuth;
 };
 
 class ATCFlight : public QObject
@@ -83,6 +87,7 @@ public:
     int getProjectedWaypointsVectorSize();
     int getWaypointIndex();
     bool isDCT();
+    bool isCldFinalApp();
     bool isFinalApp();
     bool isSimulated();
 
@@ -112,8 +117,11 @@ public:
     void appendProjectedWaypoint(QPair<double, double> wp);
     void setWaypointIndex(int i);
     void setDCT(bool flag);
+    void setCldFinalApp(bool flag);
     void setFinalApp(bool flag);
     void setSimulated(bool flag);
+
+    void clearWaypoints();
 
 signals:
     void signalCreateDialogAltitude(ATCFlight *flight, QPoint point);
@@ -166,6 +174,7 @@ private:
     QVector<QPair<double, double>> projectedWaypoints; //Format: x, y
     int waypointIndex;
     bool dct = false;
+    bool cldFinalApp = false;
     bool finalApp = false;
     bool simulated = true;
 };

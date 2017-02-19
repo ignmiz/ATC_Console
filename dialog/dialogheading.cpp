@@ -54,8 +54,6 @@ void DialogHeading::slotClicked(const QModelIndex &index)
         flight->getFlightTag()->getTagBox()->setLong();
 
         flight->setNavMode(ATC::Hdg);
-
-
     }
     else
     {
@@ -74,6 +72,12 @@ void DialogHeading::slotClicked(const QModelIndex &index)
         flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
 
         flight->getFlightTag()->getTagBox()->setLong();
+    }
+
+    if(flight->isFinalApp())
+    {
+        flight->setCldFinalApp(false);
+        flight->setFinalApp(false);
     }
 
     if(flight->getRoutePrediction() != nullptr) emit signalUpdateRoute(flight);
@@ -143,7 +147,7 @@ void DialogHeading::dialogHeadingSetup()
         }
     }
 
-    if(flight->isFinalApp())
+    if(flight->isCldFinalApp() || flight->isFinalApp())
     {
         ui->buttonILS->setStyleSheet(
                                         "QPushButton"
@@ -168,10 +172,8 @@ void DialogHeading::dialogHeadingSetup()
                                     );
         ui->buttonILS->update();
     }
-    else
-    {
-        if(flight->getRunwayDestination().isEmpty()) ui->buttonILS->setDisabled(true);
-    }
+
+    if(flight->getRunwayDestination().isEmpty() || flight->isFinalApp()) ui->buttonILS->setDisabled(true);
 
 }
 
@@ -184,9 +186,11 @@ void DialogHeading::appendRow(QString text, QStandardItemModel *model)
 
 void DialogHeading::on_buttonILS_clicked()
 {
-    if(flight->isFinalApp())
+    if(flight->isFinalApp() || flight->isCldFinalApp())
     {
+        flight->setCldFinalApp(false);
         flight->setFinalApp(false);
+
         ui->buttonILS->setStyleSheet(
                                         "QPushButton"
                                         "{"
@@ -214,7 +218,7 @@ void DialogHeading::on_buttonILS_clicked()
     {
         if(!flight->getRunwayDestination().isEmpty())
         {
-            flight->setFinalApp(true);
+            flight->setCldFinalApp(true);
             ui->buttonILS->setStyleSheet(
                                             "QPushButton"
                                             "{"

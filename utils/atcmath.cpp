@@ -430,8 +430,7 @@ void ATCMath::projectAcftPosOnPath(GeographicLib::Geodesic &geo, double fix1Lat,
     double azimuthProjectionBaseTo1;    //Forward azimuth
     geo.Direct(fix1Lat, fix1Lon, azimuth1to2, dst1toProjectionBase, projectionBaseLat, projectionBaseLon, azimuthProjectionBaseTo1);
 
-    headingError = acftHdg - ATCMath::deg2rad(azimuthProjectionBaseTo1);
-    normalizeHdgChange(headingError);
+    headingError = normalizeHdgChange(acftHdg - ATCMath::deg2rad(azimuthProjectionBaseTo1));
 }
 
 void ATCMath::sphericalRhumbIntersection(GeographicLib::Geodesic &geo, double rwyThrLat, double rwyThrLon, double rwyAzimuth, double acftLat, double acftLon, double acftHdg, double &dstAcftToIntersect, double &dstThrToIntersect)
@@ -440,24 +439,21 @@ void ATCMath::sphericalRhumbIntersection(GeographicLib::Geodesic &geo, double rw
     //OUTPUT: dstToIntersect, dstThrToIntersect: distances in metres
 
     using namespace GeographicLib;
-    double R = ATCConst::WGS84_AVG_RADIUS;
 
+    double dstThrToAcft;
     double azimuthThrToAcft;
     double azimuthAcftToThr; //Forward azimuth
-    geo.Inverse(rwyThrLat, rwyThrLon, rad2deg(acftLat), rad2deg(acftLon), azimuthThrToAcft, azimuthAcftToThr);
+    geo.Inverse(rwyThrLat, rwyThrLon, rad2deg(acftLat), rad2deg(acftLon), dstThrToAcft, azimuthThrToAcft, azimuthAcftToThr);
 
-    azimuthThrToAcft = normalizeAngle(azimuthThrToAcft, ATC::Deg);
-    azimuthAcftToThr = normalizeAngle(azimuthAcftToThr, ATC::Deg);
+    double azimuthDiffThr = qFabs(normalizeHdgChange(deg2rad(azimuthThrToAcft) - normalizeAngle(rwyAzimuth + ATCConst::PI, ATC::Rad)));
+    double azimuthDiffAcft = qFabs(normalizeHdgChange(acftHdg - normalizeAngle(deg2rad(azimuthAcftToThr) + ATCConst::PI, ATC::Rad)));   //+180 due forward azimuth
+    double azimuthDiffIntersection = qFabs(normalizeHdgChange(acftHdg - rwyAzimuth));
 
-    double azimuthDiffThr = qFabs(deg2rad(azimuthThrToAcft) - normalizeAngle(rwyAzimuth + ATCConst::PI, ATC::Rad));
-    double azimuthDiffAcft = qFabs(acftHdg - normalizeAngle(deg2rad(azimuthAcftToThr + 180), ATC::Rad));   //+180 due forward azimuth
-    double azimuthDiffIntersection = qFabs(normalizeAngle(acftHdg - rwyAzimuth, ATC::Rad));
-
-    dstAcftToIntersect = R * qAcos((qCos(azimuthDiffThr) + qCos(azimuthDiffAcft) * qCos(azimuthDiffIntersection)) / (qSin(azimuthDiffAcft) * qSin(azimuthDiffIntersection)));
-    dstThrToIntersect = R * qAcos((qCos(azimuthDiffAcft) + qCos(azimuthDiffThr) * qCos(azimuthDiffIntersection)) / (qSin(azimuthDiffThr) * qSin(azimuthDiffIntersection)));
+    dstAcftToIntersect = dstThrToAcft / qSin(azimuthDiffIntersection) * qSin(azimuthDiffThr);
+    dstThrToIntersect = dstThrToAcft / qSin(azimuthDiffIntersection) * qSin(azimuthDiffAcft);
 }
 
-void ATCMath::normalizeHdgChange(double &dHdg)
+double ATCMath::normalizeHdgChange(double dHdg)
 {
     if(dHdg > ATCConst::PI)
     {
@@ -467,6 +463,8 @@ void ATCMath::normalizeHdgChange(double &dHdg)
     {
         dHdg = dHdg + 2 * ATCConst::PI;
     }
+
+    return dHdg;
 }
 
 double ATCMath::randomMass(int mMin, int mMax)
