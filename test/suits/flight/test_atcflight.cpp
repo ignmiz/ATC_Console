@@ -488,7 +488,7 @@ void Test_ATCFlight::test_setCldFinalApp()
     ATCFlight foo(state);
     QVERIFY(foo.isCldFinalApp() == false);
 
-    foo.setFinalApp(true);
+    foo.setCldFinalApp(true);
     QVERIFY(foo.isCldFinalApp() == true);
 }
 
