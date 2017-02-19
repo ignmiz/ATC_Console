@@ -587,8 +587,15 @@ void MainWindow::slotImportScenario(QString path)
                 else if(stringList.at(0).trimmed() == "STAR")
                 {
                     if(stringList.size() == 2) flight->setSTAR(stringList.at(1).trimmed());
-
                     newSim->appendFlight(flight);
+                }
+                else if(stringList.at(0).trimmed() == "CLD FINAL APP")
+                {
+                    stringList.at(1).trimmed() == "1" ? flight->setCldFinalApp(true) : flight->setCldFinalApp(false);
+                }
+                else if(stringList.at(0).trimmed() == "FINAL APP")
+                {
+                    stringList.at(1).trimmed() == "1" ? flight->setFinalApp(true) : flight->setFinalApp(false);
                 }
             }
 
@@ -680,8 +687,8 @@ void MainWindow::slotExportScenario()
             out << "PSSR = " << current->getSquawk() << endl;
             out << "NAV TYPE = " << (mode == ATC::Nav ? "NAV" : "HDG") << endl;
             out << "POS = " << QString::number(ATCMath::rad2deg(current->getState().y)) << " " << QString::number(ATCMath::rad2deg(current->getState().x)) << endl;
-            out << "AFL = " << QString::number(ATCMath::m2ft(current->getState().h)) << endl;
-            out << "TAS = " << QString::number(ATCMath::mps2kt(current->getState().v)) << endl;
+            out << "AFL = " << QString::number(qRound(ATCMath::m2ft(current->getState().h))) << endl;
+            out << "TAS = " << QString::number(qRound(ATCMath::mps2kt(current->getState().v))) << endl;
             out << "THDG = " << QString::number(ATCMath::rad2deg(current->getState().hdg)) << endl;
             out << "CFL = " << current->getTargetAltitude() << endl;
             out << "SPEED RES = " << (current->getTargetSpeed().isEmpty() ? "" : current->getTargetSpeed()) << endl;
@@ -692,6 +699,8 @@ void MainWindow::slotExportScenario()
             out << "RWY ARR = " << (current->getRunwayDestination().isEmpty() ? "" : current->getRunwayDestination()) << endl;
             out << "SID = " << (current->getSID().isEmpty() ? "" : current->getSID()) << endl;
             out << "STAR = " << (current->getSTAR().isEmpty() ? "" : current->getSTAR()) << endl;
+            out << "CLD FINAL APP = " << (current->isCldFinalApp() ? "1" : "0") << endl;
+            out << "FINAL APP = " << (current->isFinalApp() ? "1" : "0") << endl;
             out << endl;
         }
         out << endl;
