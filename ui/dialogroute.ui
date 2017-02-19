@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>60</width>
-    <height>120</height>
+    <height>140</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,9 +27,19 @@ QFrame#frameDialog
 	border-color: #3e3e3e;
 }
 
-QPushButton
+QPushButton:enabled
 {
 	color: #c8c8c8;
+	font: 10px;
+	background-color: #000000;
+	border-style: outset;
+	border-width: 2px;
+	border-color: #3e3e3e;
+}
+
+QPushButton:disabled
+{
+	color: #464646;
 	font: 10px;
 	background-color: #000000;
 	border-style: outset;
@@ -58,7 +68,7 @@ QLabel
      <x>0</x>
      <y>0</y>
      <width>60</width>
-     <height>120</height>
+     <height>140</height>
     </rect>
    </property>
    <property name="frameShape">
@@ -137,6 +147,27 @@ QScrollBar::sub-page:vertical
 	background: #000000;
 	border: none;
 }</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonILS">
+    <property name="geometry">
+     <rect>
+      <x>2</x>
+      <y>118</y>
+      <width>56</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>-1</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>ILS</string>
     </property>
    </widget>
   </widget>

@@ -23,6 +23,67 @@ DialogRoute::~DialogRoute()
     delete ui;
 }
 
+void DialogRoute::on_buttonILS_clicked()
+{
+    if(flight->isFinalApp() || flight->isCldFinalApp())
+    {
+        flight->setCldFinalApp(false);
+        flight->setFinalApp(false);
+
+        ui->buttonILS->setStyleSheet(
+                                        "QPushButton"
+                                        "{"
+                                            "color: #c8c8c8;"
+                                            "font: 10px;"
+                                            "background-color: #000000;"
+                                            "border-style: outset;"
+                                            "border-width: 2px;"
+                                            "border-color: #3e3e3e;"
+                                        "}"
+                                        ""
+                                        "QPushButton::hover"
+                                        "{"
+                                            "background-color: #2d2d2d;"
+                                        "}"
+                                        ""
+                                        "QPushButton::pressed"
+                                        "{"
+                                            "background-color: #3c3c3c;"
+                                        "}"
+                                    );
+        ui->buttonILS->update();
+    }
+    else
+    {
+        if(!flight->getRunwayDestination().isEmpty())
+        {
+            flight->setCldFinalApp(true);
+            ui->buttonILS->setStyleSheet(
+                                            "QPushButton"
+                                            "{"
+                                                "color: #c8c8c8;"
+                                                "font: bold 11px;"
+                                                "background-color: #006400;"
+                                                "border-style: outset;"
+                                                "border-width: 2px;"
+                                                "border-color: #3e3e3e;"
+                                            "}"
+                                            ""
+                                            "QPushButton::hover"
+                                            "{"
+                                                "background-color: #007800;"
+                                            "}"
+                                            ""
+                                            "QPushButton::pressed"
+                                            "{"
+                                                "background-color: #008C00;"
+                                            "}"
+                                        );
+            ui->buttonILS->update();
+        }
+    }
+}
+
 void DialogRoute::slotClicked(const QModelIndex &index)
 {
     QString nextFix = index.data(Qt::DisplayRole).toString();
@@ -81,6 +142,12 @@ void DialogRoute::slotClicked(const QModelIndex &index)
         }
     }
 
+    if(flight->isFinalApp())
+    {
+        flight->setCldFinalApp(false);
+        flight->setFinalApp(false);
+    }
+
     if(flight->getRoutePrediction() != nullptr) emit signalUpdateRoute(flight);
     emit signalClosed();
     close();
@@ -110,6 +177,34 @@ void DialogRoute::dialogRouteSetup()
             ui->listView->scrollTo(model->index(i, 0), QAbstractItemView::PositionAtCenter);
         }
     }
+
+    if(flight->isCldFinalApp() || flight->isFinalApp())
+    {
+        ui->buttonILS->setStyleSheet(
+                                        "QPushButton"
+                                        "{"
+                                            "color: #c8c8c8;"
+                                            "font: bold 11px;"
+                                            "background-color: #006400;"
+                                            "border-style: outset;"
+                                            "border-width: 2px;"
+                                            "border-color: #3e3e3e;"
+                                        "}"
+                                        ""
+                                        "QPushButton::hover"
+                                        "{"
+                                            "background-color: #007800;"
+                                        "}"
+                                        ""
+                                        "QPushButton::pressed"
+                                        "{"
+                                            "background-color: #008C00;"
+                                        "}"
+                                    );
+        ui->buttonILS->update();
+    }
+
+    if(flight->getRunwayDestination().isEmpty() || flight->isFinalApp()) ui->buttonILS->setDisabled(true);
 }
 
 void DialogRoute::appendRow(QString text, QStandardItemModel *model)
