@@ -220,18 +220,24 @@ void Test_ATCFlight::test_setTemp()
     temp.xoverAltClbM = 50;
     temp.xoverAltCrsM = 60;
     temp.xoverAltDesM = 70;
+    temp.rwyDesThr = QPair<double, double>(0.2, 0.3);
+    temp.rwyDesAppRange = QPair<double, double>(0.4, 0.5);
+    temp.rwyDesAzimuth = 0.75;
 
     foo.setTemp(temp);
-    QVERIFY(foo.getTemp().m = 100);
-    QVERIFY(foo.getTemp().Cpowred = 0.5);
-    QVERIFY(foo.getTemp().vStallAP = 1);
-    QVERIFY(foo.getTemp().vStallCR = 2);
-    QVERIFY(foo.getTemp().vStallIC = 3);
-    QVERIFY(foo.getTemp().vStallLD = 4);
-    QVERIFY(foo.getTemp().vStallTO = 5);
-    QVERIFY(foo.getTemp().xoverAltClbM = 50);
-    QVERIFY(foo.getTemp().xoverAltCrsM = 60);
-    QVERIFY(foo.getTemp().xoverAltDesM = 70);
+    QVERIFY(foo.getTemp().m == 100);
+    QVERIFY(foo.getTemp().Cpowred == 0.5);
+    QVERIFY(foo.getTemp().vStallAP == 1);
+    QVERIFY(foo.getTemp().vStallCR == 2);
+    QVERIFY(foo.getTemp().vStallIC == 3);
+    QVERIFY(foo.getTemp().vStallLD == 4);
+    QVERIFY(foo.getTemp().vStallTO == 5);
+    QVERIFY(foo.getTemp().xoverAltClbM == 50);
+    QVERIFY(foo.getTemp().xoverAltCrsM == 60);
+    QVERIFY(foo.getTemp().xoverAltDesM == 70);
+    QVERIFY(foo.getTemp().rwyDesThr == (QPair<double, double>(0.2, 0.3)));
+    QVERIFY(foo.getTemp().rwyDesAppRange == (QPair<double, double>(0.4, 0.5)));
+    QVERIFY(foo.getTemp().rwyDesAzimuth == 0.75);
 }
 
 void Test_ATCFlight::test_setNavMode()
@@ -424,6 +430,9 @@ void Test_ATCFlight::test_appendWaypoint()
     QVERIFY(waypoints.size() == 2);
     QVERIFY(waypoints.at(0) == (QPair<double, double>(0.5, 0.8)));
     QVERIFY(waypoints.at(1) == (QPair<double, double>(0.6, 0.9)));
+
+    foo.clearWaypoints();
+    QVERIFY(foo.getWaypointsVectorSize() == 0);
 }
 
 void Test_ATCFlight::test_appendProjectedWaypoint()
@@ -443,6 +452,9 @@ void Test_ATCFlight::test_appendProjectedWaypoint()
     QVERIFY(waypoints.size() == 2);
     QVERIFY(waypoints.at(0) == (QPair<double, double>(0.5, 0.8)));
     QVERIFY(waypoints.at(1) == (QPair<double, double>(0.6, 0.9)));
+
+    foo.clearWaypoints();
+    QVERIFY(foo.getProjectedWaypointsVectorSize() == 0);
 }
 
 void Test_ATCFlight::test_setWaypointIndex()
@@ -466,6 +478,18 @@ void Test_ATCFlight::test_setDCT()
 
     foo.setDCT(true);
     QVERIFY(foo.isDCT() == true);
+}
+
+void Test_ATCFlight::test_setCldFinalApp()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+    QVERIFY(foo.isCldFinalApp() == false);
+
+    foo.setFinalApp(true);
+    QVERIFY(foo.isCldFinalApp() == true);
 }
 
 void Test_ATCFlight::test_setFinalApp()
