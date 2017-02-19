@@ -3437,7 +3437,7 @@ void ATCSituationalDisplay::createTagType(ATCFlight *flight)
     QString speedRes = flight->getTargetSpeed();
     QString headingRes = QString::number(flight->getHdgRestriction());
 
-    if(speedRes.isEmpty() && (headingRes.isEmpty() || flight->getNavMode() == ATC::Nav))
+    if((speedRes.isEmpty() || (speedRes == "---")) && (headingRes.isEmpty() || flight->getNavMode() == ATC::Nav))
     {
         flight->getFlightTag()->setTagType(ATC::Short);
     }
@@ -3607,7 +3607,7 @@ void ATCSituationalDisplay::createEtiquettes(ATCFlight *flight)
     QString callsign = flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber();
     callsign = callsign.left(9);
 
-    QString groundSpd = QString::number(ATCMath::mps2kt(flight->getState().v));
+    QString groundSpd = QString::number(qRound(ATCMath::mps2kt(flight->getState().v)));
 
     for(int i = 0; i < callsign.size(); i++)
     {
