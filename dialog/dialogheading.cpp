@@ -78,6 +78,7 @@ void DialogHeading::slotClicked(const QModelIndex &index)
     {
         flight->setCldFinalApp(false);
         flight->setFinalApp(false);
+        flight->setGlidePath(false);
     }
 
     if(flight->getRoutePrediction() != nullptr) emit signalUpdateRoute(flight);
@@ -147,7 +148,32 @@ void DialogHeading::dialogHeadingSetup()
         }
     }
 
-    if(flight->isCldFinalApp() || flight->isFinalApp())
+    if(flight->isCldFinalApp())
+    {
+        ui->buttonILS->setStyleSheet(
+                                        "QPushButton"
+                                        "{"
+                                            "color: #c8c8c8;"
+                                            "font: bold 11px;"
+                                            "background-color: #574A00;"
+                                            "border-style: outset;"
+                                            "border-width: 2px;"
+                                            "border-color: #3e3e3e;"
+                                        "}"
+                                        ""
+                                        "QPushButton::hover"
+                                        "{"
+                                            "background-color: #705F00;"
+                                        "}"
+                                        ""
+                                        "QPushButton::pressed"
+                                        "{"
+                                            "background-color: #8A7500;"
+                                        "}"
+                                    );
+        ui->buttonILS->update();
+    }
+    else if(flight->isFinalApp())
     {
         ui->buttonILS->setStyleSheet(
                                         "QPushButton"
@@ -173,8 +199,7 @@ void DialogHeading::dialogHeadingSetup()
         ui->buttonILS->update();
     }
 
-    if(flight->getRunwayDestination().isEmpty() || flight->isFinalApp()) ui->buttonILS->setDisabled(true);
-
+    if(flight->getRunwayDestination().isEmpty()) ui->buttonILS->setDisabled(true);
 }
 
 void DialogHeading::appendRow(QString text, QStandardItemModel *model)
@@ -190,6 +215,7 @@ void DialogHeading::on_buttonILS_clicked()
     {
         flight->setCldFinalApp(false);
         flight->setFinalApp(false);
+        flight->setGlidePath(false);
 
         ui->buttonILS->setStyleSheet(
                                         "QPushButton"
@@ -224,7 +250,7 @@ void DialogHeading::on_buttonILS_clicked()
                                             "{"
                                                 "color: #c8c8c8;"
                                                 "font: bold 11px;"
-                                                "background-color: #006400;"
+                                                "background-color: #574A00;"
                                                 "border-style: outset;"
                                                 "border-width: 2px;"
                                                 "border-color: #3e3e3e;"
@@ -232,12 +258,12 @@ void DialogHeading::on_buttonILS_clicked()
                                             ""
                                             "QPushButton::hover"
                                             "{"
-                                                "background-color: #007800;"
+                                                "background-color: #705F00;"
                                             "}"
                                             ""
                                             "QPushButton::pressed"
                                             "{"
-                                                "background-color: #008C00;"
+                                                "background-color: #8A7500;"
                                             "}"
                                         );
             ui->buttonILS->update();
