@@ -167,9 +167,14 @@ bool ATCFlight::isFinalApp()
     return finalApp;
 }
 
-bool ATCFlight::isAboveGlidePath()
+bool ATCFlight::isGlidePath()
 {
-    return aboveGlidePath;
+    return glidePath;
+}
+
+double ATCFlight::getAppTargetAltitude()
+{
+    return appTargetAltitude;
 }
 
 bool ATCFlight::isSimulated()
@@ -303,9 +308,14 @@ void ATCFlight::setFinalApp(bool flag)
     finalApp = flag;
 }
 
-void ATCFlight::setAboveGlidePath(bool flag)
+void ATCFlight::setGlidePath(bool flag)
 {
-    aboveGlidePath = flag;
+    glidePath = flag;
+}
+
+void ATCFlight::setAppTargetAltitude(double altitudeM)
+{
+    appTargetAltitude = altitudeM;
 }
 
 void ATCFlight::setSimulated(bool flag)

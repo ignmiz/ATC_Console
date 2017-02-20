@@ -90,7 +90,8 @@ public:
 
     bool isCldFinalApp();
     bool isFinalApp();
-    bool isAboveGlidePath();
+    bool isGlidePath();
+    double getAppTargetAltitude();
 
     bool isSimulated();
 
@@ -123,7 +124,8 @@ public:
 
     void setCldFinalApp(bool flag);
     void setFinalApp(bool flag);
-    void setAboveGlidePath(bool flag);
+    void setGlidePath(bool flag);
+    void setAppTargetAltitude(double altitudeM);
 
     void setSimulated(bool flag);
 
@@ -183,7 +185,8 @@ private:
 
     bool cldFinalApp = false;
     bool finalApp = false;
-    bool aboveGlidePath = false;
+    bool glidePath = false;
+    double appTargetAltitude;
 
     bool simulated = true;
 };

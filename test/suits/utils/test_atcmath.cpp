@@ -414,7 +414,6 @@ void Test_ATCMath::test_sphericalRhumbIntersection()
     GeographicLib::Rhumb::WGS84().Inverse(51.3, 20.2, 51.3, 20, checkDstAcftToIntersect, irrelevantAzimuth);
     GeographicLib::Rhumb::WGS84().Inverse(thrLat, thrLon, 51.3, 20, checkDstThrToIntersect, irrelevantAzimuth);
 
-    qDebug() << dstAcftToIntersect << checkDstAcftToIntersect << dstThrToIntersect << checkDstThrToIntersect;
     QVERIFY(ATCMath::compareDouble(dstAcftToIntersect, checkDstAcftToIntersect, error));
     QVERIFY(ATCMath::compareDouble(dstThrToIntersect, checkDstThrToIntersect, error));
 }
