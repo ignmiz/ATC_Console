@@ -25,37 +25,40 @@ DialogAltitude::~DialogAltitude()
 
 void DialogAltitude::slotClicked(const QModelIndex &index)
 {
-    double altitude = ATCMath::m2ft(flight->getState().h) / 100;
-    QString altitudeString = index.data(Qt::DisplayRole).toString();
-
-    if(altitude >= settings->TRANSITION_LEVEL)
+    if(!flight->isGlidePath())
     {
-        flight->setTargetAltitude("F" + altitudeString);
-    }
-    else
-    {
-        flight->setTargetAltitude("A" + altitudeString);
-    }
+        double altitude = ATCMath::m2ft(flight->getState().h) / 100;
+        QString altitudeString = index.data(Qt::DisplayRole).toString();
 
-    QString shortEtiquette = flight->getFlightTag()->getTagBox()->getShortEtiquette();
-    QString longEtiquette = flight->getFlightTag()->getTagBox()->getLongEtiquette();
+        if(altitude >= settings->TRANSITION_LEVEL)
+        {
+            flight->setTargetAltitude("F" + altitudeString);
+        }
+        else
+        {
+            flight->setTargetAltitude("A" + altitudeString);
+        }
 
-    for(int i = 0; i < altitudeString.size(); i++)
-    {
-        shortEtiquette[i + 20] = altitudeString.at(i);
-        longEtiquette[i + 20] = altitudeString.at(i);
-    }
+        QString shortEtiquette = flight->getFlightTag()->getTagBox()->getShortEtiquette();
+        QString longEtiquette = flight->getFlightTag()->getTagBox()->getLongEtiquette();
 
-    flight->getFlightTag()->getTagBox()->setShortEtiquette(shortEtiquette);
-    flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
+        for(int i = 0; i < altitudeString.size(); i++)
+        {
+            shortEtiquette[i + 20] = altitudeString.at(i);
+            longEtiquette[i + 20] = altitudeString.at(i);
+        }
 
-    if(flight->getFlightTag()->getTagType() == ATC::Short)
-    {
-        flight->getFlightTag()->getTagBox()->setShort();
-    }
-    else
-    {
-        flight->getFlightTag()->getTagBox()->setLong();
+        flight->getFlightTag()->getTagBox()->setShortEtiquette(shortEtiquette);
+        flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
+
+        if(flight->getFlightTag()->getTagType() == ATC::Short)
+        {
+            flight->getFlightTag()->getTagBox()->setShort();
+        }
+        else
+        {
+            flight->getFlightTag()->getTagBox()->setLong();
+        }
     }
 
     emit signalClosed();
@@ -112,9 +115,6 @@ void DialogAltitude::dialogAltitudeSetup()
         }
     }
 
-    appendRow("CLD", model);
-    appendRow("---", model);
-
     ui->listView->setModel(model);
     ui->listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->listView->setSelectionMode(QAbstractItemView::NoSelection);
@@ -129,6 +129,59 @@ void DialogAltitude::dialogAltitudeSetup()
             ui->listView->scrollTo(model->index(i, 0), QAbstractItemView::PositionAtCenter);
         }
     }
+
+    if(flight->isCldFinalApp())
+    {
+        ui->buttonILS->setStyleSheet(
+                                        "QPushButton"
+                                        "{"
+                                            "color: #c8c8c8;"
+                                            "font: bold 11px;"
+                                            "background-color: #574A00;"
+                                            "border-style: outset;"
+                                            "border-width: 2px;"
+                                            "border-color: #3e3e3e;"
+                                        "}"
+                                        ""
+                                        "QPushButton::hover"
+                                        "{"
+                                            "background-color: #705F00;"
+                                        "}"
+                                        ""
+                                        "QPushButton::pressed"
+                                        "{"
+                                            "background-color: #8A7500;"
+                                        "}"
+                                    );
+        ui->buttonILS->update();
+    }
+    else if(flight->isFinalApp())
+    {
+        ui->buttonILS->setStyleSheet(
+                                        "QPushButton"
+                                        "{"
+                                            "color: #c8c8c8;"
+                                            "font: bold 11px;"
+                                            "background-color: #006400;"
+                                            "border-style: outset;"
+                                            "border-width: 2px;"
+                                            "border-color: #3e3e3e;"
+                                        "}"
+                                        ""
+                                        "QPushButton::hover"
+                                        "{"
+                                            "background-color: #007800;"
+                                        "}"
+                                        ""
+                                        "QPushButton::pressed"
+                                        "{"
+                                            "background-color: #008C00;"
+                                        "}"
+                                    );
+        ui->buttonILS->update();
+    }
+
+    if(flight->getRunwayDestination().isEmpty()) ui->buttonILS->setDisabled(true);
 }
 
 void DialogAltitude::appendRow(QString text, QStandardItemModel *model)
@@ -136,4 +189,66 @@ void DialogAltitude::appendRow(QString text, QStandardItemModel *model)
     QStandardItem *item = new QStandardItem(text);
     item->setTextAlignment(Qt::AlignCenter);
     model->appendRow(item);
+}
+
+void DialogAltitude::on_buttonILS_clicked()
+{
+    if(flight->isFinalApp() || flight->isCldFinalApp())
+    {
+        flight->setCldFinalApp(false);
+        flight->setFinalApp(false);
+        flight->setGlidePath(false);
+
+        ui->buttonILS->setStyleSheet(
+                                        "QPushButton"
+                                        "{"
+                                            "color: #c8c8c8;"
+                                            "font: 10px;"
+                                            "background-color: #000000;"
+                                            "border-style: outset;"
+                                            "border-width: 2px;"
+                                            "border-color: #3e3e3e;"
+                                        "}"
+                                        ""
+                                        "QPushButton::hover"
+                                        "{"
+                                            "background-color: #2d2d2d;"
+                                        "}"
+                                        ""
+                                        "QPushButton::pressed"
+                                        "{"
+                                            "background-color: #3c3c3c;"
+                                        "}"
+                                    );
+        ui->buttonILS->update();
+    }
+    else
+    {
+        if(!flight->getRunwayDestination().isEmpty())
+        {
+            flight->setCldFinalApp(true);
+            ui->buttonILS->setStyleSheet(
+                                            "QPushButton"
+                                            "{"
+                                                "color: #c8c8c8;"
+                                                "font: bold 11px;"
+                                                "background-color: #574A00;"
+                                                "border-style: outset;"
+                                                "border-width: 2px;"
+                                                "border-color: #3e3e3e;"
+                                            "}"
+                                            ""
+                                            "QPushButton::hover"
+                                            "{"
+                                                "background-color: #705F00;"
+                                            "}"
+                                            ""
+                                            "QPushButton::pressed"
+                                            "{"
+                                                "background-color: #8A7500;"
+                                            "}"
+                                        );
+            ui->buttonILS->update();
+        }
+    }
 }

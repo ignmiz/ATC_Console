@@ -23,6 +23,7 @@ signals:
     void signalClosed();
 
 private slots:
+    void on_buttonILS_clicked();
     void slotClicked(const QModelIndex &index);
 
 private:
