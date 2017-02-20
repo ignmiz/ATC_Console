@@ -150,12 +150,13 @@ void ATCSimulation::slotStartSimulation()
         timer.start();
 
         progressState(geo, globalTimer);
+        flightsCleanup();
         incrementUpdateCounter(counter);
 
         elapsedTime = timer.nsecsElapsed();
         diff = dt - elapsedTime;
 
-//        qDebug() << "Elapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
+        qDebug() << "Elapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
         QThread::usleep(qFloor(diff / 1000));
     }
 }
@@ -312,7 +313,7 @@ void ATCSimulation::progressState(GeographicLib::Geodesic &geo, QElapsedTimer &g
         {
             ISA isa = calculateEnvironment(flight);
             assignDiscreteState(flight, isa);
-            assignContinuousState(flight, isa, geo);
+            assignContinuousState(flight, isa, geo, i);
         }
         else
         {
@@ -405,7 +406,7 @@ void ATCSimulation::assignDiscreteState(ATCFlight *flight, ISA &isa)
 //    qDebug() << state.cm << state.fp << state.rpm << state.trm << state.shm << state.am;
 }
 
-void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, GeographicLib::Geodesic &geo)
+void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, GeographicLib::Geodesic &geo, int flightIndex)
 {
     State state = flight->getState();
     Temp temp = flight->getTemp();
@@ -684,12 +685,26 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
     state.v = vNext;
     state.hdg = hdgNext;
 
-    if(state.h <= ATCConst::APP_ALT_FLT_TERMINATED && flight->isFinalApp())
+    if((state.h <= ATCConst::APP_ALT_FLT_TERMINATED) && flight->isFinalApp())
     {
-
+        cleanupIndices.append(flightIndex);
     }
 
     flight->setState(state);
+}
+
+void ATCSimulation::flightsCleanup()
+{
+    if(!cleanupIndices.isEmpty())
+    {
+        for(int i = cleanupIndices.size() - 1; i >= 0; i--)
+        {
+            delete flights.at(i);
+            flights.remove(i);
+        }
+
+        cleanupIndices.clear();
+    }
 }
 
 void ATCSimulation::incrementUpdateCounter(double &counter)

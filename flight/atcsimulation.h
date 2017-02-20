@@ -54,6 +54,7 @@ private:
     ATCAirspace *airspace;
     ATCActiveRunways *activeRunways = nullptr;
     QVector<ATCFlight*> flights;
+    QVector<int> cleanupIndices;
 
     QElapsedTimer globalTimer;
 
@@ -65,7 +66,8 @@ private:
 
     ISA calculateEnvironment(ATCFlight *flight);
     void assignDiscreteState(ATCFlight *flight, ISA &isa);
-    void assignContinuousState(ATCFlight *flight, ISA &isa, GeographicLib::Geodesic &geo);
+    void assignContinuousState(ATCFlight *flight, ISA &isa, GeographicLib::Geodesic &geo, int flightIndex);
+    void flightsCleanup();
 
     void incrementUpdateCounter(double &counter);
 
