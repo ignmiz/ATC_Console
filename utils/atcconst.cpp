@@ -43,6 +43,7 @@ const double ATCConst::FLY_OVER_DST = 185.2;                    //0.1nm
 const double ATCConst::APP_RANGE = 55560;                       //30nm
 const double ATCConst::APP_ALLOWED_XTRACK_INTERCEPT = 370.4;    //0.2nm
 const double ATCConst::APP_ALLOWED_HDG_INTERCEPT = 10;          //deg
+const double ATCConst::APP_PATH_ANGLE = 3;                      //deg
 
 //Environment
 const double ATCConst::betaTrop = -0.0065;
