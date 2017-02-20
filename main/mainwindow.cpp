@@ -763,6 +763,9 @@ void MainWindow::slotPauseSimulation()
 
 void MainWindow::slotStopSimulation()
 {
+    ui->buttonTime->getTime()->start();
+    ui->buttonTime->start();
+
     if(simController != nullptr)
     {
         simController->stop();

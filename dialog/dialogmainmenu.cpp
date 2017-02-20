@@ -110,7 +110,6 @@ void DialogMainMenu::on_buttonStop_clicked()
 {
     emit signalStopSimulation();
 
-    time->start();
     uiInner->timeEditStart->setTime(*time);
 
     uiInner->buttonNewSimulation->setEnabled(true);
