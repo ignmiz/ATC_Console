@@ -1137,7 +1137,7 @@ void DialogFlightCreator::formSetup(ATCFlight *flight)
         uiInner->spinBoxTrueHDG->setValue(qRound(ATCMath::rad2deg(flight->getState().hdg)));
 
         uiInner->lineEditAltitudeRes->setText(flight->getTargetAltitude());
-        uiInner->lineEditSpeedRes->setText(flight->getTargetSpeed());
+        if(flight->getTargetSpeed() != "---") uiInner->lineEditSpeedRes->setText(flight->getTargetSpeed());
 
         switch(flight->getNavMode())
         {

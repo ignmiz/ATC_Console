@@ -407,6 +407,7 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
                 flight->setFinalApp(false);
             }
 
+            //Update temp data
             if(!flight->getRunwayDestination().isEmpty())
             {
                 ATCRunway *runway = airspace->findRunway(flight->getFlightPlan()->getRoute().getDestination(), flight->getRunwayDestination());
