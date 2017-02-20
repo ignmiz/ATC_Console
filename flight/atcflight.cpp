@@ -167,6 +167,11 @@ bool ATCFlight::isFinalApp()
     return finalApp;
 }
 
+bool ATCFlight::isAboveGlidePath()
+{
+    return aboveGlidePath;
+}
+
 bool ATCFlight::isSimulated()
 {
     return simulated;
@@ -296,6 +301,11 @@ void ATCFlight::setCldFinalApp(bool flag)
 void ATCFlight::setFinalApp(bool flag)
 {
     finalApp = flag;
+}
+
+void ATCFlight::setAboveGlidePath(bool flag)
+{
+    aboveGlidePath = flag;
 }
 
 void ATCFlight::setSimulated(bool flag)

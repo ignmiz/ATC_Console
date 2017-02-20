@@ -39,6 +39,7 @@ private slots:
     void test_setDCT();
     void test_setCldFinalApp();
     void test_setFinalApp();
+    void test_setAboveGlidePath();
     void test_setSimulated();
 };
 

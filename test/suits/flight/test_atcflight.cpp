@@ -504,6 +504,18 @@ void Test_ATCFlight::test_setFinalApp()
     QVERIFY(foo.isFinalApp() == true);
 }
 
+void Test_ATCFlight::test_setAboveGlidePath()
+{
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+    QVERIFY(foo.isAboveGlidePath() == false);
+
+    foo.setAboveGlidePath(true);
+    QVERIFY(foo.isAboveGlidePath() == true);
+}
+
 void Test_ATCFlight::test_setSimulated()
 {
     State state;

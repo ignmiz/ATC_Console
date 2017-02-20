@@ -87,8 +87,11 @@ public:
     int getProjectedWaypointsVectorSize();
     int getWaypointIndex();
     bool isDCT();
+
     bool isCldFinalApp();
     bool isFinalApp();
+    bool isAboveGlidePath();
+
     bool isSimulated();
 
     void setFlightPlan(ATCFlightPlan *fpl);
@@ -117,8 +120,11 @@ public:
     void appendProjectedWaypoint(QPair<double, double> wp);
     void setWaypointIndex(int i);
     void setDCT(bool flag);
+
     void setCldFinalApp(bool flag);
     void setFinalApp(bool flag);
+    void setAboveGlidePath(bool flag);
+
     void setSimulated(bool flag);
 
     void clearWaypoints();
@@ -174,8 +180,11 @@ private:
     QVector<QPair<double, double>> projectedWaypoints; //Format: x, y
     int waypointIndex;
     bool dct = false;
+
     bool cldFinalApp = false;
     bool finalApp = false;
+    bool aboveGlidePath = false;
+
     bool simulated = true;
 };
 
