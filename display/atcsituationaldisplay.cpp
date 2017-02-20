@@ -3808,6 +3808,27 @@ void ATCSituationalDisplay::updateEtiquettesQuick(ATCFlight *flight)
         longEtiquette[i + 16] = altitude.at(i);
     }
 
+    QString targetAltitude = flight->getTargetAltitude().right(3);
+    if(!flight->isGlidePath())
+    {
+        for(int i = 0; i < 3; i++)
+        {
+            shortEtiquette[i + 20] = targetAltitude.at(i);
+            longEtiquette[i + 20] = targetAltitude.at(i);
+        }
+    }
+    else
+    {
+        shortEtiquette[20] = ' ';
+        longEtiquette[20] = ' ';
+
+        shortEtiquette[21] = QChar(0x22A5);
+        longEtiquette[21] = QChar(0x22A5);
+
+        shortEtiquette[22] = ' ';
+        longEtiquette[22] = ' ';
+    }
+
     if(flight->getNavMode() == ATC::Nav)
     {
         if(flight->isDCT())
