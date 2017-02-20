@@ -44,6 +44,7 @@ const double ATCConst::APP_RANGE = 55560;                       //30nm
 const double ATCConst::APP_ALLOWED_XTRACK_INTERCEPT = 370.4;    //0.2nm
 const double ATCConst::APP_ALLOWED_HDG_INTERCEPT = 10;          //deg
 const double ATCConst::APP_PATH_ANGLE = 3;                      //deg
+const double ATCConst::APP_ALT_FLT_TERMINATED = 15.24;              //50ft
 
 //Environment
 const double ATCConst::betaTrop = -0.0065;

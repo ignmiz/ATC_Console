@@ -47,6 +47,7 @@ public:
     static const double APP_ALLOWED_XTRACK_INTERCEPT;
     static const double APP_ALLOWED_HDG_INTERCEPT;
     static const double APP_PATH_ANGLE;
+    static const double APP_ALT_FLT_TERMINATED;
 
     //Environment
     static const double betaTrop;

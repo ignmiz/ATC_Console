@@ -155,7 +155,7 @@ void ATCSimulation::slotStartSimulation()
         elapsedTime = timer.nsecsElapsed();
         diff = dt - elapsedTime;
 
-        qDebug() << "Elapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
+//        qDebug() << "Elapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
         QThread::usleep(qFloor(diff / 1000));
     }
 }
@@ -171,6 +171,7 @@ void ATCSimulation::preallocateTempData()
     {
         for(int i = 0; i < flights.size(); i++)
         {
+            //Assign temporaries
             ATCFlight *flight = flights.at(i);
             ATCAircraftType *type = flight->getFlightPlan()->getType();
 
@@ -237,6 +238,7 @@ void ATCSimulation::preallocateTempData()
 
             flight->setTemp(temp);
 
+            //Assign waypoint coords & index
             QStringList fixList = flight->getFixList();
             for(int i = 0; i < fixList.size(); i++)
             {
@@ -285,10 +287,11 @@ void ATCSimulation::preallocateTempData()
                 if(fixList.at(i) == flight->getNextFix())
                 {
                     flight->setWaypointIndex(i);
-                    flight->setDCT(true);
+                    if(!flight->isFinalApp()) flight->setDCT(true);
                 }
             }
 
+            //Exclude flights that will happen in future
             if(flight->getSimStartTime() != QTime(0, 0, 0))
             {
                 emit signalHideFlightTag(flight->getFlightTag());
@@ -332,7 +335,16 @@ void ATCSimulation::assignDiscreteState(ATCFlight *flight, ISA &isa)
 {
     State state = flight->getState();
     Temp temp = flight->getTemp();
-    double targetAltitude = ATCMath::ft2m(flight->getTargetAltitude().mid(1, -1).toDouble()) * 100;
+
+    double targetAltitude;
+    if(!flight->isGlidePath())
+    {
+        targetAltitude = ATCMath::ft2m(flight->getTargetAltitude().mid(1, -1).toDouble()) * 100;
+    }
+    else
+    {
+        targetAltitude = flight->getAppTargetAltitude();
+    }
 
     ATCAircraftType *type = flight->getFlightPlan()->getType();
 
@@ -431,6 +443,11 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
                 else
                 {
                     ATCMath::projectAcftPosOnPath(geo, temp.rwyDesAppRange.first, temp.rwyDesAppRange.second, temp.rwyDesThr.first, temp.rwyDesThr.second, state.y, state.x, state.hdg, xtrackError, headingError, dstToNext);
+
+                    double glidePathAltitude = dstToNext * qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE));
+                    flight->setAppTargetAltitude(glidePathAltitude);
+
+                    if(!flight->isGlidePath() && (state.h >= glidePathAltitude)) flight->setGlidePath(true);
                 }
             }
             else
@@ -467,7 +484,7 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
         bankAngle = ATCMath::bankAngle(ATCConst::k1, ATCConst::k2, xtrackError, headingError, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE));
 //        qDebug() << xtrackError << ATCMath::rad2deg(headingError) << dstToNext;
 
-        if(!flight->isFinalApp() && (waypointIndex < flight->getWaypointsVectorSize() - 1))
+        if((!flight->isFinalApp() && (waypointIndex < flight->getWaypointsVectorSize() - 1)) || alreadyOnAppPath)
         {
             double legAngleCurrent;
             double legAngleNext;
@@ -638,7 +655,20 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
 
     double Mach = state.v / isa.a;
     double ESF = ATCMath::ESF(state.cm, state.am, state.shm, state.trm, Mach, isa.T, 0);
-    double pathAngle = ATCMath::pathAngle(thrust, drag, ESF, m);
+
+    double pathAngle;
+    if(!flight->isGlidePath())
+    {
+        pathAngle = ATCMath::pathAngle(thrust, drag, ESF, m);
+    }
+    else if(flight->isGlidePath() && (state.cm == BADA::Descend))
+    {
+        pathAngle = ATCMath::deg2rad(-1 * ATCConst::APP_PATH_ANGLE);
+    }
+    else
+    {
+        pathAngle = 0;
+    }
 
     double radius = ATCMath::ellipsoidRadius(state.h, state.y);
 
@@ -653,6 +683,11 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
     state.h = hNext;
     state.v = vNext;
     state.hdg = hdgNext;
+
+    if(state.h <= ATCConst::APP_ALT_FLT_TERMINATED && flight->isFinalApp())
+    {
+
+    }
 
     flight->setState(state);
 }
