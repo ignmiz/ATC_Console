@@ -448,7 +448,7 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
                     double glidePathAltitude = dstToNext * qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE));
                     flight->setAppTargetAltitude(glidePathAltitude);
 
-                    if(!flight->isGlidePath() && (state.h >= glidePathAltitude)) flight->setGlidePath(true);
+                    if(!flight->isGlidePath() && (state.h >= glidePathAltitude) && (state.h <= 1.05 * glidePathAltitude)) flight->setGlidePath(true);
                 }
             }
             else
