@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DialogLeaders</class>
+ <widget class="QDialog" name="DialogLeaders">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>250</width>
+    <height>100</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QLabel" name="labelLength">
+   <property name="geometry">
+    <rect>
+     <x>-30</x>
+     <y>35</y>
+     <width>100</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Length:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="spinBoxLength">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>35</y>
+     <width>80</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QSpinBox:enabled
+{
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	selection-background-color: #060064;
+	font: 13px;
+}
+
+QSpinBox
+{
+	color: #323232;
+	background-color: #050505;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #0a0a0a;
+	font: 13px;
+}</string>
+   </property>
+   <property name="maximum">
+    <number>359</number>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonNM">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>35</y>
+     <width>30</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>NM</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonMIN">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>35</y>
+     <width>30</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>MIN</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>65</y>
+     <width>210</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Apply</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

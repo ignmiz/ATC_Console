@@ -14,6 +14,7 @@
 #include "dialogflightcreator.h"
 #include "dialogflightplan.h"
 #include "dialogactiverunways.h"
+#include "dialogleaders.h"
 
 #include "atcpaths.h"
 #include "atcairspace.h"
@@ -57,10 +58,12 @@ private slots:
     void on_buttonClose_clicked();
     void on_buttonSettings_clicked();
     void on_buttonShowConsole_clicked();
+    void on_buttonLeaderLine_clicked();
 
     void dialogMainMenuClosed();
     void dialogSectorSetupClosed();
     void dialogSettingsClosed();
+    void dialogLeadersClosed();
 
     void changeFocusToDisplay();
 
@@ -97,6 +100,7 @@ private:
     DialogMainMenu *dialogMainMenu;
     DialogSectorSetup *dialogSectorSetup;
     DialogSettings *dialogSettings;
+    DialogLeaders *dialogLeaders = nullptr;
 
     DialogFlight *dialogFlight = nullptr;
     DialogFlightCreator *dialogFlightCreator = nullptr;

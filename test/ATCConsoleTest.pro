@@ -122,7 +122,8 @@ SOURCES += \
     atccombodelegate.cpp \
     atcclock.cpp \
     atcsimulationcontroller.cpp \
-    atctagdiamond.cpp
+    atctagdiamond.cpp \
+    dialogleaders.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -237,7 +238,8 @@ HEADERS  += \
     ../include/GeographicLib/TransverseMercatorExact.hpp \
     ../include/GeographicLib/Utility.hpp \
     ../include/GeographicLib/UTMUPS.hpp \
-    atctagdiamond.h
+    atctagdiamond.h \
+    dialogleaders.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
@@ -253,7 +255,8 @@ FORMS    += mainwindow.ui \
     dialogroute.ui \
     dialoghandoff.ui \
     dialogflightplan.ui \
-    dialogactiverunways.ui
+    dialogactiverunways.ui \
+    dialogleaders.ui
 
 #MOCK SOURCES & HEADERS GO HERE:
 

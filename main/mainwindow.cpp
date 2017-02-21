@@ -140,6 +140,19 @@ void MainWindow::on_buttonShowConsole_clicked()
     }
 }
 
+void MainWindow::on_buttonLeaderLine_clicked()
+{
+    if(dialogLeaders == nullptr)
+    {
+        dialogLeaders = new DialogLeaders(this);
+        dialogLeaders->show();
+        setSituationalDisplayFocus();
+
+        connect(dialogLeaders, SIGNAL(closed()), this, SLOT(dialogLeadersClosed()));
+    }
+}
+
+
 void MainWindow::dialogMainMenuClosed()
 {
     setFlagDialogMainMenuExists(false);
@@ -155,6 +168,11 @@ void MainWindow::dialogSectorSetupClosed()
 void MainWindow::dialogSettingsClosed()
 {
     setFlagDialogSettingExists(false);
+}
+
+void MainWindow::dialogLeadersClosed()
+{
+    dialogLeaders = nullptr;
 }
 
 void MainWindow::changeFocusToDisplay()
@@ -864,3 +882,4 @@ void MainWindow::setSituationalDisplayFocus()
 {
     ui->situationalDisplay->setFocus();
 }
+
