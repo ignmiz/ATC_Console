@@ -581,6 +581,17 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 {
                     TAG_LEADER_WIDTH = stringList.at(1).trimmed().toDouble();
                 }
+                else if(stringList.at(0).trimmed() == "LEADER UNIT")
+                {
+                    if(stringList.at(1).trimmed() == "NM")
+                    {
+                        TAG_LEADER_UNIT = ATC::LeaderNM;
+                    }
+                    else
+                    {
+                        TAG_LEADER_UNIT = ATC::LeaderMIN;
+                    }
+                }
                 else if(stringList.at(0).trimmed() == "BOX WIDTH")
                 {
                     TAG_BOX_WIDTH = stringList.at(1).trimmed().toDouble();
@@ -764,6 +775,7 @@ void ATCSettings::exportSymbology(QString path)
     out << "LEADER LENGTH = " << TAG_LEADER_LENGTH << endl;
     out << "LEADER WIDTH = " << TAG_LEADER_WIDTH << endl;
     out << "BOX WIDTH = " << TAG_BOX_WIDTH << endl;
+    out << "LEADER UNIT = " << ((TAG_LEADER_UNIT == ATC::LeaderNM) ? "NM" : "MIN") << endl;
     out << "BOX HEIGHT = " << TAG_BOX_HEIGHT << endl;
     out << "BOX HEIGHT FULL = " << TAG_BOX_HEIGHT_FULL << endl;
     out << "BOX DX = " << TAG_BOX_DX << endl;

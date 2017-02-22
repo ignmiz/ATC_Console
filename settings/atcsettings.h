@@ -2,6 +2,7 @@
 #define ATCSETTINGS_H
 
 #include "atcpaths.h"
+#include "atcflags.h"
 
 #include <QColor>
 #include <QFile>
@@ -90,8 +91,9 @@ public:
     double TAG_DIAMOND_WIDTH;
     double TAG_DIAMOND_DIA;
     double TAG_DIAMOND_LINE;
-    double TAG_LEADER_LENGTH;
+    int TAG_LEADER_LENGTH;
     double TAG_LEADER_WIDTH;
+    ATC::LeaderUnits TAG_LEADER_UNIT;
     double TAG_BOX_WIDTH;
     double TAG_BOX_HEIGHT;
     double TAG_BOX_HEIGHT_FULL;
@@ -131,9 +133,7 @@ private:
     ATCPaths *paths;
 
     QRgb colorFromString(QString string);
-
     void loadInitialSymbology(QString path);
-
     void interpretSymbologyFile(QString path);
 };
 

@@ -90,17 +90,30 @@ QSpinBox
     <string>MIN</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="buttonApply">
    <property name="geometry">
     <rect>
      <x>20</x>
      <y>65</y>
-     <width>210</width>
+     <width>105</width>
      <height>25</height>
     </rect>
    </property>
    <property name="text">
     <string>Apply</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonCancel">
+   <property name="geometry">
+    <rect>
+     <x>125</x>
+     <y>65</y>
+     <width>105</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Cancel</string>
    </property>
   </widget>
  </widget>

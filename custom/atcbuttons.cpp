@@ -22,6 +22,8 @@ ATCButtonDialog::ATCButtonDialog(QWidget *parent) : QPushButton(parent)
                 "{"
                 "   background-color: #3c3c3c;"
                 "}"
+
+
                 );
 }
 
@@ -32,9 +34,19 @@ ATCButtonDialog::~ATCButtonDialog()
 ATCButtonMainWindow::ATCButtonMainWindow(QWidget *parent) : QPushButton(parent)
 {
     this->setStyleSheet(
-                "ATCButtonMainWindow"
+                "ATCButtonMainWindow:enabled"
                 "{"
                 "   color: #c8c8c8;"
+                "   font: 15px;"
+                "   background-color: #000000;"
+                "   border-style: outset;"
+                "   border-width: 2px;"
+                "   border-color: #3e3e3e;"
+                "}"
+
+                "ATCButtonMainWindow:disabled"
+                "{"
+                "   color: #323232;"
                 "   font: 15px;"
                 "   background-color: #000000;"
                 "   border-style: outset;"

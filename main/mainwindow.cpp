@@ -144,11 +144,12 @@ void MainWindow::on_buttonLeaderLine_clicked()
 {
     if(dialogLeaders == nullptr)
     {
-        dialogLeaders = new DialogLeaders(this);
+        dialogLeaders = new DialogLeaders(settings, this);
         dialogLeaders->show();
         setSituationalDisplayFocus();
 
         connect(dialogLeaders, SIGNAL(closed()), this, SLOT(dialogLeadersClosed()));
+        connect(dialogLeaders, SIGNAL(signalUpdateLeaders()), ui->situationalDisplay, SLOT(slotUpdateLeaders()));
     }
 }
 
@@ -222,6 +223,8 @@ void MainWindow::slotConstructDialogFlightNew()
     connect(dialogFlight, SIGNAL(signalActiveScenarioPath(QString)), dialogMainMenu, SLOT(slotActiveScenarioPath(QString)));
     connect(dialogFlight, SIGNAL(signalSetFlagSimulationValid(bool)), dialogMainMenu, SLOT(slotSetFlagSimulationValid(bool)));
     connect(dialogFlight, SIGNAL(signalActiveScenarioPath(QString)), this, SLOT(slotActiveScenarioPath(QString)));
+
+    ui->buttonLeaderLine->setEnabled(false);
 }
 
 void MainWindow::slotConstructDialogFlightEdit()
@@ -238,6 +241,8 @@ void MainWindow::slotConstructDialogFlightEdit()
         connect(dialogFlight, SIGNAL(signalConstructDialogFlightCreator(ATCFlight*)), this, SLOT(slotConstructDialogFlightCreator(ATCFlight*)));
         connect(dialogFlight, SIGNAL(signalConstructDialogActiveRunways(ATC::SimCreationMode)), this, SLOT(slotConstructDialogActiveRunways(ATC::SimCreationMode)));
         connect(dialogFlight, SIGNAL(signalActiveScenarioPath(QString)), dialogMainMenu, SLOT(slotActiveScenarioPath(QString)));
+
+        ui->buttonLeaderLine->setEnabled(false);
     }
 }
 
@@ -260,6 +265,8 @@ void MainWindow::slotCloseDialogFlight()
 
     tempSimulation = nullptr;
     dialogMainMenu->show();
+
+    ui->buttonLeaderLine->setEnabled(true);
 }
 
 void MainWindow::slotCreateDialogFlightPlan(ATCFlight *flight)

@@ -47,6 +47,11 @@ namespace ATC {
     {
         New, Edit
     };
+
+    enum LeaderUnits
+    {
+        LeaderNM, LeaderMIN
+    };
 }
 
 namespace BADA

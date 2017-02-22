@@ -140,6 +140,7 @@ private slots:
     void slotUpdateRoute(ATCFlight *flight);
 
     void slotUpdateTags();
+    void slotUpdateLeaders();
 
 private:
     ATCAirspace *airspaceData = nullptr;
@@ -260,7 +261,7 @@ private:
 
     void createTagType(ATCFlight *flight);
     ATCTagDiamond *createDiamond(ATCFlightTag *tag, double lon, double lat);
-    QGraphicsLineItem* createLeader(ATCFlightTag* tag, double lon, double lat, double trueHdg);
+    QGraphicsLineItem* createLeader(ATCFlightTag* tag, double lon, double lat, double trueHdg, double tasMPS);
     QGraphicsLineItem* createConnector(ATCFlightTag *tag);
     ATCTagRect* createTagBox(ATCFlightTag *tag);
     QGraphicsSimpleTextItem* createTagText(ATCFlightTag *tag);
@@ -290,6 +291,7 @@ private:
     double translateFromLocalY(double localY);
 
     QPointF geo2local(double latRad, double lonRad, double angleDeg, double scale = ATCConst::WGS84_A, double refLon = 0);
+    QPointF local2geo(double x, double y, double angleDeg, double scale = ATCConst::WGS84_A, double refLon = 0);
     QPointF rotatePoint(QPointF pt, double angle, ATC::AngularUnits units);
 
     void calculateSectorParameters();

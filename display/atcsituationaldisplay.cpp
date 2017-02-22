@@ -1170,9 +1170,20 @@ void ATCSituationalDisplay::slotUpdateTags()
         tag->moveTo(diamond);
 
         //Update leader line length & orientation
+
+        double length;
+        if(settings->TAG_LEADER_UNIT == ATC::LeaderNM)
+        {
+            length = ATCMath::nm2m(settings->TAG_LEADER_LENGTH);
+        }
+        else
+        {
+            length = flight->getState().v * settings->TAG_LEADER_LENGTH * 60;
+        }
+
         double startLon = ATCMath::rad2deg(state.x);
         double startLat = ATCMath::rad2deg(state.y);
-        double endLon = ATCMath::rad2deg(state.x + ATCMath::nm2m(settings->TAG_LEADER_LENGTH) / (ATCConst::WGS84_A * qCos(state.y)));
+        double endLon = ATCMath::rad2deg(state.x + length / (ATCConst::WGS84_A * qCos(state.y)));
         double endLat = ATCMath::rad2deg(state.y);
 
         startLon = mercatorProjectionLon(startLon);
@@ -1202,6 +1213,55 @@ void ATCSituationalDisplay::slotUpdateTags()
 
         //If exist, update route predictions
         if((prediction != nullptr) && (flight->getNavMode() == ATC::Nav)) updateRoutePrediction(flight);
+    }
+}
+
+void ATCSituationalDisplay::slotUpdateLeaders()
+{
+    if(simulation != nullptr)
+    {
+        for(int i = 0; i < simulation->getFlightsVectorSize(); i++)
+        {
+            ATCFlight *flight = simulation->getFlight(i);
+            QGraphicsLineItem *leader = flight->getFlightTag()->getLeader();
+
+            QPointF p1 = leader->line().p1();
+            QPointF p2 = leader->line().p2();
+
+            double azimuth = qAtan2(p2.x() - p1.x(), p1.y() - p2.y()) + ATCMath::deg2rad(ATCConst::AVG_DECLINATION);
+
+            double length;
+            if(settings->TAG_LEADER_UNIT == ATC::LeaderNM)
+            {
+                length = ATCMath::nm2m(settings->TAG_LEADER_LENGTH);
+            }
+            else
+            {
+                length = flight->getState().v * settings->TAG_LEADER_LENGTH * 60;
+            }
+
+            QPointF diamondCoords = local2geo(p1.x(), p1.y(), ATCConst::AVG_DECLINATION); //Format: (lon, lat), deg
+            double endLon = diamondCoords.x() + ATCMath::rad2deg(length / (ATCConst::WGS84_A * qCos(ATCMath::deg2rad(diamondCoords.y()))));
+            double endLat = diamondCoords.y();
+
+            double startLon = mercatorProjectionLon(diamondCoords.x());
+            double startLat = mercatorProjectionLat(diamondCoords.y());
+            endLon = mercatorProjectionLon(endLon);
+            endLat = mercatorProjectionLat(endLat);
+
+            double delta = qFabs(endLon - startLon);
+
+            endLon = startLon + delta * qSin(azimuth);
+            endLat = startLat + delta * qCos(azimuth);
+
+            double xEnd = rotateX(endLon, endLat, ATCConst::AVG_DECLINATION);
+            double yEnd = rotateY(endLon, endLat, ATCConst::AVG_DECLINATION);
+
+            xEnd = translateToLocalX(xEnd);
+            yEnd = translateToLocalY(yEnd);
+
+            leader->setLine(QLineF(p1.x(), p1.y(), xEnd, yEnd));
+        }
     }
 }
 
@@ -3410,7 +3470,7 @@ void ATCSituationalDisplay::createFlightTag(ATCFlight *flight)
 
     createTagType(flight);
     ATCTagDiamond *diamond = createDiamond(tag, longitude, latitude);
-    QGraphicsLineItem *leader = createLeader(tag, longitude, latitude, flight->getState().hdg);
+    QGraphicsLineItem *leader = createLeader(tag, longitude, latitude, flight->getState().hdg, flight->getState().v);
     QGraphicsLineItem *connector = createConnector(tag);
     QGraphicsSimpleTextItem *text = createTagText(tag);
     ATCTagRect *tagBox = createTagBox(tag);
@@ -3473,11 +3533,21 @@ ATCTagDiamond* ATCSituationalDisplay::createDiamond(ATCFlightTag *tag, double lo
     return diamond;
 }
 
-QGraphicsLineItem *ATCSituationalDisplay::createLeader(ATCFlightTag *tag, double lon, double lat, double trueHdg)
+QGraphicsLineItem *ATCSituationalDisplay::createLeader(ATCFlightTag *tag, double lon, double lat, double trueHdg, double tasMPS)
 {
+    double length;
+    if(settings->TAG_LEADER_UNIT == ATC::LeaderNM)
+    {
+        length = ATCMath::nm2m(settings->TAG_LEADER_LENGTH);
+    }
+    else
+    {
+        length = tasMPS * settings->TAG_LEADER_LENGTH * 60;
+    }
+
     double leaderStartLon = lon;
     double leaderStartLat = lat;
-    double leaderEndLon = lon + ATCMath::rad2deg(ATCMath::nm2m(settings->TAG_LEADER_LENGTH) / (ATCConst::WGS84_A * qCos(ATCMath::deg2rad(lat))));
+    double leaderEndLon = lon + ATCMath::rad2deg(length / (ATCConst::WGS84_A * qCos(ATCMath::deg2rad(lat))));
     double leaderEndLat = lat;
 
     leaderStartLon = mercatorProjectionLon(leaderStartLon);
@@ -4447,6 +4517,20 @@ QPointF ATCSituationalDisplay::geo2local(double latRad, double lonRad, double an
     return QPointF(xLocal, yLocal);
 }
 
+QPointF ATCSituationalDisplay::local2geo(double x, double y, double angleDeg, double scale, double refLon)
+{
+    double xRotated = translateFromLocalX(x);
+    double yRotated = translateFromLocalY(y);
+
+    double xProjected = rotateX(xRotated, yRotated, -1 * angleDeg);
+    double yProjected = rotateY(xRotated, yRotated, -1 * angleDeg);
+
+    double lon = inverseMercatorLon(xProjected, refLon, scale);
+    double lat = inverseMercatorLat(yProjected, 1E-8);
+
+    return QPointF(lon, lat);
+}
+
 QPointF ATCSituationalDisplay::rotatePoint(QPointF pt, double angle, ATC::AngularUnits units)
 {
     if(units == ATC::Deg) angle = ATCMath::deg2rad(angle);
@@ -4644,17 +4728,9 @@ void ATCSituationalDisplay::mousePressEvent(QMouseEvent *event)
 
         //Map from radar screen to lat/lon
         QPointF point = mapToScene(event->pos());
+        QPointF geo = local2geo(point.x(), point.y(), ATCConst::AVG_DECLINATION);
 
-        double mercatorXrot = translateFromLocalX(point.x());
-        double mercatorYrot = translateFromLocalY(point.y());
-
-        double mercatorX = rotateX(mercatorXrot, mercatorYrot, -1 * ATCConst::AVG_DECLINATION);
-        double mercatorY = rotateY(mercatorXrot, mercatorYrot, -1 * ATCConst::AVG_DECLINATION);
-
-        double lon = inverseMercatorLon(mercatorX);
-        double lat = inverseMercatorLat(mercatorY, 1E-8);
-
-        emit signalDisplayClicked(lon, lat);
+        emit signalDisplayClicked(geo.x(), geo.y());
 
         //Delete temp route prediction
         scene->removeItem(tempPrediction->getPolygon());
