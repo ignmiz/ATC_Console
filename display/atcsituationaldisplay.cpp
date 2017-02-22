@@ -729,7 +729,7 @@ void ATCSituationalDisplay::slotCreateDialogAltitude(ATCFlight *flight, QPoint p
     }
 
     dialogAltitude = new DialogAltitude(flight, settings, this);
-    dialogAltitude->move(point.x() - dialogAltitude->width()/2, point.y() - dialogAltitude->height()/2 - settings->TAG_BOX_HEIGHT_FULL/2);
+    dialogAltitude->move(point.x() - dialogAltitude->width()/2, point.y() - dialogAltitude->height()/2 - settings->TAG_BOX_HEIGHT_FULL/2 + 10); //+10 due ILS button at the bottom
 
     dialogAltitude->show();
     dialogAltitudeExists = true;
@@ -789,7 +789,7 @@ void ATCSituationalDisplay::slotCreateDialogHeading(ATCFlight *flight, QPoint po
     }
 
     dialogHeading = new DialogHeading(flight, settings, this);
-    dialogHeading->move(point.x() - dialogHeading->width()/2, point.y() - dialogHeading->height()/2 - settings->TAG_BOX_HEIGHT_FULL/2);
+    dialogHeading->move(point.x() - dialogHeading->width()/2, point.y() - dialogHeading->height()/2 - settings->TAG_BOX_HEIGHT_FULL/2 + 10); //+10 due ILS button at the bottom
 
     dialogHeading->show();
     dialogHeadingExists = true;
@@ -821,7 +821,7 @@ void ATCSituationalDisplay::slotCreateDialogRoute(ATCFlight *flight, QPoint poin
     }
 
     dialogRoute = new DialogRoute(flight, settings, this);
-    dialogRoute->move(point.x() - dialogRoute->width()/2, point.y() - dialogRoute->height()/2 - settings->TAG_BOX_HEIGHT_FULL/2);
+    dialogRoute->move(point.x() - dialogRoute->width()/2, point.y() - dialogRoute->height()/2 - settings->TAG_BOX_HEIGHT_FULL/2 + 10); //+10 due ILS button at the bottom
 
     dialogRoute->show();
     dialogRouteExists = true;
