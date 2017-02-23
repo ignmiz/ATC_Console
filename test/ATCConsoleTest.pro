@@ -21,6 +21,7 @@ VPATH += ./main \
     ../main \
     ../nav \
     ../settings \
+    ../tools \
     ../ui \
     ../utils
 
@@ -40,6 +41,7 @@ INCLUDEPATH += ./main \
     ../main \
     ../nav \
     ../settings \
+    ../tools \
     ../ui \
     ../utils
 
@@ -123,7 +125,8 @@ SOURCES += \
     atcclock.cpp \
     atcsimulationcontroller.cpp \
     atctagdiamond.cpp \
-    dialogleaders.cpp
+    dialogleaders.cpp \
+    atcruler.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -239,7 +242,8 @@ HEADERS  += \
     ../include/GeographicLib/Utility.hpp \
     ../include/GeographicLib/UTMUPS.hpp \
     atctagdiamond.h \
-    dialogleaders.h
+    dialogleaders.h \
+    atcruler.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \

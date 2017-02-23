@@ -57,7 +57,9 @@ ATCSituationalDisplay::~ATCSituationalDisplay()
     if(dialogRoute != nullptr) delete dialogRoute;
     if(dialogHandoff != nullptr) delete dialogHandoff;
 
-    scene->clear();
+    if(ruler != nullptr) delete ruler;
+
+    currentScene->clear();
 }
 
 qreal ATCSituationalDisplay::getBaseScale() const
@@ -68,6 +70,11 @@ qreal ATCSituationalDisplay::getBaseScale() const
 void ATCSituationalDisplay::setBaseScale(qreal scale)
 {
     baseScale = scale;
+}
+
+double ATCSituationalDisplay::getCurrentScale()
+{
+    return currentScale;
 }
 
 void ATCSituationalDisplay::setFlightFactory(ATCFlightFactory *factory)
@@ -1025,7 +1032,7 @@ void ATCSituationalDisplay::slotDisplayRoute(ATCFlight *flight)
         if(prediction != nullptr)
         {
             prediction->getPolygon()->setPen(QPen(settings->ROUTE_COLOR, settings->ROUTE_LINE_WIDTH / currentScale));
-            scene->addItem(prediction->getPolygon());
+            currentScene->addItem(prediction->getPolygon());
 
             QBrush textBrush(Qt::white);
 
@@ -1041,7 +1048,7 @@ void ATCSituationalDisplay::slotDisplayRoute(ATCFlight *flight)
                     prediction->getLabels().at(i)->setPos(polyVertices.at(i + 1).x() + settings->ROUTE_LABEL_DX / currentScale,
                                                           polyVertices.at(i + 1).y() + settings->ROUTE_LABEL_DY / currentScale);
 
-                    scene->addItem(prediction->getLabels().at(i));
+                    currentScene->addItem(prediction->getLabels().at(i));
                 }
             }
             else
@@ -1053,7 +1060,7 @@ void ATCSituationalDisplay::slotDisplayRoute(ATCFlight *flight)
                     prediction->getLabels().at(i)->setPos(polyVertices.at(i).x() + settings->ROUTE_LABEL_DX / currentScale,
                                                           polyVertices.at(i).y() + settings->ROUTE_LABEL_DY / currentScale);
 
-                    scene->addItem(prediction->getLabels().at(i));
+                    currentScene->addItem(prediction->getLabels().at(i));
                 }
             }
 
@@ -1110,7 +1117,7 @@ void ATCSituationalDisplay::slotDisplayRoute(QStringList fixList)
 
     //Display route prediction
     tempPrediction->getPolygon()->setPen(QPen(settings->ROUTE_COLOR, settings->ROUTE_LINE_WIDTH / currentScale));
-    scene->addItem(tempPrediction->getPolygon());
+    currentScene->addItem(tempPrediction->getPolygon());
 
     QBrush textBrush(Qt::white);
 
@@ -1124,7 +1131,7 @@ void ATCSituationalDisplay::slotDisplayRoute(QStringList fixList)
         tempPrediction->getLabels().at(i)->setPos(polyVertices.at(i).x() + settings->ROUTE_LABEL_DX / currentScale,
                                               polyVertices.at(i).y() + settings->ROUTE_LABEL_DY / currentScale);
 
-        scene->addItem(tempPrediction->getLabels().at(i));
+        currentScene->addItem(tempPrediction->getLabels().at(i));
     }
 
     visibleRoutes.append(tempPrediction);
@@ -1134,10 +1141,10 @@ void ATCSituationalDisplay::slotClearRoute(ATCFlight *flight)
 {
     ATCRoutePrediction *prediction = flight->getRoutePrediction();
 
-    scene->removeItem(prediction->getPolygon());
+    currentScene->removeItem(prediction->getPolygon());
     for(int i = 0; i < prediction->getLabels().size(); i++)
     {
-        scene->removeItem(prediction->getLabels().at(i));
+        currentScene->removeItem(prediction->getLabels().at(i));
     }
 
     for(int i = 0; i < visibleRoutes.size(); i++)
@@ -1296,8 +1303,8 @@ void ATCSituationalDisplay::situationalDisplaySetup()
 
     viewport()->setCursor(Qt::CrossCursor);
 
-    scene = new QGraphicsScene(this);
-    setScene(scene);
+    currentScene = new QGraphicsScene(this);
+    setScene(currentScene);
 
     acftCursor = QCursor(QPixmap("../../ATC_Console/ATC_Console/resources/acft_cursor.png"));
 }
@@ -2263,7 +2270,7 @@ void ATCSituationalDisplay::calculateSectorsARTCCLow()
             QGraphicsPolygonItem *currentSymbol = airspaceData->getSectorARTCCLow(i)->getPolygon(j);
 
             currentSymbol->setPen(pen);
-            scene->addItem(currentSymbol);
+            currentScene->addItem(currentSymbol);
         }
 
         airspaceData->getSectorARTCCLow(i)->hide();
@@ -2351,7 +2358,7 @@ void ATCSituationalDisplay::calculateSectorsARTCCHigh()
             QGraphicsPolygonItem *currentSymbol = airspaceData->getSectorARTCCHigh(i)->getPolygon(j);
 
             currentSymbol->setPen(pen);
-            scene->addItem(currentSymbol);
+            currentScene->addItem(currentSymbol);
         }
 
         airspaceData->getSectorARTCCHigh(i)->hide();
@@ -2439,7 +2446,7 @@ void ATCSituationalDisplay::calculateSectorsARTCC()
             QGraphicsPolygonItem *currentSymbol = airspaceData->getSectorARTCC(i)->getPolygon(j);
 
             currentSymbol->setPen(pen);
-            scene->addItem(currentSymbol);
+            currentScene->addItem(currentSymbol);
         }
 
         airspaceData->getSectorARTCC(i)->hide();
@@ -2507,7 +2514,7 @@ void ATCSituationalDisplay::calculateFixes()
         QAbstractGraphicsShapeItem *currentSymbol = airspaceData->getFix(i)->getSymbol();
 
         currentSymbol->setPen(pen);
-        scene->addItem(currentSymbol);
+        currentScene->addItem(currentSymbol);
     }
 
 //Calculate labels
@@ -2531,7 +2538,7 @@ void ATCSituationalDisplay::calculateFixes()
         currentLabel->setPos(positionX + settings->FIX_LABEL_DX / currentScale,
                              positionY + settings->FIX_LABEL_DY / currentScale);
 
-        scene->addItem(currentLabel);
+        currentScene->addItem(currentLabel);
         currentFix->hide();
     }
 }
@@ -2585,7 +2592,7 @@ void ATCSituationalDisplay::calculateAirports()
         QGraphicsEllipseItem *currentSymbol(airspaceData->getAirport(i)->getSymbol());
 
         currentSymbol->setPen(pen);
-        scene->addItem(currentSymbol);
+        currentScene->addItem(currentSymbol);
     }
 
 //Calculate labels
@@ -2609,7 +2616,7 @@ void ATCSituationalDisplay::calculateAirports()
         currentLabel->setPos(positionX + settings->AIRPORT_LABEL_DX / currentScale,
                              positionY + settings->AIRPORT_LABEL_DY / currentScale);
 
-        scene->addItem(currentLabel);
+        currentScene->addItem(currentLabel);
         currentAirport->hide();
     }
 }
@@ -2768,8 +2775,8 @@ void ATCSituationalDisplay::calculateExtendedCentrelines()
                 currentCentreline1->getCentreline()->setPen(pen);
                 currentCentreline2->getCentreline()->setPen(pen);
 
-                scene->addItem(currentCentreline1->getCentreline());
-                scene->addItem(currentCentreline2->getCentreline());
+                currentScene->addItem(currentCentreline1->getCentreline());
+                currentScene->addItem(currentCentreline2->getCentreline());
             }
         }
     }
@@ -2962,8 +2969,8 @@ void ATCSituationalDisplay::calculateCentrelineTicks()
                     tickLine1->setPen(pen);
                     tickLine2->setPen(pen);
 
-                    scene->addItem(tickLine1);
-                    scene->addItem(tickLine2);
+                    currentScene->addItem(tickLine1);
+                    currentScene->addItem(tickLine2);
                 }
 
                 current->getExtendedCentreline1()->hide();
@@ -3025,7 +3032,7 @@ void ATCSituationalDisplay::calculateVORs()
         QAbstractGraphicsShapeItem *currentRect(airspaceData->getVOR(i)->getSymbol());
 
         currentRect->setPen(pen);
-        scene->addItem(currentRect);
+        currentScene->addItem(currentRect);
     }
 
 //Calculate labels
@@ -3049,7 +3056,7 @@ void ATCSituationalDisplay::calculateVORs()
         currentLabel->setPos(positionX + settings->VOR_LABEL_DX / currentScale,
                              positionY + settings->VOR_LABEL_DY / currentScale);
 
-        scene->addItem(currentLabel);
+        currentScene->addItem(currentLabel);
         currentVOR->hide();
     }
 }
@@ -3103,7 +3110,7 @@ void ATCSituationalDisplay::calculateNDBs()
         QAbstractGraphicsShapeItem *currentSymbol(airspaceData->getNDB(i)->getSymbol());
 
         currentSymbol->setPen(pen);
-        scene->addItem(currentSymbol);
+        currentScene->addItem(currentSymbol);
     }
 
 //Calculate labels
@@ -3127,7 +3134,7 @@ void ATCSituationalDisplay::calculateNDBs()
         currentLabel->setPos(positionX + settings->NDB_LABEL_DX / currentScale,
                              positionY + settings->NDB_LABEL_DY / currentScale);
 
-        scene->addItem(currentLabel);
+        currentScene->addItem(currentLabel);
         currentNDB->hide();
     }
 }
@@ -3207,7 +3214,7 @@ void ATCSituationalDisplay::calculateSTARs()
             QGraphicsLineItem *currentSymbol = airspaceData->getSTARSymbol(i)->getLine(j);
 
             currentSymbol->setPen(pen);
-            scene->addItem(currentSymbol);            
+            currentScene->addItem(currentSymbol);
         }
 
         airspaceData->getSTARSymbol(i)->hide();
@@ -3289,7 +3296,7 @@ void ATCSituationalDisplay::calculateSIDs()
             QGraphicsLineItem *currentSymbol = airspaceData->getSIDSymbol(i)->getLine(j);
 
             currentSymbol->setPen(pen);
-            scene->addItem(currentSymbol);
+            currentScene->addItem(currentSymbol);
         }
 
         airspaceData->getSIDSymbol(i)->hide();
@@ -3371,7 +3378,7 @@ void ATCSituationalDisplay::calculateAirwayLow()
             QGraphicsLineItem *currentSymbol = airspaceData->getAirwayLow(i)->getLine(j);
 
             currentSymbol->setPen(pen);
-            scene->addItem(currentSymbol);            
+            currentScene->addItem(currentSymbol);
         }
 
         airspaceData->getAirwayLow(i)->hide();
@@ -3453,11 +3460,17 @@ void ATCSituationalDisplay::calculateAirwayHigh()
             QGraphicsLineItem *currentSymbol = airspaceData->getAirwayHigh(i)->getLine(j);
 
             currentSymbol->setPen(pen);
-            scene->addItem(currentSymbol);            
+            currentScene->addItem(currentSymbol);
         }
 
         airspaceData->getAirwayHigh(i)->hide();
     }
+}
+
+void ATCSituationalDisplay::deleteRuler()
+{
+    delete ruler;
+    ruler = nullptr;
 }
 
 void ATCSituationalDisplay::createFlightTag(ATCFlight *flight)
@@ -3484,10 +3497,10 @@ void ATCSituationalDisplay::createFlightTag(ATCFlight *flight)
 
     assignTagPosition(tag);
 
-    scene->addItem(diamond);
-    scene->addItem(leader);
-    scene->addItem(connector);
-    scene->addItem(tagBox);
+    currentScene->addItem(diamond);
+    currentScene->addItem(leader);
+    currentScene->addItem(connector);
+    currentScene->addItem(tagBox);
 
     visibleTags.append(tag);
 }
@@ -4712,6 +4725,8 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
 
         rescaleTags();
         rescaleRoutes();
+
+        if(ruler != nullptr) deleteRuler();
     }
 
     event->accept();
@@ -4719,7 +4734,11 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
 
 void ATCSituationalDisplay::mousePressEvent(QMouseEvent *event)
 {
-    QGraphicsView::mousePressEvent(event);
+    if((ruler == nullptr) && (event->button() == Qt::RightButton) && !keyPressedCTRL)
+    {
+        ruler = new ATCRuler(mapToScene(event->pos()), settings, currentScene, &currentScale);
+        mousePressedRMB = true;
+    }
 
     if(flagGetLocation)
     {
@@ -4733,10 +4752,10 @@ void ATCSituationalDisplay::mousePressEvent(QMouseEvent *event)
         emit signalDisplayClicked(geo.x(), geo.y());
 
         //Delete temp route prediction
-        scene->removeItem(tempPrediction->getPolygon());
+        currentScene->removeItem(tempPrediction->getPolygon());
         for(int i = 0; i < tempPrediction->getLabels().size(); i++)
         {
-            scene->removeItem(tempPrediction->getLabels().at(i));
+            currentScene->removeItem(tempPrediction->getLabels().at(i));
         }
 
         visibleRoutes.remove(visibleRoutes.size() - 1);
@@ -4802,19 +4821,23 @@ void ATCSituationalDisplay::mousePressEvent(QMouseEvent *event)
         }
     }
 
-
+    QGraphicsView::mousePressEvent(event);
     event->accept();
 }
 
 void ATCSituationalDisplay::mouseMoveEvent(QMouseEvent *event)
 {
-    QGraphicsView::mouseMoveEvent(event);
+    if((ruler != nullptr) && mousePressedRMB) ruler->moveEnd(mapToScene(event->pos()));
 
+    QGraphicsView::mouseMoveEvent(event);
     event->accept();
 }
 
 void ATCSituationalDisplay::mouseReleaseEvent(QMouseEvent *event)
 {
+    if((ruler != nullptr) && (event->button() == Qt::RightButton)) deleteRuler();
+
+    mousePressedRMB = false;
     QGraphicsView::mouseReleaseEvent(event);
 }
 
@@ -4823,7 +4846,9 @@ void ATCSituationalDisplay::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_Control)
     {
         this->setDragMode(QGraphicsView::ScrollHandDrag);
+        keyPressedCTRL = true;
     }
+
     event->accept();
 }
 
@@ -4832,8 +4857,10 @@ void ATCSituationalDisplay::keyReleaseEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_Control)
     {
         this->setDragMode(QGraphicsView::NoDrag);
-        viewport()->setCursor(Qt::CrossCursor);        
+        viewport()->setCursor(Qt::CrossCursor);
+        keyPressedCTRL = false;
     }
+
     event->accept();
 }
 

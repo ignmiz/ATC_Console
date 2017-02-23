@@ -7,6 +7,7 @@
 #include "atcpaths.h"
 #include "atcflight.h"
 #include "atcsimulation.h"
+#include "atcruler.h"
 
 #include "dialogaltitude.h"
 #include "dialogspeed.h"
@@ -41,6 +42,7 @@ public:
 
     qreal getBaseScale() const;
     void setBaseScale(qreal scale);
+    double getCurrentScale();
 
     void setFlightFactory(ATCFlightFactory *flightFactory);
     void setSimulation(ATCSimulation *sim);
@@ -148,6 +150,7 @@ private:
     ATCPaths *paths = nullptr;
     ATCFlightFactory *flightFactory = nullptr;
     ATCSimulation *simulation = nullptr;
+    ATCRuler *ruler = nullptr;
 
     qreal baseScale = 1;
     qreal scaleResolution = 0.15;
@@ -157,10 +160,13 @@ private:
     double sectorCentreX;
     double sectorCentreY;
 
-    QGraphicsScene *scene = nullptr;
+    QGraphicsScene *currentScene = nullptr;
     QCursor acftCursor;
 
     bool flagGetLocation = false;
+    bool mousePressedRMB = false;
+
+    bool keyPressedCTRL = false;
 
     QVector<ATCSectorARTCCLow*> visibleSectorsARTCCLow;
     QVector<ATCSectorARTCCHigh*> visibleSectorsARTCCHigh;
@@ -256,6 +262,8 @@ private:
     void calculateSIDs();
     void calculateAirwayLow();
     void calculateAirwayHigh();
+
+    void deleteRuler();
 
     void createFlightTag(ATCFlight *flight);
 
