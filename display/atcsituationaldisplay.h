@@ -283,8 +283,8 @@ private:
     void loadInitialDisplay(QString path);
     void interpretDisplayFile(QString path);
 
-    double mercatorProjectionLon(double longitude, double referenceLongitude = 0, double scale = ATCConst::WGS84_A);
-    double mercatorProjectionLat(double latitude, double scale = ATCConst::WGS84_A);
+    double mercatorProjectionLon(double longitudeDeg, double referenceLongitudeDeg = 0, double scale = ATCConst::WGS84_A);
+    double mercatorProjectionLat(double latitudeDeg, double scale = ATCConst::WGS84_A);
 
     double inverseMercatorLon(double mercatorX, double referenceLongitude = 0, double scale = ATCConst::WGS84_A);
     double inverseMercatorLat(double mercatorY, double error, double scale = ATCConst::WGS84_A);

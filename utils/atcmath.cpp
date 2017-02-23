@@ -904,3 +904,113 @@ BADA::AccelerationMode ATCMath::assignAM(double tasMPS, double tasNomMPS)
     return BADA::ErrorAM;
 }
 
+double ATCMath::mercatorProjectionLon(double longitudeDeg, double referenceLongitudeDeg, double scale)
+{
+    return scale * (longitudeDeg - referenceLongitudeDeg);
+}
+
+double ATCMath::mercatorProjectionLat(double latitudeDeg, double scale)
+{
+    double latitudeRad = deg2rad(latitudeDeg);
+    return rad2deg(scale * qLn(qTan(ATCConst::PI / 4 + latitudeRad / 2) *
+           qPow((1 - ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(latitudeRad)) / (1 + ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(latitudeRad)),
+                ATCConst::WGS84_FIRST_ECCENTRICITY / 2)));
+}
+
+double ATCMath::inverseMercatorLon(double mercatorX, double referenceLongitude, double scale)
+{
+    return mercatorX / scale + referenceLongitude;
+}
+
+double ATCMath::inverseMercatorLat(double mercatorY, double error, double scale)
+{
+    double t = qExp(-1 * deg2rad(mercatorY) / scale);
+    double lat = ATCConst::PI / 2 - 2 * qAtan(t);
+    double lat1;
+
+    double change = error + 1;
+
+    while(change > error)
+    {
+        lat1 = ATCConst::PI/2 - 2 * qAtan(t * qPow((1 - ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(lat)) / (1 + ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(lat)), ATCConst::WGS84_FIRST_ECCENTRICITY / 2));
+        change = qFabs(lat1 - lat) / lat;
+
+        lat = lat1;
+    }
+
+    return rad2deg(lat);
+}
+
+double ATCMath::rotateX(double coordX, double coordY, double angleDeg)
+{
+    //Assuming Y axis is up, angle measured from X which is horizontal right, ccw positive
+    double angleRad = deg2rad(angleDeg);
+    return coordX * qCos(angleRad) - coordY * qSin(angleRad);
+}
+
+double ATCMath::rotateY(double coordX, double coordY, double angleDeg)
+{
+    //Assuming Y axis is up, angle measured from X which is horizontal right, ccw positive
+    double angleRad = deg2rad(angleDeg);
+    return coordX * qSin(angleRad) + coordY * qCos(angleRad);
+}
+
+double ATCMath::translateToLocalX(double coordX, double sectorCentreX, double scaleFactor)
+{
+    return (coordX - sectorCentreX) * scaleFactor;
+}
+
+double ATCMath::translateToLocalY(double coordY, double sectorCentreY, double scaleFactor)
+{
+    return (-1 * (coordY - sectorCentreY) * scaleFactor);
+}
+
+double ATCMath::translateFromLocalX(double localX, double sectorCentreX, double scaleFactor)
+{
+    return localX / scaleFactor + sectorCentreX;
+}
+
+double ATCMath::translateFromLocalY(double localY, double sectorCentreY, double scaleFactor)
+{
+    return -1 * localY / scaleFactor + sectorCentreY;
+}
+
+QPointF ATCMath::geo2local(double latRad, double lonRad, double angleDeg, double sectorCentreX, double sectorCentreY, double scaleFactor, double scale, double refLon)
+{
+    double xProjected = mercatorProjectionLon(ATCMath::rad2deg(lonRad), refLon, scale);
+    double yProjected = mercatorProjectionLat(ATCMath::rad2deg(latRad), scale);
+
+    double xRotated = rotateX(xProjected, yProjected, angleDeg);
+    double yRotated = rotateY(xProjected, yProjected, angleDeg);
+
+    double xLocal = translateToLocalX(xRotated, sectorCentreX, scaleFactor);
+    double yLocal = translateToLocalY(yRotated, sectorCentreY, scaleFactor);
+
+    return QPointF(xLocal, yLocal);
+}
+
+QPointF ATCMath::local2geo(double x, double y, double angleDeg, double sectorCentreX, double sectorCentreY, double scaleFactor, double scale, double refLon, double error)
+{
+    double xRotated = translateFromLocalX(x, sectorCentreX, scaleFactor);
+    double yRotated = translateFromLocalY(y, sectorCentreY, scaleFactor);
+
+    double xProjected = rotateX(xRotated, yRotated, -1 * angleDeg);
+    double yProjected = rotateY(xRotated, yRotated, -1 * angleDeg);
+
+    double lon = inverseMercatorLon(xProjected, refLon, scale);
+    double lat = inverseMercatorLat(yProjected, error);
+
+    return QPointF(lon, lat);
+}
+
+QPointF ATCMath::rotatePoint(QPointF pt, double angle, ATC::AngularUnits units)
+{
+    //Assuming Y axis is up, angle measured from X which is horizontal right, ccw positive
+    if(units == ATC::Deg) angle = ATCMath::deg2rad(angle);
+
+    double x = pt.x() * qCos(angle) - pt.y() * qSin(angle);
+    double y = pt.x() * qSin(angle) + pt.y() * qCos(angle);
+
+    return(QPointF(x, y));
+}
+

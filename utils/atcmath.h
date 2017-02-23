@@ -101,8 +101,25 @@ public:
     static BADA::TroposphereMode assignTRM(double currentAltM);
     static BADA::AccelerationMode assignAM(double tasMPS, double tasNomMPS);
 
-private:
+    //Transformations & projections
+    static double mercatorProjectionLon(double longitudeDeg, double referenceLongitudeDeg = 0, double scale = ATCConst::WGS84_A);    //needs test
+    static double mercatorProjectionLat(double latitudeDeg, double scale = ATCConst::WGS84_A);    //needs test
 
+    static double inverseMercatorLon(double mercatorX, double referenceLongitude = 0, double scale = ATCConst::WGS84_A);    //needs test
+    static double inverseMercatorLat(double mercatorY, double error, double scale = ATCConst::WGS84_A);     //needs test
+
+    double rotateX(double coordX, double coordY, double angleDeg);  //needs test
+    double rotateY(double coordX, double coordY, double angleDeg);  //needs test
+
+    double translateToLocalX(double coordX, double sectorCentreX, double scaleFactor); //needs test
+    double translateToLocalY(double coordY, double sectorCentreY, double scaleFactor); //needs test
+
+    double translateFromLocalX(double localX, double sectorCentreX, double scaleFactor);  //needs test
+    double translateFromLocalY(double localY, double sectorCentreY, double scaleFactor);  //needs test
+
+    QPointF geo2local(double latRad, double lonRad, double angleDeg, double sectorCentreX, double sectorCentreY, double scaleFactor, double scale = ATCConst::WGS84_A, double refLon = 0);  //needs test
+    QPointF local2geo(double x, double y, double angleDeg, double sectorCentreX, double sectorCentreY, double scaleFactor, double scale = ATCConst::WGS84_A, double refLon = 0, double error = 1e-8);    //needs test
+    QPointF rotatePoint(QPointF pt, double angle, ATC::AngularUnits units);     //needs test
 };
 
 #endif // ATCMATH_H
