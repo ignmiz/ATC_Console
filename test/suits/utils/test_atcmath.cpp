@@ -904,3 +904,145 @@ void Test_ATCMath::test_assignAM()
     QVERIFY(ATCMath::assignAM(15, 10) == BADA::Decelerate);
     QVERIFY(ATCMath::assignAM(5, 10) == BADA::Accelerate);
 }
+
+void Test_ATCMath::test_mercatorProjectionLon()
+{
+    QVERIFY(ATCMath::mercatorProjectionLon(10, 0, 2) == 20);
+    QVERIFY(ATCMath::mercatorProjectionLon(10, 5, 2) == 10);
+    QVERIFY(ATCMath::mercatorProjectionLon(10, 5, 1) == 5);
+}
+
+void Test_ATCMath::test_mercatorProjectionLat()
+{
+    double error = 1e-8;
+
+    QVERIFY(ATCMath::compareDouble(ATCMath::mercatorProjectionLat(0, 1), 5.92855393E-12, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::mercatorProjectionLat(30, 1), 3.12810368E+01, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::mercatorProjectionLat(45, 1), 5.02274658E+01, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::mercatorProjectionLat(60, 1), 7.51233992E+01, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::mercatorProjectionLat(70, 1), 9.90708236E+01, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::mercatorProjectionLat(80, 1), 1.39208063E+02, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::mercatorProjectionLat(85, 1), 1.79027401E+02, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::mercatorProjectionLat(89, 1), 2.71274913E+02, error));
+
+    QVERIFY(ATCMath::compareDouble(ATCMath::mercatorProjectionLat(60, 5), 3.75616996E+02, error));
+}
+
+void Test_ATCMath::test_inverseMercatorLon()
+{
+    QVERIFY(ATCMath::inverseMercatorLon(20, 0, 2) == 10);
+    QVERIFY(ATCMath::inverseMercatorLon(10, 5, 2) == 10);
+    QVERIFY(ATCMath::inverseMercatorLon(5, 5, 1) == 10);
+}
+
+void Test_ATCMath::test_inverseMercatorLat()
+{
+    double mercatorError = 1e-8;
+    double testError = 1e-8;
+
+    QVERIFY(ATCMath::compareDouble(ATCMath::inverseMercatorLat(ATCMath::mercatorProjectionLat(0, 1), mercatorError, 1), 0, testError));
+    QVERIFY(ATCMath::compareDouble(ATCMath::inverseMercatorLat(ATCMath::mercatorProjectionLat(30, 1), mercatorError, 1), 30, testError));
+    QVERIFY(ATCMath::compareDouble(ATCMath::inverseMercatorLat(ATCMath::mercatorProjectionLat(45, 1), mercatorError, 1), 45, testError));
+    QVERIFY(ATCMath::compareDouble(ATCMath::inverseMercatorLat(ATCMath::mercatorProjectionLat(60, 1), mercatorError, 1), 60, testError));
+    QVERIFY(ATCMath::compareDouble(ATCMath::inverseMercatorLat(ATCMath::mercatorProjectionLat(70, 1), mercatorError, 1), 70, testError));
+    QVERIFY(ATCMath::compareDouble(ATCMath::inverseMercatorLat(ATCMath::mercatorProjectionLat(80, 1), mercatorError, 1), 80, testError));
+    QVERIFY(ATCMath::compareDouble(ATCMath::inverseMercatorLat(ATCMath::mercatorProjectionLat(85, 1), mercatorError, 1), 85, testError));
+    QVERIFY(ATCMath::compareDouble(ATCMath::inverseMercatorLat(ATCMath::mercatorProjectionLat(89, 1), mercatorError, 1), 89, testError));
+
+    QVERIFY(ATCMath::compareDouble(ATCMath::inverseMercatorLat(ATCMath::mercatorProjectionLat(60, 5), mercatorError, 5), 60, testError));
+}
+
+void Test_ATCMath::test_rotateX()
+{
+    double error = 1e-8;
+
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotateX(10, 0, 0), 10, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotateX(10, 0, 45), 5 * qSqrt(2), error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotateX(10, 0, 90), 0, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotateX(10, 0, -45), 5 * qSqrt(2), error));
+}
+
+void Test_ATCMath::test_rotateY()
+{
+    double error = 1e-8;
+
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotateY(10, 0, 0), 0, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotateY(10, 0, 45), 5 * qSqrt(2), error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotateY(10, 0, 90), 10, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotateY(10, 0, -45), -5 * qSqrt(2), error));
+}
+
+void Test_ATCMath::test_translateToLocalX()
+{
+    QVERIFY(ATCMath::translateToLocalX(10, 2, 2) == 16);
+    QVERIFY(ATCMath::translateToLocalX(5, 2, 2) == 6);
+    QVERIFY(ATCMath::translateToLocalX(10, 1, 2) == 18);
+    QVERIFY(ATCMath::translateToLocalX(10, 2, 4) == 32);
+}
+
+void Test_ATCMath::test_translateToLocalY()
+{
+    QVERIFY(ATCMath::translateToLocalY(10, 2, 2) == -16);
+    QVERIFY(ATCMath::translateToLocalY(5, 2, 2) == -6);
+    QVERIFY(ATCMath::translateToLocalY(10, 1, 2) == -18);
+    QVERIFY(ATCMath::translateToLocalY(10, 2, 4) == -32);
+}
+
+void Test_ATCMath::test_translateFromLocalX()
+{
+    QVERIFY(ATCMath::translateFromLocalX(16, 2, 2) == 10);
+    QVERIFY(ATCMath::translateFromLocalX(6, 2, 2) == 5);
+    QVERIFY(ATCMath::translateFromLocalX(18, 1, 2) == 10);
+    QVERIFY(ATCMath::translateFromLocalX(32, 2, 4) == 10);
+}
+
+void Test_ATCMath::test_translateFromLocalY()
+{
+    QVERIFY(ATCMath::translateFromLocalY(-16, 2, 2) == 10);
+    QVERIFY(ATCMath::translateFromLocalY(-6, 2, 2) == 5);
+    QVERIFY(ATCMath::translateFromLocalY(-18, 1, 2) == 10);
+    QVERIFY(ATCMath::translateFromLocalY(-32, 2, 4) == 10);
+}
+
+void Test_ATCMath::test_geo2local()
+{
+    double error = 1e-8;
+
+    QVERIFY(ATCMath::compareDouble(ATCMath::geo2local(ATCMath::deg2rad(60), ATCMath::deg2rad(60), 45, 20, 15, 2, 1, 4).x(), -67.0445705431541, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::geo2local(ATCMath::deg2rad(60), ATCMath::deg2rad(60), 45, 20, 15, 2, 1, 4).y(), -155.43648952893, error));
+}
+
+void Test_ATCMath::test_local2geo()
+{
+    double error = 1e-8;
+
+    QVERIFY(ATCMath::compareDouble(ATCMath::local2geo(-67.0445705431541, -155.43648952893, 45, 20, 15, 2, 1, 4).x(), 60, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::local2geo(-67.0445705431541, -155.43648952893, 45, 20, 15, 2, 1, 4).y(), 60, error));
+}
+
+void Test_ATCMath::test_rotatePoint()
+{
+    double error = 1e-8;
+
+    QPointF pt(10, 0);
+
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotatePoint(pt, 0, ATC::Deg).x(), 10, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotatePoint(pt, 45, ATC::Deg).x(), 5 * qSqrt(2), error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotatePoint(pt, 90, ATC::Deg).x(), 0, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotatePoint(pt, -45, ATC::Deg).x(), 5 * qSqrt(2), error));
+
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotatePoint(pt, 0, ATC::Deg).y(), 0, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotatePoint(pt, 45, ATC::Deg).y(), 5 * qSqrt(2), error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotatePoint(pt, 90, ATC::Deg).y(), 10, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotatePoint(pt, -45, ATC::Deg).y(), -5 * qSqrt(2), error));
+
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotatePoint(pt, ATCMath::deg2rad(0), ATC::Rad).x(), 10, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotatePoint(pt, ATCMath::deg2rad(45), ATC::Rad).x(), 5 * qSqrt(2), error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotatePoint(pt, ATCMath::deg2rad(90), ATC::Rad).x(), 0, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotatePoint(pt, ATCMath::deg2rad(-45), ATC::Rad).x(), 5 * qSqrt(2), error));
+
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotatePoint(pt, ATCMath::deg2rad(0), ATC::Rad).y(), 0, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotatePoint(pt, ATCMath::deg2rad(45), ATC::Rad).y(), 5 * qSqrt(2), error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotatePoint(pt, ATCMath::deg2rad(90), ATC::Rad).y(), 10, error));
+    QVERIFY(ATCMath::compareDouble(ATCMath::rotatePoint(pt, ATCMath::deg2rad(-45), ATC::Rad).y(), -5 * qSqrt(2), error));
+}

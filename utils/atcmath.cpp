@@ -975,13 +975,13 @@ double ATCMath::translateFromLocalY(double localY, double sectorCentreY, double 
     return -1 * localY / scaleFactor + sectorCentreY;
 }
 
-QPointF ATCMath::geo2local(double latRad, double lonRad, double angleDeg, double sectorCentreX, double sectorCentreY, double scaleFactor, double scale, double refLon)
+QPointF ATCMath::geo2local(double latRad, double lonRad, double avgDeclinationDeg, double sectorCentreX, double sectorCentreY, double scaleFactor, double scale, double refLon)
 {
     double xProjected = mercatorProjectionLon(ATCMath::rad2deg(lonRad), refLon, scale);
     double yProjected = mercatorProjectionLat(ATCMath::rad2deg(latRad), scale);
 
-    double xRotated = rotateX(xProjected, yProjected, angleDeg);
-    double yRotated = rotateY(xProjected, yProjected, angleDeg);
+    double xRotated = rotateX(xProjected, yProjected, avgDeclinationDeg);
+    double yRotated = rotateY(xProjected, yProjected, avgDeclinationDeg);
 
     double xLocal = translateToLocalX(xRotated, sectorCentreX, scaleFactor);
     double yLocal = translateToLocalY(yRotated, sectorCentreY, scaleFactor);
@@ -989,16 +989,16 @@ QPointF ATCMath::geo2local(double latRad, double lonRad, double angleDeg, double
     return QPointF(xLocal, yLocal);
 }
 
-QPointF ATCMath::local2geo(double x, double y, double angleDeg, double sectorCentreX, double sectorCentreY, double scaleFactor, double scale, double refLon, double error)
+QPointF ATCMath::local2geo(double x, double y, double avgDeclinationDeg, double sectorCentreX, double sectorCentreY, double scaleFactor, double scale, double refLon, double error)
 {
     double xRotated = translateFromLocalX(x, sectorCentreX, scaleFactor);
     double yRotated = translateFromLocalY(y, sectorCentreY, scaleFactor);
 
-    double xProjected = rotateX(xRotated, yRotated, -1 * angleDeg);
-    double yProjected = rotateY(xRotated, yRotated, -1 * angleDeg);
+    double xProjected = rotateX(xRotated, yRotated, -1 * avgDeclinationDeg);
+    double yProjected = rotateY(xRotated, yRotated, -1 * avgDeclinationDeg);
 
     double lon = inverseMercatorLon(xProjected, refLon, scale);
-    double lat = inverseMercatorLat(yProjected, error);
+    double lat = inverseMercatorLat(yProjected, error, scale);
 
     return QPointF(lon, lat);
 }

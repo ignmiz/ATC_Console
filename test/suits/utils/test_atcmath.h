@@ -84,6 +84,25 @@ private slots:
     void test_assignSHM();
     void test_assignTRM();
     void test_assignAM();
+
+    void test_mercatorProjectionLon();
+    void test_mercatorProjectionLat();
+
+    void test_inverseMercatorLon();
+    void test_inverseMercatorLat();
+
+    void test_rotateX();
+    void test_rotateY();
+
+    void test_translateToLocalX();
+    void test_translateToLocalY();
+
+    void test_translateFromLocalX();
+    void test_translateFromLocalY();
+
+    void test_geo2local();
+    void test_local2geo();
+    void test_rotatePoint();
 };
 
 #endif // TEST_ATCMATH_H
