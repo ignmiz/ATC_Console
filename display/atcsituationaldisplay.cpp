@@ -1173,7 +1173,7 @@ void ATCSituationalDisplay::slotUpdateTags()
         State state = flight->getState();
 
         //Update diamond position
-        QPointF diamond = geo2local(state.y, state.x, ATCConst::AVG_DECLINATION);
+        QPointF diamond = ATCMath::geo2local(state.y, state.x, ATCConst::AVG_DECLINATION, sectorCentreX, sectorCentreY, scaleFactor);
         tag->moveTo(diamond);
 
         //Update leader line length & orientation
@@ -1193,25 +1193,25 @@ void ATCSituationalDisplay::slotUpdateTags()
         double endLon = ATCMath::rad2deg(state.x + length / (ATCConst::WGS84_A * qCos(state.y)));
         double endLat = ATCMath::rad2deg(state.y);
 
-        startLon = mercatorProjectionLon(startLon);
-        startLat = mercatorProjectionLat(startLat);
-        endLon = mercatorProjectionLon(endLon);
-        endLat = mercatorProjectionLat(endLat);
+        startLon = ATCMath::mercatorProjectionLon(startLon);
+        startLat = ATCMath::mercatorProjectionLat(startLat);
+        endLon = ATCMath::mercatorProjectionLon(endLon);
+        endLat = ATCMath::mercatorProjectionLat(endLat);
 
         double delta = qFabs(endLon - startLon);
 
         endLon = startLon + delta * qSin(state.hdg);
         endLat = startLat + delta * qCos(state.hdg);
 
-        double xStart = rotateX(startLon, startLat, ATCConst::AVG_DECLINATION);
-        double yStart = rotateY(startLon, startLat, ATCConst::AVG_DECLINATION);
-        double xEnd = rotateX(endLon, endLat, ATCConst::AVG_DECLINATION);
-        double yEnd = rotateY(endLon, endLat, ATCConst::AVG_DECLINATION);
+        double xStart = ATCMath::rotateX(startLon, startLat, ATCConst::AVG_DECLINATION);
+        double yStart = ATCMath::rotateY(startLon, startLat, ATCConst::AVG_DECLINATION);
+        double xEnd = ATCMath::rotateX(endLon, endLat, ATCConst::AVG_DECLINATION);
+        double yEnd = ATCMath::rotateY(endLon, endLat, ATCConst::AVG_DECLINATION);
 
-        xStart = translateToLocalX(xStart);
-        yStart = translateToLocalY(yStart);
-        xEnd = translateToLocalX(xEnd);
-        yEnd = translateToLocalY(yEnd);
+        xStart = ATCMath::translateToLocalX(xStart, sectorCentreX, scaleFactor);
+        yStart = ATCMath::translateToLocalY(yStart, sectorCentreY, scaleFactor);
+        xEnd = ATCMath::translateToLocalX(xEnd, sectorCentreX, scaleFactor);
+        yEnd = ATCMath::translateToLocalY(yEnd, sectorCentreY, scaleFactor);
 
         tag->getLeader()->setLine(QLineF(xStart, yStart, xEnd, yEnd));
 
@@ -1247,25 +1247,25 @@ void ATCSituationalDisplay::slotUpdateLeaders()
                 length = flight->getState().v * settings->TAG_LEADER_LENGTH * 60;
             }
 
-            QPointF diamondCoords = local2geo(p1.x(), p1.y(), ATCConst::AVG_DECLINATION); //Format: (lon, lat), deg
+            QPointF diamondCoords = ATCMath::local2geo(p1.x(), p1.y(), ATCConst::AVG_DECLINATION, sectorCentreX, sectorCentreY, scaleFactor); //Format: (lon, lat), deg
             double endLon = diamondCoords.x() + ATCMath::rad2deg(length / (ATCConst::WGS84_A * qCos(ATCMath::deg2rad(diamondCoords.y()))));
             double endLat = diamondCoords.y();
 
-            double startLon = mercatorProjectionLon(diamondCoords.x());
-            double startLat = mercatorProjectionLat(diamondCoords.y());
-            endLon = mercatorProjectionLon(endLon);
-            endLat = mercatorProjectionLat(endLat);
+            double startLon = ATCMath::mercatorProjectionLon(diamondCoords.x());
+            double startLat = ATCMath::mercatorProjectionLat(diamondCoords.y());
+            endLon = ATCMath::mercatorProjectionLon(endLon);
+            endLat = ATCMath::mercatorProjectionLat(endLat);
 
             double delta = qFabs(endLon - startLon);
 
             endLon = startLon + delta * qSin(azimuth);
             endLat = startLat + delta * qCos(azimuth);
 
-            double xEnd = rotateX(endLon, endLat, ATCConst::AVG_DECLINATION);
-            double yEnd = rotateY(endLon, endLat, ATCConst::AVG_DECLINATION);
+            double xEnd = ATCMath::rotateX(endLon, endLat, ATCConst::AVG_DECLINATION);
+            double yEnd = ATCMath::rotateY(endLon, endLat, ATCConst::AVG_DECLINATION);
 
-            xEnd = translateToLocalX(xEnd);
-            yEnd = translateToLocalY(yEnd);
+            xEnd = ATCMath::translateToLocalX(xEnd, sectorCentreX, scaleFactor);
+            yEnd = ATCMath::translateToLocalY(yEnd, sectorCentreY, scaleFactor);
 
             leader->setLine(QLineF(p1.x(), p1.y(), xEnd, yEnd));
         }
@@ -2115,17 +2115,17 @@ void ATCSituationalDisplay::projectSectorsARTCCLow()
             coord currentCoords1;
             coord currentCoords2;
 
-            currentCoords1.x = mercatorProjectionLon(airspaceData->getSectorARTCCLow(i)->getCoords1(j)->longitude());
-            currentCoords1.y = mercatorProjectionLat(airspaceData->getSectorARTCCLow(i)->getCoords1(j)->latitude());
-            currentCoords2.x = mercatorProjectionLon(airspaceData->getSectorARTCCLow(i)->getCoords2(j)->longitude());
-            currentCoords2.y = mercatorProjectionLat(airspaceData->getSectorARTCCLow(i)->getCoords2(j)->latitude());
+            currentCoords1.x = ATCMath::mercatorProjectionLon(airspaceData->getSectorARTCCLow(i)->getCoords1(j)->longitude());
+            currentCoords1.y = ATCMath::mercatorProjectionLat(airspaceData->getSectorARTCCLow(i)->getCoords1(j)->latitude());
+            currentCoords2.x = ATCMath::mercatorProjectionLon(airspaceData->getSectorARTCCLow(i)->getCoords2(j)->longitude());
+            currentCoords2.y = ATCMath::mercatorProjectionLat(airspaceData->getSectorARTCCLow(i)->getCoords2(j)->latitude());
 
             coordsPair projected;
 
-            projected.x1 = rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
-            projected.y1 = rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
-            projected.x2 = rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
-            projected.y2 = rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
+            projected.x1 = ATCMath::rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
+            projected.y1 = ATCMath::rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
+            projected.x2 = ATCMath::rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
+            projected.y2 = ATCMath::rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
 
             airspaceData->getSectorARTCCLow(i)->appendCoordsPair(projected);
         }
@@ -2143,17 +2143,17 @@ void ATCSituationalDisplay::projectSectorsARTCCHigh()
             coord currentCoords1;
             coord currentCoords2;
 
-            currentCoords1.x = mercatorProjectionLon(airspaceData->getSectorARTCCHigh(i)->getCoords1(j)->longitude());
-            currentCoords1.y = mercatorProjectionLat(airspaceData->getSectorARTCCHigh(i)->getCoords1(j)->latitude());
-            currentCoords2.x = mercatorProjectionLon(airspaceData->getSectorARTCCHigh(i)->getCoords2(j)->longitude());
-            currentCoords2.y = mercatorProjectionLat(airspaceData->getSectorARTCCHigh(i)->getCoords2(j)->latitude());
+            currentCoords1.x = ATCMath::mercatorProjectionLon(airspaceData->getSectorARTCCHigh(i)->getCoords1(j)->longitude());
+            currentCoords1.y = ATCMath::mercatorProjectionLat(airspaceData->getSectorARTCCHigh(i)->getCoords1(j)->latitude());
+            currentCoords2.x = ATCMath::mercatorProjectionLon(airspaceData->getSectorARTCCHigh(i)->getCoords2(j)->longitude());
+            currentCoords2.y = ATCMath::mercatorProjectionLat(airspaceData->getSectorARTCCHigh(i)->getCoords2(j)->latitude());
 
             coordsPair projected;
 
-            projected.x1 = rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
-            projected.y1 = rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
-            projected.x2 = rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
-            projected.y2 = rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
+            projected.x1 = ATCMath::rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
+            projected.y1 = ATCMath::rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
+            projected.x2 = ATCMath::rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
+            projected.y2 = ATCMath::rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
 
             airspaceData->getSectorARTCCHigh(i)->appendCoordsPair(projected);
         }
@@ -2171,17 +2171,17 @@ void ATCSituationalDisplay::projectSectorsARTCC()
             coord currentCoords1;
             coord currentCoords2;
 
-            currentCoords1.x = mercatorProjectionLon(airspaceData->getSectorARTCC(i)->getCoords1(j)->longitude());
-            currentCoords1.y = mercatorProjectionLat(airspaceData->getSectorARTCC(i)->getCoords1(j)->latitude());
-            currentCoords2.x = mercatorProjectionLon(airspaceData->getSectorARTCC(i)->getCoords2(j)->longitude());
-            currentCoords2.y = mercatorProjectionLat(airspaceData->getSectorARTCC(i)->getCoords2(j)->latitude());
+            currentCoords1.x = ATCMath::mercatorProjectionLon(airspaceData->getSectorARTCC(i)->getCoords1(j)->longitude());
+            currentCoords1.y = ATCMath::mercatorProjectionLat(airspaceData->getSectorARTCC(i)->getCoords1(j)->latitude());
+            currentCoords2.x = ATCMath::mercatorProjectionLon(airspaceData->getSectorARTCC(i)->getCoords2(j)->longitude());
+            currentCoords2.y = ATCMath::mercatorProjectionLat(airspaceData->getSectorARTCC(i)->getCoords2(j)->latitude());
 
             coordsPair projected;
 
-            projected.x1 = rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
-            projected.y1 = rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
-            projected.x2 = rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
-            projected.y2 = rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
+            projected.x1 = ATCMath::rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
+            projected.y1 = ATCMath::rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
+            projected.x2 = ATCMath::rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
+            projected.y2 = ATCMath::rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
 
             airspaceData->getSectorARTCC(i)->appendCoordsPair(projected);
         }
@@ -2216,10 +2216,10 @@ void ATCSituationalDisplay::calculateSectorsARTCCLow()
             currentCoords2.x = airspaceData->getSectorARTCCLow(i)->getCoordsPair(j).x2;
             currentCoords2.y = airspaceData->getSectorARTCCLow(i)->getCoordsPair(j).y2;
 
-            currentCoords1.x = translateToLocalX(currentCoords1.x);
-            currentCoords1.y = translateToLocalY(currentCoords1.y);
-            currentCoords2.x = translateToLocalX(currentCoords2.x);
-            currentCoords2.y = translateToLocalY(currentCoords2.y);
+            currentCoords1.x = ATCMath::translateToLocalX(currentCoords1.x, sectorCentreX, scaleFactor);
+            currentCoords1.y = ATCMath::translateToLocalY(currentCoords1.y, sectorCentreY, scaleFactor);
+            currentCoords2.x = ATCMath::translateToLocalX(currentCoords2.x, sectorCentreX, scaleFactor);
+            currentCoords2.y = ATCMath::translateToLocalY(currentCoords2.y, sectorCentreY, scaleFactor);
 
 //TEST FOR POLYGON DATA ARRANGEMENT
             if(flagCreateNewPolygon)
@@ -2305,10 +2305,10 @@ void ATCSituationalDisplay::calculateSectorsARTCCHigh()
             currentCoords2.x = airspaceData->getSectorARTCCHigh(i)->getCoordsPair(j).x2;
             currentCoords2.y = airspaceData->getSectorARTCCHigh(i)->getCoordsPair(j).y2;
 
-            currentCoords1.x = translateToLocalX(currentCoords1.x);
-            currentCoords1.y = translateToLocalY(currentCoords1.y);
-            currentCoords2.x = translateToLocalX(currentCoords2.x);
-            currentCoords2.y = translateToLocalY(currentCoords2.y);
+            currentCoords1.x = ATCMath::translateToLocalX(currentCoords1.x, sectorCentreX, scaleFactor);
+            currentCoords1.y = ATCMath::translateToLocalY(currentCoords1.y, sectorCentreY, scaleFactor);
+            currentCoords2.x = ATCMath::translateToLocalX(currentCoords2.x, sectorCentreX, scaleFactor);
+            currentCoords2.y = ATCMath::translateToLocalY(currentCoords2.y, sectorCentreY, scaleFactor);
 
 //TEST FOR POLYGON DATA ARRANGEMENT
             if(flagCreateNewPolygon)
@@ -2393,10 +2393,10 @@ void ATCSituationalDisplay::calculateSectorsARTCC()
             currentCoords2.x = airspaceData->getSectorARTCC(i)->getCoordsPair(j).x2;
             currentCoords2.y = airspaceData->getSectorARTCC(i)->getCoordsPair(j).y2;
 
-            currentCoords1.x = translateToLocalX(currentCoords1.x);
-            currentCoords1.y = translateToLocalY(currentCoords1.y);
-            currentCoords2.x = translateToLocalX(currentCoords2.x);
-            currentCoords2.y = translateToLocalY(currentCoords2.y);
+            currentCoords1.x = ATCMath::translateToLocalX(currentCoords1.x, sectorCentreX, scaleFactor);
+            currentCoords1.y = ATCMath::translateToLocalY(currentCoords1.y, sectorCentreY, scaleFactor);
+            currentCoords2.x = ATCMath::translateToLocalX(currentCoords2.x, sectorCentreX, scaleFactor);
+            currentCoords2.y = ATCMath::translateToLocalY(currentCoords2.y, sectorCentreY, scaleFactor);
 
 //TEST FOR POLYGON DATA ARRANGEMENT
             if(flagCreateNewPolygon)
@@ -2463,11 +2463,11 @@ void ATCSituationalDisplay::calculateFixes()
     {
         coord currentFix;
 
-        currentFix.x = mercatorProjectionLon(airspaceData->getFix(i)->longitude());
-        currentFix.y = mercatorProjectionLat(airspaceData->getFix(i)->latitude());
+        currentFix.x = ATCMath::mercatorProjectionLon(airspaceData->getFix(i)->longitude());
+        currentFix.y = ATCMath::mercatorProjectionLat(airspaceData->getFix(i)->latitude());
 
-        double xRotated = rotateX(currentFix.x, currentFix.y, rotationDeg);
-        double yRotated = rotateY(currentFix.x, currentFix.y, rotationDeg);
+        double xRotated = ATCMath::rotateX(currentFix.x, currentFix.y, rotationDeg);
+        double yRotated = ATCMath::rotateY(currentFix.x, currentFix.y, rotationDeg);
 
         currentFix.x = xRotated;
         currentFix.y = yRotated;
@@ -2478,8 +2478,8 @@ void ATCSituationalDisplay::calculateFixes()
 //Translate to local & scene coords
     for(int i = 0; i < airspaceData->getFixesVectorSize(); i++)
     {
-        tempFixes[i].x = translateToLocalX(tempFixes.at(i).x);
-        tempFixes[i].y = translateToLocalY(tempFixes.at(i).y);
+        tempFixes[i].x = ATCMath::translateToLocalX(tempFixes.at(i).x, sectorCentreX, scaleFactor);
+        tempFixes[i].y = ATCMath::translateToLocalY(tempFixes.at(i).y, sectorCentreY, scaleFactor);
 
         airspaceData->getFix(i)->setScenePosition(new QPointF(tempFixes.at(i).x, tempFixes.at(i).y));
     }
@@ -2553,11 +2553,11 @@ void ATCSituationalDisplay::calculateAirports()
     {
         coord currentAirport;
 
-        currentAirport.x = mercatorProjectionLon(airspaceData->getAirport(i)->longitude());
-        currentAirport.y = mercatorProjectionLat(airspaceData->getAirport(i)->latitude());
+        currentAirport.x = ATCMath::mercatorProjectionLon(airspaceData->getAirport(i)->longitude());
+        currentAirport.y = ATCMath::mercatorProjectionLat(airspaceData->getAirport(i)->latitude());
 
-        double xRotated = rotateX(currentAirport.x, currentAirport.y, rotationDeg);
-        double yRotated = rotateY(currentAirport.x, currentAirport.y, rotationDeg);
+        double xRotated = ATCMath::rotateX(currentAirport.x, currentAirport.y, rotationDeg);
+        double yRotated = ATCMath::rotateY(currentAirport.x, currentAirport.y, rotationDeg);
 
         currentAirport.x = xRotated;
         currentAirport.y = yRotated;
@@ -2568,8 +2568,8 @@ void ATCSituationalDisplay::calculateAirports()
 //Translate to local & scene coords
     for(int i = 0; i < airspaceData->getAirportsVectorSize(); i++)
     {
-        tempAirports[i].x = translateToLocalX(tempAirports.at(i).x);
-        tempAirports[i].y = translateToLocalY(tempAirports.at(i).y);
+        tempAirports[i].x = ATCMath::translateToLocalX(tempAirports.at(i).x, sectorCentreX, scaleFactor);
+        tempAirports[i].y = ATCMath::translateToLocalY(tempAirports.at(i).y, sectorCentreY, scaleFactor);
 
         airspaceData->getAirport(i)->setScenePosition(new QPointF(tempAirports.at(i).x, tempAirports.at(i).y));
     }
@@ -2668,17 +2668,17 @@ void ATCSituationalDisplay::calculateExtendedCentrelines()
     for(int i = 0; i < rwyCoords1.size(); i++)
     {
         //Project to 2D
-        rwyCoords1[i].x = mercatorProjectionLon(rwyCoords1.at(i).x);
-        rwyCoords1[i].y = mercatorProjectionLat(rwyCoords1.at(i).y);
+        rwyCoords1[i].x = ATCMath::mercatorProjectionLon(rwyCoords1.at(i).x);
+        rwyCoords1[i].y = ATCMath::mercatorProjectionLat(rwyCoords1.at(i).y);
 
-        rwyCoords2[i].x = mercatorProjectionLon(rwyCoords2.at(i).x);
-        rwyCoords2[i].y = mercatorProjectionLat(rwyCoords2.at(i).y);
+        rwyCoords2[i].x = ATCMath::mercatorProjectionLon(rwyCoords2.at(i).x);
+        rwyCoords2[i].y = ATCMath::mercatorProjectionLat(rwyCoords2.at(i).y);
 
-        centrelineEnd1[i].x = mercatorProjectionLon(centrelineEnd1.at(i).x);
-        centrelineEnd1[i].y = mercatorProjectionLat(centrelineEnd1.at(i).y);
+        centrelineEnd1[i].x = ATCMath::mercatorProjectionLon(centrelineEnd1.at(i).x);
+        centrelineEnd1[i].y = ATCMath::mercatorProjectionLat(centrelineEnd1.at(i).y);
 
-        centrelineEnd2[i].x = mercatorProjectionLon(centrelineEnd2.at(i).x);
-        centrelineEnd2[i].y = mercatorProjectionLat(centrelineEnd2.at(i).y);
+        centrelineEnd2[i].x = ATCMath::mercatorProjectionLon(centrelineEnd2.at(i).x);
+        centrelineEnd2[i].y = ATCMath::mercatorProjectionLat(centrelineEnd2.at(i).y);
 
         //Translate to local csys and rotate extended centrelines to match runway azimuth
         double deltaProjectedLon1 = centrelineEnd1.at(i).x - rwyCoords1.at(i).x;
@@ -2694,17 +2694,17 @@ void ATCSituationalDisplay::calculateExtendedCentrelines()
         centrelineEnd2[i].y = deltaProjectedLon2 * qSin(ATCConst::PI / 2 - azimuth) + rwyCoords2.at(i).y;
 
         //Rotate whole map so up matches magnetic north
-        double rwyCoords1xRot = rotateX(rwyCoords1.at(i).x, rwyCoords1.at(i).y, rotationDeg);
-        double rwyCoords1yRot = rotateY(rwyCoords1.at(i).x, rwyCoords1.at(i).y, rotationDeg);
+        double rwyCoords1xRot = ATCMath::rotateX(rwyCoords1.at(i).x, rwyCoords1.at(i).y, rotationDeg);
+        double rwyCoords1yRot = ATCMath::rotateY(rwyCoords1.at(i).x, rwyCoords1.at(i).y, rotationDeg);
 
-        double rwyCoords2xRot = rotateX(rwyCoords2.at(i).x, rwyCoords2.at(i).y, rotationDeg);
-        double rwyCoords2yRot = rotateY(rwyCoords2.at(i).x, rwyCoords2.at(i).y, rotationDeg);
+        double rwyCoords2xRot = ATCMath::rotateX(rwyCoords2.at(i).x, rwyCoords2.at(i).y, rotationDeg);
+        double rwyCoords2yRot = ATCMath::rotateY(rwyCoords2.at(i).x, rwyCoords2.at(i).y, rotationDeg);
 
-        double centrelineEnd1xRot = rotateX(centrelineEnd1.at(i).x, centrelineEnd1.at(i).y, rotationDeg);
-        double centrelineEnd1yRot = rotateY(centrelineEnd1.at(i).x, centrelineEnd1.at(i).y, rotationDeg);
+        double centrelineEnd1xRot = ATCMath::rotateX(centrelineEnd1.at(i).x, centrelineEnd1.at(i).y, rotationDeg);
+        double centrelineEnd1yRot = ATCMath::rotateY(centrelineEnd1.at(i).x, centrelineEnd1.at(i).y, rotationDeg);
 
-        double centrelineEnd2xRot = rotateX(centrelineEnd2.at(i).x, centrelineEnd2.at(i).y, rotationDeg);
-        double centrelineEnd2yRot = rotateY(centrelineEnd2.at(i).x, centrelineEnd2.at(i).y, rotationDeg);
+        double centrelineEnd2xRot = ATCMath::rotateX(centrelineEnd2.at(i).x, centrelineEnd2.at(i).y, rotationDeg);
+        double centrelineEnd2yRot = ATCMath::rotateY(centrelineEnd2.at(i).x, centrelineEnd2.at(i).y, rotationDeg);
 
         rwyCoords1[i].x = rwyCoords1xRot;
         rwyCoords1[i].y = rwyCoords1yRot;
@@ -2722,17 +2722,17 @@ void ATCSituationalDisplay::calculateExtendedCentrelines()
 //Translate to local & scene coords
     for(int i = 0; i < rwyCoords1.size(); i++)
     {
-        rwyCoords1[i].x = translateToLocalX(rwyCoords1.at(i).x);
-        rwyCoords1[i].y = translateToLocalY(rwyCoords1.at(i).y);
+        rwyCoords1[i].x = ATCMath::translateToLocalX(rwyCoords1.at(i).x, sectorCentreX, scaleFactor);
+        rwyCoords1[i].y = ATCMath::translateToLocalY(rwyCoords1.at(i).y, sectorCentreY, scaleFactor);
 
-        rwyCoords2[i].x = translateToLocalX(rwyCoords2.at(i).x);
-        rwyCoords2[i].y = translateToLocalY(rwyCoords2.at(i).y);
+        rwyCoords2[i].x = ATCMath::translateToLocalX(rwyCoords2.at(i).x, sectorCentreX, scaleFactor);
+        rwyCoords2[i].y = ATCMath::translateToLocalY(rwyCoords2.at(i).y, sectorCentreY, scaleFactor);
 
-        centrelineEnd1[i].x = translateToLocalX(centrelineEnd1.at(i).x);
-        centrelineEnd1[i].y = translateToLocalY(centrelineEnd1.at(i).y);
+        centrelineEnd1[i].x = ATCMath::translateToLocalX(centrelineEnd1.at(i).x, sectorCentreX, scaleFactor);
+        centrelineEnd1[i].y = ATCMath::translateToLocalY(centrelineEnd1.at(i).y, sectorCentreY, scaleFactor);
 
-        centrelineEnd2[i].x = translateToLocalX(centrelineEnd2.at(i).x);
-        centrelineEnd2[i].y = translateToLocalY(centrelineEnd2.at(i).y);
+        centrelineEnd2[i].x = ATCMath::translateToLocalX(centrelineEnd2.at(i).x, sectorCentreX, scaleFactor);
+        centrelineEnd2[i].y = ATCMath::translateToLocalY(centrelineEnd2.at(i).y, sectorCentreY, scaleFactor);
     }
 
 //Construct and assign symbols
@@ -2817,17 +2817,17 @@ void ATCSituationalDisplay::calculateCentrelineTicks()
                     tick2mid.y = rwy2.y;
 
                     //Project to 2D
-                    rwy1.x = mercatorProjectionLon(rwy1.x);
-                    rwy1.y = mercatorProjectionLat(rwy1.y);
+                    rwy1.x = ATCMath::mercatorProjectionLon(rwy1.x);
+                    rwy1.y = ATCMath::mercatorProjectionLat(rwy1.y);
 
-                    rwy2.x = mercatorProjectionLon(rwy2.x);
-                    rwy2.y = mercatorProjectionLat(rwy2.y);
+                    rwy2.x = ATCMath::mercatorProjectionLon(rwy2.x);
+                    rwy2.y = ATCMath::mercatorProjectionLat(rwy2.y);
 
-                    tick1mid.x = mercatorProjectionLon(tick1mid.x);
-                    tick1mid.y = mercatorProjectionLat(tick1mid.y);
+                    tick1mid.x = ATCMath::mercatorProjectionLon(tick1mid.x);
+                    tick1mid.y = ATCMath::mercatorProjectionLat(tick1mid.y);
 
-                    tick2mid.x = mercatorProjectionLon(tick2mid.x);
-                    tick2mid.y = mercatorProjectionLat(tick2mid.y);
+                    tick2mid.x = ATCMath::mercatorProjectionLon(tick2mid.x);
+                    tick2mid.y = ATCMath::mercatorProjectionLat(tick2mid.y);
 
                     //Translate to local csys and rotate to match runway azimuth
                     double deltaTickLon1 = tick1mid.x - rwy1.x;
@@ -2851,11 +2851,11 @@ void ATCSituationalDisplay::calculateCentrelineTicks()
 
                     if (((k % static_cast<int>(settings->TICK_MAJOR_SEPARATION / settings->TICK_SEPARATION)) == 0) && (k >= (settings->TICK_FIRST_MAJOR_AT - settings->TICK_FIRST_DISTANCE) / settings->TICK_SEPARATION))
                     {
-                        deltaTickLon = mercatorProjectionLon(settings->TICK_MAJOR_LENGTH * ATCConst::NM_2_M / 2 / (ATCConst::WGS84_A * localScale) * ATCConst::RAD_2_DEG);
+                        deltaTickLon = ATCMath::mercatorProjectionLon(settings->TICK_MAJOR_LENGTH * ATCConst::NM_2_M / 2 / (ATCConst::WGS84_A * localScale) * ATCConst::RAD_2_DEG);
                     }
                     else
                     {
-                        deltaTickLon = mercatorProjectionLon(settings->TICK_MINOR_LENGTH * ATCConst::NM_2_M / 2 / (ATCConst::WGS84_A * localScale) * ATCConst::RAD_2_DEG);
+                        deltaTickLon = ATCMath::mercatorProjectionLon(settings->TICK_MINOR_LENGTH * ATCConst::NM_2_M / 2 / (ATCConst::WGS84_A * localScale) * ATCConst::RAD_2_DEG);
                     }
 
                     tick1start.x = deltaTickLon * qCos(ATCConst::PI - azimuth + ATCConst::PI) + tick1mid.x;
@@ -2876,17 +2876,17 @@ void ATCSituationalDisplay::calculateCentrelineTicks()
                     coord tick1rot;
                     coord tick2rot;
 
-                    rwy1rot.x = rotateX(rwy1.x, rwy1.y, rotationDeg);
-                    rwy1rot.y = rotateY(rwy1.x, rwy1.y, rotationDeg);
+                    rwy1rot.x = ATCMath::rotateX(rwy1.x, rwy1.y, rotationDeg);
+                    rwy1rot.y = ATCMath::rotateY(rwy1.x, rwy1.y, rotationDeg);
 
-                    rwy2rot.x = rotateX(rwy2.x, rwy2.y, rotationDeg);
-                    rwy2rot.y = rotateY(rwy2.x, rwy2.y, rotationDeg);
+                    rwy2rot.x = ATCMath::rotateX(rwy2.x, rwy2.y, rotationDeg);
+                    rwy2rot.y = ATCMath::rotateY(rwy2.x, rwy2.y, rotationDeg);
 
-                    tick1rot.x = rotateX(tick1mid.x, tick1mid.y, rotationDeg);
-                    tick1rot.y = rotateY(tick1mid.x, tick1mid.y, rotationDeg);
+                    tick1rot.x = ATCMath::rotateX(tick1mid.x, tick1mid.y, rotationDeg);
+                    tick1rot.y = ATCMath::rotateY(tick1mid.x, tick1mid.y, rotationDeg);
 
-                    tick2rot.x = rotateX(tick2mid.x, tick2mid.y, rotationDeg);
-                    tick2rot.y = rotateY(tick2mid.x, tick2mid.y, rotationDeg);
+                    tick2rot.x = ATCMath::rotateX(tick2mid.x, tick2mid.y, rotationDeg);
+                    tick2rot.y = ATCMath::rotateY(tick2mid.x, tick2mid.y, rotationDeg);
 
                     rwy1.x = rwy1rot.x;
                     rwy1.y = rwy1rot.y;
@@ -2906,17 +2906,17 @@ void ATCSituationalDisplay::calculateCentrelineTicks()
                     coord tick2startRot;
                     coord tick2endRot;
 
-                    tick1startRot.x = rotateX(tick1start.x, tick1start.y, rotationDeg);
-                    tick1startRot.y = rotateY(tick1start.x, tick1start.y, rotationDeg);
+                    tick1startRot.x = ATCMath::rotateX(tick1start.x, tick1start.y, rotationDeg);
+                    tick1startRot.y = ATCMath::rotateY(tick1start.x, tick1start.y, rotationDeg);
 
-                    tick1endRot.x = rotateX(tick1end.x, tick1end.y, rotationDeg);
-                    tick1endRot.y = rotateY(tick1end.x, tick1end.y, rotationDeg);
+                    tick1endRot.x = ATCMath::rotateX(tick1end.x, tick1end.y, rotationDeg);
+                    tick1endRot.y = ATCMath::rotateY(tick1end.x, tick1end.y, rotationDeg);
 
-                    tick2startRot.x = rotateX(tick2start.x, tick2start.y, rotationDeg);
-                    tick2startRot.y = rotateY(tick2start.x, tick2start.y, rotationDeg);
+                    tick2startRot.x = ATCMath::rotateX(tick2start.x, tick2start.y, rotationDeg);
+                    tick2startRot.y = ATCMath::rotateY(tick2start.x, tick2start.y, rotationDeg);
 
-                    tick2endRot.x = rotateX(tick2end.x, tick2end.y, rotationDeg);
-                    tick2endRot.y = rotateY(tick2end.x, tick2end.y, rotationDeg);
+                    tick2endRot.x = ATCMath::rotateX(tick2end.x, tick2end.y, rotationDeg);
+                    tick2endRot.y = ATCMath::rotateY(tick2end.x, tick2end.y, rotationDeg);
 
                     tick1start.x = tick1startRot.x;
                     tick1start.y = tick1startRot.y;
@@ -2931,29 +2931,29 @@ void ATCSituationalDisplay::calculateCentrelineTicks()
                     tick2end.y = tick2endRot.y;
 
                     //Translate to local scene coords
-                    rwy1.x = translateToLocalX(rwy1.x);
-                    rwy1.y = translateToLocalY(rwy1.y);
+                    rwy1.x = ATCMath::translateToLocalX(rwy1.x, sectorCentreX, scaleFactor);
+                    rwy1.y = ATCMath::translateToLocalY(rwy1.y, sectorCentreY, scaleFactor);
 
-                    rwy2.x = translateToLocalX(rwy2.x);
-                    rwy2.y = translateToLocalY(rwy2.y);
+                    rwy2.x = ATCMath::translateToLocalX(rwy2.x, sectorCentreX, scaleFactor);
+                    rwy2.y = ATCMath::translateToLocalY(rwy2.y, sectorCentreY, scaleFactor);
 
-                    tick1mid.x = translateToLocalX(tick1mid.x);
-                    tick1mid.y = translateToLocalY(tick1mid.y);
+                    tick1mid.x = ATCMath::translateToLocalX(tick1mid.x, sectorCentreX, scaleFactor);
+                    tick1mid.y = ATCMath::translateToLocalY(tick1mid.y, sectorCentreY, scaleFactor);
 
-                    tick2mid.x = translateToLocalX(tick2mid.x);
-                    tick2mid.y = translateToLocalY(tick2mid.y);
+                    tick2mid.x = ATCMath::translateToLocalX(tick2mid.x, sectorCentreX, scaleFactor);
+                    tick2mid.y = ATCMath::translateToLocalY(tick2mid.y, sectorCentreY, scaleFactor);
 
-                    tick1start.x = translateToLocalX(tick1start.x);
-                    tick1start.y = translateToLocalY(tick1start.y);
+                    tick1start.x = ATCMath::translateToLocalX(tick1start.x, sectorCentreX, scaleFactor);
+                    tick1start.y = ATCMath::translateToLocalY(tick1start.y, sectorCentreY, scaleFactor);
 
-                    tick1end.x = translateToLocalX(tick1end.x);
-                    tick1end.y = translateToLocalY(tick1end.y);
+                    tick1end.x = ATCMath::translateToLocalX(tick1end.x, sectorCentreX, scaleFactor);
+                    tick1end.y = ATCMath::translateToLocalY(tick1end.y, sectorCentreY, scaleFactor);
 
-                    tick2start.x = translateToLocalX(tick2start.x);
-                    tick2start.y = translateToLocalY(tick2start.y);
+                    tick2start.x = ATCMath::translateToLocalX(tick2start.x, sectorCentreX, scaleFactor);
+                    tick2start.y = ATCMath::translateToLocalY(tick2start.y, sectorCentreY, scaleFactor);
 
-                    tick2end.x = translateToLocalX(tick2end.x);
-                    tick2end.y = translateToLocalY(tick2end.y);
+                    tick2end.x = ATCMath::translateToLocalX(tick2end.x, sectorCentreX, scaleFactor);
+                    tick2end.y = ATCMath::translateToLocalY(tick2end.y, sectorCentreY, scaleFactor);
 
                     //Construct tick symbols
                     QGraphicsLineItem *tickLine1 = new QGraphicsLineItem(tick1start.x, tick1start.y, tick1end.x, tick1end.y);
@@ -2990,11 +2990,11 @@ void ATCSituationalDisplay::calculateVORs()
     {
         coord currentVOR;
 
-        currentVOR.x = mercatorProjectionLon(airspaceData->getVOR(i)->longitude());
-        currentVOR.y = mercatorProjectionLat(airspaceData->getVOR(i)->latitude());
+        currentVOR.x = ATCMath::mercatorProjectionLon(airspaceData->getVOR(i)->longitude());
+        currentVOR.y = ATCMath::mercatorProjectionLat(airspaceData->getVOR(i)->latitude());
 
-        double xRotated = rotateX(currentVOR.x, currentVOR.y, rotationDeg);
-        double yRotated = rotateY(currentVOR.x, currentVOR.y, rotationDeg);
+        double xRotated = ATCMath::rotateX(currentVOR.x, currentVOR.y, rotationDeg);
+        double yRotated = ATCMath::rotateY(currentVOR.x, currentVOR.y, rotationDeg);
 
         currentVOR.x = xRotated;
         currentVOR.y = yRotated;
@@ -3005,8 +3005,8 @@ void ATCSituationalDisplay::calculateVORs()
 //Translate to local & scene coords
     for(int i = 0; i < airspaceData->getVORsVectorSize(); i++)
     {
-        tempVORs[i].x = translateToLocalX(tempVORs.at(i).x);
-        tempVORs[i].y = translateToLocalY(tempVORs.at(i).y);
+        tempVORs[i].x = ATCMath::translateToLocalX(tempVORs.at(i).x, sectorCentreX, scaleFactor);
+        tempVORs[i].y = ATCMath::translateToLocalY(tempVORs.at(i).y, sectorCentreY, scaleFactor);
 
         airspaceData->getVOR(i)->setScenePosition(new QPointF(tempVORs.at(i).x, tempVORs.at(i).y));
     }
@@ -3071,11 +3071,11 @@ void ATCSituationalDisplay::calculateNDBs()
     {
         coord currentNDB;
 
-        currentNDB.x = mercatorProjectionLon(airspaceData->getNDB(i)->longitude());
-        currentNDB.y = mercatorProjectionLat(airspaceData->getNDB(i)->latitude());
+        currentNDB.x = ATCMath::mercatorProjectionLon(airspaceData->getNDB(i)->longitude());
+        currentNDB.y = ATCMath::mercatorProjectionLat(airspaceData->getNDB(i)->latitude());
 
-        double xRotated = rotateX(currentNDB.x, currentNDB.y, rotationDeg);
-        double yRotated = rotateY(currentNDB.x, currentNDB.y, rotationDeg);
+        double xRotated = ATCMath::rotateX(currentNDB.x, currentNDB.y, rotationDeg);
+        double yRotated = ATCMath::rotateY(currentNDB.x, currentNDB.y, rotationDeg);
 
         currentNDB.x = xRotated;
         currentNDB.y = yRotated;
@@ -3086,8 +3086,8 @@ void ATCSituationalDisplay::calculateNDBs()
 //Translate to local & scene coords
     for(int i = 0; i < airspaceData->getNDBsVectorSize(); i++)
     {
-        tempNDBs[i].x = translateToLocalX(tempNDBs.at(i).x);
-        tempNDBs[i].y = translateToLocalY(tempNDBs.at(i).y);
+        tempNDBs[i].x = ATCMath::translateToLocalX(tempNDBs.at(i).x, sectorCentreX, scaleFactor);
+        tempNDBs[i].y = ATCMath::translateToLocalY(tempNDBs.at(i).y, sectorCentreY, scaleFactor);
 
         airspaceData->getNDB(i)->setScenePosition(new QPointF(tempNDBs.at(i).x, tempNDBs.at(i).y));
     }
@@ -3161,15 +3161,15 @@ void ATCSituationalDisplay::calculateSTARs()
             coord currentCoords1;
             coord currentCoords2;
 
-            currentCoords1.x = mercatorProjectionLon(airspaceData->getSTARSymbol(i)->getCoords1(j)->longitude());
-            currentCoords1.y = mercatorProjectionLat(airspaceData->getSTARSymbol(i)->getCoords1(j)->latitude());
-            currentCoords2.x = mercatorProjectionLon(airspaceData->getSTARSymbol(i)->getCoords2(j)->longitude());
-            currentCoords2.y = mercatorProjectionLat(airspaceData->getSTARSymbol(i)->getCoords2(j)->latitude());
+            currentCoords1.x = ATCMath::mercatorProjectionLon(airspaceData->getSTARSymbol(i)->getCoords1(j)->longitude());
+            currentCoords1.y = ATCMath::mercatorProjectionLat(airspaceData->getSTARSymbol(i)->getCoords1(j)->latitude());
+            currentCoords2.x = ATCMath::mercatorProjectionLon(airspaceData->getSTARSymbol(i)->getCoords2(j)->longitude());
+            currentCoords2.y = ATCMath::mercatorProjectionLat(airspaceData->getSTARSymbol(i)->getCoords2(j)->latitude());
 
-            double xRotated1 = rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
-            double yRotated1 = rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
-            double xRotated2 = rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
-            double yRotated2 = rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
+            double xRotated1 = ATCMath::rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
+            double yRotated1 = ATCMath::rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
+            double xRotated2 = ATCMath::rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
+            double yRotated2 = ATCMath::rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
 
             currentCoords1.x = xRotated1;
             currentCoords1.y = yRotated1;
@@ -3193,10 +3193,10 @@ void ATCSituationalDisplay::calculateSTARs()
             coord currentCoords1 = currentSegment.coords1.at(j);
             coord currentCoords2 = currentSegment.coords2.at(j);
 
-            currentCoords1.x = translateToLocalX(currentCoords1.x);
-            currentCoords1.y = translateToLocalY(currentCoords1.y);
-            currentCoords2.x = translateToLocalX(currentCoords2.x);
-            currentCoords2.y = translateToLocalY(currentCoords2.y);
+            currentCoords1.x = ATCMath::translateToLocalX(currentCoords1.x, sectorCentreX, scaleFactor);
+            currentCoords1.y = ATCMath::translateToLocalY(currentCoords1.y, sectorCentreY, scaleFactor);
+            currentCoords2.x = ATCMath::translateToLocalX(currentCoords2.x, sectorCentreX, scaleFactor);
+            currentCoords2.y = ATCMath::translateToLocalY(currentCoords2.y, sectorCentreY, scaleFactor);
 
             airspaceData->getSTARSymbol(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
                                                                              currentCoords2.x, currentCoords2.y));
@@ -3243,15 +3243,15 @@ void ATCSituationalDisplay::calculateSIDs()
             coord currentCoords1;
             coord currentCoords2;
 
-            currentCoords1.x = mercatorProjectionLon(airspaceData->getSIDSymbol(i)->getCoords1(j)->longitude());
-            currentCoords1.y = mercatorProjectionLat(airspaceData->getSIDSymbol(i)->getCoords1(j)->latitude());
-            currentCoords2.x = mercatorProjectionLon(airspaceData->getSIDSymbol(i)->getCoords2(j)->longitude());
-            currentCoords2.y = mercatorProjectionLat(airspaceData->getSIDSymbol(i)->getCoords2(j)->latitude());
+            currentCoords1.x = ATCMath::mercatorProjectionLon(airspaceData->getSIDSymbol(i)->getCoords1(j)->longitude());
+            currentCoords1.y = ATCMath::mercatorProjectionLat(airspaceData->getSIDSymbol(i)->getCoords1(j)->latitude());
+            currentCoords2.x = ATCMath::mercatorProjectionLon(airspaceData->getSIDSymbol(i)->getCoords2(j)->longitude());
+            currentCoords2.y = ATCMath::mercatorProjectionLat(airspaceData->getSIDSymbol(i)->getCoords2(j)->latitude());
 
-            double xRotated1 = rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
-            double yRotated1 = rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
-            double xRotated2 = rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
-            double yRotated2 = rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
+            double xRotated1 = ATCMath::rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
+            double yRotated1 = ATCMath::rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
+            double xRotated2 = ATCMath::rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
+            double yRotated2 = ATCMath::rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
 
             currentCoords1.x = xRotated1;
             currentCoords1.y = yRotated1;
@@ -3275,10 +3275,10 @@ void ATCSituationalDisplay::calculateSIDs()
             coord currentCoords1 = currentSegment.coords1.at(j);
             coord currentCoords2 = currentSegment.coords2.at(j);
 
-            currentCoords1.x = translateToLocalX(currentCoords1.x);
-            currentCoords1.y = translateToLocalY(currentCoords1.y);
-            currentCoords2.x = translateToLocalX(currentCoords2.x);
-            currentCoords2.y = translateToLocalY(currentCoords2.y);
+            currentCoords1.x = ATCMath::translateToLocalX(currentCoords1.x, sectorCentreX, scaleFactor);
+            currentCoords1.y = ATCMath::translateToLocalY(currentCoords1.y, sectorCentreY, scaleFactor);
+            currentCoords2.x = ATCMath::translateToLocalX(currentCoords2.x, sectorCentreX, scaleFactor);
+            currentCoords2.y = ATCMath::translateToLocalY(currentCoords2.y, sectorCentreY, scaleFactor);
 
             airspaceData->getSIDSymbol(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
                                                                              currentCoords2.x, currentCoords2.y));
@@ -3325,15 +3325,15 @@ void ATCSituationalDisplay::calculateAirwayLow()
             coord currentCoords1;
             coord currentCoords2;
 
-            currentCoords1.x = mercatorProjectionLon(airspaceData->getAirwayLow(i)->getCoords1(j)->longitude());
-            currentCoords1.y = mercatorProjectionLat(airspaceData->getAirwayLow(i)->getCoords1(j)->latitude());
-            currentCoords2.x = mercatorProjectionLon(airspaceData->getAirwayLow(i)->getCoords2(j)->longitude());
-            currentCoords2.y = mercatorProjectionLat(airspaceData->getAirwayLow(i)->getCoords2(j)->latitude());
+            currentCoords1.x = ATCMath::mercatorProjectionLon(airspaceData->getAirwayLow(i)->getCoords1(j)->longitude());
+            currentCoords1.y = ATCMath::mercatorProjectionLat(airspaceData->getAirwayLow(i)->getCoords1(j)->latitude());
+            currentCoords2.x = ATCMath::mercatorProjectionLon(airspaceData->getAirwayLow(i)->getCoords2(j)->longitude());
+            currentCoords2.y = ATCMath::mercatorProjectionLat(airspaceData->getAirwayLow(i)->getCoords2(j)->latitude());
 
-            double xRotated1 = rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
-            double yRotated1 = rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
-            double xRotated2 = rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
-            double yRotated2 = rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
+            double xRotated1 = ATCMath::rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
+            double yRotated1 = ATCMath::rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
+            double xRotated2 = ATCMath::rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
+            double yRotated2 = ATCMath::rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
 
             currentCoords1.x = xRotated1;
             currentCoords1.y = yRotated1;
@@ -3357,10 +3357,10 @@ void ATCSituationalDisplay::calculateAirwayLow()
             coord currentCoords1 = currentSegment.coords1.at(j);
             coord currentCoords2 = currentSegment.coords2.at(j);
 
-            currentCoords1.x = translateToLocalX(currentCoords1.x);
-            currentCoords1.y = translateToLocalY(currentCoords1.y);
-            currentCoords2.x = translateToLocalX(currentCoords2.x);
-            currentCoords2.y = translateToLocalY(currentCoords2.y);
+            currentCoords1.x = ATCMath::translateToLocalX(currentCoords1.x, sectorCentreX, scaleFactor);
+            currentCoords1.y = ATCMath::translateToLocalY(currentCoords1.y, sectorCentreY, scaleFactor);
+            currentCoords2.x = ATCMath::translateToLocalX(currentCoords2.x, sectorCentreX, scaleFactor);
+            currentCoords2.y = ATCMath::translateToLocalY(currentCoords2.y, sectorCentreY, scaleFactor);
 
             airspaceData->getAirwayLow(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
                                                                              currentCoords2.x, currentCoords2.y));
@@ -3407,15 +3407,15 @@ void ATCSituationalDisplay::calculateAirwayHigh()
             coord currentCoords1;
             coord currentCoords2;
 
-            currentCoords1.x = mercatorProjectionLon(airspaceData->getAirwayLow(i)->getCoords1(j)->longitude());
-            currentCoords1.y = mercatorProjectionLat(airspaceData->getAirwayLow(i)->getCoords1(j)->latitude());
-            currentCoords2.x = mercatorProjectionLon(airspaceData->getAirwayLow(i)->getCoords2(j)->longitude());
-            currentCoords2.y = mercatorProjectionLat(airspaceData->getAirwayLow(i)->getCoords2(j)->latitude());
+            currentCoords1.x = ATCMath::mercatorProjectionLon(airspaceData->getAirwayLow(i)->getCoords1(j)->longitude());
+            currentCoords1.y = ATCMath::mercatorProjectionLat(airspaceData->getAirwayLow(i)->getCoords1(j)->latitude());
+            currentCoords2.x = ATCMath::mercatorProjectionLon(airspaceData->getAirwayLow(i)->getCoords2(j)->longitude());
+            currentCoords2.y = ATCMath::mercatorProjectionLat(airspaceData->getAirwayLow(i)->getCoords2(j)->latitude());
 
-            double xRotated1 = rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
-            double yRotated1 = rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
-            double xRotated2 = rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
-            double yRotated2 = rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
+            double xRotated1 = ATCMath::rotateX(currentCoords1.x, currentCoords1.y, rotationDeg);
+            double yRotated1 = ATCMath::rotateY(currentCoords1.x, currentCoords1.y, rotationDeg);
+            double xRotated2 = ATCMath::rotateX(currentCoords2.x, currentCoords2.y, rotationDeg);
+            double yRotated2 = ATCMath::rotateY(currentCoords2.x, currentCoords2.y, rotationDeg);
 
             currentCoords1.x = xRotated1;
             currentCoords1.y = yRotated1;
@@ -3439,10 +3439,10 @@ void ATCSituationalDisplay::calculateAirwayHigh()
             coord currentCoords1 = currentSegment.coords1.at(j);
             coord currentCoords2 = currentSegment.coords2.at(j);
 
-            currentCoords1.x = translateToLocalX(currentCoords1.x);
-            currentCoords1.y = translateToLocalY(currentCoords1.y);
-            currentCoords2.x = translateToLocalX(currentCoords2.x);
-            currentCoords2.y = translateToLocalY(currentCoords2.y);
+            currentCoords1.x = ATCMath::translateToLocalX(currentCoords1.x, sectorCentreX, scaleFactor);
+            currentCoords1.y = ATCMath::translateToLocalY(currentCoords1.y, sectorCentreY, scaleFactor);
+            currentCoords2.x = ATCMath::translateToLocalX(currentCoords2.x, sectorCentreX, scaleFactor);
+            currentCoords2.y = ATCMath::translateToLocalY(currentCoords2.y, sectorCentreY, scaleFactor);
 
             airspaceData->getAirwayHigh(i)->appendLine(new QGraphicsLineItem(currentCoords1.x, currentCoords1.y,
                                                                              currentCoords2.x, currentCoords2.y));
@@ -3522,14 +3522,14 @@ void ATCSituationalDisplay::createTagType(ATCFlight *flight)
 
 ATCTagDiamond* ATCSituationalDisplay::createDiamond(ATCFlightTag *tag, double lon, double lat)
 {
-    double x = mercatorProjectionLon(lon);
-    double y = mercatorProjectionLat(lat);
+    double x = ATCMath::mercatorProjectionLon(lon);
+    double y = ATCMath::mercatorProjectionLat(lat);
 
-    double xRot = rotateX(x, y, ATCConst::AVG_DECLINATION);
-    double yRot = rotateY(x, y, ATCConst::AVG_DECLINATION);
+    double xRot = ATCMath::rotateX(x, y, ATCConst::AVG_DECLINATION);
+    double yRot = ATCMath::rotateY(x, y, ATCConst::AVG_DECLINATION);
 
-    x = translateToLocalX(xRot);
-    y = translateToLocalY(yRot);
+    x = ATCMath::translateToLocalX(xRot, sectorCentreX, scaleFactor);
+    y = ATCMath::translateToLocalY(yRot, sectorCentreY, scaleFactor);
 
     double width = settings->TAG_DIAMOND_WIDTH / currentScale;
 
@@ -3563,25 +3563,25 @@ QGraphicsLineItem *ATCSituationalDisplay::createLeader(ATCFlightTag *tag, double
     double leaderEndLon = lon + ATCMath::rad2deg(length / (ATCConst::WGS84_A * qCos(ATCMath::deg2rad(lat))));
     double leaderEndLat = lat;
 
-    leaderStartLon = mercatorProjectionLon(leaderStartLon);
-    leaderStartLat = mercatorProjectionLat(leaderStartLat);
-    leaderEndLon = mercatorProjectionLon(leaderEndLon);
-    leaderEndLat = mercatorProjectionLat(leaderEndLat);
+    leaderStartLon = ATCMath::mercatorProjectionLon(leaderStartLon);
+    leaderStartLat = ATCMath::mercatorProjectionLat(leaderStartLat);
+    leaderEndLon = ATCMath::mercatorProjectionLon(leaderEndLon);
+    leaderEndLat = ATCMath::mercatorProjectionLat(leaderEndLat);
 
     double delta = qFabs(leaderEndLon - leaderStartLon);
 
     leaderEndLon = leaderStartLon + delta * qSin(trueHdg);
     leaderEndLat = leaderStartLat + delta * qCos(trueHdg);
 
-    double xStart = rotateX(leaderStartLon, leaderStartLat, ATCConst::AVG_DECLINATION);
-    double yStart = rotateY(leaderStartLon, leaderStartLat, ATCConst::AVG_DECLINATION);
-    double xEnd = rotateX(leaderEndLon, leaderEndLat, ATCConst::AVG_DECLINATION);
-    double yEnd = rotateY(leaderEndLon, leaderEndLat, ATCConst::AVG_DECLINATION);
+    double xStart = ATCMath::rotateX(leaderStartLon, leaderStartLat, ATCConst::AVG_DECLINATION);
+    double yStart = ATCMath::rotateY(leaderStartLon, leaderStartLat, ATCConst::AVG_DECLINATION);
+    double xEnd = ATCMath::rotateX(leaderEndLon, leaderEndLat, ATCConst::AVG_DECLINATION);
+    double yEnd = ATCMath::rotateY(leaderEndLon, leaderEndLat, ATCConst::AVG_DECLINATION);
 
-    xStart = translateToLocalX(xStart);
-    yStart = translateToLocalY(yStart);
-    xEnd = translateToLocalX(xEnd);
-    yEnd = translateToLocalY(yEnd);
+    xStart = ATCMath::translateToLocalX(xStart, sectorCentreX, scaleFactor);
+    yStart = ATCMath::translateToLocalY(yStart, sectorCentreY, scaleFactor);
+    xEnd = ATCMath::translateToLocalX(xEnd, sectorCentreX, scaleFactor);
+    yEnd = ATCMath::translateToLocalY(yEnd, sectorCentreY, scaleFactor);
 
     QPen pen(Qt::green);
     pen.setWidthF(settings->TAG_LEADER_WIDTH / currentScale);
@@ -4449,111 +4449,6 @@ void ATCSituationalDisplay::interpretDisplayFile(QString path)
     file.close();
 }
 
-double ATCSituationalDisplay::mercatorProjectionLon(double longitudeDeg, double referenceLongitudeDeg, double scale)
-{
-    return scale * (longitudeDeg - referenceLongitudeDeg);
-}
-
-double ATCSituationalDisplay::mercatorProjectionLat(double latitudeDeg, double scale)
-{
-    return scale * qLn(qTan(ATCConst::PI / 4 + latitudeDeg * ATCConst::DEG_2_RAD / 2)
-               * qPow((1 - ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(latitudeDeg * ATCConst::DEG_2_RAD)) /
-               (1 + ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(latitudeDeg * ATCConst::DEG_2_RAD)) ,
-                      ATCConst::WGS84_FIRST_ECCENTRICITY / 2)) * ATCConst::RAD_2_DEG;
-}
-
-double ATCSituationalDisplay::inverseMercatorLon(double mercatorX, double referenceLongitude, double scale)
-{
-    return mercatorX / scale + referenceLongitude;
-}
-
-double ATCSituationalDisplay::inverseMercatorLat(double mercatorY, double error, double scale)
-{
-    double t = qExp(-1 * mercatorY * ATCConst::DEG_2_RAD / scale);
-    double lat = ATCConst::PI / 2 - 2 * qAtan(t);
-    double lat1;
-
-    double change = error + 1;
-
-    while(change > error)
-    {
-        lat1 = ATCConst::PI/2 - 2 * qAtan(t * qPow((1 - ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(lat)) / (1 + ATCConst::WGS84_FIRST_ECCENTRICITY * qSin(lat)), ATCConst::WGS84_FIRST_ECCENTRICITY / 2));
-        change = qFabs(lat1 - lat) / lat;
-
-        lat = lat1;
-    }
-
-    return lat * ATCConst::RAD_2_DEG;
-}
-
-double ATCSituationalDisplay::rotateX(double coordX, double coordY, double angleDeg)
-{
-    return coordX * qCos(angleDeg * ATCConst::DEG_2_RAD) - coordY * qSin(angleDeg * ATCConst::DEG_2_RAD);
-}
-
-double ATCSituationalDisplay::rotateY(double coordX, double coordY, double angleDeg)
-{
-    return coordX * qSin(angleDeg * ATCConst::DEG_2_RAD) + coordY * qCos(angleDeg * ATCConst::DEG_2_RAD);
-}
-
-double ATCSituationalDisplay::translateToLocalX(double coordX)
-{
-    return (coordX - sectorCentreX) * scaleFactor;
-}
-
-double ATCSituationalDisplay::translateToLocalY(double coordY)
-{
-    return (-1 * (coordY - sectorCentreY) * scaleFactor);
-}
-
-double ATCSituationalDisplay::translateFromLocalX(double localX)
-{
-    return localX / scaleFactor + sectorCentreX;
-}
-
-double ATCSituationalDisplay::translateFromLocalY(double localY)
-{
-    return -1 * localY / scaleFactor + sectorCentreY;
-}
-
-QPointF ATCSituationalDisplay::geo2local(double latRad, double lonRad, double angleDeg, double scale, double refLon)
-{
-    double xProjected = mercatorProjectionLon(ATCMath::rad2deg(lonRad), refLon, scale);
-    double yProjected = mercatorProjectionLat(ATCMath::rad2deg(latRad), scale);
-
-    double xRotated = rotateX(xProjected, yProjected, angleDeg);
-    double yRotated = rotateY(xProjected, yProjected, angleDeg);
-
-    double xLocal = translateToLocalX(xRotated);
-    double yLocal = translateToLocalY(yRotated);
-
-    return QPointF(xLocal, yLocal);
-}
-
-QPointF ATCSituationalDisplay::local2geo(double x, double y, double angleDeg, double scale, double refLon)
-{
-    double xRotated = translateFromLocalX(x);
-    double yRotated = translateFromLocalY(y);
-
-    double xProjected = rotateX(xRotated, yRotated, -1 * angleDeg);
-    double yProjected = rotateY(xRotated, yRotated, -1 * angleDeg);
-
-    double lon = inverseMercatorLon(xProjected, refLon, scale);
-    double lat = inverseMercatorLat(yProjected, 1E-8);
-
-    return QPointF(lon, lat);
-}
-
-QPointF ATCSituationalDisplay::rotatePoint(QPointF pt, double angle, ATC::AngularUnits units)
-{
-    if(units == ATC::Deg) angle = ATCMath::deg2rad(angle);
-
-    double x = pt.x() * qCos(angle) - pt.y() * qSin(angle);
-    double y = pt.x() * qSin(angle) + pt.y() * qCos(angle);
-
-    return(QPointF(x, y));
-}
-
 void ATCSituationalDisplay::calculateSectorParameters()
 {
     double sectorXmin = airspaceData->getSectorARTCCLow(0)->getCoordsPair(0).x1;
@@ -4747,7 +4642,7 @@ void ATCSituationalDisplay::mousePressEvent(QMouseEvent *event)
 
         //Map from radar screen to lat/lon
         QPointF point = mapToScene(event->pos());
-        QPointF geo = local2geo(point.x(), point.y(), ATCConst::AVG_DECLINATION);
+        QPointF geo = ATCMath::local2geo(point.x(), point.y(), ATCConst::AVG_DECLINATION, sectorCentreX, sectorCentreY, scaleFactor);
 
         emit signalDisplayClicked(geo.x(), geo.y());
 

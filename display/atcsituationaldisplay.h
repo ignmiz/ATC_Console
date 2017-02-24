@@ -283,25 +283,6 @@ private:
     void loadInitialDisplay(QString path);
     void interpretDisplayFile(QString path);
 
-    double mercatorProjectionLon(double longitudeDeg, double referenceLongitudeDeg = 0, double scale = ATCConst::WGS84_A);
-    double mercatorProjectionLat(double latitudeDeg, double scale = ATCConst::WGS84_A);
-
-    double inverseMercatorLon(double mercatorX, double referenceLongitude = 0, double scale = ATCConst::WGS84_A);
-    double inverseMercatorLat(double mercatorY, double error, double scale = ATCConst::WGS84_A);
-
-    double rotateX(double coordX, double coordY, double angleDeg);
-    double rotateY(double coordX, double coordY, double angleDeg);
-
-    double translateToLocalX(double coordX);
-    double translateToLocalY(double coordY);
-
-    double translateFromLocalX(double localX);
-    double translateFromLocalY(double localY);
-
-    QPointF geo2local(double latRad, double lonRad, double angleDeg, double scale = ATCConst::WGS84_A, double refLon = 0);
-    QPointF local2geo(double x, double y, double angleDeg, double scale = ATCConst::WGS84_A, double refLon = 0);
-    QPointF rotatePoint(QPointF pt, double angle, ATC::AngularUnits units);
-
     void calculateSectorParameters();
 
     void connectSlots();
