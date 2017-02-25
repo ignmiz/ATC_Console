@@ -111,6 +111,14 @@ public:
     double ROUTE_LABEL_DX;
     double ROUTE_LABEL_DY;
 
+    QColor RULER_END_COLOR;
+    double RULER_END_DIA;
+    double RULER_END_LINE_WIDTH;
+    QColor RULER_LINE_COLOR;
+    double RULER_LINE_WIDTH;
+    QColor RULER_LABEL_COLOR;
+    double RULER_LABEL_HEIGHT;
+
     int TRANSITION_LEVEL = 80; //TEMPORARY MOCKUP!
 
 signals:

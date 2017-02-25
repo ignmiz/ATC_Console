@@ -4620,8 +4620,6 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
 
         rescaleTags();
         rescaleRoutes();
-
-        if(ruler != nullptr) deleteRuler();
     }
 
     event->accept();
@@ -4631,8 +4629,10 @@ void ATCSituationalDisplay::mousePressEvent(QMouseEvent *event)
 {
     if((ruler == nullptr) && (event->button() == Qt::RightButton) && !keyPressedCTRL)
     {
-        ruler = new ATCRuler(mapToScene(event->pos()), settings, currentScene, &currentScale);
+        ruler = new ATCRuler(mapToScene(event->pos()), settings, currentScene, currentScale, sectorCentreX, sectorCentreY, scaleFactor);
         mousePressedRMB = true;
+
+        viewport()->setCursor(Qt::BlankCursor);
     }
 
     if(flagGetLocation)
@@ -4730,9 +4730,14 @@ void ATCSituationalDisplay::mouseMoveEvent(QMouseEvent *event)
 
 void ATCSituationalDisplay::mouseReleaseEvent(QMouseEvent *event)
 {
-    if((ruler != nullptr) && (event->button() == Qt::RightButton)) deleteRuler();
+    if((ruler != nullptr) && (event->button() == Qt::RightButton))
+    {
+        deleteRuler();
+        viewport()->setCursor(Qt::CrossCursor);
+    }
 
-    mousePressedRMB = false;
+    if(event->button() == Qt::RightButton) mousePressedRMB = false;
+
     QGraphicsView::mouseReleaseEvent(event);
 }
 
@@ -4742,6 +4747,8 @@ void ATCSituationalDisplay::keyPressEvent(QKeyEvent *event)
     {
         this->setDragMode(QGraphicsView::ScrollHandDrag);
         keyPressedCTRL = true;
+
+        if(ruler != nullptr) deleteRuler();
     }
 
     event->accept();
