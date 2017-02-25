@@ -86,7 +86,7 @@ void DialogAltitude::dialogAltitudeSetup()
         }
     }
 
-    if(settings->TRANSITION_LEVEL % 10 == 10)
+    if(settings->TRANSITION_LEVEL % 10 == 0)
     {
         for(int i = settings->TRANSITION_LEVEL - 5; i >= 10; i -= 5)
         {
