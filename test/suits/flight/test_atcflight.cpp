@@ -568,5 +568,9 @@ void Test_ATCFlight::test_setTrailingDots()
 
     vec.append(dot2);
     QVERIFY(foo.getTrailingDots() == vec);
+
+    foo.removeOldestDot();
+    vec.removeFirst();
+    QVERIFY(foo.getTrailingDots() == vec);
 }
 

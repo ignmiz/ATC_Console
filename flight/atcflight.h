@@ -135,6 +135,8 @@ public:
     int getTrailingDotsVectorSize();
     void appendTrailingDot(ATCTrailingDot *dot);
     void setTrailingDots(QVector<ATCTrailingDot*> &vector);
+    void removeOldestDot();
+    void rescaleDots();
 
     void clearWaypoints();
 

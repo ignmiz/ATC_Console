@@ -473,7 +473,11 @@ void ATCSettings::interpretSymbologyFile(QString path)
             }
             else if(flag == "[TRAILING DOTS]")
             {
-                if(stringList.at(0).trimmed() == "COLOR")
+                if(stringList.at(0).trimmed() == "COUNT")
+                {
+                    TRAILING_COUNT = stringList.at(1).trimmed().toInt();
+                }
+                else if(stringList.at(0).trimmed() == "COLOR")
                 {
                     TRAILING_COLOR = colorFromString(stringList.at(1));
                 }
@@ -632,6 +636,7 @@ void ATCSettings::exportSymbology(QString path)
     out << endl;
 
     out << "[TRAILING DOTS]" << endl;
+    out << "COUNT = " << TRAILING_COUNT << endl;
     out << "COLOR = " << TRAILING_COLOR.red() << ", " << TRAILING_COLOR.green() << ", " << TRAILING_COLOR.blue() << endl;
     out << "DIAMETER = " << TRAILING_DIA << endl;
 

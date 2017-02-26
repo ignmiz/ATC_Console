@@ -229,6 +229,7 @@ private:
     void rescaleAirwaysHigh();
     void rescaleTags();
     void rescaleRoutes();
+    void rescaleTrailingDots();
 
     void rescaleSectorARTCCLow(ATCSectorARTCCLow *object);
     void rescaleSectorARTCCHigh(ATCSectorARTCCHigh *object);
@@ -276,6 +277,7 @@ private:
     void createEtiquettes(ATCFlight *flight);
     void updateEtiquettesQuick(ATCFlight *flight);
     void updateRoutePrediction(ATCFlight *flight);
+    void updateTrailingDots(ATCFlight *flight);
 
     void assignTagPosition(ATCFlightTag *tag);
     void assignTagPositions();

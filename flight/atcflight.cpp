@@ -25,7 +25,7 @@ ATCFlight::~ATCFlight()
     {
         for(int i = 0; i < trailingDots.size(); i++)
         {
-            delete trailingDots.at(i);
+            if(trailingDots.at(i) != nullptr) delete trailingDots.at(i);
         }
         trailingDots.clear();
     }
@@ -355,6 +355,19 @@ void ATCFlight::appendTrailingDot(ATCTrailingDot *dot)
 void ATCFlight::setTrailingDots(QVector<ATCTrailingDot *> &vector)
 {
     trailingDots = vector;
+}
+
+void ATCFlight::removeOldestDot()
+{
+    trailingDots.removeFirst();
+}
+
+void ATCFlight::rescaleDots()
+{
+    for(int i = 0; i < trailingDots.size(); i++)
+    {
+        trailingDots.at(i)->rescaleDot();
+    }
 }
 
 void ATCFlight::clearWaypoints()

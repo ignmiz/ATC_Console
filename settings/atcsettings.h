@@ -8,6 +8,7 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QTextStream>
+#include <QDebug>
 
 class ATCSettings : public QObject
 {
@@ -119,6 +120,7 @@ public:
     QColor RULER_LABEL_COLOR;
     double RULER_LABEL_HEIGHT;
 
+    int TRAILING_COUNT;
     QColor TRAILING_COLOR;
     double TRAILING_DIA;
 

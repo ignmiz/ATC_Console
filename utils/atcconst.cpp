@@ -34,7 +34,7 @@ const double ATCConst::SECTOR_SHRINK_FACTOR = 2;
 
 //Simulation Performance
 const double ATCConst::DT = 0.1;
-const double ATCConst::REFRESH_INTERVAL = 3;
+const double ATCConst::REFRESH_INTERVAL = 5;
 
 const double ATCConst::k1 = 0.005;
 const double ATCConst::k2 = -33;
@@ -44,7 +44,7 @@ const double ATCConst::APP_RANGE = 55560;                       //30nm
 const double ATCConst::APP_ALLOWED_XTRACK_INTERCEPT = 370.4;    //0.2nm
 const double ATCConst::APP_ALLOWED_HDG_INTERCEPT = 10;          //deg
 const double ATCConst::APP_PATH_ANGLE = 3;                      //deg
-const double ATCConst::APP_ALT_FLT_TERMINATED = 15.24;              //50ft
+const double ATCConst::APP_ALT_FLT_TERMINATED = 15.24;          //50ft
 
 //Environment
 const double ATCConst::betaTrop = -0.0065;

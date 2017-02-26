@@ -1172,6 +1172,9 @@ void ATCSituationalDisplay::slotUpdateTags()
 
         State state = flight->getState();
 
+        //Update trailing dots
+        updateTrailingDots(flight);
+
         //Update diamond position
         QPointF diamond = ATCMath::geo2local(state.y, state.x, ATCConst::AVG_DECLINATION, sectorCentreX, sectorCentreY, scaleFactor);
         tag->moveTo(diamond);
@@ -1330,6 +1333,7 @@ void ATCSituationalDisplay::rescaleAll()
 
     rescaleTags();
     rescaleRoutes();
+    rescaleTrailingDots();
 }
 
 void ATCSituationalDisplay::rescaleScene()
@@ -1781,6 +1785,17 @@ void ATCSituationalDisplay::rescaleRoutes()
                                          pointList.at(j + 1).y() + settings->ROUTE_LABEL_DY / currentScale);
                 }
             }
+        }
+    }
+}
+
+void ATCSituationalDisplay::rescaleTrailingDots()
+{
+    if(simulation != nullptr)
+    {
+        for(int i = 0; i < simulation->getFlightsVectorSize(); i++)
+        {
+            simulation->getFlight(i)->rescaleDots();
         }
     }
 }
@@ -3997,6 +4012,21 @@ void ATCSituationalDisplay::updateRoutePrediction(ATCFlight *flight)
     pathItem->setPath(newPath);
 }
 
+void ATCSituationalDisplay::updateTrailingDots(ATCFlight *flight)
+{
+    QPointF pos = flight->getFlightTag()->getDiamondPosition();
+    ATCTrailingDot *dot = new ATCTrailingDot(pos, &currentScale, settings);
+
+    currentScene->addItem(dot);
+    flight->appendTrailingDot(dot);
+
+    if(flight->getTrailingDotsVectorSize() > settings->TRAILING_COUNT)
+    {
+        delete flight->getTrailingDot(0);
+        flight->removeOldestDot();
+    }
+}
+
 void ATCSituationalDisplay::assignTagPosition(ATCFlightTag *tag)
 {
     QGraphicsLineItem *connector = tag->getConnector();
@@ -4620,6 +4650,7 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
 
         rescaleTags();
         rescaleRoutes();
+        rescaleTrailingDots();
     }
 
     event->accept();

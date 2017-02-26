@@ -156,7 +156,7 @@ void ATCSimulation::slotStartSimulation()
         elapsedTime = timer.nsecsElapsed();
         diff = dt - elapsedTime;
 
-        qDebug() << "Elapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
+//        qDebug() << "Elapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
         QThread::usleep(qFloor(diff / 1000));
     }
 }
