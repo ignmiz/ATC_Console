@@ -32,22 +32,6 @@ void ATCSettings::interpretSymbologyFile(QString path)
         return;
     }
 
-//    bool flagINFO = false;
-//    bool flagARTCCLow = false;
-//    bool flagARTCCHigh = false;
-//    bool flagARTCC = false;
-//    bool flagVOR = false;
-//    bool flagNDB = false;
-//    bool flagFixes = false;
-//    bool flagAirport = false;
-//    bool flagRunway = false;
-//    bool flagSTAR = false;
-//    bool flagSID = false;
-//    bool flagLowAirway = false;
-//    bool flagHighAirway = false;
-//    bool flagTag = false;
-//    bool flagRoute = false;
-
     QString flag;
 
     QTextStream stream(&file);
@@ -123,6 +107,10 @@ void ATCSettings::interpretSymbologyFile(QString path)
             else if(textLine.contains("[RULER]", Qt::CaseInsensitive))
             {
                 flag = "[RULER]";
+            }
+            else if(textLine.contains("[TRAILING DOTS]", Qt::CaseInsensitive))
+            {
+                flag = "[TRAILING DOTS]";
             }
             else if(flag == "[INFO]")
             {
@@ -483,6 +471,17 @@ void ATCSettings::interpretSymbologyFile(QString path)
                     RULER_LABEL_HEIGHT = stringList.at(1).trimmed().toDouble();
                 }
             }
+            else if(flag == "[TRAILING DOTS]")
+            {
+                if(stringList.at(0).trimmed() == "COLOR")
+                {
+                    TRAILING_COLOR = colorFromString(stringList.at(1));
+                }
+                else if(stringList.at(0).trimmed() == "DIAMETER")
+                {
+                    TRAILING_DIA = stringList.at(1).trimmed().toDouble();
+                }
+            }
         }
     }
 
@@ -630,6 +629,11 @@ void ATCSettings::exportSymbology(QString path)
     out << "LINE WIDTH = " << RULER_LINE_WIDTH << endl;
     out << "LABEL COLOR = " << RULER_LABEL_COLOR.red() << ", " << RULER_LABEL_COLOR.green() << ", " << RULER_LABEL_COLOR.blue() << endl;
     out << "LABEL HEIGHT = " << RULER_LABEL_HEIGHT << endl;
+    out << endl;
+
+    out << "[TRAILING DOTS]" << endl;
+    out << "COLOR = " << TRAILING_COLOR.red() << ", " << TRAILING_COLOR.green() << ", " << TRAILING_COLOR.blue() << endl;
+    out << "DIAMETER = " << TRAILING_DIA << endl;
 
     file.close();
 }

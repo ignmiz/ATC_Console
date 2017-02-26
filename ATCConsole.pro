@@ -115,7 +115,8 @@ SOURCES += main.cpp\
     atcsimulationcontroller.cpp \
     atctagdiamond.cpp \
     dialogleaders.cpp \
-    atcruler.cpp
+    atcruler.cpp \
+    atctrailingdot.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -231,7 +232,8 @@ HEADERS  += mainwindow.h \
     include/GeographicLib/UTMUPS.hpp \
     atctagdiamond.h \
     dialogleaders.h \
-    atcruler.h
+    atcruler.h \
+    atctrailingdot.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \

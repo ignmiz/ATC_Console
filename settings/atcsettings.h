@@ -119,6 +119,9 @@ public:
     QColor RULER_LABEL_COLOR;
     double RULER_LABEL_HEIGHT;
 
+    QColor TRAILING_COLOR;
+    double TRAILING_DIA;
+
     int TRANSITION_LEVEL = 80; //TEMPORARY MOCKUP!
 
 signals:
