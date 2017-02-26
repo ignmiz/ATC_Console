@@ -538,3 +538,35 @@ void Test_ATCFlight::test_setSimulated()
     QVERIFY(foo.isSimulated() == false);
 }
 
+void Test_ATCFlight::test_setTrailingDots()
+{
+    ATCPaths paths;
+    ATCSettings settings(&paths);
+    double currentScale = 1;
+
+    State state;
+    state.x = 1;
+
+    ATCFlight foo(state);
+    QVERIFY(foo.getTrailingDotsVectorSize() == 0);
+
+    QVector<ATCTrailingDot*> vec;
+    ATCTrailingDot *dot0 = new ATCTrailingDot(1, 2, &currentScale, &settings);
+    ATCTrailingDot *dot1 = new ATCTrailingDot(4, 5, &currentScale, &settings);
+    vec.append(dot0);
+    vec.append(dot1);
+
+    foo.setTrailingDots(vec);
+    QVERIFY(foo.getTrailingDotsVectorSize() == 2);
+    QVERIFY(foo.getTrailingDot(0) == dot0);
+    QVERIFY(foo.getTrailingDot(1) == dot1);
+
+    ATCTrailingDot *dot2 = new ATCTrailingDot(6, 7, &currentScale, &settings);
+    foo.appendTrailingDot(dot2);
+    QVERIFY(foo.getTrailingDotsVectorSize() == 3);
+    QVERIFY(foo.getTrailingDot(2) == dot2);
+
+    vec.append(dot2);
+    QVERIFY(foo.getTrailingDots() == vec);
+}
+

@@ -5,6 +5,7 @@
 #include "atcflighttag.h"
 #include "atcrouteprediction.h"
 #include "atcflags.h"
+#include "atctrailingdot.h"
 
 #include <QString>
 #include <QObject>
@@ -129,6 +130,12 @@ public:
 
     void setSimulated(bool flag);
 
+    QVector<ATCTrailingDot*>& getTrailingDots();
+    ATCTrailingDot* getTrailingDot(int i);
+    int getTrailingDotsVectorSize();
+    void appendTrailingDot(ATCTrailingDot *dot);
+    void setTrailingDots(QVector<ATCTrailingDot*> &vector);
+
     void clearWaypoints();
 
 signals:
@@ -189,6 +196,8 @@ private:
     double appTargetAltitude;
 
     bool simulated = true;
+
+    QVector<ATCTrailingDot*> trailingDots;
 };
 
 #endif // ATCFLIGHT_H

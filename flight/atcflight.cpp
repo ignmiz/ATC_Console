@@ -20,6 +20,15 @@ ATCFlight::~ATCFlight()
     if(plan != nullptr) delete plan;
     if(tag != nullptr) delete tag;
     if(prediction != nullptr) delete prediction;
+
+    if(!trailingDots.isEmpty())
+    {
+        for(int i = 0; i < trailingDots.size(); i++)
+        {
+            delete trailingDots.at(i);
+        }
+        trailingDots.clear();
+    }
 }
 
 ATCFlightPlan *ATCFlight::getFlightPlan()
@@ -321,6 +330,31 @@ void ATCFlight::setAppTargetAltitude(double altitudeM)
 void ATCFlight::setSimulated(bool flag)
 {
     simulated = flag;
+}
+
+QVector<ATCTrailingDot*> &ATCFlight::getTrailingDots()
+{
+    return trailingDots;
+}
+
+ATCTrailingDot *ATCFlight::getTrailingDot(int i)
+{
+    return trailingDots.at(i);
+}
+
+int ATCFlight::getTrailingDotsVectorSize()
+{
+    return trailingDots.size();
+}
+
+void ATCFlight::appendTrailingDot(ATCTrailingDot *dot)
+{
+    trailingDots.append(dot);
+}
+
+void ATCFlight::setTrailingDots(QVector<ATCTrailingDot *> &vector)
+{
+    trailingDots = vector;
 }
 
 void ATCFlight::clearWaypoints()
