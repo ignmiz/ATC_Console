@@ -45,12 +45,12 @@ signals:
     void signalCreateDialogHandoff(QPoint point);
     void signalCreateDialogFlightPlan();
     void signalDisplayRoute();
+    void signalItemHovered(bool flag);
 
 private:
     void moveLine(QPointF newPos);
 
     ATC::TagType *type;
-
     QGraphicsLineItem *line;
     QGraphicsSimpleTextItem *text;
     ATCSettings *settings;

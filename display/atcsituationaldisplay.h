@@ -144,6 +144,8 @@ private slots:
     void slotUpdateTags();
     void slotUpdateLeaders();
 
+    void slotItemHovered(bool flag);
+
 private:
     ATCAirspace *airspaceData = nullptr;
     ATCSettings *settings = nullptr;
@@ -164,6 +166,7 @@ private:
     QCursor acftCursor;
 
     bool flagGetLocation = false;
+    bool itemHovered = false;
     bool mousePressedRMB = false;
 
     bool keyPressedCTRL = false;

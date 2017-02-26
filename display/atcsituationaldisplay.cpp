@@ -699,6 +699,8 @@ void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
     connect(flight, SIGNAL(signalDisplayRoute(ATCFlight*)), this, SLOT(slotDisplayRoute(ATCFlight*)));
 
     connect(flight, SIGNAL(signalClearFlightElements(ATCFlight*)), this, SLOT(slotClearFlightElements(ATCFlight*)));
+
+    connect(tagBox, SIGNAL(signalItemHovered(bool)), this, SLOT(slotItemHovered(bool)));
 }
 
 void ATCSituationalDisplay::slotUpdateFlightTag(ATCFlight *flight)
@@ -1273,6 +1275,11 @@ void ATCSituationalDisplay::slotUpdateLeaders()
             leader->setLine(QLineF(p1.x(), p1.y(), xEnd, yEnd));
         }
     }
+}
+
+void ATCSituationalDisplay::slotItemHovered(bool flag)
+{
+    itemHovered = flag;
 }
 
 void ATCSituationalDisplay::slotClearFlightElements(ATCFlight *flight)
@@ -4658,7 +4665,7 @@ void ATCSituationalDisplay::wheelEvent(QWheelEvent *event)
 
 void ATCSituationalDisplay::mousePressEvent(QMouseEvent *event)
 {
-    if((ruler == nullptr) && (event->button() == Qt::RightButton) && !keyPressedCTRL)
+    if((ruler == nullptr) && (event->button() == Qt::RightButton) && !keyPressedCTRL && !itemHovered)
     {
         ruler = new ATCRuler(mapToScene(event->pos()), settings, currentScene, currentScale, sectorCentreX, sectorCentreY, scaleFactor);
         mousePressedRMB = true;

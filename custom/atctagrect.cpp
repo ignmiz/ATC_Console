@@ -17,7 +17,6 @@ ATCTagRect::ATCTagRect(double x, double y, double width, double height, ATCSetti
 
 ATCTagRect::~ATCTagRect()
 {
-
 }
 
 QString ATCTagRect::getShortEtiquette()
@@ -160,6 +159,7 @@ void ATCTagRect::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
     }
 
     hovered = true;
+    emit signalItemHovered(hovered);
     event->accept();
 }
 
@@ -180,6 +180,7 @@ void ATCTagRect::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     setBrush(QBrush(settings->TAG_BOX_COLOR));
 
     hovered = false;
+    emit signalItemHovered(hovered);
     event->accept();
 }
 
