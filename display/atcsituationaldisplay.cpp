@@ -1175,7 +1175,7 @@ void ATCSituationalDisplay::slotUpdateTags()
         State state = flight->getState();
 
         //Update trailing dots
-        updateTrailingDots(flight);
+        if(flight->isSimulated()) updateTrailingDots(flight);
 
         //Update diamond position
         QPointF diamond = ATCMath::geo2local(state.y, state.x, ATCConst::AVG_DECLINATION, sectorCentreX, sectorCentreY, scaleFactor);
@@ -1273,6 +1273,26 @@ void ATCSituationalDisplay::slotUpdateLeaders()
             yEnd = ATCMath::translateToLocalY(yEnd, sectorCentreY, scaleFactor);
 
             leader->setLine(QLineF(p1.x(), p1.y(), xEnd, yEnd));
+        }
+    }
+}
+
+void ATCSituationalDisplay::slotUpdateTrailingDots()
+{
+    if(simulation != nullptr)
+    {
+        for(int i = 0; i < simulation->getFlightsVectorSize(); i++)
+        {
+            ATCFlight *flight = simulation->getFlight(i);
+            int dotsCount = flight->getTrailingDotsVectorSize();
+
+            if(flight->isSimulated() && (dotsCount > settings->TRAILING_COUNT))
+            {
+                for(int j = 0; j < dotsCount - settings->TRAILING_COUNT; j++)
+                {
+                    flight->removeOldestDot();
+                }
+            }
         }
     }
 }
@@ -4027,11 +4047,7 @@ void ATCSituationalDisplay::updateTrailingDots(ATCFlight *flight)
     currentScene->addItem(dot);
     flight->appendTrailingDot(dot);
 
-    if(flight->getTrailingDotsVectorSize() > settings->TRAILING_COUNT)
-    {
-        delete flight->getTrailingDot(0);
-        flight->removeOldestDot();
-    }
+    if(flight->getTrailingDotsVectorSize() > settings->TRAILING_COUNT) flight->removeOldestDot();
 }
 
 void ATCSituationalDisplay::assignTagPosition(ATCFlightTag *tag)

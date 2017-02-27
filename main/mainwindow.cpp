@@ -153,6 +153,18 @@ void MainWindow::on_buttonLeaderLine_clicked()
     }
 }
 
+void MainWindow::on_buttonTrailingDots_clicked()
+{
+    if(dialogTrailingDots == nullptr)
+    {
+        dialogTrailingDots = new DialogTrailingDots(settings, this);
+        dialogTrailingDots->show();
+        setSituationalDisplayFocus();
+
+        connect(dialogTrailingDots, SIGNAL(closed()), this, SLOT(dialogTrailingDotsClosed()));
+        connect(dialogTrailingDots, SIGNAL(signalUpdateTrailingDots()), ui->situationalDisplay, SLOT(slotUpdateTrailingDots()));
+    }
+}
 
 void MainWindow::dialogMainMenuClosed()
 {
@@ -174,6 +186,11 @@ void MainWindow::dialogSettingsClosed()
 void MainWindow::dialogLeadersClosed()
 {
     dialogLeaders = nullptr;
+}
+
+void MainWindow::dialogTrailingDotsClosed()
+{
+    dialogTrailingDots = nullptr;
 }
 
 void MainWindow::changeFocusToDisplay()
@@ -889,4 +906,5 @@ void MainWindow::setSituationalDisplayFocus()
 {
     ui->situationalDisplay->setFocus();
 }
+
 

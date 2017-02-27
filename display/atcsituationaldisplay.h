@@ -143,6 +143,7 @@ private slots:
 
     void slotUpdateTags();
     void slotUpdateLeaders();
+    void slotUpdateTrailingDots();
 
     void slotItemHovered(bool flag);
 

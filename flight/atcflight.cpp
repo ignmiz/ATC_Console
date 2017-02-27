@@ -359,6 +359,7 @@ void ATCFlight::setTrailingDots(QVector<ATCTrailingDot *> &vector)
 
 void ATCFlight::removeOldestDot()
 {
+    delete trailingDots.at(0);
     trailingDots.removeFirst();
 }
 

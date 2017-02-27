@@ -127,7 +127,8 @@ SOURCES += \
     atctagdiamond.cpp \
     dialogleaders.cpp \
     atcruler.cpp \
-    atctrailingdot.cpp
+    atctrailingdot.cpp \
+    ../dialog/dialogtrailingdots.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -245,7 +246,8 @@ HEADERS  += \
     atctagdiamond.h \
     dialogleaders.h \
     atcruler.h \
-    atctrailingdot.h
+    atctrailingdot.h \
+    ../dialog/dialogtrailingdots.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
@@ -262,7 +264,8 @@ FORMS    += mainwindow.ui \
     dialoghandoff.ui \
     dialogflightplan.ui \
     dialogactiverunways.ui \
-    dialogleaders.ui
+    dialogleaders.ui \
+    ../ui/dialogtrailingdots.ui
 
 #MOCK SOURCES & HEADERS GO HERE:
 
