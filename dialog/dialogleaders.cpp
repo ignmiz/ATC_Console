@@ -2,7 +2,7 @@
 #include "ui_dialogleaders.h"
 
 DialogLeaders::DialogLeaders(ATCSettings *settings, QWidget *parent) :
-    ATCDialog(parent, "Leader Lines", 250, 100),
+    ATCDialog(parent, "Leader Lines", 230, 100),
     uiInner(new Ui::DialogLeaders),
     settings(settings)
 {
