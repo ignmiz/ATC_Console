@@ -699,8 +699,8 @@ void ATCSimulation::flightsCleanup()
     {
         for(int i = cleanupIndices.size() - 1; i >= 0; i--)
         {
-            delete flights.at(i);
-            flights.remove(i);
+            delete flights.at(cleanupIndices.at(i));
+            flights.remove(cleanupIndices.at(i));
         }
 
         cleanupIndices.clear();

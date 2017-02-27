@@ -727,6 +727,7 @@ void ATCSituationalDisplay::slotUpdateFlightTag(ATCFlight *flight)
     connect(tagBox, SIGNAL(signalCreateDialogHandoff(QPoint)), flight, SLOT(slotCreateDialogHandoff(QPoint)));
     connect(tagBox, SIGNAL(signalCreateDialogFlightPlan()), flight, SLOT(slotCreateDialogFlightPlan()));
     connect(tagBox, SIGNAL(signalDisplayRoute()), flight, SLOT(slotDisplayRoute()));
+    connect(tagBox, SIGNAL(signalItemHovered(bool)), this, SLOT(slotItemHovered(bool)));
 }
 
 void ATCSituationalDisplay::slotCreateDialogAltitude(ATCFlight *flight, QPoint point)
