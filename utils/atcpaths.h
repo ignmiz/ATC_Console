@@ -23,6 +23,7 @@ public:
     QString DISPLAY_EXPORT_PATH;
 
     QString SCENARIO_EXPORT_PATH;
+    QString DATA_LOG_DIR_PATH;
 
     QString SCT_PATH;
     QString ESE_PATH;

@@ -44,6 +44,10 @@ ATCPaths::ATCPaths()
             {
                 SCENARIO_EXPORT_PATH = stringList.at(1).trimmed();
             }
+            else if(stringList.at(0).trimmed() == "EXPORT DATA")
+            {
+                DATA_LOG_DIR_PATH = stringList.at(1).trimmed();
+            }
             else if(stringList.at(0).trimmed() == "SCT")
             {
                 SCT_PATH = stringList.at(1).trimmed();
@@ -115,6 +119,7 @@ void ATCPaths::exportPaths()
     out << "DEFAULT DISPLAY = " << DISPLAY_DFLT_PATH << endl;
     out << "EXPORT DISPLAY = " << DISPLAY_EXPORT_PATH << endl;
     out << "EXPORT SCENARIO = " << SCENARIO_EXPORT_PATH << endl;
+    out << "EXPORT DATA = " << DATA_LOG_DIR_PATH << endl;
     out << "" << endl;
     out << "SCT = " << SCT_PATH << endl;
     out << "ESE = " << ESE_PATH << endl;
