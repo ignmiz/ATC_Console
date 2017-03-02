@@ -49,19 +49,19 @@ void MainWindow::on_buttonMainMenu_clicked()
         {
             if(simController != nullptr)
             {
-                dialogMainMenu = new DialogMainMenu(time, true, true, this);
+                dialogMainMenu = new DialogMainMenu(paths, time, true, true, dataLogged, this);
             }
             else
             {
-                dialogMainMenu = new DialogMainMenu(time, true, false, this);
+                dialogMainMenu = new DialogMainMenu(paths, time, true, false, dataLogged, this);
             }
         }
         else
         {
-            dialogMainMenu = new DialogMainMenu(time, false, false, this);
+            dialogMainMenu = new DialogMainMenu(paths, time, false, false, dataLogged, this);
         }
 
-
+        if(!dataLoggedPath.isEmpty()) dialogMainMenu->setLogPath(dataLoggedPath);
         dialogMainMenu->show();
 
         setFlagDialogMainMenuExists(true);
@@ -76,6 +76,7 @@ void MainWindow::on_buttonMainMenu_clicked()
         connect(dialogMainMenu, SIGNAL(signalStartSimulation()), this, SLOT(slotStartSimulation()));
         connect(dialogMainMenu, SIGNAL(signalPauseSimulation()), this, SLOT(slotPauseSimulation()));
         connect(dialogMainMenu, SIGNAL(signalStopSimulation()), this, SLOT(slotStopSimulation()));
+        connect(dialogMainMenu, SIGNAL(signalDataLogged(bool, QString)), this, SLOT(slotDataLogged(bool, QString)));
         connect(this, SIGNAL(signalActiveScenarioPath(QString)), dialogMainMenu, SLOT(slotActiveScenarioPath(QString)));
 
         connect(this, SIGNAL(signalCreateFlightTag(ATCFlight*)), ui->situationalDisplay, SLOT(slotCreateFlightTag(ATCFlight*)));
@@ -769,6 +770,7 @@ void MainWindow::slotStartSimulation()
         connect(simulation, SIGNAL(signalHideFlightTag(ATCFlightTag*)), ui->situationalDisplay, SLOT(slotHideFlightTag(ATCFlightTag*)));
 
         simulation->setAirspace(airspaceData);
+        simulation->setDataLogged(dataLogged, dataLoggedPath);
 
         simController = new ATCSimulationController(simulation);
         simController->start();
@@ -839,6 +841,12 @@ void MainWindow::slotSetSimulationStartTime()
     int s = simulationTime.second();
 
     ui->buttonTime->getTime()->setHMS(h, m, s);
+}
+
+void MainWindow::slotDataLogged(bool flag, QString path)
+{
+    dataLogged = flag;
+    dataLoggedPath = path;
 }
 
 void MainWindow::on_buttonClose_clicked()

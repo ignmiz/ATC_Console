@@ -71,6 +71,12 @@ void ATCSimulation::setPaused(bool flag)
     paused = flag;
 }
 
+void ATCSimulation::setDataLogged(bool flag, QString path)
+{
+    dataLogged = flag;
+    dataLoggedPath = path;
+}
+
 void ATCSimulation::setAirspace(ATCAirspace *a)
 {
     airspace = a;
@@ -156,7 +162,7 @@ void ATCSimulation::slotStartSimulation()
         elapsedTime = timer.nsecsElapsed();
         diff = dt - elapsedTime;
 
-//        qDebug() << "Elapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
+        qDebug() << "Elapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
         QThread::usleep(qFloor(diff / 1000));
     }
 }
@@ -164,6 +170,14 @@ void ATCSimulation::slotStartSimulation()
 void ATCSimulation::slotStopSimulation()
 {
     simLoop = false;
+}
+
+void ATCSimulation::createDataLogs()
+{
+    for(int i = 0; i < flights.size(); i++)
+    {
+        //create QFiles here
+    }
 }
 
 void ATCSimulation::preallocateTempData()

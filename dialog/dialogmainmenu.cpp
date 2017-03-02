@@ -1,18 +1,26 @@
 #include "dialogmainmenu.h"
 #include "ui_dialogmainmenu.h"
 
-DialogMainMenu::DialogMainMenu(QTime *time, bool simValid, bool simRunning, QWidget *parent) :
+DialogMainMenu::DialogMainMenu(ATCPaths *paths, QTime *time, bool simValid, bool simRunning, bool dataLogged, QWidget *parent) :
     ATCDialog(parent, "Main Menu", 600, 650),
+    paths(paths),
     time(time),
     simulationValid(simValid),
     simulationRunning(simRunning),
+    dataLogged(dataLogged),
     uiInner(new Ui::DialogMainMenu)
 {
     uiInner->setupUi(this);
     windowSetup();
 
     uiInner->lineEditActiveScenario->setReadOnly(true);
+    uiInner->lineEditLogDir->setReadOnly(true);
     uiInner->timeEditStart->setTime(*time);
+
+    uiInner->checkBoxLog->setChecked(dataLogged);
+    uiInner->lineEditLogDir->setEnabled(dataLogged);
+    uiInner->buttonLogDir->setEnabled(dataLogged);
+    uiInner->lineEditLogDir->setText(paths->DATA_LOG_DIR_PATH);
 
     if(simValid)
     {
@@ -24,6 +32,10 @@ DialogMainMenu::DialogMainMenu(QTime *time, bool simValid, bool simRunning, QWid
             uiInner->buttonExportSimulation->setEnabled(false);
             uiInner->timeEditStart->setEnabled(false);
             uiInner->buttonStart->setEnabled(false);
+
+            uiInner->checkBoxLog->setEnabled(false);
+            uiInner->lineEditLogDir->setEnabled(false);
+            uiInner->buttonLogDir->setEnabled(false);
         }
         else
         {
@@ -50,6 +62,11 @@ DialogMainMenu::~DialogMainMenu()
 QTime DialogMainMenu::getSimStartTime()
 {
     return QTime(uiInner->timeEditStart->time());
+}
+
+void DialogMainMenu::setLogPath(QString path)
+{
+    uiInner->lineEditLogDir->setText(path);
 }
 
 void DialogMainMenu::slotSetSimStartTime(QTime time)
@@ -89,6 +106,7 @@ void DialogMainMenu::on_buttonExportSimulation_clicked()
 
 void DialogMainMenu::on_buttonStart_clicked()
 {
+    emit signalDataLogged(dataLogged, uiInner->lineEditLogDir->text());
     emit signalStartSimulation();
 }
 
@@ -104,6 +122,10 @@ void DialogMainMenu::on_buttonPause_clicked()
     uiInner->buttonStart->setEnabled(true);
     uiInner->buttonPause->setEnabled(false);
     uiInner->buttonStop->setEnabled(true);
+
+    uiInner->checkBoxLog->setEnabled(true);
+    uiInner->lineEditLogDir->setEnabled(true);
+    uiInner->buttonLogDir->setEnabled(true);
 }
 
 void DialogMainMenu::on_buttonStop_clicked()
@@ -119,15 +141,37 @@ void DialogMainMenu::on_buttonStop_clicked()
     uiInner->buttonStart->setEnabled(false);
     uiInner->buttonPause->setEnabled(false);
     uiInner->buttonStop->setEnabled(false);
+
+    uiInner->checkBoxLog->setEnabled(true);
+    uiInner->lineEditLogDir->setEnabled(true);
+    uiInner->buttonLogDir->setEnabled(true);
 }
 
 void DialogMainMenu::on_buttonCloseMenu_clicked()
 {
+    emit signalDataLogged(dataLogged, uiInner->lineEditLogDir->text());
     emit closed();
     close();
+}
+
+void DialogMainMenu::on_checkBoxLog_clicked(bool checked)
+{
+    uiInner->lineEditLogDir->setEnabled(checked);
+    uiInner->buttonLogDir->setEnabled(checked);
+    dataLogged = checked;
+}
+
+void DialogMainMenu::on_buttonLogDir_clicked()
+{
+    QString dirPath = QFileDialog::getExistingDirectory(this, tr("Export to..."), paths->DATA_LOG_DIR_PATH);
+    if(dirPath.isEmpty()) return;
+
+    uiInner->lineEditLogDir->setText(dirPath);
 }
 
 void DialogMainMenu::slotActiveScenarioPath(QString path)
 {
     uiInner->lineEditActiveScenario->setText(path);
 }
+
+

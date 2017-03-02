@@ -96,6 +96,7 @@ private slots:
     void slotStopSimulation();
 
     void slotSetSimulationStartTime();
+    void slotDataLogged(bool flag, QString path);
 
 private:
     Ui::MainWindow *ui;
@@ -127,6 +128,9 @@ private:
     bool flagDialogMainMenuExists = false;
     bool flagDialogSectorSetupExists = false;
     bool flagDialogSettingsExists = false;
+
+    bool dataLogged = false;
+    QString dataLoggedPath;
 
     void mainWindowSetup();
 

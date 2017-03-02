@@ -30,6 +30,8 @@ public:
     bool isPaused();
     void setPaused(bool flag);
 
+    void setDataLogged(bool flag, QString path);
+
     void setAirspace(ATCAirspace *a);
     void appendFlight(ATCFlight *flight);
 
@@ -61,6 +63,10 @@ private:
     bool simLoop = false;
     bool paused = false;
 
+    bool dataLogged = false;
+    QString dataLoggedPath;
+
+    void createDataLogs();
     void preallocateTempData();
     void progressState(GeographicLib::Geodesic &geo, QElapsedTimer &globalTimer);
 
