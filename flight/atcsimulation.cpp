@@ -1,9 +1,8 @@
 
 #include "atcsimulation.h"
 
-ATCSimulation::ATCSimulation() : activeRunways(new ATCActiveRunways())
+ATCSimulation::ATCSimulation() : activeRunways(new ATCActiveRunways()), timeLog(0)
 {
-
 }
 
 ATCSimulation::~ATCSimulation()
@@ -147,6 +146,8 @@ void ATCSimulation::slotStartSimulation()
     preallocateTempData();
     simLoop = true;
 
+    if(dataLogged) createDataLogs();
+
     if(!paused) emit signalSetSimulationStartTime();
     setPaused(false);
 
@@ -155,7 +156,7 @@ void ATCSimulation::slotStartSimulation()
     {
         timer.start();
 
-        progressState(geo, globalTimer);
+        progressState(geo);
         flightsCleanup();
         incrementUpdateCounter(counter);
 
@@ -165,6 +166,8 @@ void ATCSimulation::slotStartSimulation()
         qDebug() << "Elapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
         QThread::usleep(qFloor(diff / 1000));
     }
+
+    if(dataLogged) closeDataLogs();
 }
 
 void ATCSimulation::slotStopSimulation()
@@ -176,8 +179,19 @@ void ATCSimulation::createDataLogs()
 {
     for(int i = 0; i < flights.size(); i++)
     {
-        //create QFiles here
+        QString fileName = flights.at(i)->getFlightPlan()->getCompany()->getCode() + flights.at(i)->getFlightPlan()->getFlightNumber();
+        flights.at(i)->setDataLog(dataLoggedPath + "/" + fileName + ".txt");
     }
+}
+
+void ATCSimulation::closeDataLogs()
+{
+    for(int i = 0; i < flights.size(); i++)
+    {
+        flights.at(i)->closeDataLog();
+    }
+
+    dataLogged = false;
 }
 
 void ATCSimulation::preallocateTempData()
@@ -317,17 +331,20 @@ void ATCSimulation::preallocateTempData()
     }
 }
 
-void ATCSimulation::progressState(GeographicLib::Geodesic &geo, QElapsedTimer &globalTimer)
+void ATCSimulation::progressState(GeographicLib::Geodesic &geo)
 {
     for(int i = 0; i < flights.size(); i++)
     {
         ATCFlight *flight = flights.at(i);
+        QString buffer;
 
         if(flight->isSimulated())
         {
-            ISA isa = calculateEnvironment(flight);
-            assignDiscreteState(flight, isa);
-            assignContinuousState(flight, isa, geo, i);
+            if(dataLogged) appendToLogBuffer(buffer, QString::number(timeLog, 'f', 2).rightJustified(8, '0'));
+
+            ISA isa = calculateEnvironment(flight, buffer);
+            assignDiscreteState(flight, isa, buffer);
+            assignContinuousState(flight, isa, geo, i, buffer);
         }
         else
         {
@@ -338,15 +355,33 @@ void ATCSimulation::progressState(GeographicLib::Geodesic &geo, QElapsedTimer &g
                 flight->setSimStartTime(QTime(0, 0, 0));
             }
         }
+
+        if(dataLogged)
+        {
+            flight->logData(buffer);
+            buffer.clear();
+        }
     }
+
+    timeLog += ATCConst::DT;
 }
 
-ISA ATCSimulation::calculateEnvironment(ATCFlight *flight)
+ISA ATCSimulation::calculateEnvironment(ATCFlight *flight, QString &buffer)
 {
-    return ATCMath::atmosISA(flight->getState().h);
+    ISA isa = ATCMath::atmosISA(flight->getState().h);
+
+    if(dataLogged)
+    {
+        appendToLogBuffer(buffer, QString::number(isa.a, 'f', 2).rightJustified(6, '0'));
+        appendToLogBuffer(buffer, QString::number(isa.rho, 'f', 4).rightJustified(6, '0'));
+        appendToLogBuffer(buffer, QString::number(isa.p, 'f', 1).rightJustified(8, '0'));
+        appendToLogBuffer(buffer, QString::number(isa.T, 'f', 2).rightJustified(6, '0'));
+    }
+
+    return isa;
 }
 
-void ATCSimulation::assignDiscreteState(ATCFlight *flight, ISA &isa)
+void ATCSimulation::assignDiscreteState(ATCFlight *flight, ISA &isa, QString &buffer)
 {
     State state = flight->getState();
     Temp temp = flight->getTemp();
@@ -416,11 +451,21 @@ void ATCSimulation::assignDiscreteState(ATCFlight *flight, ISA &isa)
     state.am = ATCMath::assignAM(state.v, Vnom);
 
     flight->setState(state);
-//    qDebug() << QString::number(ATCMath::rad2deg(state.x), 'g', 10) << "\t" << QString::number(ATCMath::rad2deg(state.y), 'g', 10) << "\t" << ATCMath::m2ft(state.h) << "\t" << ATCMath::m2ft(targetAltitude) << "\t" << ATCMath::mps2kt(state.v) << "\t" << ATCMath::mps2kt(Vnom) << "\t" << ATCMath::rad2deg(state.hdg);
-//    qDebug() << state.cm << state.fp << state.rpm << state.trm << state.shm << state.am;
+
+    if(dataLogged)
+    {
+        appendToLogBuffer(buffer, QString::number(state.cm));
+        appendToLogBuffer(buffer, QString::number(state.fp));
+        appendToLogBuffer(buffer, QString::number(state.rpm));
+        appendToLogBuffer(buffer, QString::number(state.shm));
+        appendToLogBuffer(buffer, QString::number(state.trm));
+        appendToLogBuffer(buffer, QString::number(state.am));
+        appendToLogBuffer(buffer, QString::number(ATCMath::m2ft(targetAltitude)).rightJustified(9, '0'));
+        appendToLogBuffer(buffer, QString::number(ATCMath::mps2kt(Vnom)).rightJustified(7, '0'));
+    }
 }
 
-void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, GeographicLib::Geodesic &geo, int flightIndex)
+void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, GeographicLib::Geodesic &geo, int flightIndex, QString &buffer)
 {
     State state = flight->getState();
     Temp temp = flight->getTemp();
@@ -496,8 +541,13 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
             }
         }
 
+        if(dataLogged)
+        {
+            appendToLogBuffer(buffer, QString::number(ATCMath::m2nm(xtrackError), 'f', 3).rightJustified(7, '0'));
+            appendToLogBuffer(buffer, QString::number(ATCMath::rad2deg(headingError), 'f', 2).rightJustified(6, '0'));
+        }
+
         bankAngle = ATCMath::bankAngle(ATCConst::k1, ATCConst::k2, xtrackError, headingError, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE));
-//        qDebug() << xtrackError << ATCMath::rad2deg(headingError) << dstToNext;
 
         if((!flight->isFinalApp() && (waypointIndex < flight->getWaypointsVectorSize() - 1)) || alreadyOnAppPath)
         {
@@ -538,7 +588,6 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
 
             double DTA = ATCMath::DTA(state.v, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE), dHdg, ATCConst::FLY_OVER_DST);
 
-//            qDebug() << ATCMath::rad2deg(dHdg) << DTA << dstToNext - DTA;
             if(dstToNext - DTA <= 0)
             {
                 double wpt = waypointIndex;
@@ -627,6 +676,12 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
             }
         }
 
+        if(dataLogged)
+        {
+            appendToLogBuffer(buffer, QString::number(0, 'f', 3).rightJustified(7, '0'));
+            appendToLogBuffer(buffer, QString::number(ATCMath::rad2deg(headingError), 'f', 2).rightJustified(6, '0'));
+        }
+
         bankAngle = ATCMath::bankAngle(0, ATCConst::k2, 0, headingError, ATCMath::deg2rad(ATCConst::NOM_BANK_ANGLE));
     }
 
@@ -705,6 +760,34 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
     }
 
     flight->setState(state);
+
+    if(dataLogged)
+    {
+        appendToLogBuffer(buffer, QString::number(ATCMath::rad2deg(state.x), 'f', 8).rightJustified(12, '0'));
+        appendToLogBuffer(buffer, QString::number(ATCMath::rad2deg(state.y), 'f', 8).rightJustified(11, '0'));
+        appendToLogBuffer(buffer, QString::number(ATCMath::m2ft(state.h), 'f', 2).rightJustified(9, '0'));
+        appendToLogBuffer(buffer, QString::number(ATCMath::mps2kt(state.v), 'f', 2).rightJustified(7, '0'));
+        appendToLogBuffer(buffer, QString::number(ATCMath::rad2deg(state.hdg), 'f', 1).rightJustified(5, '0'));
+
+        appendToLogBuffer(buffer, QString::number(Mach, 'f', 4).rightJustified(6, '0'));
+
+        appendToLogBuffer(buffer, QString::number(ATCMath::rad2deg(bankAngle), 'f', 2).rightJustified(5, '0'));
+        appendToLogBuffer(buffer, QString::number(ATCMath::rad2deg(pathAngle), 'f', 2).rightJustified(5, '0'));
+        appendToLogBuffer(buffer, QString::number(ESF, 'f', 2).rightJustified(5, '0'));
+
+        appendToLogBuffer(buffer, QString::number(CL, 'f', 3).rightJustified(5, '0'));
+        appendToLogBuffer(buffer, QString::number(CD, 'f', 3).rightJustified(5, '0'));
+
+        appendToLogBuffer(buffer, QString::number(lift, 'f', 0).rightJustified(10 , '0'));
+        appendToLogBuffer(buffer, QString::number(drag, 'f', 0).rightJustified(10, '0'));
+        appendToLogBuffer(buffer, QString::number(thrust, 'f', 0).rightJustified(10, '0'));
+
+        appendToLogBuffer(buffer, QString::number(flight->getNavMode()));
+
+        appendToLogBuffer(buffer, flight->isCldFinalApp() ? "1" : "0");
+        appendToLogBuffer(buffer, flight->isFinalApp() ? "1" : "0");
+        appendToLogBuffer(buffer, flight->isGlidePath() ? "1" : "0");
+    }
 }
 
 void ATCSimulation::flightsCleanup()
@@ -728,5 +811,18 @@ void ATCSimulation::incrementUpdateCounter(double &counter)
     {
         counter = 0;
         emit signalUpdateTags();
+    }
+}
+
+void ATCSimulation::appendToLogBuffer(QString &buffer, QString data)
+{
+    if(buffer.isEmpty())
+    {
+        buffer = data;
+    }
+    else
+    {
+        buffer += "   ";
+        buffer += data;
     }
 }

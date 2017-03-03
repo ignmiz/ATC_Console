@@ -124,8 +124,12 @@ void DialogMainMenu::on_buttonPause_clicked()
     uiInner->buttonStop->setEnabled(true);
 
     uiInner->checkBoxLog->setEnabled(true);
-    uiInner->lineEditLogDir->setEnabled(true);
-    uiInner->buttonLogDir->setEnabled(true);
+
+    if(uiInner->checkBoxLog->isChecked())
+    {
+        uiInner->lineEditLogDir->setEnabled(true);
+        uiInner->buttonLogDir->setEnabled(true);
+    }
 }
 
 void DialogMainMenu::on_buttonStop_clicked()
@@ -143,8 +147,12 @@ void DialogMainMenu::on_buttonStop_clicked()
     uiInner->buttonStop->setEnabled(false);
 
     uiInner->checkBoxLog->setEnabled(true);
-    uiInner->lineEditLogDir->setEnabled(true);
-    uiInner->buttonLogDir->setEnabled(true);
+
+    if(uiInner->checkBoxLog->isChecked())
+    {
+        uiInner->lineEditLogDir->setEnabled(true);
+        uiInner->buttonLogDir->setEnabled(true);
+    }
 }
 
 void DialogMainMenu::on_buttonCloseMenu_clicked()

@@ -27,11 +27,21 @@ MainWindow::MainWindow(ATCFlightFactory *flightFactory, QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    if(simController != nullptr)
+    {
+        simController->stop();
+        delete simController;
+
+        simulation->moveToThread(QThread::currentThread());
+        delete simulation;
+    }
+    else if(simulation != nullptr)
+    {
+        delete simulation;
+    }
+
     delete ui;
     delete flightFactory;
-
-    if(simulation != nullptr) delete simulation;
-    if(simController != nullptr) delete simController;
 }
 
 bool MainWindow::isDialogTextConsoleVisible() const

@@ -140,6 +140,10 @@ public:
 
     void clearWaypoints();
 
+    void setDataLog(QString path);
+    void closeDataLog();
+    void logData(QString &buffer);
+
 signals:
     void signalCreateDialogAltitude(ATCFlight *flight, QPoint point);
     void signalCreateDialogSpeed(ATCFlight *flight, QPoint point);
@@ -200,6 +204,10 @@ private:
     bool simulated = true;
 
     QVector<ATCTrailingDot*> trailingDots;
+
+    bool dataLogged = false;
+    QFile logFile;
+    QTextStream logStream;
 };
 
 #endif // ATCFLIGHT_H

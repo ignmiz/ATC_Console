@@ -29,6 +29,8 @@ ATCFlight::~ATCFlight()
         }
         trailingDots.clear();
     }
+
+    if(dataLogged) closeDataLog();
 }
 
 ATCFlightPlan *ATCFlight::getFlightPlan()
@@ -375,6 +377,34 @@ void ATCFlight::clearWaypoints()
 {
     waypoints.clear();
     projectedWaypoints.clear();
+}
+
+void ATCFlight::setDataLog(QString path)
+{
+    logFile.setFileName(path);
+
+    if(!logFile.open(QFile::Append | QFile::Text))
+    {
+        QMessageBox msgBox;
+        msgBox.setText("ATCFlight: Failed to open path: " + path);
+        msgBox.exec();
+
+        return;
+    }
+
+    logStream.setDevice(&logFile);
+    dataLogged = true;
+}
+
+void ATCFlight::closeDataLog()
+{
+    logFile.close();
+    dataLogged = false;
+}
+
+void ATCFlight::logData(QString &buffer)
+{
+    logStream << buffer << endl;
 }
 
 void ATCFlight::slotCreateDialogAltitude(QPoint point)
