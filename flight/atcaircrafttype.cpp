@@ -180,26 +180,74 @@ void ATCAircraftType::interpretOPF(QString OPFpath)
             else if(line == 6)
             {
                 aeroIC.V_stall = stringList.at(4).trimmed().toDouble();
-                aeroIC.CD0 = stringList.at(5).trimmed().toDouble();
-                aeroIC.CD2 = stringList.at(6).trimmed().toDouble();
+
+                double CD0 = stringList.at(5).trimmed().toDouble();
+                double CD2 = stringList.at(6).trimmed().toDouble();
+
+                if((CD0 != 0) && (CD2 != 0))
+                {
+                    aeroIC.CD0 = CD0;
+                    aeroIC.CD2 = CD2;
+                }
+                else
+                {
+                    aeroIC.CD0 = aeroCR.CD0;
+                    aeroIC.CD2 = aeroCR.CD2;
+                }
             }
             else if(line == 7)
             {
                 aeroTO.V_stall = stringList.at(4).trimmed().toDouble();
-                aeroTO.CD0 = stringList.at(5).trimmed().toDouble();
-                aeroTO.CD2 = stringList.at(6).trimmed().toDouble();
+
+                double CD0 = stringList.at(5).trimmed().toDouble();
+                double CD2 = stringList.at(6).trimmed().toDouble();
+
+                if((CD0 != 0) && (CD2 != 0))
+                {
+                    aeroTO.CD0 = CD0;
+                    aeroTO.CD2 = CD2;
+                }
+                else
+                {
+                    aeroTO.CD0 = aeroIC.CD0;
+                    aeroTO.CD2 = aeroIC.CD2;
+                }
             }
             else if(line == 8)
             {
                 aeroAP.V_stall = stringList.at(4).trimmed().toDouble();
-                aeroAP.CD0 = stringList.at(5).trimmed().toDouble();
-                aeroAP.CD2 = stringList.at(6).trimmed().toDouble();
+
+                double CD0 = stringList.at(5).trimmed().toDouble();
+                double CD2 = stringList.at(6).trimmed().toDouble();
+
+                if((CD0 != 0) && (CD2 != 0))
+                {
+                    aeroAP.CD0 = CD0;
+                    aeroAP.CD2 = CD2;
+                }
+                else
+                {
+                    aeroAP.CD0 = aeroTO.CD0;
+                    aeroAP.CD2 = aeroTO.CD2;
+                }
             }
             else if(line == 9)
             {
                 aeroLD.V_stall = stringList.at(4).trimmed().toDouble();
-                aeroLD.CD0 = stringList.at(5).trimmed().toDouble();
-                aeroLD.CD2 = stringList.at(6).trimmed().toDouble();
+
+                double CD0 = stringList.at(5).trimmed().toDouble();
+                double CD2 = stringList.at(6).trimmed().toDouble();
+
+                if((CD0 != 0) && (CD2 != 0))
+                {
+                    aeroLD.CD0 = CD0;
+                    aeroLD.CD2 = CD2;
+                }
+                else
+                {
+                    aeroLD.CD0 = aeroAP.CD0;
+                    aeroLD.CD2 = aeroAP.CD2;
+                }
             }
             else if(line == 13)
             {
