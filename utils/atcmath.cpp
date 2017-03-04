@@ -721,18 +721,21 @@ double ATCMath::thrust(double tasMPS, double currentAltM, double drag, BADA::Cli
     double TMaxClimb;
     double Thrust;
 
+    double tasKT = mps2kt(tasMPS);
+    double currentAltFT = m2ft(currentAltM);
+
     //Calculate TMaxClimb
     if(engine == ATC::Jet)
     {
-        TMaxClimb = CTc1 * (1 - currentAltM / CTc2 + CTc3 * qPow(currentAltM, 2));
+        TMaxClimb = CTc1 * (1 - currentAltFT / CTc2 + CTc3 * qPow(currentAltFT, 2));
     }
     else if(engine == ATC::Turboprop)
     {
-        TMaxClimb = (CTc1 / tasMPS) * (1 - currentAltM / CTc2) + CTc3;
+        TMaxClimb = (CTc1 / tasKT) * (1 - currentAltFT / CTc2) + CTc3;
     }
     else //Piston
     {
-        TMaxClimb = CTc1 * (1 - currentAltM / CTc2) + CTc3;
+        TMaxClimb = CTc1 * (1 - currentAltFT / CTc2) + CTc3 / tasKT;
     }
 
     //Calculate Thrust
