@@ -9,12 +9,12 @@ Data columns description, left to right:
 3. Air density (ISA), kg/m^3;
 4. Static air pressure (ISA), Pa;
 5. Static temperature (ISA), K;
-6. Climb mode;
-7. Flight phase;
-8. Reduced power mode;
-9. Speed hold mode;
-10. Troposphere mode;
-11. Acceleration mode;
+6. Climb mode (0: Climb, 1: Descend, 2: Level, 3: Error);
+7. Flight phase (0: Upper Descent, 1: Lower Descent, 2: Approach, 3: Landing, 4: Error);
+8. Reduced power mode (0: On, 1: Off, 2: Error);
+9. Speed hold mode (0: CAS, 1: Mach, 2: Error);
+10. Troposphere mode (0: Low, 1: High, 2: Error);
+11. Acceleration mode (0: Accelerate, 1: Decelerate, 2: Constant, 3: Error);
 12. Target altitude, ft;
 13. Target speed TAS, kt;
 14. Cross track error, nm;
