@@ -3891,7 +3891,7 @@ void ATCSituationalDisplay::updateEtiquettesQuick(ATCFlight *flight)
     QString longEtiquette = flight->getFlightTag()->getTagBox()->getLongEtiquette();
     State state = flight->getState();
 
-    QString groundSpd = QString::number(qRound(ATCMath::mps2kt(state.v)));
+    QString groundSpd = QString::number(qRound(ATCMath::mps2kt(state.v))).rightJustified(3, '0');
 
     for(int i = 0; i < groundSpd.size(); i++)
     {
