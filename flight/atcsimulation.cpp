@@ -143,7 +143,7 @@ void ATCSimulation::slotStartSimulation()
     qint64 diff;
     double counter = 0;
 
-    preallocateTempData();
+    if(!paused) preallocateTempData();
     simLoop = true;
 
     if(dataLogged) createDataLogs();
@@ -196,137 +196,134 @@ void ATCSimulation::closeDataLogs()
 
 void ATCSimulation::preallocateTempData()
 {
-    if(!paused)
+    for(int i = 0; i < flights.size(); i++)
     {
-        for(int i = 0; i < flights.size(); i++)
+        //Assign temporaries
+        ATCFlight *flight = flights.at(i);
+        ATCAircraftType *type = flight->getFlightPlan()->getType();
+
+        Temp temp;
+
+        temp.m = ATCMath::randomMass(qFloor(1.2 * type->getMass().min * 1000), qFloor(type->getMass().ref * 1000));
+
+        if(type->getAcType().engineType == ATC::Jet)
         {
-            //Assign temporaries
-            ATCFlight *flight = flights.at(i);
-            ATCAircraftType *type = flight->getFlightPlan()->getType();
+            temp.Cpowred = ATCMath::recalculateReductionFactor(0.15, temp.m, type->getMass().min * 1000, type->getMass().max * 1000);
+        }
+        else if(type->getAcType().engineType == ATC::Turboprop)
+        {
+            temp.Cpowred = ATCMath::recalculateReductionFactor(0.25, temp.m, type->getMass().min * 1000, type->getMass().max * 1000);
+        }
+        else //Piston
+        {
+            temp.Cpowred = ATCMath::recalculateReductionFactor(0, temp.m, type->getMass().min * 1000, type->getMass().max * 1000);
+        }
 
-            Temp temp;
+        temp.vStallCR = ATCMath::recalculateSpeed(type->getAeroCR().V_stall, temp.m, type->getMass().ref * 1000);
+        temp.vStallIC = ATCMath::recalculateSpeed(type->getAeroIC().V_stall, temp.m, type->getMass().ref * 1000);
+        temp.vStallTO = ATCMath::recalculateSpeed(type->getAeroTO().V_stall, temp.m, type->getMass().ref * 1000);
+        temp.vStallAP = ATCMath::recalculateSpeed(type->getAeroAP().V_stall, temp.m, type->getMass().ref * 1000);
+        temp.vStallLD = ATCMath::recalculateSpeed(type->getAeroLD().V_stall, temp.m, type->getMass().ref * 1000);
 
-            temp.m = ATCMath::randomMass(qFloor(1.2 * type->getMass().min * 1000), qFloor(type->getMass().ref * 1000));
+        temp.xoverAltClbM = ATCMath::crossoverAltitude(ATCMath::kt2mps(type->getVelocity().V_CL2_AV), type->getVelocity().M_CL_AV);
+        temp.xoverAltCrsM = ATCMath::crossoverAltitude(ATCMath::kt2mps(type->getVelocity().V_CR2_AV), type->getVelocity().M_CR_AV);
+        temp.xoverAltDesM = ATCMath::crossoverAltitude(ATCMath::kt2mps(type->getVelocity().V_DS2_AV), type->getVelocity().M_DS_AV);
 
-            if(type->getAcType().engineType == ATC::Jet)
+        if(!flight->getRunwayDestination().isEmpty())
+        {
+            ATCRunway *runway = airspace->findRunway(flight->getFlightPlan()->getRoute().getDestination(), flight->getRunwayDestination());
+
+            if(runway != nullptr)
             {
-                temp.Cpowred = ATCMath::recalculateReductionFactor(0.15, temp.m, type->getMass().min * 1000, type->getMass().max * 1000);
-            }
-            else if(type->getAcType().engineType == ATC::Turboprop)
-            {
-                temp.Cpowred = ATCMath::recalculateReductionFactor(0.25, temp.m, type->getMass().min * 1000, type->getMass().max * 1000);
-            }
-            else //Piston
-            {
-                temp.Cpowred = ATCMath::recalculateReductionFactor(0, temp.m, type->getMass().min * 1000, type->getMass().max * 1000);
-            }
+                double thrLat;
+                double thrLon;
+                double azimuth;
 
-            temp.vStallCR = ATCMath::recalculateSpeed(type->getAeroCR().V_stall, temp.m, type->getMass().ref * 1000);
-            temp.vStallIC = ATCMath::recalculateSpeed(type->getAeroIC().V_stall, temp.m, type->getMass().ref * 1000);
-            temp.vStallTO = ATCMath::recalculateSpeed(type->getAeroTO().V_stall, temp.m, type->getMass().ref * 1000);
-            temp.vStallAP = ATCMath::recalculateSpeed(type->getAeroAP().V_stall, temp.m, type->getMass().ref * 1000);
-            temp.vStallLD = ATCMath::recalculateSpeed(type->getAeroLD().V_stall, temp.m, type->getMass().ref * 1000);
-
-            temp.xoverAltClbM = ATCMath::crossoverAltitude(ATCMath::kt2mps(type->getVelocity().V_CL2_AV), type->getVelocity().M_CL_AV);
-            temp.xoverAltCrsM = ATCMath::crossoverAltitude(ATCMath::kt2mps(type->getVelocity().V_CR2_AV), type->getVelocity().M_CR_AV);
-            temp.xoverAltDesM = ATCMath::crossoverAltitude(ATCMath::kt2mps(type->getVelocity().V_DS2_AV), type->getVelocity().M_DS_AV);
-
-            if(!flight->getRunwayDestination().isEmpty())
-            {
-                ATCRunway *runway = airspace->findRunway(flight->getFlightPlan()->getRoute().getDestination(), flight->getRunwayDestination());
-
-                if(runway != nullptr)
+                if(flight->getRunwayDestination().left(2).toInt() <= 18)
                 {
-                    double thrLat;
-                    double thrLon;
-                    double azimuth;
-
-                    if(flight->getRunwayDestination().left(2).toInt() <= 18)
-                    {
-                        thrLat = runway->getStartPoint().latitude();
-                        thrLon = runway->getStartPoint().longitude();
-                        azimuth = runway->getAzimuth();
-                    }
-                    else
-                    {
-                        thrLat = runway->getEndPoint().latitude();
-                        thrLon = runway->getEndPoint().longitude();
-                        azimuth = ATCMath::normalizeAngle(runway->getAzimuth() + ATCConst::PI, ATC::Deg);
-                    }
-
-                    temp.rwyDesThr = QPair<double, double>(thrLat, thrLon);
-                    temp.rwyDesAzimuth = azimuth;
-
-                    double rangeLat;
-                    double rangeLon;
-                    GeographicLib::Rhumb rhumb = GeographicLib::Rhumb::WGS84();
-                    rhumb.Direct(thrLat, thrLon, ATCMath::rad2deg(ATCMath::normalizeAngle(azimuth + ATCConst::PI, ATC::Deg)), ATCConst::APP_RANGE, rangeLat, rangeLon);
-                    temp.rwyDesAppRange = QPair<double, double>(rangeLat, rangeLon);
+                    thrLat = runway->getStartPoint().latitude();
+                    thrLon = runway->getStartPoint().longitude();
+                    azimuth = runway->getAzimuth();
                 }
-            }
-
-            flight->setTemp(temp);
-
-            //Assign waypoint coords & index
-            QStringList fixList = flight->getFixList();
-            for(int i = 0; i < fixList.size(); i++)
-            {
-                ATCNavFix *fix = nullptr;
-                ATCBeaconVOR *vor = nullptr;
-                ATCAirport *airport = nullptr;
-                ATCBeaconNDB *ndb = nullptr;
-
-                double lat;
-                double lon;
-
-                double x;
-                double y;
-
-                if((fix = airspace->findFix(fixList.at(i))) != nullptr)
+                else
                 {
-                    lat = fix->latitude();
-                    lon = fix->longitude();
-                    x = fix->getScenePosition()->x();
-                    y = fix->getScenePosition()->y();
-                }
-                else if((airport = airspace->findAirport(fixList.at(i))) != nullptr)
-                {
-                    lat = airport->latitude();
-                    lon = airport->longitude();
-                    x = airport->getScenePosition()->x();
-                    y = airport->getScenePosition()->y();
-                }
-                else if((vor = airspace->findVOR(fixList.at(i))) != nullptr)
-                {
-                    lat = vor->latitude();
-                    lon = vor->longitude();
-                    x = vor->getScenePosition()->x();
-                    y = vor->getScenePosition()->y();
-                }
-                else if((ndb = airspace->findNDB(fixList.at(i))) != nullptr)
-                {
-                    lat = ndb->latitude();
-                    lon = ndb->longitude();
-                    x = ndb->getScenePosition()->x();
-                    y = ndb->getScenePosition()->y();
+                    thrLat = runway->getEndPoint().latitude();
+                    thrLon = runway->getEndPoint().longitude();
+                    azimuth = ATCMath::normalizeAngle(runway->getAzimuth() + ATCConst::PI, ATC::Deg);
                 }
 
-                flight->appendWaypoint(QPair<double, double>(lat, lon));
-                flight->appendProjectedWaypoint(QPair<double, double>(x, y));
-                if(fixList.at(i) == flight->getNextFix())
-                {
-                    flight->setWaypointIndex(i);
-                    if(!flight->isFinalApp()) flight->setDCT(true);
-                }
+                temp.rwyDesThr = QPair<double, double>(thrLat, thrLon);
+                temp.rwyDesAzimuth = azimuth;
+
+                double rangeLat;
+                double rangeLon;
+                GeographicLib::Rhumb rhumb = GeographicLib::Rhumb::WGS84();
+                rhumb.Direct(thrLat, thrLon, ATCMath::rad2deg(ATCMath::normalizeAngle(azimuth + ATCConst::PI, ATC::Deg)), ATCConst::APP_RANGE, rangeLat, rangeLon);
+                temp.rwyDesAppRange = QPair<double, double>(rangeLat, rangeLon);
+            }
+        }
+
+        flight->setTemp(temp);
+
+        //Assign waypoint coords & index
+        QStringList fixList = flight->getFixList();
+        for(int i = 0; i < fixList.size(); i++)
+        {
+            ATCNavFix *fix = nullptr;
+            ATCBeaconVOR *vor = nullptr;
+            ATCAirport *airport = nullptr;
+            ATCBeaconNDB *ndb = nullptr;
+
+            double lat;
+            double lon;
+
+            double x;
+            double y;
+
+            if((fix = airspace->findFix(fixList.at(i))) != nullptr)
+            {
+                lat = fix->latitude();
+                lon = fix->longitude();
+                x = fix->getScenePosition()->x();
+                y = fix->getScenePosition()->y();
+            }
+            else if((airport = airspace->findAirport(fixList.at(i))) != nullptr)
+            {
+                lat = airport->latitude();
+                lon = airport->longitude();
+                x = airport->getScenePosition()->x();
+                y = airport->getScenePosition()->y();
+            }
+            else if((vor = airspace->findVOR(fixList.at(i))) != nullptr)
+            {
+                lat = vor->latitude();
+                lon = vor->longitude();
+                x = vor->getScenePosition()->x();
+                y = vor->getScenePosition()->y();
+            }
+            else if((ndb = airspace->findNDB(fixList.at(i))) != nullptr)
+            {
+                lat = ndb->latitude();
+                lon = ndb->longitude();
+                x = ndb->getScenePosition()->x();
+                y = ndb->getScenePosition()->y();
             }
 
-            //Exclude flights that will happen in future
-            if(flight->getSimStartTime() != QTime(0, 0, 0))
+            flight->appendWaypoint(QPair<double, double>(lat, lon));
+            flight->appendProjectedWaypoint(QPair<double, double>(x, y));
+            if(fixList.at(i) == flight->getNextFix())
             {
-                emit signalHideFlightTag(flight->getFlightTag());
-                if(flight->getRoutePrediction() != nullptr) emit signalDisplayRoute(flight);
-                flight->setSimulated(false);
+                flight->setWaypointIndex(i);
+                if(!flight->isFinalApp()) flight->setDCT(true);
             }
+        }
+
+        //Exclude flights that will happen in future
+        if(flight->getSimStartTime() != QTime(0, 0, 0))
+        {
+            emit signalHideFlightTag(flight->getFlightTag());
+            if(flight->getRoutePrediction() != nullptr) emit signalDisplayRoute(flight);
+            flight->setSimulated(false);
         }
     }
 }
@@ -775,8 +772,8 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
         appendToLogBuffer(buffer, QString::number(ATCMath::rad2deg(pathAngle), 'f', 2).rightJustified(5, '0'));
         appendToLogBuffer(buffer, QString::number(ESF, 'f', 2).rightJustified(5, '0'));
 
-        appendToLogBuffer(buffer, QString::number(CL, 'f', 3).rightJustified(5, '0'));
-        appendToLogBuffer(buffer, QString::number(CD, 'f', 3).rightJustified(5, '0'));
+        appendToLogBuffer(buffer, QString::number(CL, 'f', 6).rightJustified(8, '0'));
+        appendToLogBuffer(buffer, QString::number(CD, 'f', 6).rightJustified(8, '0'));
 
         appendToLogBuffer(buffer, QString::number(lift, 'f', 0).rightJustified(10 , '0'));
         appendToLogBuffer(buffer, QString::number(drag, 'f', 0).rightJustified(10, '0'));
