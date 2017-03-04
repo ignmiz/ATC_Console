@@ -142,7 +142,7 @@ public:
 
     void setDataLog(QString path);
     void closeDataLog();
-    void logData(QString &buffer);
+    void logData(QString buffer);
 
 signals:
     void signalCreateDialogAltitude(ATCFlight *flight, QPoint point);

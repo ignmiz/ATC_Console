@@ -402,7 +402,7 @@ void ATCFlight::closeDataLog()
     dataLogged = false;
 }
 
-void ATCFlight::logData(QString &buffer)
+void ATCFlight::logData(QString buffer)
 {
     logStream << buffer << endl;
 }
