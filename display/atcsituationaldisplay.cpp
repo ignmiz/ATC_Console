@@ -3631,6 +3631,7 @@ QGraphicsLineItem *ATCSituationalDisplay::createLeader(ATCFlightTag *tag, double
 
     QGraphicsLineItem *leader = new QGraphicsLineItem(xStart, yStart, xEnd, yEnd);
     leader->setPen(pen);
+    leader->setZValue(100);
 
     tag->setLeader(leader);
     tag->setLeaderEndPosition(QPointF(xEnd, yEnd));
@@ -3651,6 +3652,7 @@ QGraphicsLineItem *ATCSituationalDisplay::createConnector(ATCFlightTag *tag)
 
     QGraphicsLineItem *connector = new QGraphicsLineItem(x, y, xTagBox, yTagBox);
     connector->setPen(pen);
+    connector->setZValue(100);
 
     tag->setConnector(connector);
 
@@ -3682,6 +3684,7 @@ ATCTagRect *ATCSituationalDisplay::createTagBox(ATCFlightTag *tag)
     ATCTagRect *tagBox = new ATCTagRect(x + dx - width/2, y + dy - height, width, height, settings, &currentScale, &tag->getTagType());
     tagBox->setBrush(brush);
     tagBox->setOpacity(0.01);
+    tagBox->setZValue(100);
     tagBox->setFlag(QGraphicsItem::ItemDoesntPropagateOpacityToChildren);
 
     tag->setTagBox(tagBox);
@@ -3715,6 +3718,7 @@ QGraphicsSimpleTextItem *ATCSituationalDisplay::createTagText(ATCFlightTag *tag)
     text->setBrush(brush);
     text->setPos(xPos, yPos);
     text->setOpacity(1);
+    text->setZValue(100);
 
     tag->setText(text);
 
