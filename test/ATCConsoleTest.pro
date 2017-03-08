@@ -131,7 +131,8 @@ SOURCES += \
     dialogleaders.cpp \
     atcruler.cpp \
     atctrailingdot.cpp \
-    ../dialog/dialogtrailingdots.cpp
+    ../dialog/dialogtrailingdots.cpp \
+    ../utils/atcinterpolator.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -273,8 +274,8 @@ HEADERS  += \
     ../include/mkl/mkl_solvers_ee.h \
     ../include/mkl/mkl_trig_transforms.h \
     ../include/mkl/mkl_vml.h \
-    ../include/mkl/mkl_vsl.h
-
+    ../include/mkl/mkl_vsl.h \
+    ../utils/atcinterpolator.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
@@ -355,7 +356,8 @@ SOURCES += main.cpp \
     test_atcrouteprediction.cpp \
     test_atcactiverunways.cpp \
     \
-    test_atcmath.cpp
+    test_atcmath.cpp \
+    test_atcinterpolator.cpp
 
 HEADERS += \
     test_atcabstractairway.h \
@@ -400,7 +402,8 @@ HEADERS += \
     test_atcrouteprediction.h \
     test_atcactiverunways.h \
     \
-    test_atcmath.h
+    test_atcmath.h \
+    test_atcinterpolator.h
 
 DISTFILES += \
     ../resources/acft_cursor.png

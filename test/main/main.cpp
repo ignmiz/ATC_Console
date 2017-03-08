@@ -44,6 +44,7 @@
 
 //----------Submodule: utils----------
 #include "test_atcmath.h"
+#include "test_atcinterpolator.h"
 
 #include <QThread>
 
@@ -98,6 +99,7 @@ int main(int argc, char *argv[])
 
     //----------Submodule: utils----------
     Test_ATCMath test_ATCMath;
+    Test_ATCInterpolator test_ATCInterpolator;
 
 //Test suites are declared here
     //----------Submodule: nav----------
@@ -146,6 +148,7 @@ int main(int argc, char *argv[])
 
     //----------Submodule: utils----------
     failed.append(QTest::qExec(&test_ATCMath, argc, argv));
+    failed.append(QTest::qExec(&test_ATCInterpolator, argc, argv));
 
     QThread::msleep(1000);
 
