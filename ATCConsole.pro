@@ -120,7 +120,8 @@ SOURCES += main.cpp\
     dialogleaders.cpp \
     atcruler.cpp \
     atctrailingdot.cpp \
-    dialog/dialogtrailingdots.cpp
+    dialog/dialogtrailingdots.cpp \
+    utils/atcinterpolator.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
