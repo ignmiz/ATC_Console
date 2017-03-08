@@ -9,6 +9,7 @@ LIBS += -L"C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2017.2.18
 LIBS += -L"C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2017.2.187/windows/compiler/lib/intel64_win" -llibiomp5md
 
 VPATH += ./main \
+    ./mock/flight \
     ./mock/nav \
     ./suits/flight \
     ./suits/nav \
@@ -29,6 +30,7 @@ VPATH += ./main \
     ../utils
 
 INCLUDEPATH += ./main \
+    ./mock/flight \
     ./mock/nav \
     ./suits/flight \
     ./suits/nav \
@@ -132,7 +134,8 @@ SOURCES += \
     atcruler.cpp \
     atctrailingdot.cpp \
     ../dialog/dialogtrailingdots.cpp \
-    ../utils/atcinterpolator.cpp
+    ../utils/atcinterpolator.cpp \
+    ../flight/atcabstractprofile.cpp \
 
 HEADERS  += \
     mainwindow.h \
@@ -275,7 +278,8 @@ HEADERS  += \
     ../include/mkl/mkl_trig_transforms.h \
     ../include/mkl/mkl_vml.h \
     ../include/mkl/mkl_vsl.h \
-    ../utils/atcinterpolator.h
+    ../utils/atcinterpolator.h \
+    ../flight/atcabstractprofile.h \
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
@@ -302,14 +306,19 @@ SOURCES += mock_atcabstractairway.cpp \
     mock_atcabstractfix.cpp \
     mock_atcabstractprocedure.cpp \
     mock_atcabstractproceduresymbol.cpp \
-    mock_atcabstractsector.cpp
+    mock_atcabstractsector.cpp \
+    \
+    mock_atcabstractprofile.cpp
+
 
 HEADERS += mock_atcabstractairway.h \
     mock_atcabstractbeacon.h \
     mock_atcabstractfix.h \
     mock_atcabstractprocedure.h \
     mock_atcabstractproceduresymbol.h \
-    mock_atcabstractsector.h
+    mock_atcabstractsector.h \
+    \
+    mock_atcabstractprofile.h
 
 #TEST SOURCES & HEADERS GO HERE:
 
@@ -355,6 +364,7 @@ SOURCES += main.cpp \
     test_atcflighttag.cpp \
     test_atcrouteprediction.cpp \
     test_atcactiverunways.cpp \
+    test_atcabstractprofile.cpp \
     \
     test_atcmath.cpp \
     test_atcinterpolator.cpp
@@ -401,6 +411,7 @@ HEADERS += \
     test_atcflighttag.h \
     test_atcrouteprediction.h \
     test_atcactiverunways.h \
+    test_atcabstractprofile.h \
     \
     test_atcmath.h \
     test_atcinterpolator.h

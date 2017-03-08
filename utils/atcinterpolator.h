@@ -14,12 +14,16 @@ enum class ExType
     None, Saturation, Linear
 };
 
-
 class ATCInterpolator
 {
 public:
     explicit ATCInterpolator(QVector<double> &x, QVector<double> &y, ExType type);
     ~ATCInterpolator();
+
+    void setExtrapolationType(ExType t);
+    ExType getExtrapolationType();
+
+    bool isCorrect();
 
     void interpolate(QVector<double> &sites, QVector<double> &results);
 
@@ -31,7 +35,7 @@ private:
     double *ic = NULL;
     double *scoeff = NULL;
 
-    DFTaskPtr task;
+    DFTaskPtr task = nullptr;
 
     bool constructedCorrectly = false;
 

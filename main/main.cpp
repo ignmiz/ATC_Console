@@ -2,7 +2,6 @@
 
 #include "atcflightfactory.h"
 #include "atcpaths.h"
-#include "atcsimulation.h"
 
 #include <QApplication>
 #include <QDesktopWidget>

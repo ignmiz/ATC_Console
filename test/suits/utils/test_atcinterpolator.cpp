@@ -50,3 +50,30 @@ void Test_ATCInterpolator::test_interpolate()
     QVERIFY(results.at(5) == 3);
     QVERIFY(results.at(6) == 5);
 }
+
+void Test_ATCInterpolator::test_setExtrapolationType()
+{
+    QVector<double> x;
+    QVector<double> y;
+
+    x << 0 << 1 << 2;
+    y << 0 << 1 << 3;
+
+    ATCInterpolator interpolator(x, y, ExType::Linear);
+    QVERIFY(interpolator.getExtrapolationType() == ExType::Linear);
+
+    interpolator.setExtrapolationType(ExType::Saturation);
+    QVERIFY(interpolator.getExtrapolationType() == ExType::Saturation);
+}
+
+void Test_ATCInterpolator::test_isCorrect()
+{
+    QVector<double> x;
+    QVector<double> y;
+
+    x << 0 << 1 << 2;
+    y << 0 << 1 << 3;
+
+    ATCInterpolator interpolator(x, y, ExType::Linear);
+    QVERIFY(interpolator.isCorrect() == true);
+}

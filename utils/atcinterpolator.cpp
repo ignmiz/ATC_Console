@@ -48,12 +48,27 @@ ATCInterpolator::~ATCInterpolator()
 {
     if(constructedCorrectly)
     {
-        dfDeleteTask(&task);
+        if(task != nullptr) dfDeleteTask(&task);
 
         if(bc != NULL) delete bc;
         if(ic != NULL) delete ic;
         if(scoeff != NULL) delete[] scoeff;
     }
+}
+
+void ATCInterpolator::setExtrapolationType(ExType t)
+{
+    userParams.type = t;
+}
+
+ExType ATCInterpolator::getExtrapolationType()
+{
+    return userParams.type;
+}
+
+bool ATCInterpolator::isCorrect()
+{
+    return constructedCorrectly;
 }
 
 void ATCInterpolator::interpolate(QVector<double> &sites, QVector<double> &results)
