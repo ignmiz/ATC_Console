@@ -8,9 +8,11 @@ QT       += core gui positioning
 
 CONFIG += c++14
 
-CONFIG(debug): LIBS += -L"$$_PRO_FILE_PWD_/lib/GeographicLib" -lGeographic_d
-CONFIG(release): LIBS += -L"$$_PRO_FILE_PWD_/lib/GeographicLib" -lGeographic
+CONFIG(debug): LIBS += -L"$$_PRO_FILE_PWD_/lib/GeographicLib/" -lGeographic_d
+CONFIG(release): LIBS += -L"$$_PRO_FILE_PWD_/lib/GeographicLib/" -lGeographic
 
+LIBS += -L"C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2017.2.187/windows/mkl/lib/intel64_win" -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core
+LIBS += -L"C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2017.2.187/windows/compiler/lib/intel64_win" -llibiomp5md
 
 VPATH += ./bin \
     ./custom \
@@ -237,7 +239,30 @@ HEADERS  += mainwindow.h \
     atcruler.h \
     atctrailingdot.h \
     dialog/dialogtrailingdots.h \
-    include/mkl/mkl.h
+    include/mkl/mkl.h \
+    include/mkl/mkl_version.h \
+    include/mkl/mkl_blas.h \
+    include/mkl/mkl_cblas.h \
+    include/mkl/mkl_lapack.h \
+    include/mkl/mkl_spblas.h \
+    include/mkl/mkl_trans.h \
+    include/mkl/mkl_types.h \
+    include/mkl/mkl_blacs.h \
+    include/mkl/mkl_dss.h \
+    include/mkl/mkl_lapacke.h \
+    include/mkl/mkl_pardiso.h \
+    include/mkl/mkl_sparse_handle.h \
+    include/mkl/mkl_dfti.h \
+    include/mkl/mkl_direct_call.h \
+    include/mkl/mkl_dnn.h \
+    include/mkl/mkl_poisson.h \
+    include/mkl/mkl_rci.h \
+    include/mkl/mkl_service.h \
+    include/mkl/mkl_solvers_ee.h \
+    include/mkl/mkl_trig_transforms.h \
+    include/mkl/mkl_vml.h \
+    include/mkl/mkl_vsl.h \
+    utils/atcinterpolator.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
