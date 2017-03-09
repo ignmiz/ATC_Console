@@ -6,7 +6,7 @@
 class Mock_ATCAbstractProfile : public ATCAbstractProfile
 {
 public:
-    explicit Mock_ATCAbstractProfile(QVector<double> &levels, QVector<double> &time, QVector<double> &distance, ExType type = ExType::Linear);
+    explicit Mock_ATCAbstractProfile(QVector<double> &levels, QVector<double> &time, QVector<double> &distance, ExType type = ExType::Tangent);
     ~Mock_ATCAbstractProfile();
 };
 

@@ -9,7 +9,7 @@
 class ATCAbstractProfile
 {
 public:
-    explicit ATCAbstractProfile(QVector<double> &levels, QVector<double> &time, QVector<double> &distance, ExType type = ExType::Linear);
+    explicit ATCAbstractProfile(QVector<double> &levels, QVector<double> &time, QVector<double> &distance, ExType type = ExType::Tangent);
     virtual ~ATCAbstractProfile() = 0;
 
     void setTimeExtrapolationType(ExType t);

@@ -12,7 +12,7 @@ void Test_ATCAbstractProfile::test_setTimeExtrapolationType()
     distance << 0 << 3 << 6;
 
     Mock_ATCAbstractProfile foo(levels, time, distance);
-    QVERIFY(foo.getTimeExtrapolationType() == ExType::Linear);
+    QVERIFY(foo.getTimeExtrapolationType() == ExType::Tangent);
 
     foo.setTimeExtrapolationType(ExType::None);
     QVERIFY(foo.getTimeExtrapolationType() == ExType::None);
@@ -29,7 +29,7 @@ void Test_ATCAbstractProfile::test_setDistanceExtrapolationType()
     distance << 0 << 3 << 6;
 
     Mock_ATCAbstractProfile foo(levels, time, distance);
-    QVERIFY(foo.getDistanceExtrapolationType() == ExType::Linear);
+    QVERIFY(foo.getDistanceExtrapolationType() == ExType::Tangent);
 
     foo.setDistanceExtrapolationType(ExType::Saturation);
     QVERIFY(foo.getDistanceExtrapolationType() == ExType::Saturation);

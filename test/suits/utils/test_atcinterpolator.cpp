@@ -40,7 +40,7 @@ void Test_ATCInterpolator::test_interpolate()
     results.clear();
     results = QVector<double>(sites.size());
 
-    ATCInterpolator interpolator3(x, y, ExType::Linear);
+    ATCInterpolator interpolator3(x, y, ExType::Tangent);
     interpolator3.interpolate(sites, results);
     QVERIFY(results.at(0) == -1);
     QVERIFY(results.at(1) == 0);
@@ -59,8 +59,8 @@ void Test_ATCInterpolator::test_setExtrapolationType()
     x << 0 << 1 << 2;
     y << 0 << 1 << 3;
 
-    ATCInterpolator interpolator(x, y, ExType::Linear);
-    QVERIFY(interpolator.getExtrapolationType() == ExType::Linear);
+    ATCInterpolator interpolator(x, y, ExType::Tangent);
+    QVERIFY(interpolator.getExtrapolationType() == ExType::Tangent);
 
     interpolator.setExtrapolationType(ExType::Saturation);
     QVERIFY(interpolator.getExtrapolationType() == ExType::Saturation);
@@ -74,6 +74,6 @@ void Test_ATCInterpolator::test_isCorrect()
     x << 0 << 1 << 2;
     y << 0 << 1 << 3;
 
-    ATCInterpolator interpolator(x, y, ExType::Linear);
+    ATCInterpolator interpolator(x, y, ExType::Tangent);
     QVERIFY(interpolator.isCorrect() == true);
 }

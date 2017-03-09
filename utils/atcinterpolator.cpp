@@ -187,7 +187,7 @@ int ATCInterpolator::leftExtrapolation(MKL_INT64 *n, MKL_INT64 cell[], double si
 
         return 0;
     }
-    else if(params->type == ExType::Linear)
+    else if(params->type == ExType::Tangent)
     {
         double dy_dx = (values->at(1) - values->at(0)) / (breakpoints->at(1) - breakpoints->at(0));
 
@@ -224,7 +224,7 @@ int ATCInterpolator::rightExtrapolation(MKL_INT64 *n, MKL_INT64 cell[], double s
 
         return 0;
     }
-    else if(params->type == ExType::Linear)
+    else if(params->type == ExType::Tangent)
     {
         double dy_dx = (values->at(vSize - 1) - values->at(vSize - 2)) / (breakpoints->at(bSize - 1) - breakpoints->at(bSize - 2));
 

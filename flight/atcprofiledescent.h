@@ -6,7 +6,7 @@
 class ATCProfileDescent : public ATCAbstractProfile
 {
 public:
-    explicit ATCProfileDescent(QVector<double> &levels, QVector<double> &time, QVector<double> &distance, ExType type = ExType::Linear);
+    explicit ATCProfileDescent(QVector<double> &levels, QVector<double> &time, QVector<double> &distance, ExType type = ExType::Tangent);
     ~ATCProfileDescent();
 };
 

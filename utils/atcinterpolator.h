@@ -7,7 +7,7 @@
 
 enum class ExType
 {
-    None, Saturation, Linear
+    None, Saturation, Tangent
 };
 
 class ATCInterpolator
