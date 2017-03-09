@@ -6,6 +6,8 @@
 #include "atcrouteprediction.h"
 #include "atcflags.h"
 #include "atctrailingdot.h"
+#include "atcprofileclimb.h"
+#include "atcprofiledescent.h"
 
 #include <QString>
 #include <QObject>
@@ -53,6 +55,7 @@ class ATCFlight : public QObject
     Q_OBJECT
 
 public:
+    explicit ATCFlight();
     explicit ATCFlight(State s);
     explicit ATCFlight(State s, ATCFlightPlan *p);
     explicit ATCFlight(State s, ATCFlightPlan *p, QString sq);
@@ -144,6 +147,12 @@ public:
     void closeDataLog();
     void logData(QString buffer);
 
+    ATCProfileClimb* getProfileClimb();
+    void setProfileClimb(ATCProfileClimb *profile);
+
+    ATCProfileDescent* getProfileDescent();
+    void setProfileDescent(ATCProfileDescent *profile);
+
 signals:
     void signalCreateDialogAltitude(ATCFlight *flight, QPoint point);
     void signalCreateDialogSpeed(ATCFlight *flight, QPoint point);
@@ -208,6 +217,9 @@ private:
     bool dataLogged = false;
     QFile logFile;
     QTextStream logStream;
+
+    ATCProfileClimb *profileClimb = nullptr;
+    ATCProfileDescent *profileDescent = nullptr;
 };
 
 #endif // ATCFLIGHT_H

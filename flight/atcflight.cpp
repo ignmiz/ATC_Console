@@ -1,6 +1,10 @@
 
 #include "atcflight.h"
 
+ATCFlight::ATCFlight()
+{
+}
+
 ATCFlight::ATCFlight(State s) : state(s)
 {
 }
@@ -20,6 +24,8 @@ ATCFlight::~ATCFlight()
     if(plan != nullptr) delete plan;
     if(tag != nullptr) delete tag;
     if(prediction != nullptr) delete prediction;
+    if(profileClimb != nullptr) delete profileClimb;
+    if(profileDescent != nullptr) delete profileDescent;
 
     if(!trailingDots.isEmpty())
     {
@@ -405,6 +411,26 @@ void ATCFlight::closeDataLog()
 void ATCFlight::logData(QString buffer)
 {
     logStream << buffer << endl;
+}
+
+ATCProfileClimb *ATCFlight::getProfileClimb()
+{
+    return profileClimb;
+}
+
+void ATCFlight::setProfileClimb(ATCProfileClimb *profile)
+{
+    profileClimb = profile;
+}
+
+ATCProfileDescent *ATCFlight::getProfileDescent()
+{
+    return profileDescent;
+}
+
+void ATCFlight::setProfileDescent(ATCProfileDescent *profile)
+{
+    profileDescent = profile;
 }
 
 void ATCFlight::slotCreateDialogAltitude(QPoint point)

@@ -4,7 +4,6 @@
 #include "atcconst.h"
 #include "atcflags.h"
 #include "atcaircrafttype.h"
-#include "atcflight.h"
 
 #include "GeographicLib/Geodesic.hpp"
 #include "GeographicLib/Rhumb.hpp"

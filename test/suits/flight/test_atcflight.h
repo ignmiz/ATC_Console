@@ -43,6 +43,8 @@ private slots:
     void test_setAppTargetAltitude();
     void test_setSimulated();
     void test_setTrailingDots();
+    void test_setProfileClimb();
+    void test_setProfileDescent();
 };
 
 #endif // TEST_ATCFLIGHT_H

@@ -4,10 +4,6 @@
 #include "mkl/mkl_df.h"
 
 #include <QMessageBox>
-#include <QVector>
-#include <QDebug>
-
-//Class for linear interpolation of scalar function with saturation or linear extrapolation
 
 enum class ExType
 {

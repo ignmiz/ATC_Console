@@ -122,7 +122,9 @@ SOURCES += main.cpp\
     atctrailingdot.cpp \
     dialog/dialogtrailingdots.cpp \
     utils/atcinterpolator.cpp \
-    flight/atcabstractprofile.cpp
+    flight/atcabstractprofile.cpp \
+    flight/atcprofileclimb.cpp \
+    flight/atcprofiledescent.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -265,7 +267,9 @@ HEADERS  += mainwindow.h \
     include/mkl/mkl_vml.h \
     include/mkl/mkl_vsl.h \
     utils/atcinterpolator.h \
-    flight/atcabstractprofile.h
+    flight/atcabstractprofile.h \
+    flight/atcprofileclimb.h \
+    flight/atcprofiledescent.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \

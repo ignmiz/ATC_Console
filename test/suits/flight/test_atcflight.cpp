@@ -574,3 +574,41 @@ void Test_ATCFlight::test_setTrailingDots()
     QVERIFY(foo.getTrailingDots() == vec);
 }
 
+void Test_ATCFlight::test_setProfileClimb()
+{
+    QVector<double> levels;
+    QVector<double> time;
+    QVector<double> distance;
+
+    levels << 0 << 1;
+    time << 0 << 1;
+    distance << 0 << 2;
+
+    ATCProfileClimb *p = new ATCProfileClimb(levels, time, distance);
+
+    ATCFlight foo;
+    QVERIFY(foo.getProfileClimb() == nullptr);
+
+    foo.setProfileClimb(p);
+    QVERIFY(foo.getProfileClimb() == p);
+}
+
+void Test_ATCFlight::test_setProfileDescent()
+{
+    QVector<double> levels;
+    QVector<double> time;
+    QVector<double> distance;
+
+    levels << 0 << 1;
+    time << 0 << 1;
+    distance << 0 << 2;
+
+    ATCProfileDescent *p = new ATCProfileDescent(levels, time, distance);
+
+    ATCFlight foo;
+    QVERIFY(foo.getProfileDescent() == nullptr);
+
+    foo.setProfileDescent(p);
+    QVERIFY(foo.getProfileDescent() == p);
+}
+
