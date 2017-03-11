@@ -319,47 +319,50 @@ void ATCAircraftType::interpretAPF(QString APFpath)
         {
             QStringList stringList = textLine.split(" ", QString::SkipEmptyParts);
 
-            if(stringList.at(2).trimmed() == "LO")
+            if(stringList.size() > 16)
             {
-                velocity.V_CL1_LO = stringList.at(3).trimmed().toDouble();
-                velocity.V_CL2_LO = stringList.at(4).trimmed().toDouble();
-                velocity.M_CL_LO = stringList.at(5).trimmed().toDouble() / 100;
+                if(stringList.at(stringList.size() - 15).trimmed() == "LO")
+                {
+                    velocity.V_CL1_LO = stringList.at(stringList.size() - 14).trimmed().toDouble();
+                    velocity.V_CL2_LO = stringList.at(stringList.size() - 13).trimmed().toDouble();
+                    velocity.M_CL_LO = stringList.at(stringList.size() - 12).trimmed().toDouble() / 100;
 
-                velocity.V_CR1_LO = stringList.at(6).trimmed().toDouble();
-                velocity.V_CR2_LO = stringList.at(7).trimmed().toDouble();
-                velocity.M_CR_LO = stringList.at(8).trimmed().toDouble() / 100;
+                    velocity.V_CR1_LO = stringList.at(stringList.size() - 11).trimmed().toDouble();
+                    velocity.V_CR2_LO = stringList.at(stringList.size() - 10).trimmed().toDouble();
+                    velocity.M_CR_LO = stringList.at(stringList.size() - 9).trimmed().toDouble() / 100;
 
-                velocity.M_DS_LO = stringList.at(9).trimmed().toDouble() / 100;
-                velocity.V_DS2_LO = stringList.at(10).trimmed().toDouble();
-                velocity.V_DS1_LO = stringList.at(11).trimmed().toDouble();
-            }
-            else if(stringList.at(2).trimmed() == "AV")
-            {
-                velocity.V_CL1_AV = stringList.at(3).trimmed().toDouble();
-                velocity.V_CL2_AV = stringList.at(4).trimmed().toDouble();
-                velocity.M_CL_AV = stringList.at(5).trimmed().toDouble() / 100;
+                    velocity.M_DS_LO = stringList.at(stringList.size() - 8).trimmed().toDouble() / 100;
+                    velocity.V_DS2_LO = stringList.at(stringList.size() - 7).trimmed().toDouble();
+                    velocity.V_DS1_LO = stringList.at(stringList.size() - 6).trimmed().toDouble();
+                }
+                else if(stringList.at(stringList.size() - 15).trimmed() == "AV")
+                {
+                    velocity.V_CL1_AV = stringList.at(stringList.size() - 14).trimmed().toDouble();
+                    velocity.V_CL2_AV = stringList.at(stringList.size() - 13).trimmed().toDouble();
+                    velocity.M_CL_AV = stringList.at(stringList.size() - 12).trimmed().toDouble() / 100;
 
-                velocity.V_CR1_AV = stringList.at(6).trimmed().toDouble();
-                velocity.V_CR2_AV = stringList.at(7).trimmed().toDouble();
-                velocity.M_CR_AV = stringList.at(8).trimmed().toDouble() / 100;
+                    velocity.V_CR1_AV = stringList.at(stringList.size() - 11).trimmed().toDouble();
+                    velocity.V_CR2_AV = stringList.at(stringList.size() - 10).trimmed().toDouble();
+                    velocity.M_CR_AV = stringList.at(stringList.size() - 9).trimmed().toDouble() / 100;
 
-                velocity.M_DS_AV = stringList.at(9).trimmed().toDouble() / 100;
-                velocity.V_DS2_AV = stringList.at(10).trimmed().toDouble();
-                velocity.V_DS1_AV = stringList.at(11).trimmed().toDouble();
-            }
-            else if(stringList.at(2).trimmed() == "HI")
-            {
-                velocity.V_CL1_HI = stringList.at(3).trimmed().toDouble();
-                velocity.V_CL2_HI = stringList.at(4).trimmed().toDouble();
-                velocity.M_CL_HI = stringList.at(5).trimmed().toDouble() / 100;
+                    velocity.M_DS_AV = stringList.at(stringList.size() - 8).trimmed().toDouble() / 100;
+                    velocity.V_DS2_AV = stringList.at(stringList.size() - 7).trimmed().toDouble();
+                    velocity.V_DS1_AV = stringList.at(stringList.size() - 6).trimmed().toDouble();
+                }
+                else if(stringList.at(stringList.size() - 15).trimmed() == "HI")
+                {
+                    velocity.V_CL1_HI = stringList.at(stringList.size() - 14).trimmed().toDouble();
+                    velocity.V_CL2_HI = stringList.at(stringList.size() - 13).trimmed().toDouble();
+                    velocity.M_CL_HI = stringList.at(stringList.size() - 12).trimmed().toDouble() / 100;
 
-                velocity.V_CR1_HI = stringList.at(6).trimmed().toDouble();
-                velocity.V_CR2_HI = stringList.at(7).trimmed().toDouble();
-                velocity.M_CR_HI = stringList.at(8).trimmed().toDouble() / 100;
+                    velocity.V_CR1_HI = stringList.at(stringList.size() - 11).trimmed().toDouble();
+                    velocity.V_CR2_HI = stringList.at(stringList.size() - 10).trimmed().toDouble();
+                    velocity.M_CR_HI = stringList.at(stringList.size() - 9).trimmed().toDouble() / 100;
 
-                velocity.M_DS_HI = stringList.at(9).trimmed().toDouble() / 100;
-                velocity.V_DS2_HI = stringList.at(10).trimmed().toDouble();
-                velocity.V_DS1_HI = stringList.at(11).trimmed().toDouble();
+                    velocity.M_DS_HI = stringList.at(stringList.size() - 8).trimmed().toDouble() / 100;
+                    velocity.V_DS2_HI = stringList.at(stringList.size() - 7).trimmed().toDouble();
+                    velocity.V_DS1_HI = stringList.at(stringList.size() - 6).trimmed().toDouble();
+                }
             }
         }
     }
