@@ -143,7 +143,13 @@ void ATCSimulation::slotStartSimulation()
     qint64 diff;
     double counter = 0;
 
-    if(!paused) preallocateTempData();
+    if(!paused)
+    {
+        preallocateTempData();
+        createClimbProfile();
+        createDescentProfile();
+    }
+
     simLoop = true;
 
     if(dataLogged) createDataLogs();
@@ -163,7 +169,7 @@ void ATCSimulation::slotStartSimulation()
         elapsedTime = timer.nsecsElapsed();
         diff = dt - elapsedTime;
 
-        qDebug() << "Elapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
+//        qDebug() << "Elapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
         QThread::usleep(qFloor(diff / 1000));
     }
 
@@ -325,6 +331,223 @@ void ATCSimulation::preallocateTempData()
             if(flight->getRoutePrediction() != nullptr) emit signalDisplayRoute(flight);
             flight->setSimulated(false);
         }
+    }
+}
+
+void ATCSimulation::createClimbProfile()
+{
+    for(int i = 0; i < flights.size(); i++)
+    {
+        //Pointer to current flight
+        ATCFlight *current = flights.at(i);
+
+        //Create mockup buffer
+        QString unusedBuffer;
+
+        //Create dummy flight
+        ATCFlight flight;
+        flight.setFlightPlan(new ATCFlightPlan());
+
+        ATCAircraftType *type = current->getFlightPlan()->getType();
+        flight.getFlightPlan()->setType(type);
+
+        //Copy temporaries
+        Temp temp;
+
+        temp.m = current->getTemp().m;
+        temp.Cpowred = current->getTemp().Cpowred;
+
+        temp.vStallCR = current->getTemp().vStallCR;
+        temp.vStallIC = current->getTemp().vStallIC;
+        temp.vStallTO = current->getTemp().vStallTO;
+        temp.vStallAP = current->getTemp().vStallAP;
+        temp.vStallLD = current->getTemp().vStallLD;
+
+        temp.xoverAltClbM = current->getTemp().xoverAltClbM;
+        temp.xoverAltCrsM = current->getTemp().xoverAltCrsM;
+        temp.xoverAltDesM = current->getTemp().xoverAltDesM;
+
+        flight.setTemp(temp);
+
+        //Initialize dummy state
+        State state;
+        state.x = 0;
+        state.y = 0;
+        state.h = 0;
+        state.v = ATCConst::C_V_MIN_TO * ATCMath::kt2mps(current->getTemp().vStallTO);
+        state.hdg = ATCMath::deg2rad(90);
+
+        flight.setState(state);
+
+        //Initialize target altitude
+        double targetAlt = type->getEnvelope().h_max;
+        flight.setTargetAltitude("F" + QString::number(qRound(targetAlt / 100)));
+
+        targetAlt = ATCMath::ft2m(targetAlt);
+
+        //Declare vectors for values
+        QVector<double> levels;
+        QVector<double> time;
+        QVector<double> distance;
+
+        //Initialize profile simulation parameters
+        double t = 0;
+        bool maxAlt = false;
+        double altitudeCheckpoint = 0;
+
+        //Perform simplified integration of vertical component
+        while(!maxAlt && (flight.getState().h <= targetAlt))
+        {
+            //Append data points
+            if(flight.getState().h >= altitudeCheckpoint)
+            {
+                levels.append(flight.getState().h);
+                time.append(t);
+                distance.append(flight.getState().x);
+
+                altitudeCheckpoint += ATCConst::PROFILE_ALT_INTERVAL;
+            }
+
+            //Calculate profile
+            ISA isa = calculateEnvironment(&flight, unusedBuffer);
+            assignDiscreteState(&flight, isa, unusedBuffer);
+            assignVerticalProfile(&flight, isa, maxAlt);
+
+            //Increment time
+            t += ATCConst::DT_COARSE;
+        }
+
+        //Append last data points
+        levels.append(flight.getState().h);
+        time.append(t);
+        distance.append(flight.getState().x);
+
+        //Create ATCProfile, ATCFlight takes ownership
+        ATCProfileClimb *profile = new ATCProfileClimb(levels, time, distance);
+        current->setProfileClimb(profile);
+    }
+}
+
+void ATCSimulation::createDescentProfile()
+{
+    for(int i = 0; i < flights.size(); i++)
+    {
+        //Pointer to current flight
+        ATCFlight *current = flights.at(i);
+
+        //Create mockup buffer
+        QString unusedBuffer;
+
+        //Create dummy flight
+        ATCFlight flight;
+        flight.setFlightPlan(new ATCFlightPlan());
+
+        ATCAircraftType *type = current->getFlightPlan()->getType();
+        flight.getFlightPlan()->setType(type);
+
+        //Copy temporaries
+        Temp temp;
+
+        temp.m = current->getTemp().m;
+        temp.Cpowred = current->getTemp().Cpowred;
+
+        temp.vStallCR = current->getTemp().vStallCR;
+        temp.vStallIC = current->getTemp().vStallIC;
+        temp.vStallTO = current->getTemp().vStallTO;
+        temp.vStallAP = current->getTemp().vStallAP;
+        temp.vStallLD = current->getTemp().vStallLD;
+
+        temp.xoverAltClbM = current->getTemp().xoverAltClbM;
+        temp.xoverAltCrsM = current->getTemp().xoverAltCrsM;
+        temp.xoverAltDesM = current->getTemp().xoverAltDesM;
+
+        flight.setTemp(temp);
+
+        //Calculate TAS at theoretical ceiling
+        ISA isa = ATCMath::atmosISA(ATCMath::ft2m(type->getEnvelope().h_max));
+
+        double mach = type->getVelocity().M_CR_AV;
+        double cas = type->getVelocity().V_CR2_AV;
+        double tas;
+
+        if(ATCMath::ft2m(type->getEnvelope().h_max) >= temp.xoverAltCrsM)
+        {
+            tas = qFabs(ATCMath::mach2tas(mach, isa.a));
+        }
+        else
+        {
+            tas = qFabs(ATCMath::cas2tas(ATCMath::kt2mps(cas), isa.p, isa.rho));
+        }
+
+        //Initialize dummy state
+        State state;
+        state.x = 0;
+        state.y = 0;
+        state.h = ATCMath::ft2m(type->getEnvelope().h_max);
+        state.v = tas;
+        state.hdg = ATCMath::deg2rad(90);
+
+        flight.setState(state);
+
+        //Initialize target altitude
+        double targetAlt = 0;
+        flight.setTargetAltitude("F000");
+
+        targetAlt = ATCMath::ft2m(targetAlt);
+
+        //Declare temp vectors for values
+        QVector<double> t_levels;
+        QVector<double> t_time;
+        QVector<double> t_distance;
+
+        //Initialize profile simulation parameters
+        double t = 0;
+        bool minAlt = false; //This most likely is irrelevant, since there is sufficient thrust at low levels. Left for unification.
+        double altitudeCheckpoint = state.h;
+
+        //Perform simplified integration of vertical component
+        while(!minAlt && (flight.getState().h >= targetAlt))
+        {
+            //Append data points
+            if(flight.getState().h <= altitudeCheckpoint)
+            {
+                t_levels.append(flight.getState().h);
+                t_time.append(t);
+                t_distance.append(flight.getState().x);
+
+                altitudeCheckpoint -= ATCConst::PROFILE_ALT_INTERVAL;
+            }
+
+            //Calculate profile
+            ISA isa = calculateEnvironment(&flight, unusedBuffer);
+            assignDiscreteState(&flight, isa, unusedBuffer);
+            assignVerticalProfile(&flight, isa, minAlt);
+
+            //Increment time
+            t += ATCConst::DT_COARSE;
+        }
+
+        //Append last data points
+        t_levels.append(flight.getState().h);
+        t_time.append(t);
+        t_distance.append(flight.getState().x);
+
+        //Declare final vectors for valuse
+        QVector<double> levels(t_levels.size());
+        QVector<double> time(t_time.size());
+        QVector<double> distance(t_distance.size());
+
+        //Reverse order of data to comply with ATCInterpolator restrictions
+        for(int j = 0; j < levels.size(); j++)
+        {
+            levels[j] = t_levels.at(t_levels.size() - 1 - j);
+            time[j] = t_time.at(time.size() - 1 - j);
+            distance[j] = t_distance.at(distance.size() - 1 - j);
+        }
+
+        //Create ATCProfile, ATCFlight takes ownership
+        ATCProfileDescent *profile = new ATCProfileDescent(levels, time, distance);
+        current->setProfileDescent(profile);
     }
 }
 
@@ -686,7 +909,6 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
     double lift = ATCMath::lift(isa.rho, state.v, type->getSurface(), CL);
 
     double CD;
-
     if((state.fp == BADA::UpperDescent) || state.fp == (BADA::LowerDescent))
     {
         CD = ATCMath::dragCoefficient(CL, type->getAeroCR().CD0, type->getAeroCR().CD2, 0);
@@ -697,7 +919,18 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
     }
     else
     {
-        CD = ATCMath::dragCoefficient(CL, type->getAeroLD().CD0, type->getAeroLD().CD2, type->getCDldg());
+        if(state.cm == BADA::Descend)
+        {
+            CD = ATCMath::dragCoefficient(CL, type->getAeroLD().CD0, type->getAeroLD().CD2, type->getCDldg());
+        }
+        else if(state.cm == BADA::Climb)
+        {
+            CD = ATCMath::dragCoefficient(CL, type->getAeroAP().CD0, type->getAeroAP().CD2, 0);
+        }
+        else
+        {
+            CD = ATCMath::dragCoefficient(CL, type->getAeroLD().CD0, type->getAeroLD().CD2, 0);
+        }
     }
 
     double drag = ATCMath::drag(isa.rho, state.v, type->getSurface(), CD);
@@ -785,6 +1018,81 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
         appendToLogBuffer(buffer, flight->isFinalApp() ? "1" : "0");
         appendToLogBuffer(buffer, flight->isGlidePath() ? "1" : "0");
     }
+}
+
+void ATCSimulation::assignVerticalProfile(ATCFlight *flight, ISA &isa, bool &maxAlt)
+{
+    State state = flight->getState();
+    Temp temp = flight->getTemp();
+    ATCAircraftType *type = flight->getFlightPlan()->getType();
+
+    double m = temp.m;
+
+    double bankAngle = 0;
+    double CL = ATCMath::liftCoefficient(m, isa.rho, state.v, type->getSurface(), bankAngle);
+
+    double CD;
+    if((state.fp == BADA::UpperDescent) || state.fp == (BADA::LowerDescent))
+    {
+        CD = ATCMath::dragCoefficient(CL, type->getAeroCR().CD0, type->getAeroCR().CD2, 0);
+    }
+    else if(state.fp == BADA::Approach)
+    {
+        CD = ATCMath::dragCoefficient(CL, type->getAeroAP().CD0, type->getAeroAP().CD2, 0);
+    }
+    else
+    {
+        if(state.cm == BADA::Descend)
+        {
+            CD = ATCMath::dragCoefficient(CL, type->getAeroLD().CD0, type->getAeroLD().CD2, type->getCDldg());
+        }
+        else if(state.cm == BADA::Climb)
+        {
+            CD = ATCMath::dragCoefficient(CL, type->getAeroAP().CD0, type->getAeroAP().CD2, 0);
+        }
+        else
+        {
+            CD = ATCMath::dragCoefficient(CL, type->getAeroLD().CD0, type->getAeroLD().CD2, 0);
+        }
+    }
+
+    double drag = ATCMath::drag(isa.rho, state.v, type->getSurface(), CD);
+
+    double thrust;
+    if(state.fp == BADA::UpperDescent)
+    {
+        thrust = ATCMath::thrust(state.v, state.h, drag, state.cm, state.am, state.rpm, type->getAcType().engineType, type->getThrust().C_Tc1, type->getThrust().C_Tc2, type->getThrust().C_Tc3, type->getThrust().C_Tdes_high, temp.Cpowred);
+    }
+    else if(state.fp == BADA::LowerDescent)
+    {
+        thrust = ATCMath::thrust(state.v, state.h, drag, state.cm, state.am, state.rpm, type->getAcType().engineType, type->getThrust().C_Tc1, type->getThrust().C_Tc2, type->getThrust().C_Tc3, type->getThrust().C_Tdes_low, temp.Cpowred);
+    }
+    else if(state.fp == BADA::Approach)
+    {
+        thrust = ATCMath::thrust(state.v, state.h, drag, state.cm, state.am, state.rpm, type->getAcType().engineType, type->getThrust().C_Tc1, type->getThrust().C_Tc2, type->getThrust().C_Tc3, type->getThrust().C_Tdes_app, temp.Cpowred);
+    }
+    else
+    {
+        thrust = ATCMath::thrust(state.v, state.h, drag, state.cm, state.am, state.rpm, type->getAcType().engineType, type->getThrust().C_Tc1, type->getThrust().C_Tc2, type->getThrust().C_Tc3, type->getThrust().C_Tdes_ldg, temp.Cpowred);
+    }
+
+    double Mach = state.v / isa.a;
+    double ESF = ATCMath::ESF(state.cm, state.am, state.shm, state.trm, Mach, isa.T, 0);
+
+    double pathAngle = ATCMath::pathAngle(thrust, drag, ESF, m);
+
+    double xNext = state.x + state.v * qCos(pathAngle) * ATCConst::DT_COARSE;
+    double hNext = state.h + ATCMath::stateHDot(state.v, pathAngle) * ATCConst::DT_COARSE;
+    double vNext = state.v + ATCMath::stateVDot(thrust, drag, m, ESF) * ATCConst::DT_COARSE;
+
+    double relativeAltitudeDiff = (qFabs(hNext - state.h) / state.h);
+    if(relativeAltitudeDiff < ATCConst::PROFILE_CEILING_REL_DIFF) maxAlt = true;
+
+    state.x = xNext;
+    state.h = hNext;
+    state.v = vNext;
+
+    flight->setState(state);
 }
 
 void ATCSimulation::flightsCleanup()

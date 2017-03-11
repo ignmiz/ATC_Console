@@ -34,6 +34,7 @@ const double ATCConst::SECTOR_SHRINK_FACTOR = 2;
 
 //Simulation Performance
 const double ATCConst::DT = 0.1;
+const double ATCConst::DT_COARSE = 0.5;
 const double ATCConst::REFRESH_INTERVAL = 5;
 
 const double ATCConst::k1 = 0.005;
@@ -45,6 +46,10 @@ const double ATCConst::APP_ALLOWED_XTRACK_INTERCEPT = 370.4;    //0.2nm
 const double ATCConst::APP_ALLOWED_HDG_INTERCEPT = 10;          //deg
 const double ATCConst::APP_PATH_ANGLE = 3;                      //deg
 const double ATCConst::APP_ALT_FLT_TERMINATED = 15.24;          //50ft
+
+const double ATCConst::PROFILE_CEILING_REL_DIFF = 1e-8;
+const double ATCConst::PROFILE_SVC_CEILING_VSPD = 152.4;        //mps, vertical speed
+const double ATCConst::PROFILE_ALT_INTERVAL = 76.2;            //m
 
 //Environment
 const double ATCConst::betaTrop = -0.0065;

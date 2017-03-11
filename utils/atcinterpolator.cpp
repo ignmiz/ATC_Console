@@ -86,10 +86,9 @@ void ATCInterpolator::interpolate(QVector<double> &sites, QVector<double> &resul
     //Check for argument validity
     if(sites.size() != results.size())
     {
-        QMessageBox msgBox;
-        msgBox.setText("ATCInterpolator: Sites and Results vectors must be equal.\n"
-                       "Object contruction failed.");
-        msgBox.exec();
+
+        qDebug() << "ATCInterpolator: Sites and Results vectors must be equal.\n"
+                    "Object contruction failed.";
         return;
     }
 
@@ -161,10 +160,7 @@ bool ATCInterpolator::validateConstructionArgs()
 
 void ATCInterpolator::errorMessage(QString s, bool &valid)
 {
-    QMessageBox msgBox;
-    msgBox.setText(s);
-    msgBox.exec();
-
+    qDebug() << s;
     valid = false;
 }
 

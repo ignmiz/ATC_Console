@@ -3,7 +3,8 @@
 
 #include "mkl/mkl_df.h"
 
-#include <QMessageBox>
+#include <QVector>
+#include <QDebug>
 
 enum class ExType
 {

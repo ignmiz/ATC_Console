@@ -37,6 +37,7 @@ public:
 
     //Simulation Performance
     static const double DT;
+    static const double DT_COARSE;
     static const double REFRESH_INTERVAL;
 
     static const double k1;
@@ -48,6 +49,10 @@ public:
     static const double APP_ALLOWED_HDG_INTERCEPT;
     static const double APP_PATH_ANGLE;
     static const double APP_ALT_FLT_TERMINATED;
+
+    static const double PROFILE_CEILING_REL_DIFF;
+    static const double PROFILE_SVC_CEILING_VSPD;
+    static const double PROFILE_ALT_INTERVAL;
 
     //Environment
     static const double betaTrop;

@@ -71,11 +71,15 @@ private:
     void closeDataLogs();
 
     void preallocateTempData();
+    void createClimbProfile();
+    void createDescentProfile();
+
     void progressState(GeographicLib::Geodesic &geo);
 
     ISA calculateEnvironment(ATCFlight *flight, QString &buffer);
     void assignDiscreteState(ATCFlight *flight, ISA &isa, QString &buffer);
     void assignContinuousState(ATCFlight *flight, ISA &isa, GeographicLib::Geodesic &geo, int flightIndex, QString &buffer);
+    void assignVerticalProfile(ATCFlight *flight, ISA &isa, bool &maxAlt);
     void flightsCleanup();
 
     void incrementUpdateCounter(double &counter);
