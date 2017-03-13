@@ -177,6 +177,18 @@ void MainWindow::on_buttonTrailingDots_clicked()
     }
 }
 
+void MainWindow::on_buttonList_clicked()
+{
+    if(dialogFlightList == nullptr)
+    {
+        dialogFlightList = new DialogFlightList(this);
+        dialogFlightList->show();
+        setSituationalDisplayFocus();
+
+        connect(dialogFlightList, SIGNAL(closed()), this, SLOT(dialogFlightListClosed()));
+    }
+}
+
 void MainWindow::dialogMainMenuClosed()
 {
     setFlagDialogMainMenuExists(false);
@@ -202,6 +214,11 @@ void MainWindow::dialogLeadersClosed()
 void MainWindow::dialogTrailingDotsClosed()
 {
     dialogTrailingDots = nullptr;
+}
+
+void MainWindow::dialogFlightListClosed()
+{
+    dialogFlightList = nullptr;
 }
 
 void MainWindow::changeFocusToDisplay()

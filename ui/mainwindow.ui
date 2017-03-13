@@ -146,7 +146,7 @@
      </sizepolicy>
     </property>
    </widget>
-   <widget class="ATCButtonMainWindow" name="buttonInboundList">
+   <widget class="ATCButtonMainWindow" name="buttonList">
     <property name="geometry">
      <rect>
       <x>680</x>
@@ -162,26 +162,7 @@
      </sizepolicy>
     </property>
     <property name="text">
-     <string>I</string>
-    </property>
-   </widget>
-   <widget class="ATCButtonMainWindow" name="buttonOutboundList">
-    <property name="geometry">
-     <rect>
-      <x>720</x>
-      <y>0</y>
-      <width>40</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="text">
-     <string>O</string>
+     <string>L</string>
     </property>
    </widget>
    <widget class="ATCButtonMainWindow" name="buttonRunway">
@@ -206,7 +187,7 @@
    <widget class="ATCButtonMainWindow" name="buttonLeaderLine">
     <property name="geometry">
      <rect>
-      <x>760</x>
+      <x>720</x>
       <y>0</y>
       <width>40</width>
       <height>30</height>
@@ -225,7 +206,7 @@
    <widget class="ATCButtonMainWindow" name="buttonTrailingDots">
     <property name="geometry">
      <rect>
-      <x>800</x>
+      <x>760</x>
       <y>0</y>
       <width>40</width>
       <height>30</height>
@@ -263,7 +244,7 @@
    <widget class="ATCButtonMainWindow" name="buttonSettings">
     <property name="geometry">
      <rect>
-      <x>840</x>
+      <x>800</x>
       <y>0</y>
       <width>80</width>
       <height>30</height>
@@ -320,9 +301,9 @@
    <widget class="ATCButtonMainWindow" name="buttonSpacerTop">
     <property name="geometry">
      <rect>
-      <x>920</x>
+      <x>880</x>
       <y>0</y>
-      <width>960</width>
+      <width>1000</width>
       <height>30</height>
      </rect>
     </property>

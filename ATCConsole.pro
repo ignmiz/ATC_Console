@@ -124,7 +124,8 @@ SOURCES += main.cpp\
     utils/atcinterpolator.cpp \
     flight/atcabstractprofile.cpp \
     flight/atcprofileclimb.cpp \
-    flight/atcprofiledescent.cpp
+    flight/atcprofiledescent.cpp \
+    dialog/dialogflightlist.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -269,7 +270,8 @@ HEADERS  += mainwindow.h \
     utils/atcinterpolator.h \
     flight/atcabstractprofile.h \
     flight/atcprofileclimb.h \
-    flight/atcprofiledescent.h
+    flight/atcprofiledescent.h \
+    dialog/dialogflightlist.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
@@ -287,7 +289,8 @@ FORMS    += mainwindow.ui \
     dialogflightplan.ui \
     dialogactiverunways.ui \
     dialogleaders.ui \
-    ui/dialogtrailingdots.ui
+    ui/dialogtrailingdots.ui \
+    ui/dialogflightlist.ui
 
 DISTFILES += \
     resources/acft_cursor.png
