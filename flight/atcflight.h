@@ -153,6 +153,16 @@ public:
     ATCProfileDescent* getProfileDescent();
     void setProfileDescent(ATCProfileDescent *profile);
 
+    double getLegDistance(int i);
+    int getLegDistanceVectorSize();
+    void appendLegDistance(double dst);
+    void clearLegDistances();
+
+    double getLegAngleChange(int i);
+    int getLegAngleChangeVectorSize();
+    void appendLegAngleChange(double chng);
+    void clearLegAngleChanges();
+
 signals:
     void signalCreateDialogAltitude(ATCFlight *flight, QPoint point);
     void signalCreateDialogSpeed(ATCFlight *flight, QPoint point);
@@ -220,6 +230,9 @@ private:
 
     ATCProfileClimb *profileClimb = nullptr;
     ATCProfileDescent *profileDescent = nullptr;
+
+    QVector<double> legDistances;
+    QVector<double> legAngleChanges;
 };
 
 #endif // ATCFLIGHT_H

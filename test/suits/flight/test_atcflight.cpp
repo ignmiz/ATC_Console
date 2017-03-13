@@ -612,3 +612,33 @@ void Test_ATCFlight::test_setProfileDescent()
     QVERIFY(foo.getProfileDescent() == p);
 }
 
+void Test_ATCFlight::test_appendLegDistance()
+{
+    ATCFlight foo;
+    QVERIFY(foo.getLegDistanceVectorSize() == 0);
+
+    foo.appendLegDistance(0.52);
+    foo.appendLegDistance(0.13);
+    QVERIFY(foo.getLegDistanceVectorSize() == 2);
+    QVERIFY(foo.getLegDistance(0) == 0.52);
+    QVERIFY(foo.getLegDistance(1) == 0.13);
+
+    foo.clearLegDistances();
+    QVERIFY(foo.getLegDistanceVectorSize() == 0);
+}
+
+void Test_ATCFlight::test_appendLegAngleChange()
+{
+    ATCFlight foo;
+    QVERIFY(foo.getLegAngleChangeVectorSize() == 0);
+
+    foo.appendLegAngleChange(0.52);
+    foo.appendLegAngleChange(0.13);
+    QVERIFY(foo.getLegAngleChangeVectorSize() == 2);
+    QVERIFY(foo.getLegAngleChange(0) == 0.52);
+    QVERIFY(foo.getLegAngleChange(1) == 0.13);
+
+    foo.clearLegAngleChanges();
+    QVERIFY(foo.getLegAngleChangeVectorSize() == 0);
+}
+

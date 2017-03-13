@@ -433,6 +433,46 @@ void ATCFlight::setProfileDescent(ATCProfileDescent *profile)
     profileDescent = profile;
 }
 
+double ATCFlight::getLegDistance(int i)
+{
+    return legDistances.at(i);
+}
+
+int ATCFlight::getLegDistanceVectorSize()
+{
+    return legDistances.size();
+}
+
+void ATCFlight::appendLegDistance(double dst)
+{
+    legDistances.append(dst);
+}
+
+void ATCFlight::clearLegDistances()
+{
+    legDistances.clear();
+}
+
+double ATCFlight::getLegAngleChange(int i)
+{
+    return legAngleChanges.at(i);
+}
+
+int ATCFlight::getLegAngleChangeVectorSize()
+{
+    return legAngleChanges.size();
+}
+
+void ATCFlight::appendLegAngleChange(double chng)
+{
+    legAngleChanges.append(chng);
+}
+
+void ATCFlight::clearLegAngleChanges()
+{
+    legAngleChanges.clear();
+}
+
 void ATCFlight::slotCreateDialogAltitude(QPoint point)
 {
     emit signalCreateDialogAltitude(this, point);
