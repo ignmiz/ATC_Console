@@ -98,7 +98,12 @@ bool DialogFlightPlan::validateRoute()
 
     QStringList routeStr = uiInner->plainTextEditRoute->toPlainText().toUpper().split(" ", QString::SkipEmptyParts);
 
-    if(!routeStr.isEmpty())
+    if(routeStr.isEmpty())
+    {
+        errorMessage("Route is empty");
+        error = true;
+    }
+    else
     {
         QList<QStandardItem*> row;
 
@@ -536,20 +541,14 @@ void DialogFlightPlan::on_buttonOK_clicked()
         QTime fuelTime = uiInner->timeEditFuelTime->time();
         flight->getFlightPlan()->setFuelTime(fuelTime);
 
+        //Reset sid and star
+        flight->setSID("");
+        flight->setSTAR("");
+
         //Flight - fix list
         QStringList fixList;
-        ATCProcedureSID *sid = airspace->findSID(flight->getSID());
-        ATCProcedureSTAR *star = airspace->findSTAR(flight->getSTAR());
 
         fixList.append(departure);
-
-        if(sid != nullptr)
-        {
-            for(int i = 0; i < sid->getFixListSize(); i++)
-            {
-                if(sid->getFixName(i) != routeStr.at(0)) fixList.append(sid->getFixName(i));
-            }
-        }
 
         for(int i = 0; i < model->rowCount(); i++)
         {
@@ -557,18 +556,125 @@ void DialogFlightPlan::on_buttonOK_clicked()
             if(fix != "DCT") fixList.append(fix);
         }
 
-        if(star != nullptr)
-        {
-            for(int i = 0; i < star->getFixListSize(); i++)
-            {
-                if(star->getFixName(i) != routeStr.at(routeStr.size() - 1)) fixList.append(star->getFixName(i));
-            }
-        }
-
         fixList.append(destination);
         if(!alternate.isEmpty()) fixList.append(alternate);
 
         flight->setFixList(fixList);
+
+        //Rebuild waypoints list
+        flight->clearWaypoints();
+        fixList = flight->getFixList();
+        for(int i = 0; i < fixList.size(); i++)
+        {
+            ATCNavFix *fix = nullptr;
+            ATCBeaconVOR *vor = nullptr;
+            ATCAirport *airport = nullptr;
+            ATCBeaconNDB *ndb = nullptr;
+
+            double lat;
+            double lon;
+
+            double x;
+            double y;
+
+            if((fix = airspace->findFix(fixList.at(i))) != nullptr)
+            {
+                lat = fix->latitude();
+                lon = fix->longitude();
+                x = fix->getScenePosition()->x();
+                y = fix->getScenePosition()->y();
+            }
+            else if((airport = airspace->findAirport(fixList.at(i))) != nullptr)
+            {
+                lat = airport->latitude();
+                lon = airport->longitude();
+                x = airport->getScenePosition()->x();
+                y = airport->getScenePosition()->y();
+            }
+            else if((vor = airspace->findVOR(fixList.at(i))) != nullptr)
+            {
+                lat = vor->latitude();
+                lon = vor->longitude();
+                x = vor->getScenePosition()->x();
+                y = vor->getScenePosition()->y();
+            }
+            else if((ndb = airspace->findNDB(fixList.at(i))) != nullptr)
+            {
+                lat = ndb->latitude();
+                lon = ndb->longitude();
+                x = ndb->getScenePosition()->x();
+                y = ndb->getScenePosition()->y();
+            }
+
+            flight->appendWaypoint(QPair<double, double>(lat, lon));
+            flight->appendProjectedWaypoint(QPair<double, double>(x, y));
+            if(fixList.at(i) == flight->getNextFix())
+            {
+                flight->setWaypointIndex(i);
+            }
+            else if(i == fixList.size() - 1) flight->setWaypointIndex(-1);
+        }
+
+        //Check if waypoint index found. If not, change mode to heading & update tag
+        if(flight->getWaypointIndex() == -1)
+        {
+            flight->setNavMode(ATC::Hdg);
+            flight->setHdgRestriction(ATCMath::normalizeAngle(ATCMath::rad2deg(flight->getState().hdg), ATC::Deg));
+            flight->setDCT(false);
+
+            QString shortEtiquette = flight->getFlightTag()->getTagBox()->getShortEtiquette();
+            QString longEtiquette = flight->getFlightTag()->getTagBox()->getLongEtiquette();
+
+            QString headingString = QString::number(flight->getHdgRestriction());
+            for(int i = 0; i < headingString.size(); i++)
+            {
+                longEtiquette[i + 39] = headingString.at(i);
+            }
+
+            if(flight->getFlightTag()->getTagType() == ATC::Short)
+            {
+                for(int i = 0; i < 5; i++)
+                {
+                    shortEtiquette[i + 24] = QChar(' ');
+                    longEtiquette[i + 24] = QChar(' ');
+                }
+
+                flight->getFlightTag()->getTagBox()->setShortEtiquette(shortEtiquette);
+                flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
+
+                flight->getFlightTag()->getTagBox()->rectShort2Long();
+                flight->getFlightTag()->setTagType(ATC::Full);
+                flight->getFlightTag()->getTagBox()->setLong();
+
+                flight->setNavMode(ATC::Hdg);
+            }
+            else
+            {
+                if(flight->getNavMode() == ATC::Nav)
+                {
+                    for(int i = 0; i < 5; i++)
+                    {
+                        shortEtiquette[i + 24] = QChar(' ');
+                        longEtiquette[i + 24] = QChar(' ');
+                    }
+
+                    flight->setNavMode(ATC::Hdg);
+                }
+
+                flight->getFlightTag()->getTagBox()->setShortEtiquette(shortEtiquette);
+                flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
+
+                flight->getFlightTag()->getTagBox()->setLong();
+            }
+
+            if(flight->isFinalApp())
+            {
+                flight->setCldFinalApp(false);
+                flight->setFinalApp(false);
+                flight->setGlidePath(false);
+            }
+
+        }
 
         //Flight - main fix list
         QStringList mainFixList;
