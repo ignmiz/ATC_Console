@@ -57,6 +57,8 @@ public:
     void loadDisplay(QString path);
     void exportDisplay(QString path);
 
+    void deleteTrailingDots();
+
 signals:
     void signalDisplayClicked(double x, double y);
     void signalShowFlightCreator();

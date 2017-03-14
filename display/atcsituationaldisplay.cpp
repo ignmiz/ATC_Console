@@ -234,6 +234,20 @@ void ATCSituationalDisplay::exportDisplay(QString path)
     file.close();
 }
 
+void ATCSituationalDisplay::deleteTrailingDots()
+{
+    for(int i = 0; i < simulation->getFlightsVectorSize(); i++)
+    {
+        ATCFlight *flight = simulation->getFlight(i);
+
+        for(int j = 0; j < flight->getTrailingDotsVectorSize(); j++)
+        {
+            delete flight->getTrailingDot(j);
+        }
+        flight->getTrailingDots().clear();
+    }
+}
+
 void ATCSituationalDisplay::slotSetColorSectorARTCCLow(QColor color)
 {
     for(int i = 0; i < airspaceData->getSectorARTCCLowVectorSize(); i++)
