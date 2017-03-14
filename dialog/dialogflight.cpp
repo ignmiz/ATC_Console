@@ -302,6 +302,7 @@ void DialogFlight::on_buttonDeleteFlight_clicked()
     }
 
     slotAdjustUI();
+    emit signalUpdateFlightList();
 }
 
 void DialogFlight::on_buttonDeleteAll_clicked()
@@ -317,6 +318,7 @@ void DialogFlight::on_buttonDeleteAll_clicked()
     model->removeRows(0, model->rowCount());
 
     slotAdjustUI();
+    emit signalUpdateFlightList();
 }
 
 void DialogFlight::on_buttonActiveRunways_clicked()

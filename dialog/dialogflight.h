@@ -36,6 +36,8 @@ signals:
     void signalActiveScenarioPath(QString path);
     void signalSetFlagSimulationValid(bool simValid);
 
+    void signalUpdateFlightList();
+
 private slots:
     ATC_MOUSE_HANDLER
 
