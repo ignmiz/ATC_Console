@@ -39,6 +39,7 @@ void DialogFlight::slotUpdateFlightList(ATCFlight *flight)
     }
 
     slotAdjustUI();
+    uiInner->tableViewFlights->sortByColumn(0, Qt::AscendingOrder);
 }
 
 void DialogFlight::on_buttonCreateFlight_clicked()
@@ -111,6 +112,8 @@ void DialogFlight::dialogFlightSetup()
             appendRow(simulation->getFlight(i), model);
         }
     }
+
+    uiInner->tableViewFlights->sortByColumn(0, Qt::AscendingOrder);
 
     slotAdjustUI();
     connect(uiInner->tableViewFlights->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), this, SLOT(slotAdjustUI(QItemSelection,QItemSelection)));
