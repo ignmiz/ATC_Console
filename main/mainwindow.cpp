@@ -310,7 +310,7 @@ void MainWindow::slotCloseDialogFlight()
             for(int i = 0; i < simulation->getFlightsVectorSize(); i++)
             {
                 ATCFlight *current = simulation->getFlight(i);
-                current->getFlightTag()->showTag();
+                if(current->isSimulated()) current->getFlightTag()->showTag();
             }
         }
     }
@@ -842,6 +842,8 @@ void MainWindow::slotPauseSimulation()
         disconnect(simulation, SIGNAL(signalHideFlightTag(ATCFlightTag*)), ui->situationalDisplay, SLOT(slotHideFlightTag(ATCFlightTag*)));
 
         simulation->moveToThread(QThread::currentThread());
+
+        ui->situationalDisplay->deleteTrailingDots();
     }
 }
 
