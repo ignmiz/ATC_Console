@@ -6,13 +6,119 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
+    <width>530</width>
     <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <widget class="QTableView" name="tableViewList">
+   <property name="geometry">
+    <rect>
+     <x>2</x>
+     <y>32</y>
+     <width>526</width>
+     <height>266</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QTableView
+{;
+	color: #c8c8c8;;
+	background-color: #000000;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	font: 11px;
+	outline: none;
+}
+
+QTableView::item:hover
+{
+
+}
+
+QTableView::item:selected
+{
+	background-color: #282828;
+	color: #c8c8c8;;
+	font: 11px;
+	outline: none;
+}
+
+QTableView::item:selected:active
+{
+
+}
+
+QTableView::item:alternate
+{
+
+}
+
+QTableView::item:focus
+{
+	outline: none;
+}
+
+QHeaderView::section
+{
+    background-color: #141414;
+    color: #c8c8c8;
+	font: 11px;
+    border: 2px solid #282828;
+}
+
+QScrollBar:vertical
+{
+	background: #000000;
+	width: 2px;
+	border: none;
+	margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: #323232;
+}
+
+QScrollBar::add-page:vertical
+{
+	background: #000000;
+	border: none;
+}
+
+QScrollBar::sub-page:vertical
+{
+	background: #000000;
+	border: none;
+}
+
+QComboBox
+{
+	color: #c8c8c8;
+	background-color: #282828;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	font: 11px;
+	padding: 0;
+}
+
+QComboBox::drop-down
+{
+	width: 8px;
+}
+
+QComboBox QAbstractItemView
+{	
+	color: #c8c8c8;
+	background-color: #282828;
+    selection-background-color: #060064;
+	font: 11px;
+}</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

@@ -48,6 +48,8 @@ signals:
     void signalShowFlightTag(ATCFlightTag *tag);
     void signalHideFlightTag(ATCFlightTag *tag);
 
+    void signalUpdateFlightList();
+
 public slots:
     void slotStartSimulation();
     void slotStopSimulation();
@@ -71,6 +73,7 @@ private:
     void closeDataLogs();
 
     void preallocateTempData();
+
     void createClimbProfile();
     void createDescentProfile();
 

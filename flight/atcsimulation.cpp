@@ -154,6 +154,7 @@ void ATCSimulation::slotStartSimulation()
 
     if(dataLogged) createDataLogs();
 
+    emit signalUpdateFlightList();
     if(!paused) emit signalSetSimulationStartTime();
     setPaused(false);
 
@@ -553,6 +554,8 @@ void ATCSimulation::createDescentProfile()
 
 void ATCSimulation::progressState(GeographicLib::Geodesic &geo)
 {
+    bool updateList = false;
+
     for(int i = 0; i < flights.size(); i++)
     {
         ATCFlight *flight = flights.at(i);
@@ -573,8 +576,12 @@ void ATCSimulation::progressState(GeographicLib::Geodesic &geo)
                 if(!flight->getFlightTag()->getDiamond()->isVisible()) emit signalShowFlightTag(flight->getFlightTag());
                 flight->setSimulated(true);
                 flight->setSimStartTime(QTime(0, 0, 0));
+
+                updateList = true;
             }
         }
+
+        if(updateList) emit signalUpdateFlightList();
 
         if(dataLogged)
         {
@@ -1106,6 +1113,7 @@ void ATCSimulation::flightsCleanup()
         }
 
         cleanupIndices.clear();
+        emit signalUpdateFlightList();
     }
 }
 

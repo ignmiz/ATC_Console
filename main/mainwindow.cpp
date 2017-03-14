@@ -181,11 +181,18 @@ void MainWindow::on_buttonList_clicked()
 {
     if(dialogFlightList == nullptr)
     {
-        dialogFlightList = new DialogFlightList(this);
+        if((simController != nullptr) || ((simulation != nullptr) && (simulation->isPaused())))
+            dialogFlightList = new DialogFlightList(airspaceData, simulation, this);
+        else
+            dialogFlightList = new DialogFlightList(airspaceData, nullptr, this);
+
         dialogFlightList->show();
         setSituationalDisplayFocus();
 
         connect(dialogFlightList, SIGNAL(closed()), this, SLOT(dialogFlightListClosed()));
+        connect(dialogFlightList, SIGNAL(signalCreateDialogFlightPlan(ATCFlight*)), this, SLOT(slotCreateDialogFlightPlan(ATCFlight*)));
+
+        if(simController != nullptr) connect(simulation, SIGNAL(signalUpdateFlightList()), dialogFlightList, SLOT(slotUpdateFlightList()));
     }
 }
 
@@ -806,6 +813,12 @@ void MainWindow::slotStartSimulation()
 
         emit dialogMainMenu->closed();
         dialogMainMenu->close();
+
+        if((dialogFlightList != nullptr) && !simulation->isPaused())
+        {
+            dialogFlightList->setSimulation(simulation);
+            connect(simulation, SIGNAL(signalUpdateFlightList()), dialogFlightList, SLOT(slotUpdateFlightList()));
+        }
     }
 }
 
@@ -858,6 +871,12 @@ void MainWindow::slotStopSimulation()
     {
         delete simulation;
         simulation = nullptr;
+    }
+
+    if(dialogFlightList != nullptr)
+    {
+        dialogFlightList->clearFlightList();
+        dialogFlightList->setSimulation(simulation);
     }
 }
 

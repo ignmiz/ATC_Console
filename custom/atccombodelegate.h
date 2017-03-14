@@ -1,5 +1,5 @@
-#ifndef ATCPROCEDURECOMBODELEGATE_H
-#define ATCPROCEDURECOMBODELEGATE_H
+#ifndef ATCCOMBODELEGATE_H
+#define ATCCOMBODELEGATE_H
 
 #include "atcactiverunways.h"
 #include "atcairspace.h"
@@ -11,13 +11,20 @@
 #include <QStringList>
 #include <QDebug>
 
+enum class DelegateLocation
+{
+    DialogFlight, DialogFlightList
+};
+
 class ATCComboDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
 public:
-    explicit ATCComboDelegate(ATCAirspace *airspace, ATCSimulation *simulation, ATCActiveRunways *runways, QObject *parent = 0);
+    explicit ATCComboDelegate(ATCAirspace *airspace, ATCSimulation *simulation, ATCActiveRunways *runways, DelegateLocation location, QObject *parent = 0);
     ~ATCComboDelegate();
+
+    void setSimulation(ATCSimulation *sim);
 
     virtual QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const;
     virtual void setEditorData(QWidget* editor, const QModelIndex& index) const;
@@ -30,6 +37,7 @@ private:
     ATCAirspace *airspace;
     ATCActiveRunways *runways;
     ATCSimulation *simulation;
+    DelegateLocation location;
 };
 
-#endif // ATCPROCEDURECOMBODELEGATE_H
+#endif // ATCCOMBODELEGATE_H

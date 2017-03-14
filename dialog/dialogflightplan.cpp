@@ -619,7 +619,7 @@ void DialogFlightPlan::on_buttonOK_clicked()
         if(flight->getWaypointIndex() == -1)
         {
             flight->setNavMode(ATC::Hdg);
-            flight->setHdgRestriction(ATCMath::normalizeAngle(ATCMath::rad2deg(flight->getState().hdg), ATC::Deg));
+            flight->setHdgRestriction(ATCMath::normalizeAngle(ATCMath::rad2deg(flight->getState().hdg) - ATCConst::AVG_DECLINATION, ATC::Deg));
             flight->setDCT(false);
 
             QString shortEtiquette = flight->getFlightTag()->getTagBox()->getShortEtiquette();

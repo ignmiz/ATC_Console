@@ -98,7 +98,7 @@ void DialogFlight::dialogFlightSetup()
 
     uiInner->tableViewFlights->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-    procedureDelegate = new ATCComboDelegate(airspace, simulation, simulation->getActiveRunways(), uiInner->tableViewFlights);
+    procedureDelegate = new ATCComboDelegate(airspace, simulation, simulation->getActiveRunways(), DelegateLocation::DialogFlight, uiInner->tableViewFlights);
     uiInner->tableViewFlights->setItemDelegate(procedureDelegate);
 
     uiInner->tableViewFlights->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -374,7 +374,7 @@ void DialogFlight::slotEdit(QModelIndex index)
 
 void DialogFlight::on_tableViewFlights_clicked(const QModelIndex &index)
 {
-    if(index.column() == 10)
+    if(index.column() == 2)
     {
         ATCFlight *flight = simulation->getFlight(model->index(index.row(), 1).data().toString());
         flight->slotDisplayRoute();
