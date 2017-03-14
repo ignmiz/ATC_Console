@@ -73,9 +73,10 @@ private:
     void closeDataLogs();
 
     void preallocateTempData();
+    void preallocateTempData(ATCFlight *flight);
 
-    void createClimbProfile();
-    void createDescentProfile();
+    void createClimbProfile(ATCFlight *flight);
+    void createDescentProfile(ATCFlight *flight);
 
     void progressState(GeographicLib::Geodesic &geo);
 

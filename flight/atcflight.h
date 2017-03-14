@@ -133,6 +133,9 @@ public:
 
     void setSimulated(bool flag);
 
+    void setTempFlag(bool flag);
+    bool hasTemp();
+
     QVector<ATCTrailingDot*>& getTrailingDots();
     ATCTrailingDot* getTrailingDot(int i);
     int getTrailingDotsVectorSize();
@@ -189,7 +192,9 @@ private:
     QString squawk;
     QString assignedSquawk;
     State state;
+
     Temp temp;
+    bool allocatedTemp = false;
 
     ATCFlightTag *tag = nullptr;
     ATCRoutePrediction *prediction = nullptr;

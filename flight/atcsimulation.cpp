@@ -143,13 +143,7 @@ void ATCSimulation::slotStartSimulation()
     qint64 diff;
     double counter = 0;
 
-    if(!paused)
-    {
-        preallocateTempData();
-        createClimbProfile();
-        createDescentProfile();
-    }
-
+    preallocateTempData();
     simLoop = true;
 
     if(dataLogged) createDataLogs();
@@ -205,351 +199,352 @@ void ATCSimulation::preallocateTempData()
 {
     for(int i = 0; i < flights.size(); i++)
     {
-        //Assign temporaries
         ATCFlight *flight = flights.at(i);
-        ATCAircraftType *type = flight->getFlightPlan()->getType();
 
-        Temp temp;
-
-        temp.m = ATCMath::randomMass(qFloor(1.2 * type->getMass().min * 1000), qFloor(type->getMass().ref * 1000));
-
-        if(type->getAcType().engineType == ATC::Jet)
+        if(!flight->hasTemp())
         {
-            temp.Cpowred = ATCMath::recalculateReductionFactor(0.15, temp.m, type->getMass().min * 1000, type->getMass().max * 1000);
-        }
-        else if(type->getAcType().engineType == ATC::Turboprop)
-        {
-            temp.Cpowred = ATCMath::recalculateReductionFactor(0.25, temp.m, type->getMass().min * 1000, type->getMass().max * 1000);
-        }
-        else //Piston
-        {
-            temp.Cpowred = ATCMath::recalculateReductionFactor(0, temp.m, type->getMass().min * 1000, type->getMass().max * 1000);
-        }
+            preallocateTempData(flight);
+            createClimbProfile(flight);
+            createDescentProfile(flight);
 
-        temp.vStallCR = ATCMath::recalculateSpeed(type->getAeroCR().V_stall, temp.m, type->getMass().ref * 1000);
-        temp.vStallIC = ATCMath::recalculateSpeed(type->getAeroIC().V_stall, temp.m, type->getMass().ref * 1000);
-        temp.vStallTO = ATCMath::recalculateSpeed(type->getAeroTO().V_stall, temp.m, type->getMass().ref * 1000);
-        temp.vStallAP = ATCMath::recalculateSpeed(type->getAeroAP().V_stall, temp.m, type->getMass().ref * 1000);
-        temp.vStallLD = ATCMath::recalculateSpeed(type->getAeroLD().V_stall, temp.m, type->getMass().ref * 1000);
-
-        temp.xoverAltClbM = ATCMath::crossoverAltitude(ATCMath::kt2mps(type->getVelocity().V_CL2_AV), type->getVelocity().M_CL_AV);
-        temp.xoverAltCrsM = ATCMath::crossoverAltitude(ATCMath::kt2mps(type->getVelocity().V_CR2_AV), type->getVelocity().M_CR_AV);
-        temp.xoverAltDesM = ATCMath::crossoverAltitude(ATCMath::kt2mps(type->getVelocity().V_DS2_AV), type->getVelocity().M_DS_AV);
-
-        if(!flight->getRunwayDestination().isEmpty())
-        {
-            ATCRunway *runway = airspace->findRunway(flight->getFlightPlan()->getRoute().getDestination(), flight->getRunwayDestination());
-
-            if(runway != nullptr)
-            {
-                double thrLat;
-                double thrLon;
-                double azimuth;
-
-                if(flight->getRunwayDestination().left(2).toInt() <= 18)
-                {
-                    thrLat = runway->getStartPoint().latitude();
-                    thrLon = runway->getStartPoint().longitude();
-                    azimuth = runway->getAzimuth();
-                }
-                else
-                {
-                    thrLat = runway->getEndPoint().latitude();
-                    thrLon = runway->getEndPoint().longitude();
-                    azimuth = ATCMath::normalizeAngle(runway->getAzimuth() + ATCConst::PI, ATC::Deg);
-                }
-
-                temp.rwyDesThr = QPair<double, double>(thrLat, thrLon);
-                temp.rwyDesAzimuth = azimuth;
-
-                double rangeLat;
-                double rangeLon;
-                GeographicLib::Rhumb rhumb = GeographicLib::Rhumb::WGS84();
-                rhumb.Direct(thrLat, thrLon, ATCMath::rad2deg(ATCMath::normalizeAngle(azimuth + ATCConst::PI, ATC::Deg)), ATCConst::APP_RANGE, rangeLat, rangeLon);
-                temp.rwyDesAppRange = QPair<double, double>(rangeLat, rangeLon);
-            }
-        }
-
-        flight->setTemp(temp);
-
-        //Assign waypoint coords & index
-        QStringList fixList = flight->getFixList();
-        for(int i = 0; i < fixList.size(); i++)
-        {
-            ATCNavFix *fix = nullptr;
-            ATCBeaconVOR *vor = nullptr;
-            ATCAirport *airport = nullptr;
-            ATCBeaconNDB *ndb = nullptr;
-
-            double lat;
-            double lon;
-
-            double x;
-            double y;
-
-            if((fix = airspace->findFix(fixList.at(i))) != nullptr)
-            {
-                lat = fix->latitude();
-                lon = fix->longitude();
-                x = fix->getScenePosition()->x();
-                y = fix->getScenePosition()->y();
-            }
-            else if((airport = airspace->findAirport(fixList.at(i))) != nullptr)
-            {
-                lat = airport->latitude();
-                lon = airport->longitude();
-                x = airport->getScenePosition()->x();
-                y = airport->getScenePosition()->y();
-            }
-            else if((vor = airspace->findVOR(fixList.at(i))) != nullptr)
-            {
-                lat = vor->latitude();
-                lon = vor->longitude();
-                x = vor->getScenePosition()->x();
-                y = vor->getScenePosition()->y();
-            }
-            else if((ndb = airspace->findNDB(fixList.at(i))) != nullptr)
-            {
-                lat = ndb->latitude();
-                lon = ndb->longitude();
-                x = ndb->getScenePosition()->x();
-                y = ndb->getScenePosition()->y();
-            }
-
-            flight->appendWaypoint(QPair<double, double>(lat, lon));
-            flight->appendProjectedWaypoint(QPair<double, double>(x, y));
-            if(fixList.at(i) == flight->getNextFix())
-            {
-                flight->setWaypointIndex(i);
-                if(!flight->isFinalApp()) flight->setDCT(true);
-            }
-        }
-
-        //Exclude flights that will happen in future
-        if(flight->getSimStartTime() != QTime(0, 0, 0))
-        {
-            emit signalHideFlightTag(flight->getFlightTag());
-            if(flight->getRoutePrediction() != nullptr) emit signalDisplayRoute(flight);
-            flight->setSimulated(false);
+            flight->setTempFlag(true);
         }
     }
 }
 
-void ATCSimulation::createClimbProfile()
+void ATCSimulation::preallocateTempData(ATCFlight *flight)
 {
-    for(int i = 0; i < flights.size(); i++)
+    //Assign temporaries
+    ATCAircraftType *type = flight->getFlightPlan()->getType();
+
+    Temp temp;
+
+    temp.m = ATCMath::randomMass(qFloor(1.2 * type->getMass().min * 1000), qFloor(type->getMass().ref * 1000));
+
+    if(type->getAcType().engineType == ATC::Jet)
     {
-        //Pointer to current flight
-        ATCFlight *current = flights.at(i);
+        temp.Cpowred = ATCMath::recalculateReductionFactor(0.15, temp.m, type->getMass().min * 1000, type->getMass().max * 1000);
+    }
+    else if(type->getAcType().engineType == ATC::Turboprop)
+    {
+        temp.Cpowred = ATCMath::recalculateReductionFactor(0.25, temp.m, type->getMass().min * 1000, type->getMass().max * 1000);
+    }
+    else //Piston
+    {
+        temp.Cpowred = ATCMath::recalculateReductionFactor(0, temp.m, type->getMass().min * 1000, type->getMass().max * 1000);
+    }
 
-        //Create mockup buffer
-        QString unusedBuffer;
+    temp.vStallCR = ATCMath::recalculateSpeed(type->getAeroCR().V_stall, temp.m, type->getMass().ref * 1000);
+    temp.vStallIC = ATCMath::recalculateSpeed(type->getAeroIC().V_stall, temp.m, type->getMass().ref * 1000);
+    temp.vStallTO = ATCMath::recalculateSpeed(type->getAeroTO().V_stall, temp.m, type->getMass().ref * 1000);
+    temp.vStallAP = ATCMath::recalculateSpeed(type->getAeroAP().V_stall, temp.m, type->getMass().ref * 1000);
+    temp.vStallLD = ATCMath::recalculateSpeed(type->getAeroLD().V_stall, temp.m, type->getMass().ref * 1000);
 
-        //Create dummy flight
-        ATCFlight flight;
-        flight.setFlightPlan(new ATCFlightPlan());
+    temp.xoverAltClbM = ATCMath::crossoverAltitude(ATCMath::kt2mps(type->getVelocity().V_CL2_AV), type->getVelocity().M_CL_AV);
+    temp.xoverAltCrsM = ATCMath::crossoverAltitude(ATCMath::kt2mps(type->getVelocity().V_CR2_AV), type->getVelocity().M_CR_AV);
+    temp.xoverAltDesM = ATCMath::crossoverAltitude(ATCMath::kt2mps(type->getVelocity().V_DS2_AV), type->getVelocity().M_DS_AV);
 
-        ATCAircraftType *type = current->getFlightPlan()->getType();
-        flight.getFlightPlan()->setType(type);
+    if(!flight->getRunwayDestination().isEmpty())
+    {
+        ATCRunway *runway = airspace->findRunway(flight->getFlightPlan()->getRoute().getDestination(), flight->getRunwayDestination());
 
-        //Copy temporaries
-        Temp temp;
-
-        temp.m = current->getTemp().m;
-        temp.Cpowred = current->getTemp().Cpowred;
-
-        temp.vStallCR = current->getTemp().vStallCR;
-        temp.vStallIC = current->getTemp().vStallIC;
-        temp.vStallTO = current->getTemp().vStallTO;
-        temp.vStallAP = current->getTemp().vStallAP;
-        temp.vStallLD = current->getTemp().vStallLD;
-
-        temp.xoverAltClbM = current->getTemp().xoverAltClbM;
-        temp.xoverAltCrsM = current->getTemp().xoverAltCrsM;
-        temp.xoverAltDesM = current->getTemp().xoverAltDesM;
-
-        flight.setTemp(temp);
-
-        //Initialize dummy state
-        State state;
-        state.x = 0;
-        state.y = 0;
-        state.h = 0;
-        state.v = ATCConst::C_V_MIN_TO * ATCMath::kt2mps(current->getTemp().vStallTO);
-        state.hdg = ATCMath::deg2rad(90);
-
-        flight.setState(state);
-
-        //Initialize target altitude
-        double targetAlt = type->getEnvelope().h_max;
-        flight.setTargetAltitude("F" + QString::number(qRound(targetAlt / 100)));
-
-        targetAlt = ATCMath::ft2m(targetAlt);
-
-        //Declare vectors for values
-        QVector<double> levels;
-        QVector<double> time;
-        QVector<double> distance;
-
-        //Initialize profile simulation parameters
-        double t = 0;
-        bool maxAlt = false;
-        double altitudeCheckpoint = 0;
-
-        //Perform simplified integration of vertical component
-        while(!maxAlt && (flight.getState().h <= targetAlt))
+        if(runway != nullptr)
         {
-            //Append data points
-            if(flight.getState().h >= altitudeCheckpoint)
-            {
-                levels.append(flight.getState().h);
-                time.append(t);
-                distance.append(flight.getState().x);
+            double thrLat;
+            double thrLon;
+            double azimuth;
 
-                altitudeCheckpoint += ATCConst::PROFILE_ALT_INTERVAL;
+            if(flight->getRunwayDestination().left(2).toInt() <= 18)
+            {
+                thrLat = runway->getStartPoint().latitude();
+                thrLon = runway->getStartPoint().longitude();
+                azimuth = runway->getAzimuth();
+            }
+            else
+            {
+                thrLat = runway->getEndPoint().latitude();
+                thrLon = runway->getEndPoint().longitude();
+                azimuth = ATCMath::normalizeAngle(runway->getAzimuth() + ATCConst::PI, ATC::Deg);
             }
 
-            //Calculate profile
-            ISA isa = calculateEnvironment(&flight, unusedBuffer);
-            assignDiscreteState(&flight, isa, unusedBuffer);
-            assignVerticalProfile(&flight, isa, maxAlt);
+            temp.rwyDesThr = QPair<double, double>(thrLat, thrLon);
+            temp.rwyDesAzimuth = azimuth;
 
-            //Increment time
-            t += ATCConst::DT_COARSE;
+            double rangeLat;
+            double rangeLon;
+            GeographicLib::Rhumb rhumb = GeographicLib::Rhumb::WGS84();
+            rhumb.Direct(thrLat, thrLon, ATCMath::rad2deg(ATCMath::normalizeAngle(azimuth + ATCConst::PI, ATC::Deg)), ATCConst::APP_RANGE, rangeLat, rangeLon);
+            temp.rwyDesAppRange = QPair<double, double>(rangeLat, rangeLon);
+        }
+    }
+
+    flight->setTemp(temp);
+
+    //Assign waypoint coords & index
+    QStringList fixList = flight->getFixList();
+    for(int i = 0; i < fixList.size(); i++)
+    {
+        ATCNavFix *fix = nullptr;
+        ATCBeaconVOR *vor = nullptr;
+        ATCAirport *airport = nullptr;
+        ATCBeaconNDB *ndb = nullptr;
+
+        double lat;
+        double lon;
+
+        double x;
+        double y;
+
+        if((fix = airspace->findFix(fixList.at(i))) != nullptr)
+        {
+            lat = fix->latitude();
+            lon = fix->longitude();
+            x = fix->getScenePosition()->x();
+            y = fix->getScenePosition()->y();
+        }
+        else if((airport = airspace->findAirport(fixList.at(i))) != nullptr)
+        {
+            lat = airport->latitude();
+            lon = airport->longitude();
+            x = airport->getScenePosition()->x();
+            y = airport->getScenePosition()->y();
+        }
+        else if((vor = airspace->findVOR(fixList.at(i))) != nullptr)
+        {
+            lat = vor->latitude();
+            lon = vor->longitude();
+            x = vor->getScenePosition()->x();
+            y = vor->getScenePosition()->y();
+        }
+        else if((ndb = airspace->findNDB(fixList.at(i))) != nullptr)
+        {
+            lat = ndb->latitude();
+            lon = ndb->longitude();
+            x = ndb->getScenePosition()->x();
+            y = ndb->getScenePosition()->y();
         }
 
-        //Append last data points
-        levels.append(flight.getState().h);
-        time.append(t);
-        distance.append(flight.getState().x);
+        flight->appendWaypoint(QPair<double, double>(lat, lon));
+        flight->appendProjectedWaypoint(QPair<double, double>(x, y));
+        if(fixList.at(i) == flight->getNextFix())
+        {
+            flight->setWaypointIndex(i);
+            if(!flight->isFinalApp()) flight->setDCT(true);
+        }
+    }
 
-        //Create ATCProfile, ATCFlight takes ownership
-        ATCProfileClimb *profile = new ATCProfileClimb(levels, time, distance);
-        current->setProfileClimb(profile);
+    //Exclude flights that will happen in future
+    if(flight->getSimStartTime() != QTime(0, 0, 0))
+    {
+        emit signalHideFlightTag(flight->getFlightTag());
+        if(flight->getRoutePrediction() != nullptr) emit signalDisplayRoute(flight);
+        flight->setSimulated(false);
     }
 }
 
-void ATCSimulation::createDescentProfile()
+void ATCSimulation::createClimbProfile(ATCFlight *flight)
 {
-    for(int i = 0; i < flights.size(); i++)
+    //Create mockup buffer
+    QString unusedBuffer;
+
+    //Create dummy flight
+    ATCFlight _flight;
+    _flight.setFlightPlan(new ATCFlightPlan());
+
+    ATCAircraftType *type = flight->getFlightPlan()->getType();
+    _flight.getFlightPlan()->setType(type);
+
+    //Copy temporaries
+    Temp temp;
+
+    temp.m = flight->getTemp().m;
+    temp.Cpowred = flight->getTemp().Cpowred;
+
+    temp.vStallCR = flight->getTemp().vStallCR;
+    temp.vStallIC = flight->getTemp().vStallIC;
+    temp.vStallTO = flight->getTemp().vStallTO;
+    temp.vStallAP = flight->getTemp().vStallAP;
+    temp.vStallLD = flight->getTemp().vStallLD;
+
+    temp.xoverAltClbM = flight->getTemp().xoverAltClbM;
+    temp.xoverAltCrsM = flight->getTemp().xoverAltCrsM;
+    temp.xoverAltDesM = flight->getTemp().xoverAltDesM;
+
+    _flight.setTemp(temp);
+
+    //Initialize dummy state
+    State state;
+    state.x = 0;
+    state.y = 0;
+    state.h = 0;
+    state.v = ATCConst::C_V_MIN_TO * ATCMath::kt2mps(flight->getTemp().vStallTO);
+    state.hdg = ATCMath::deg2rad(90);
+
+    _flight.setState(state);
+
+    //Initialize target altitude
+    double targetAlt = type->getEnvelope().h_max;
+    _flight.setTargetAltitude("F" + QString::number(qRound(targetAlt / 100)));
+
+    targetAlt = ATCMath::ft2m(targetAlt);
+
+    //Declare vectors for values
+    QVector<double> levels;
+    QVector<double> time;
+    QVector<double> distance;
+
+    //Initialize profile simulation parameters
+    double t = 0;
+    bool maxAlt = false;
+    double altitudeCheckpoint = 0;
+
+    //Perform simplified integration of vertical component
+    while(!maxAlt && (_flight.getState().h <= targetAlt))
     {
-        //Pointer to current flight
-        ATCFlight *current = flights.at(i);
-
-        //Create mockup buffer
-        QString unusedBuffer;
-
-        //Create dummy flight
-        ATCFlight flight;
-        flight.setFlightPlan(new ATCFlightPlan());
-
-        ATCAircraftType *type = current->getFlightPlan()->getType();
-        flight.getFlightPlan()->setType(type);
-
-        //Copy temporaries
-        Temp temp;
-
-        temp.m = current->getTemp().m;
-        temp.Cpowred = current->getTemp().Cpowred;
-
-        temp.vStallCR = current->getTemp().vStallCR;
-        temp.vStallIC = current->getTemp().vStallIC;
-        temp.vStallTO = current->getTemp().vStallTO;
-        temp.vStallAP = current->getTemp().vStallAP;
-        temp.vStallLD = current->getTemp().vStallLD;
-
-        temp.xoverAltClbM = current->getTemp().xoverAltClbM;
-        temp.xoverAltCrsM = current->getTemp().xoverAltCrsM;
-        temp.xoverAltDesM = current->getTemp().xoverAltDesM;
-
-        flight.setTemp(temp);
-
-        //Calculate TAS at theoretical ceiling
-        ISA isa = ATCMath::atmosISA(ATCMath::ft2m(type->getEnvelope().h_max));
-
-        double mach = type->getVelocity().M_CR_AV;
-        double cas = type->getVelocity().V_CR2_AV;
-        double tas;
-
-        if(ATCMath::ft2m(type->getEnvelope().h_max) >= temp.xoverAltCrsM)
+        //Append data points
+        if(_flight.getState().h >= altitudeCheckpoint)
         {
-            tas = qFabs(ATCMath::mach2tas(mach, isa.a));
-        }
-        else
-        {
-            tas = qFabs(ATCMath::cas2tas(ATCMath::kt2mps(cas), isa.p, isa.rho));
+            levels.append(_flight.getState().h);
+            time.append(t);
+            distance.append(_flight.getState().x);
+
+            altitudeCheckpoint += ATCConst::PROFILE_ALT_INTERVAL;
         }
 
-        //Initialize dummy state
-        State state;
-        state.x = 0;
-        state.y = 0;
-        state.h = ATCMath::ft2m(type->getEnvelope().h_max);
-        state.v = tas;
-        state.hdg = ATCMath::deg2rad(90);
+        //Calculate profile
+        ISA isa = calculateEnvironment(&_flight, unusedBuffer);
+        assignDiscreteState(&_flight, isa, unusedBuffer);
+        assignVerticalProfile(&_flight, isa, maxAlt);
 
-        flight.setState(state);
-
-        //Initialize target altitude
-        double targetAlt = 0;
-        flight.setTargetAltitude("F000");
-
-        targetAlt = ATCMath::ft2m(targetAlt);
-
-        //Declare temp vectors for values
-        QVector<double> t_levels;
-        QVector<double> t_time;
-        QVector<double> t_distance;
-
-        //Initialize profile simulation parameters
-        double t = 0;
-        bool minAlt = false; //This most likely is irrelevant, since there is sufficient thrust at low levels. Left for unification.
-        double altitudeCheckpoint = state.h;
-
-        //Perform simplified integration of vertical component
-        while(!minAlt && (flight.getState().h >= targetAlt))
-        {
-            //Append data points
-            if(flight.getState().h <= altitudeCheckpoint)
-            {
-                t_levels.append(flight.getState().h);
-                t_time.append(t);
-                t_distance.append(flight.getState().x);
-
-                altitudeCheckpoint -= ATCConst::PROFILE_ALT_INTERVAL;
-            }
-
-            //Calculate profile
-            ISA isa = calculateEnvironment(&flight, unusedBuffer);
-            assignDiscreteState(&flight, isa, unusedBuffer);
-            assignVerticalProfile(&flight, isa, minAlt);
-
-            //Increment time
-            t += ATCConst::DT_COARSE;
-        }
-
-        //Append last data points
-        t_levels.append(flight.getState().h);
-        t_time.append(t);
-        t_distance.append(flight.getState().x);
-
-        //Declare final vectors for valuse
-        QVector<double> levels(t_levels.size());
-        QVector<double> time(t_time.size());
-        QVector<double> distance(t_distance.size());
-
-        //Reverse order of data to comply with ATCInterpolator restrictions
-        for(int j = 0; j < levels.size(); j++)
-        {
-            levels[j] = t_levels.at(t_levels.size() - 1 - j);
-            time[j] = t_time.at(time.size() - 1 - j);
-            distance[j] = t_distance.at(distance.size() - 1 - j);
-        }
-
-        //Create ATCProfile, ATCFlight takes ownership
-        ATCProfileDescent *profile = new ATCProfileDescent(levels, time, distance);
-        current->setProfileDescent(profile);
+        //Increment time
+        t += ATCConst::DT_COARSE;
     }
+
+    //Append last data points
+    levels.append(_flight.getState().h);
+    time.append(t);
+    distance.append(_flight.getState().x);
+
+    //Create ATCProfile, ATCFlight takes ownership
+    ATCProfileClimb *profile = new ATCProfileClimb(levels, time, distance);
+    flight->setProfileClimb(profile);
+}
+
+void ATCSimulation::createDescentProfile(ATCFlight *flight)
+{
+    //Create mockup buffer
+    QString unusedBuffer;
+
+    //Create dummy flight
+    ATCFlight _flight;
+    _flight.setFlightPlan(new ATCFlightPlan());
+
+    ATCAircraftType *type = flight->getFlightPlan()->getType();
+    _flight.getFlightPlan()->setType(type);
+
+    //Copy temporaries
+    Temp temp;
+
+    temp.m = flight->getTemp().m;
+    temp.Cpowred = flight->getTemp().Cpowred;
+
+    temp.vStallCR = flight->getTemp().vStallCR;
+    temp.vStallIC = flight->getTemp().vStallIC;
+    temp.vStallTO = flight->getTemp().vStallTO;
+    temp.vStallAP = flight->getTemp().vStallAP;
+    temp.vStallLD = flight->getTemp().vStallLD;
+
+    temp.xoverAltClbM = flight->getTemp().xoverAltClbM;
+    temp.xoverAltCrsM = flight->getTemp().xoverAltCrsM;
+    temp.xoverAltDesM = flight->getTemp().xoverAltDesM;
+
+    _flight.setTemp(temp);
+
+    //Calculate TAS at theoretical ceiling
+    ISA isa = ATCMath::atmosISA(ATCMath::ft2m(type->getEnvelope().h_max));
+
+    double mach = type->getVelocity().M_CR_AV;
+    double cas = type->getVelocity().V_CR2_AV;
+    double tas;
+
+    if(ATCMath::ft2m(type->getEnvelope().h_max) >= temp.xoverAltCrsM)
+    {
+        tas = qFabs(ATCMath::mach2tas(mach, isa.a));
+    }
+    else
+    {
+        tas = qFabs(ATCMath::cas2tas(ATCMath::kt2mps(cas), isa.p, isa.rho));
+    }
+
+    //Initialize dummy state
+    State state;
+    state.x = 0;
+    state.y = 0;
+    state.h = ATCMath::ft2m(type->getEnvelope().h_max);
+    state.v = tas;
+    state.hdg = ATCMath::deg2rad(90);
+
+    _flight.setState(state);
+
+    //Initialize target altitude
+    double targetAlt = 0;
+    _flight.setTargetAltitude("F000");
+
+    targetAlt = ATCMath::ft2m(targetAlt);
+
+    //Declare temp vectors for values
+    QVector<double> t_levels;
+    QVector<double> t_time;
+    QVector<double> t_distance;
+
+    //Initialize profile simulation parameters
+    double t = 0;
+    bool minAlt = false; //This most likely is irrelevant, since there is sufficient thrust at low levels. Left for unification.
+    double altitudeCheckpoint = state.h;
+
+    //Perform simplified integration of vertical component
+    while(!minAlt && (_flight.getState().h >= targetAlt))
+    {
+        //Append data points
+        if(_flight.getState().h <= altitudeCheckpoint)
+        {
+            t_levels.append(_flight.getState().h);
+            t_time.append(t);
+            t_distance.append(_flight.getState().x);
+
+            altitudeCheckpoint -= ATCConst::PROFILE_ALT_INTERVAL;
+        }
+
+        //Calculate profile
+        ISA isa = calculateEnvironment(&_flight, unusedBuffer);
+        assignDiscreteState(&_flight, isa, unusedBuffer);
+        assignVerticalProfile(&_flight, isa, minAlt);
+
+        //Increment time
+        t += ATCConst::DT_COARSE;
+    }
+
+    //Append last data points
+    t_levels.append(_flight.getState().h);
+    t_time.append(t);
+    t_distance.append(_flight.getState().x);
+
+    //Declare final vectors for valuse
+    QVector<double> levels(t_levels.size());
+    QVector<double> time(t_time.size());
+    QVector<double> distance(t_distance.size());
+
+    //Reverse order of data to comply with ATCInterpolator restrictions
+    for(int j = 0; j < levels.size(); j++)
+    {
+        levels[j] = t_levels.at(t_levels.size() - 1 - j);
+        time[j] = t_time.at(time.size() - 1 - j);
+        distance[j] = t_distance.at(distance.size() - 1 - j);
+    }
+
+    //Create ATCProfile, ATCFlight takes ownership
+    ATCProfileDescent *profile = new ATCProfileDescent(levels, time, distance);
+    flight->setProfileDescent(profile);
 }
 
 void ATCSimulation::progressState(GeographicLib::Geodesic &geo)

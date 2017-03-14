@@ -340,6 +340,16 @@ void ATCFlight::setSimulated(bool flag)
     simulated = flag;
 }
 
+void ATCFlight::setTempFlag(bool flag)
+{
+    allocatedTemp = flag;
+}
+
+bool ATCFlight::hasTemp()
+{
+    return allocatedTemp;
+}
+
 QVector<ATCTrailingDot*> &ATCFlight::getTrailingDots()
 {
     return trailingDots;
