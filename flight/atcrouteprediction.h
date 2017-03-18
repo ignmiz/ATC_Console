@@ -4,12 +4,19 @@
 #include <QGraphicsItem>
 #include <QString>
 
+enum class PredictionType
+{
+    FixNames, FixETA, FixLevels
+};
 
 class ATCRoutePrediction
 {
 public:
     explicit ATCRoutePrediction();
     ~ATCRoutePrediction();
+
+    PredictionType getPredictionType();
+    void setPredictionType(PredictionType flag);
 
     QGraphicsPathItem* getPolygon();
     QVector<QGraphicsSimpleTextItem*>& getLabels();
@@ -21,8 +28,12 @@ public:
     void showRoute();
 
 private:
+    PredictionType type = PredictionType::FixNames;
+
     QGraphicsPathItem *polygon = nullptr;
     QVector<QGraphicsSimpleTextItem*> labels;
+
+
 };
 
 #endif // ATCROUTEPREDICTION_H

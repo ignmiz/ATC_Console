@@ -16,6 +16,16 @@ ATCRoutePrediction::~ATCRoutePrediction()
     labels.clear();
 }
 
+PredictionType ATCRoutePrediction::getPredictionType()
+{
+    return type;
+}
+
+void ATCRoutePrediction::setPredictionType(PredictionType flag)
+{
+    type = flag;
+}
+
 QGraphicsPathItem *ATCRoutePrediction::getPolygon()
 {
     return polygon;
