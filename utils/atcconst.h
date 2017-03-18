@@ -39,6 +39,7 @@ public:
     static const double DT;
     static const double DT_COARSE;
     static const double REFRESH_INTERVAL;
+    static const double PREDICTION_INTERVAL;
 
     static const double k1;
     static const double k2;

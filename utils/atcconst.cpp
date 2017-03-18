@@ -36,6 +36,7 @@ const double ATCConst::SECTOR_SHRINK_FACTOR = 2;
 const double ATCConst::DT = 0.1;
 const double ATCConst::DT_COARSE = 0.5;
 const double ATCConst::REFRESH_INTERVAL = 5;
+const double ATCConst::PREDICTION_INTERVAL = 10;
 
 const double ATCConst::k1 = 0.005;
 const double ATCConst::k2 = -33;
@@ -67,7 +68,6 @@ const double ATCConst::g0 = 9.80665;
 const double ATCConst::ACC_LONG_MAX = 2;    //ftps^2
 const double ATCConst::ACC_NORM_MAX = 5;    //ftps^2
 
-//const double ATCConst::NOM_BANK_ANGLE = ATCMath::deg2rad(30);
 const double ATCConst::NOM_BANK_ANGLE = 30;
 
 const double ATCConst::C_DES_EXP = 1.6;
