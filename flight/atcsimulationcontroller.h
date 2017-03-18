@@ -18,7 +18,7 @@ public:
     void stop();
 
 private:
-    QThread *simulationThread;
+    QThread *simulationThread = nullptr;
     ATCSimulation *simulation;
 };
 
