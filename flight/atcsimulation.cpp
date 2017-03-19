@@ -60,6 +60,11 @@ int ATCSimulation::getFlightsVectorSize()
     return flights.size();
 }
 
+int ATCSimulation::getActiveCount()
+{
+    return activeCount;
+}
+
 bool ATCSimulation::isPaused()
 {
     return paused;
@@ -174,6 +179,19 @@ void ATCSimulation::slotStartSimulation()
 void ATCSimulation::slotStopSimulation()
 {
     simLoop = false;
+}
+
+void ATCSimulation::setActiveFlightsCount()
+{
+    activeCount = 0;
+
+    for(int i = 0; i < flights.size(); i++)
+    {
+        if(flights.at(i)->isSimulated())
+        {
+            activeCount++;
+        }
+    }
 }
 
 void ATCSimulation::createDataLogs()
@@ -573,6 +591,7 @@ void ATCSimulation::progressState(GeographicLib::Geodesic &geo)
                 flight->setSimStartTime(QTime(0, 0, 0));
 
                 updateList = true;
+                activeCount++;
             }
         }
 

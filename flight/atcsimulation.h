@@ -27,6 +27,8 @@ public:
     QVector<ATCFlight*>& getFlightsVector();
     int getFlightsVectorSize();
 
+    int getActiveCount();
+
     bool isPaused();
     void setPaused(bool flag);
 
@@ -68,6 +70,10 @@ private:
     double timeLog;
     bool dataLogged = false;
     QString dataLoggedPath;
+
+    int activeCount = 0;
+
+    void setActiveFlightsCount();
 
     void createDataLogs();
     void closeDataLogs();

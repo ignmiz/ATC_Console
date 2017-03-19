@@ -24,8 +24,6 @@
 #include "atcflightfactory.h"
 #include "atcsimulation.h"
 #include "atcsimulationcontroller.h"
-#include "atcpredictor.h"
-#include "atcpredictorcontroller.h"
 #include "atcmath.h"
 
 namespace Ui {
@@ -127,8 +125,6 @@ private:
     ATCSimulation *simulation = nullptr;
     ATCSimulation *tempSimulation = nullptr;
     ATCSimulationController *simController = nullptr;
-    ATCPredictor *predictor = nullptr;
-    ATCPredictorController *predictorController = nullptr;
 
     QString simulationPath;
     QTime simulationTime;

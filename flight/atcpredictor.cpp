@@ -11,32 +11,68 @@ ATCPredictor::~ATCPredictor()
 
 }
 
+void ATCPredictor::setMutex(QSharedPointer<QMutex> m)
+{
+    mutex = m;
+}
+
+void ATCPredictor::slotSimulationStatus(int total, int active)
+{
+    totalFlights = total;
+    activeFlights = active;
+}
+
 void ATCPredictor::slotStartPredictor()
 {
+//    QThread::msleep(7500);
+
+    mutex->lock();
     QElapsedTimer timer;
     predLoop = true;
 
+    bool updateCounter = true;
+    mutex->unlock();
+
     while(predLoop)
     {
-        timer.start();
-        int flightsVectorSize = simulation->getFlightsVectorSize();
+        mutex->tryLock();
+        if(updateCounter) timer.start();
 
-        if(flightIterator < flightsVectorSize)
+        if(flightIterator < totalFlights)
         {
-            for(int ii = 0; ii < 50000; ii++); //Random dummy task
+            ATCFlight *flight = simulation->getFlight(flightIterator);
+            qDebug() << flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber();
 
-            flightIterator++;
+            if(flight->isSimulated())
+            {
+                for(int ii = 0; ii < 50000; ii++); //Random dummy task
 
-            qint64 dt = qRound(ATCConst::PREDICTION_INTERVAL / flightsVectorSize * 1e9);
-            qint64 elapsedTime = timer.nsecsElapsed();
-            qint64 diff = dt - elapsedTime;
+                flightIterator++;
+                updateCounter = true;
 
-            qDebug() << "Iterator: " << flightIterator - 1 << "\t|\tElapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
-            QThread::usleep(qFloor(diff / 1000));
+                qint64 dt = qRound(ATCConst::PREDICTION_INTERVAL / 2 * 1e9); //Problems with simulation->getActiveCount
+                qint64 elapsedTime = timer.nsecsElapsed();
+                qint64 diff = dt - elapsedTime;
+
+                qDebug() << dt;
+                qDebug() << elapsedTime;
+                qDebug() << qFloor(diff / 1000);
+
+                qDebug() << "Iterator: " << flightIterator - 1 << "\t|\tElapsed: " << elapsedTime << "ns\t|\tDiff: " << diff << "ns\t|\tError: " << dt - (elapsedTime + qFloor(diff/1000) * 1000) << "ns";
+
+                mutex->unlock();
+                QThread::usleep(qFloor(diff / 1000));
+            }
+            else
+            {
+                flightIterator++;
+                updateCounter = false;
+            }
         }
         else
         {
             flightIterator = 0;
+            updateCounter = false;
         }
     }
 }

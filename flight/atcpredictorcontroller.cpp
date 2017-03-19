@@ -6,7 +6,6 @@ ATCPredictorController::ATCPredictorController(ATCPredictor *pred) :
     predictorThread(new QThread(this))
 {
     predictor->moveToThread(predictorThread);
-    connect(predictorThread, SIGNAL(started()), predictor, SLOT(slotStartPredictor()));
 }
 
 ATCPredictorController::~ATCPredictorController()
@@ -23,7 +22,7 @@ ATCPredictorController::~ATCPredictorController()
 
 void ATCPredictorController::start()
 {
-    predictorThread->start(QThread::NormalPriority);
+    predictorThread->start(QThread::HighPriority);
 }
 
 void ATCPredictorController::stop()

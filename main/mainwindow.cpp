@@ -27,19 +27,6 @@ MainWindow::MainWindow(ATCFlightFactory *flightFactory, QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    if(predictorController != nullptr)
-    {
-        predictorController->stop();
-        delete predictorController;
-
-        predictor->moveToThread(QThread::currentThread());
-        delete predictor;
-    }
-    else if(predictor != nullptr)
-    {
-        delete predictor;
-    }
-
     if(simController != nullptr)
     {
         simController->stop();
@@ -823,11 +810,6 @@ void MainWindow::slotStartSimulation()
         simController = new ATCSimulationController(simulation);
         simController->start();
 
-        //Prepare predictor & predictor controller
-        if(!simulation->isPaused()) predictor = new ATCPredictor(simulation);
-        predictorController = new ATCPredictorController(predictor);
-        predictorController->start();
-
         //If paused continue the clock
         if(simulation->isPaused()) ui->buttonTime->start();
 
@@ -846,17 +828,6 @@ void MainWindow::slotStartSimulation()
 
 void MainWindow::slotPauseSimulation()
 {
-    if(predictorController != nullptr)
-    {
-        //Stop predictor controller and move predictor to GUI thread
-        predictorController->stop();
-
-        delete predictorController;
-        predictorController = nullptr;
-
-        predictor->moveToThread(QThread::currentThread());
-    }
-
     if(simController != nullptr)
     {
         //Set paused flag
@@ -889,25 +860,6 @@ void MainWindow::slotStopSimulation()
     //Reset clock to current time
     ui->buttonTime->getTime()->start();
     ui->buttonTime->start();
-
-    //Cleanup predictor controller & predictor
-    if(predictorController != nullptr)
-    {
-        predictorController->stop();
-
-        delete predictorController;
-        predictorController = nullptr;
-
-        predictor->moveToThread(QThread::currentThread());
-
-        delete predictor;
-        predictor = nullptr;
-    }
-    else if(simulation->isPaused())
-    {
-        delete predictor;
-        predictor = nullptr;
-    }
 
     //Cleanup simulation controller & simulation
     if(simController != nullptr)
