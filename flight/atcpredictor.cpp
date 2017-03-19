@@ -50,7 +50,7 @@ void ATCPredictor::slotStartPredictor()
                 flightIterator++;
                 updateCounter = true;
 
-                qint64 dt = qRound(ATCConst::PREDICTION_INTERVAL / 2 * 1e9); //Problems with simulation->getActiveCount
+                qint64 dt = qRound(ATCConst::TOTAL_PREDICTION_INTERVAL / 2 * 1e9); //Problems with simulation->getActiveCount
                 qint64 elapsedTime = timer.nsecsElapsed();
                 qint64 diff = dt - elapsedTime;
 

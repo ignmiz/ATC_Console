@@ -71,9 +71,17 @@ private:
     bool dataLogged = false;
     QString dataLoggedPath;
 
+    double sweepCounter = 0;
+
     int activeCount = 0;
+    int predictorIterator = 0;
+    int predictorCycles = 1;
+    double predictorCounter = 0;
+    double predictorInterval;
 
     void setActiveFlightsCount();
+    void calculatePredictorInterval();
+    void calculatePredictorCycles();
 
     void createDataLogs();
     void closeDataLogs();
@@ -90,9 +98,12 @@ private:
     void assignDiscreteState(ATCFlight *flight, ISA &isa, QString &buffer);
     void assignContinuousState(ATCFlight *flight, ISA &isa, GeographicLib::Geodesic &geo, int flightIndex, QString &buffer);
     void assignVerticalProfile(ATCFlight *flight, ISA &isa, bool &maxAlt);
+
+    void predictTrajectories();
     void flightsCleanup();
 
-    void incrementUpdateCounter(double &counter);
+    void incrementSweepCounter();
+    void incrementPredictorCounter();
 
     void appendToLogBuffer(QString &buffer, QString data);
 

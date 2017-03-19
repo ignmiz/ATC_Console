@@ -146,16 +146,21 @@ void ATCSimulation::slotStartSimulation()
 
     qint64 elapsedTime;
     qint64 diff;
-    double counter = 0;
 
     preallocateTempData();
-    simLoop = true;
+
+    setActiveFlightsCount();
+    calculatePredictorInterval();
+    calculatePredictorCycles();
 
     if(dataLogged) createDataLogs();
 
     emit signalUpdateFlightList();
     if(!paused) emit signalSetSimulationStartTime();
+
     setPaused(false);
+
+    simLoop = true;
 
     globalTimer.start();
     while(simLoop)
@@ -164,7 +169,9 @@ void ATCSimulation::slotStartSimulation()
 
         progressState(geo);
         flightsCleanup();
-        incrementUpdateCounter(counter);
+
+        incrementSweepCounter();
+        incrementPredictorCounter();
 
         elapsedTime = timer.nsecsElapsed();
         diff = dt - elapsedTime;
@@ -192,6 +199,17 @@ void ATCSimulation::setActiveFlightsCount()
             activeCount++;
         }
     }
+}
+
+void ATCSimulation::calculatePredictorInterval()
+{
+    predictorInterval = qFloor((ATCConst::TOTAL_PREDICTION_INTERVAL / activeCount) / ATCConst::DT) * ATCConst::DT;
+}
+
+void ATCSimulation::calculatePredictorCycles()
+{
+    int maxPredictorVolume = qFloor(ATCConst::TOTAL_PREDICTION_INTERVAL / ATCConst::DT);
+    predictorCycles = qFloor(activeCount / maxPredictorVolume) + 1;
 }
 
 void ATCSimulation::createDataLogs()
@@ -591,7 +609,10 @@ void ATCSimulation::progressState(GeographicLib::Geodesic &geo)
                 flight->setSimStartTime(QTime(0, 0, 0));
 
                 updateList = true;
+
                 activeCount++;
+                calculatePredictorInterval();
+                calculatePredictorCycles();
             }
         }
 
@@ -1116,6 +1137,38 @@ void ATCSimulation::assignVerticalProfile(ATCFlight *flight, ISA &isa, bool &max
     flight->setState(state);
 }
 
+void ATCSimulation::predictTrajectories()
+{
+    for(int i = 0; i < predictorCycles; i++)
+    {
+        while(true)
+        {
+            if(predictorIterator < flights.size())
+            {
+                ATCFlight *flight = flights.at(predictorIterator);
+
+                if(flight->isSimulated())
+                {
+                    //Predict trajectory
+                    for(int ii = 0; ii < 50000; ii++);
+                    qDebug() << "Iterator: " << predictorIterator << ", flight: " << flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber();
+
+                    predictorIterator++;
+                    break;
+                }
+                else
+                {
+                    predictorIterator++;
+                }
+            }
+            else
+            {
+                predictorIterator = 0;
+            }
+        }
+    }
+}
+
 void ATCSimulation::flightsCleanup()
 {
     if(!cleanupIndices.isEmpty())
@@ -1124,6 +1177,15 @@ void ATCSimulation::flightsCleanup()
         {
             delete flights.at(cleanupIndices.at(i));
             flights.remove(cleanupIndices.at(i));
+
+            activeCount--;
+            if(cleanupIndices.at(i) < predictorIterator) predictorIterator--;
+        }
+
+        if(activeCount != 0)
+        {
+            calculatePredictorInterval();
+            calculatePredictorCycles();
         }
 
         cleanupIndices.clear();
@@ -1131,14 +1193,34 @@ void ATCSimulation::flightsCleanup()
     }
 }
 
-void ATCSimulation::incrementUpdateCounter(double &counter)
+void ATCSimulation::incrementSweepCounter()
 {
-    counter += ATCConst::DT;
-    if(counter >= ATCConst::REFRESH_INTERVAL)
+    sweepCounter += ATCConst::DT;
+    if(sweepCounter >= ATCConst::SWEEP_INTERVAL)
     {
-        counter = 0;
+        sweepCounter = 0;
         emit signalUpdateTags();
     }
+}
+
+void ATCSimulation::incrementPredictorCounter()
+{
+    if(activeCount != 0)
+    {
+        qDebug() << predictorCounter << predictorInterval;
+        predictorCounter += ATCConst::DT;
+
+        if(predictorCounter >= predictorInterval)
+        {
+            predictorCounter = 0;
+            predictTrajectories();
+        }
+    }
+    else
+    {
+        predictorCounter = 0;
+    }
+
 }
 
 void ATCSimulation::appendToLogBuffer(QString &buffer, QString data)
