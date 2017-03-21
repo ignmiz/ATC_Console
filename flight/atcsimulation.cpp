@@ -809,6 +809,18 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
             }
         }
 
+        //Calculate distance to go
+        double distanceToGo = dstToNext;
+        if((waypointIndex < flight->getLegDistanceVectorSize()) && (waypointIndex != -1))
+        {
+            for(int i = waypointIndex; i < flight->getLegDistanceVectorSize(); i++)
+            {
+                distanceToGo = distanceToGo + flight->getLegDistance(i);
+            }
+        }
+
+        flight->setDistanceToGo(distanceToGo);
+
         bool alreadyOnAppPath = false;
         double dstThrToIntersect;
         if(flight->isCldFinalApp())
@@ -1176,7 +1188,7 @@ void ATCSimulation::predictTrajectories()
                 {
                     //Predict trajectory
                     for(int ii = 0; ii < 50000; ii++);
-                    qDebug() << "Iterator: " << predictorIterator << ", flight: " << flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber();
+//                    qDebug() << "Iterator: " << predictorIterator << ", flight: " << flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber();
 
                     predictorIterator++;
                     break;
@@ -1232,9 +1244,7 @@ void ATCSimulation::incrementPredictorCounter()
 {
     if(activeCount != 0)
     {
-        qDebug() << predictorCounter << predictorInterval;
         predictorCounter += ATCConst::DT;
-
         if(predictorCounter >= predictorInterval)
         {
             predictorCounter = 0;

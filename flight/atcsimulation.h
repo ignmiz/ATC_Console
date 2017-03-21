@@ -107,7 +107,6 @@ private:
     void incrementPredictorCounter();
 
     void appendToLogBuffer(QString &buffer, QString data);
-
 };
 
 #endif // ATCSIMULATION_H
