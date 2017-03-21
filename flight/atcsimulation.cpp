@@ -369,6 +369,31 @@ void ATCSimulation::preallocateTempData(ATCFlight *flight)
         }
     }
 
+    //Assign leg distances and angle changes
+    double previousForwardAzimuth;
+
+    for(int i = 0; i < flight->getWaypointsVectorSize() - 1; i++)
+    {
+        GeographicLib::Geodesic geo = GeographicLib::Geodesic::WGS84();
+
+        QPair<double, double> fix1 = flight->getWaypoint(i);
+        QPair<double, double> fix2 = flight->getWaypoint(i + 1);
+
+        double distance;
+        double azimuth1to2;
+        double azimuth2to1;
+        geo.Inverse(fix1.first, fix1.second, fix2.first, fix2.second, distance, azimuth1to2, azimuth2to1);
+
+        if(i != 0)
+        {
+            double hdgChange = ATCMath::normalizeHdgChange(ATCMath::deg2rad(azimuth1to2 - previousForwardAzimuth));
+            flight->appendLegAngleChange(hdgChange);
+        }
+
+        previousForwardAzimuth = azimuth2to1;
+        flight->appendLegDistance(distance);
+    }
+
     //Exclude flights that will happen in future
     if(flight->getSimStartTime() != QTime(0, 0, 0))
     {

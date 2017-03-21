@@ -100,6 +100,7 @@ private:
     void assignVerticalProfile(ATCFlight *flight, ISA &isa, bool &maxAlt);
 
     void predictTrajectories();
+
     void flightsCleanup();
 
     void incrementSweepCounter();
