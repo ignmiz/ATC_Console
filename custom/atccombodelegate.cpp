@@ -289,6 +289,34 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
                 else if(i == fixList.size() - 1) flight->setWaypointIndex(-1);
             }
 
+            //Assign leg distances and angle changes
+            flight->clearLegAngleChanges();
+            flight->clearLegDistances();
+
+            double previousForwardAzimuth;
+
+            for(int i = 0; i < flight->getWaypointsVectorSize() - 1; i++)
+            {
+                GeographicLib::Geodesic geo = GeographicLib::Geodesic::WGS84();
+
+                QPair<double, double> fix1 = flight->getWaypoint(i);
+                QPair<double, double> fix2 = flight->getWaypoint(i + 1);
+
+                double distance;
+                double azimuth1to2;
+                double azimuth2to1;
+                geo.Inverse(fix1.first, fix1.second, fix2.first, fix2.second, distance, azimuth1to2, azimuth2to1);
+
+                if(i != 0)
+                {
+                    double hdgChange = ATCMath::normalizeHdgChange(ATCMath::deg2rad(azimuth1to2 - previousForwardAzimuth));
+                    flight->appendLegAngleChange(hdgChange);
+                }
+
+                previousForwardAzimuth = azimuth2to1;
+                flight->appendLegDistance(distance);
+            }
+
             //Check if waypoint index found. If not, change mode to heading & update tag
             if(flight->getWaypointIndex() == -1)
             {
@@ -446,6 +474,34 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
                     flight->setWaypointIndex(i);
                 }
                 else if(i == fixList.size() - 1) flight->setWaypointIndex(-1);
+            }
+
+            //Assign leg distances and angle changes
+            flight->clearLegAngleChanges();
+            flight->clearLegDistances();
+
+            double previousForwardAzimuth;
+
+            for(int i = 0; i < flight->getWaypointsVectorSize() - 1; i++)
+            {
+                GeographicLib::Geodesic geo = GeographicLib::Geodesic::WGS84();
+
+                QPair<double, double> fix1 = flight->getWaypoint(i);
+                QPair<double, double> fix2 = flight->getWaypoint(i + 1);
+
+                double distance;
+                double azimuth1to2;
+                double azimuth2to1;
+                geo.Inverse(fix1.first, fix1.second, fix2.first, fix2.second, distance, azimuth1to2, azimuth2to1);
+
+                if(i != 0)
+                {
+                    double hdgChange = ATCMath::normalizeHdgChange(ATCMath::deg2rad(azimuth1to2 - previousForwardAzimuth));
+                    flight->appendLegAngleChange(hdgChange);
+                }
+
+                previousForwardAzimuth = azimuth2to1;
+                flight->appendLegDistance(distance);
             }
 
             //Check if waypoint index found. If not, change mode to heading & update tag
@@ -673,6 +729,34 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
                 else if(i == fixList.size() - 1) flight->setWaypointIndex(-1);
             }
 
+            //Assign leg distances and angle changes
+            flight->clearLegAngleChanges();
+            flight->clearLegDistances();
+
+            double previousForwardAzimuth;
+
+            for(int i = 0; i < flight->getWaypointsVectorSize() - 1; i++)
+            {
+                GeographicLib::Geodesic geo = GeographicLib::Geodesic::WGS84();
+
+                QPair<double, double> fix1 = flight->getWaypoint(i);
+                QPair<double, double> fix2 = flight->getWaypoint(i + 1);
+
+                double distance;
+                double azimuth1to2;
+                double azimuth2to1;
+                geo.Inverse(fix1.first, fix1.second, fix2.first, fix2.second, distance, azimuth1to2, azimuth2to1);
+
+                if(i != 0)
+                {
+                    double hdgChange = ATCMath::normalizeHdgChange(ATCMath::deg2rad(azimuth1to2 - previousForwardAzimuth));
+                    flight->appendLegAngleChange(hdgChange);
+                }
+
+                previousForwardAzimuth = azimuth2to1;
+                flight->appendLegDistance(distance);
+            }
+
             //Check if waypoint index found. If not, change mode to heading & update tag
             if(flight->getWaypointIndex() == -1)
             {
@@ -830,6 +914,34 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
                     flight->setWaypointIndex(i);
                 }
                 else if(i == fixList.size() - 1) flight->setWaypointIndex(-1);
+            }
+
+            //Assign leg distances and angle changes
+            flight->clearLegAngleChanges();
+            flight->clearLegDistances();
+
+            double previousForwardAzimuth;
+
+            for(int i = 0; i < flight->getWaypointsVectorSize() - 1; i++)
+            {
+                GeographicLib::Geodesic geo = GeographicLib::Geodesic::WGS84();
+
+                QPair<double, double> fix1 = flight->getWaypoint(i);
+                QPair<double, double> fix2 = flight->getWaypoint(i + 1);
+
+                double distance;
+                double azimuth1to2;
+                double azimuth2to1;
+                geo.Inverse(fix1.first, fix1.second, fix2.first, fix2.second, distance, azimuth1to2, azimuth2to1);
+
+                if(i != 0)
+                {
+                    double hdgChange = ATCMath::normalizeHdgChange(ATCMath::deg2rad(azimuth1to2 - previousForwardAzimuth));
+                    flight->appendLegAngleChange(hdgChange);
+                }
+
+                previousForwardAzimuth = azimuth2to1;
+                flight->appendLegDistance(distance);
             }
 
             //Check if waypoint index found. If not, change mode to heading & update tag

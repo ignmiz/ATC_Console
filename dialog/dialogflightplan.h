@@ -24,6 +24,7 @@ public:
 
 signals:
     void signalUpdateRoute(ATCFlight *flight);
+    void signalUpdateFlightList();
 
 private slots:
     ATC_MOUSE_HANDLER

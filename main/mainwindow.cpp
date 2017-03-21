@@ -330,6 +330,7 @@ void MainWindow::slotCreateDialogFlightPlan(ATCFlight *flight)
 
         connect(dialogFlightPlan, SIGNAL(closed()), this, SLOT(slotCloseDialogFlightPlan()));
         connect(dialogFlightPlan, SIGNAL(signalUpdateRoute(ATCFlight*)), ui->situationalDisplay, SLOT(slotUpdateRoute(ATCFlight*)));
+        if(dialogFlightList != nullptr) connect(dialogFlightPlan, SIGNAL(signalUpdateFlightList()), dialogFlightList, SLOT(slotUpdateFlightList()));
     }
 }
 

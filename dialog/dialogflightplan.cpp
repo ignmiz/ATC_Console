@@ -615,6 +615,34 @@ void DialogFlightPlan::on_buttonOK_clicked()
             else if(i == fixList.size() - 1) flight->setWaypointIndex(-1);
         }
 
+        //Assign leg distances and angle changes
+        flight->clearLegAngleChanges();
+        flight->clearLegDistances();
+
+        double previousForwardAzimuth;
+
+        for(int i = 0; i < flight->getWaypointsVectorSize() - 1; i++)
+        {
+            GeographicLib::Geodesic geo = GeographicLib::Geodesic::WGS84();
+
+            QPair<double, double> fix1 = flight->getWaypoint(i);
+            QPair<double, double> fix2 = flight->getWaypoint(i + 1);
+
+            double distance;
+            double azimuth1to2;
+            double azimuth2to1;
+            geo.Inverse(fix1.first, fix1.second, fix2.first, fix2.second, distance, azimuth1to2, azimuth2to1);
+
+            if(i != 0)
+            {
+                double hdgChange = ATCMath::normalizeHdgChange(ATCMath::deg2rad(azimuth1to2 - previousForwardAzimuth));
+                flight->appendLegAngleChange(hdgChange);
+            }
+
+            previousForwardAzimuth = azimuth2to1;
+            flight->appendLegDistance(distance);
+        }
+
         //Check if waypoint index found. If not, change mode to heading & update tag
         if(flight->getWaypointIndex() == -1)
         {
@@ -673,7 +701,6 @@ void DialogFlightPlan::on_buttonOK_clicked()
                 flight->setFinalApp(false);
                 flight->setGlidePath(false);
             }
-
         }
 
         //Flight - main fix list
@@ -689,6 +716,20 @@ void DialogFlightPlan::on_buttonOK_clicked()
 
         //Assign assigned SSR
         flight->setAssignedSquawk(uiInner->lineEditSquawk->text());
+
+        //Assign departure & destination runway
+        QVector<ActiveAirport> activeAirports = simulation->getActiveRunways()->getActiveAirports();
+
+        flight->setRunwayDeparture("");
+        flight->setRunwayDestination("");
+
+        for(int i = 0; i < activeAirports.size(); i++)
+        {
+            ActiveAirport current = activeAirports.at(i);
+
+            if((departure == current.airportCode) && (!current.depRwys.isEmpty())) flight->setRunwayDeparture(current.depRwys.at(0));
+            if((destination == current.airportCode) && (!current.arrRwys.isEmpty())) flight->setRunwayDestination(current.arrRwys.at(0));
+        }
 
         //Modify callsign on data tag
         QString shortEtiquette = flight->getFlightTag()->getTagBox()->getShortEtiquette();
@@ -719,6 +760,7 @@ void DialogFlightPlan::on_buttonOK_clicked()
         }
 
         if(flight->getRoutePrediction() != nullptr) emit signalUpdateRoute(flight);
+        emit signalUpdateFlightList();
         emit closed();
         close();
     }
