@@ -327,42 +327,42 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
                 QString shortEtiquette = flight->getFlightTag()->getTagBox()->getShortEtiquette();
                 QString longEtiquette = flight->getFlightTag()->getTagBox()->getLongEtiquette();
 
-                QString headingString = QString::number(flight->getHdgRestriction());
+                QString headingString;
+                if(flight->getHdgRestriction() < 10)
+                {
+                    headingString = "00" + QString::number(flight->getHdgRestriction());
+                }
+                else if(flight->getHdgRestriction() < 100)
+                {
+                    headingString = "0" + QString::number(flight->getHdgRestriction());
+                }
+                else
+                {
+                    headingString = QString::number(flight->getHdgRestriction());
+                }
+
                 for(int i = 0; i < headingString.size(); i++)
                 {
                     longEtiquette[i + 39] = headingString.at(i);
                 }
 
+                for(int i = 0; i < 5; i++)
+                {
+                    shortEtiquette[i + 24] = QChar(' ');
+                    longEtiquette[i + 24] = QChar(' ');
+                }
+
                 if(flight->getFlightTag()->getTagType() == ATC::Short)
                 {
-                    for(int i = 0; i < 5; i++)
-                    {
-                        shortEtiquette[i + 24] = QChar(' ');
-                        longEtiquette[i + 24] = QChar(' ');
-                    }
-
                     flight->getFlightTag()->getTagBox()->setShortEtiquette(shortEtiquette);
                     flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
 
                     flight->getFlightTag()->getTagBox()->rectShort2Long();
                     flight->getFlightTag()->setTagType(ATC::Full);
                     flight->getFlightTag()->getTagBox()->setLong();
-
-                    flight->setNavMode(ATC::Hdg);
                 }
                 else
                 {
-                    if(flight->getNavMode() == ATC::Nav)
-                    {
-                        for(int i = 0; i < 5; i++)
-                        {
-                            shortEtiquette[i + 24] = QChar(' ');
-                            longEtiquette[i + 24] = QChar(' ');
-                        }
-
-                        flight->setNavMode(ATC::Hdg);
-                    }
-
                     flight->getFlightTag()->getTagBox()->setShortEtiquette(shortEtiquette);
                     flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
 
@@ -375,7 +375,6 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
                     flight->setFinalApp(false);
                     flight->setGlidePath(false);
                 }
-
             }
 
             //Repaint route prediction
@@ -514,42 +513,42 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
                 QString shortEtiquette = flight->getFlightTag()->getTagBox()->getShortEtiquette();
                 QString longEtiquette = flight->getFlightTag()->getTagBox()->getLongEtiquette();
 
-                QString headingString = QString::number(flight->getHdgRestriction());
+                QString headingString;
+                if(flight->getHdgRestriction() < 10)
+                {
+                    headingString = "00" + QString::number(flight->getHdgRestriction());
+                }
+                else if(flight->getHdgRestriction() < 100)
+                {
+                    headingString = "0" + QString::number(flight->getHdgRestriction());
+                }
+                else
+                {
+                    headingString = QString::number(flight->getHdgRestriction());
+                }
+
                 for(int i = 0; i < headingString.size(); i++)
                 {
                     longEtiquette[i + 39] = headingString.at(i);
                 }
 
+                for(int i = 0; i < 5; i++)
+                {
+                    shortEtiquette[i + 24] = QChar(' ');
+                    longEtiquette[i + 24] = QChar(' ');
+                }
+
                 if(flight->getFlightTag()->getTagType() == ATC::Short)
                 {
-                    for(int i = 0; i < 5; i++)
-                    {
-                        shortEtiquette[i + 24] = QChar(' ');
-                        longEtiquette[i + 24] = QChar(' ');
-                    }
-
                     flight->getFlightTag()->getTagBox()->setShortEtiquette(shortEtiquette);
                     flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
 
                     flight->getFlightTag()->getTagBox()->rectShort2Long();
                     flight->getFlightTag()->setTagType(ATC::Full);
                     flight->getFlightTag()->getTagBox()->setLong();
-
-                    flight->setNavMode(ATC::Hdg);
                 }
                 else
                 {
-                    if(flight->getNavMode() == ATC::Nav)
-                    {
-                        for(int i = 0; i < 5; i++)
-                        {
-                            shortEtiquette[i + 24] = QChar(' ');
-                            longEtiquette[i + 24] = QChar(' ');
-                        }
-
-                        flight->setNavMode(ATC::Hdg);
-                    }
-
                     flight->getFlightTag()->getTagBox()->setShortEtiquette(shortEtiquette);
                     flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
 
@@ -562,7 +561,6 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
                     flight->setFinalApp(false);
                     flight->setGlidePath(false);
                 }
-
             }
 
             //Repaint route prediction
@@ -767,42 +765,42 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
                 QString shortEtiquette = flight->getFlightTag()->getTagBox()->getShortEtiquette();
                 QString longEtiquette = flight->getFlightTag()->getTagBox()->getLongEtiquette();
 
-                QString headingString = QString::number(flight->getHdgRestriction());
+                QString headingString;
+                if(flight->getHdgRestriction() < 10)
+                {
+                    headingString = "00" + QString::number(flight->getHdgRestriction());
+                }
+                else if(flight->getHdgRestriction() < 100)
+                {
+                    headingString = "0" + QString::number(flight->getHdgRestriction());
+                }
+                else
+                {
+                    headingString = QString::number(flight->getHdgRestriction());
+                }
+
                 for(int i = 0; i < headingString.size(); i++)
                 {
                     longEtiquette[i + 39] = headingString.at(i);
                 }
 
+                for(int i = 0; i < 5; i++)
+                {
+                    shortEtiquette[i + 24] = QChar(' ');
+                    longEtiquette[i + 24] = QChar(' ');
+                }
+
                 if(flight->getFlightTag()->getTagType() == ATC::Short)
                 {
-                    for(int i = 0; i < 5; i++)
-                    {
-                        shortEtiquette[i + 24] = QChar(' ');
-                        longEtiquette[i + 24] = QChar(' ');
-                    }
-
                     flight->getFlightTag()->getTagBox()->setShortEtiquette(shortEtiquette);
                     flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
 
                     flight->getFlightTag()->getTagBox()->rectShort2Long();
                     flight->getFlightTag()->setTagType(ATC::Full);
                     flight->getFlightTag()->getTagBox()->setLong();
-
-                    flight->setNavMode(ATC::Hdg);
                 }
                 else
                 {
-                    if(flight->getNavMode() == ATC::Nav)
-                    {
-                        for(int i = 0; i < 5; i++)
-                        {
-                            shortEtiquette[i + 24] = QChar(' ');
-                            longEtiquette[i + 24] = QChar(' ');
-                        }
-
-                        flight->setNavMode(ATC::Hdg);
-                    }
-
                     flight->getFlightTag()->getTagBox()->setShortEtiquette(shortEtiquette);
                     flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
 
@@ -815,7 +813,6 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
                     flight->setFinalApp(false);
                     flight->setGlidePath(false);
                 }
-
             }
 
             //Repaint route prediction
@@ -954,42 +951,42 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
                 QString shortEtiquette = flight->getFlightTag()->getTagBox()->getShortEtiquette();
                 QString longEtiquette = flight->getFlightTag()->getTagBox()->getLongEtiquette();
 
-                QString headingString = QString::number(flight->getHdgRestriction());
+                QString headingString;
+                if(flight->getHdgRestriction() < 10)
+                {
+                    headingString = "00" + QString::number(flight->getHdgRestriction());
+                }
+                else if(flight->getHdgRestriction() < 100)
+                {
+                    headingString = "0" + QString::number(flight->getHdgRestriction());
+                }
+                else
+                {
+                    headingString = QString::number(flight->getHdgRestriction());
+                }
+
                 for(int i = 0; i < headingString.size(); i++)
                 {
                     longEtiquette[i + 39] = headingString.at(i);
                 }
 
+                for(int i = 0; i < 5; i++)
+                {
+                    shortEtiquette[i + 24] = QChar(' ');
+                    longEtiquette[i + 24] = QChar(' ');
+                }
+
                 if(flight->getFlightTag()->getTagType() == ATC::Short)
                 {
-                    for(int i = 0; i < 5; i++)
-                    {
-                        shortEtiquette[i + 24] = QChar(' ');
-                        longEtiquette[i + 24] = QChar(' ');
-                    }
-
                     flight->getFlightTag()->getTagBox()->setShortEtiquette(shortEtiquette);
                     flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
 
                     flight->getFlightTag()->getTagBox()->rectShort2Long();
                     flight->getFlightTag()->setTagType(ATC::Full);
                     flight->getFlightTag()->getTagBox()->setLong();
-
-                    flight->setNavMode(ATC::Hdg);
                 }
                 else
                 {
-                    if(flight->getNavMode() == ATC::Nav)
-                    {
-                        for(int i = 0; i < 5; i++)
-                        {
-                            shortEtiquette[i + 24] = QChar(' ');
-                            longEtiquette[i + 24] = QChar(' ');
-                        }
-
-                        flight->setNavMode(ATC::Hdg);
-                    }
-
                     flight->getFlightTag()->getTagBox()->setShortEtiquette(shortEtiquette);
                     flight->getFlightTag()->getTagBox()->setLongEtiquette(longEtiquette);
 
@@ -1002,7 +999,6 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
                     flight->setFinalApp(false);
                     flight->setGlidePath(false);
                 }
-
             }
 
             //Repaint route prediction
