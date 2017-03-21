@@ -166,6 +166,9 @@ public:
     void appendLegAngleChange(double chng);
     void clearLegAngleChanges();
 
+    void setDistanceToGo(double dst);
+    double getDistanceToGo();
+
 signals:
     void signalCreateDialogAltitude(ATCFlight *flight, QPoint point);
     void signalCreateDialogSpeed(ATCFlight *flight, QPoint point);
@@ -238,6 +241,8 @@ private:
 
     QVector<double> legDistances;
     QVector<double> legAngleChanges;
+
+    double distanceToGo;
 };
 
 #endif // ATCFLIGHT_H

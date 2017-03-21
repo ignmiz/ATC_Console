@@ -483,6 +483,16 @@ void ATCFlight::clearLegAngleChanges()
     legAngleChanges.clear();
 }
 
+void ATCFlight::setDistanceToGo(double dst)
+{
+    distanceToGo = dst;
+}
+
+double ATCFlight::getDistanceToGo()
+{
+    return distanceToGo;
+}
+
 void ATCFlight::slotCreateDialogAltitude(QPoint point)
 {
     emit signalCreateDialogAltitude(this, point);

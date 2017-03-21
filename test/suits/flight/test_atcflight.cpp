@@ -642,3 +642,11 @@ void Test_ATCFlight::test_appendLegAngleChange()
     QVERIFY(foo.getLegAngleChangeVectorSize() == 0);
 }
 
+void Test_ATCFlight::test_setDistanceToGo()
+{
+    ATCFlight foo;
+
+    foo.setDistanceToGo(0.25);
+    QVERIFY(foo.getDistanceToGo() == 0.25);
+}
+
