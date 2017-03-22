@@ -48,6 +48,8 @@ private slots:
     void test_appendLegDistance();
     void test_appendLegAngleChange();
     void test_setDistanceToGo();
+    void test_setTOC();
+    void test_setTOD();
 };
 
 #endif // TEST_ATCFLIGHT_H

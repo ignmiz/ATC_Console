@@ -50,7 +50,10 @@ const double ATCConst::APP_ALT_FLT_TERMINATED = 15.24;          //50ft
 
 const double ATCConst::PROFILE_CEILING_REL_DIFF = 1e-8;
 const double ATCConst::PROFILE_SVC_CEILING_VSPD = 152.4;        //mps, vertical speed
-const double ATCConst::PROFILE_ALT_INTERVAL = 76.2;            //m
+const double ATCConst::PROFILE_ALT_INTERVAL = 76.2;             //m
+
+//Trajectory prediction
+const double ATCConst::TRAJECTORY_TOC_LVL_FLIGHT = 120;         //s
 
 //Environment
 const double ATCConst::betaTrop = -0.0065;

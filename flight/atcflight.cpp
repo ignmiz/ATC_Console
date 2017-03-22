@@ -493,6 +493,26 @@ double ATCFlight::getDistanceToGo()
     return distanceToGo;
 }
 
+void ATCFlight::setTOC(double dst)
+{
+    TOC = dst;
+}
+
+double ATCFlight::getTOC()
+{
+    return TOC;
+}
+
+void ATCFlight::setTOD(double dst)
+{
+    TOD = dst;
+}
+
+double ATCFlight::getTOD()
+{
+    return TOD;
+}
+
 void ATCFlight::slotCreateDialogAltitude(QPoint point)
 {
     emit signalCreateDialogAltitude(this, point);

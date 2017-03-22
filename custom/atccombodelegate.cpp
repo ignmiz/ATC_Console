@@ -290,17 +290,22 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             }
 
             //Assign leg distances and angle changes
-            flight->clearLegAngleChanges();
             flight->clearLegDistances();
+            flight->clearLegAngleChanges();
+
+            bool alternateExists = (!flight->getFlightPlan()->getRoute().getAlternate().isEmpty()) ? true : false;
+            int iterationLimit = alternateExists ? flight->getWaypointsVectorSize() - 2 : flight->getWaypointsVectorSize() - 1;
 
             double previousForwardAzimuth;
 
-            for(int i = 0; i < flight->getWaypointsVectorSize() - 1; i++)
+            for(int i = 0; i < iterationLimit; i++)
             {
                 GeographicLib::Geodesic geo = GeographicLib::Geodesic::WGS84();
 
+                bool substituteRwyThr = ((i == iterationLimit - 1) && !flight->getRunwayDestination().isEmpty()) ? true : false;
+
                 QPair<double, double> fix1 = flight->getWaypoint(i);
-                QPair<double, double> fix2 = flight->getWaypoint(i + 1);
+                QPair<double, double> fix2 = substituteRwyThr ? flight->getTemp().rwyDesThr : flight->getWaypoint(i + 1);
 
                 double distance;
                 double azimuth1to2;
@@ -316,6 +321,18 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
                 previousForwardAzimuth = azimuth2to1;
                 flight->appendLegDistance(distance);
             }
+
+            //Assign route distance
+            Temp temp = flight->getTemp();
+
+            double routeDst = 0;
+            for(int i = 0; i < flight->getLegDistanceVectorSize(); i++)
+            {
+                routeDst = routeDst + flight->getLegDistance(i);
+            }
+
+            temp.routeDistance = routeDst;
+            flight->setTemp(temp);
 
             //Check if waypoint index found. If not, change mode to heading & update tag
             if(flight->getWaypointIndex() == -1)
@@ -476,17 +493,22 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             }
 
             //Assign leg distances and angle changes
-            flight->clearLegAngleChanges();
             flight->clearLegDistances();
+            flight->clearLegAngleChanges();
+
+            bool alternateExists = (!flight->getFlightPlan()->getRoute().getAlternate().isEmpty()) ? true : false;
+            int iterationLimit = alternateExists ? flight->getWaypointsVectorSize() - 2 : flight->getWaypointsVectorSize() - 1;
 
             double previousForwardAzimuth;
 
-            for(int i = 0; i < flight->getWaypointsVectorSize() - 1; i++)
+            for(int i = 0; i < iterationLimit; i++)
             {
                 GeographicLib::Geodesic geo = GeographicLib::Geodesic::WGS84();
 
+                bool substituteRwyThr = ((i == iterationLimit - 1) && !flight->getRunwayDestination().isEmpty()) ? true : false;
+
                 QPair<double, double> fix1 = flight->getWaypoint(i);
-                QPair<double, double> fix2 = flight->getWaypoint(i + 1);
+                QPair<double, double> fix2 = substituteRwyThr ? flight->getTemp().rwyDesThr : flight->getWaypoint(i + 1);
 
                 double distance;
                 double azimuth1to2;
@@ -502,6 +524,18 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
                 previousForwardAzimuth = azimuth2to1;
                 flight->appendLegDistance(distance);
             }
+
+            //Assign route distance
+            Temp temp = flight->getTemp();
+
+            double routeDst = 0;
+            for(int i = 0; i < flight->getLegDistanceVectorSize(); i++)
+            {
+                routeDst = routeDst + flight->getLegDistance(i);
+            }
+
+            temp.routeDistance = routeDst;
+            flight->setTemp(temp);
 
             //Check if waypoint index found. If not, change mode to heading & update tag
             if(flight->getWaypointIndex() == -1)
@@ -728,17 +762,22 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             }
 
             //Assign leg distances and angle changes
-            flight->clearLegAngleChanges();
             flight->clearLegDistances();
+            flight->clearLegAngleChanges();
+
+            bool alternateExists = (!flight->getFlightPlan()->getRoute().getAlternate().isEmpty()) ? true : false;
+            int iterationLimit = alternateExists ? flight->getWaypointsVectorSize() - 2 : flight->getWaypointsVectorSize() - 1;
 
             double previousForwardAzimuth;
 
-            for(int i = 0; i < flight->getWaypointsVectorSize() - 1; i++)
+            for(int i = 0; i < iterationLimit; i++)
             {
                 GeographicLib::Geodesic geo = GeographicLib::Geodesic::WGS84();
 
+                bool substituteRwyThr = ((i == iterationLimit - 1) && !flight->getRunwayDestination().isEmpty()) ? true : false;
+
                 QPair<double, double> fix1 = flight->getWaypoint(i);
-                QPair<double, double> fix2 = flight->getWaypoint(i + 1);
+                QPair<double, double> fix2 = substituteRwyThr ? flight->getTemp().rwyDesThr : flight->getWaypoint(i + 1);
 
                 double distance;
                 double azimuth1to2;
@@ -754,6 +793,18 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
                 previousForwardAzimuth = azimuth2to1;
                 flight->appendLegDistance(distance);
             }
+
+            //Assign route distance
+            Temp temp = flight->getTemp();
+
+            double routeDst = 0;
+            for(int i = 0; i < flight->getLegDistanceVectorSize(); i++)
+            {
+                routeDst = routeDst + flight->getLegDistance(i);
+            }
+
+            temp.routeDistance = routeDst;
+            flight->setTemp(temp);
 
             //Check if waypoint index found. If not, change mode to heading & update tag
             if(flight->getWaypointIndex() == -1)
@@ -914,17 +965,22 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             }
 
             //Assign leg distances and angle changes
-            flight->clearLegAngleChanges();
             flight->clearLegDistances();
+            flight->clearLegAngleChanges();
+
+            bool alternateExists = (!flight->getFlightPlan()->getRoute().getAlternate().isEmpty()) ? true : false;
+            int iterationLimit = alternateExists ? flight->getWaypointsVectorSize() - 2 : flight->getWaypointsVectorSize() - 1;
 
             double previousForwardAzimuth;
 
-            for(int i = 0; i < flight->getWaypointsVectorSize() - 1; i++)
+            for(int i = 0; i < iterationLimit; i++)
             {
                 GeographicLib::Geodesic geo = GeographicLib::Geodesic::WGS84();
 
+                bool substituteRwyThr = ((i == iterationLimit - 1) && !flight->getRunwayDestination().isEmpty()) ? true : false;
+
                 QPair<double, double> fix1 = flight->getWaypoint(i);
-                QPair<double, double> fix2 = flight->getWaypoint(i + 1);
+                QPair<double, double> fix2 = substituteRwyThr ? flight->getTemp().rwyDesThr : flight->getWaypoint(i + 1);
 
                 double distance;
                 double azimuth1to2;
@@ -940,6 +996,18 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
                 previousForwardAzimuth = azimuth2to1;
                 flight->appendLegDistance(distance);
             }
+
+            //Assign route distance
+            Temp temp = flight->getTemp();
+
+            double routeDst = 0;
+            for(int i = 0; i < flight->getLegDistanceVectorSize(); i++)
+            {
+                routeDst = routeDst + flight->getLegDistance(i);
+            }
+
+            temp.routeDistance = routeDst;
+            flight->setTemp(temp);
 
             //Check if waypoint index found. If not, change mode to heading & update tag
             if(flight->getWaypointIndex() == -1)

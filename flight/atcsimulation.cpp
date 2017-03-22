@@ -370,14 +370,19 @@ void ATCSimulation::preallocateTempData(ATCFlight *flight)
     }
 
     //Assign leg distances and angle changes
+    bool alternateExists = (!flight->getFlightPlan()->getRoute().getAlternate().isEmpty()) ? true : false;
+    int iterationLimit = alternateExists ? flight->getWaypointsVectorSize() - 2 : flight->getWaypointsVectorSize() - 1;
+
     double previousForwardAzimuth;
 
-    for(int i = 0; i < flight->getWaypointsVectorSize() - 1; i++)
+    for(int i = 0; i < iterationLimit; i++)
     {
         GeographicLib::Geodesic geo = GeographicLib::Geodesic::WGS84();
 
+        bool substituteRwyThr = ((i == iterationLimit - 1) && !flight->getRunwayDestination().isEmpty()) ? true : false;
+
         QPair<double, double> fix1 = flight->getWaypoint(i);
-        QPair<double, double> fix2 = flight->getWaypoint(i + 1);
+        QPair<double, double> fix2 = substituteRwyThr ? flight->getTemp().rwyDesThr : flight->getWaypoint(i + 1);
 
         double distance;
         double azimuth1to2;
@@ -393,6 +398,16 @@ void ATCSimulation::preallocateTempData(ATCFlight *flight)
         previousForwardAzimuth = azimuth2to1;
         flight->appendLegDistance(distance);
     }
+
+    //Assign route distance
+    double routeDst = 0;
+    for(int i = 0; i < flight->getLegDistanceVectorSize(); i++)
+    {
+        routeDst = routeDst + flight->getLegDistance(i);
+    }
+
+    temp.routeDistance = routeDst;
+    flight->setTemp(temp);
 
     //Exclude flights that will happen in future
     if(flight->getSimStartTime() != QTime(0, 0, 0))
@@ -1174,6 +1189,52 @@ void ATCSimulation::assignVerticalProfile(ATCFlight *flight, ISA &isa, bool &max
     flight->setState(state);
 }
 
+void ATCSimulation::assignTOC(ATCFlight *flight)
+{
+    //Function calculationg Top of Climb as distanceToGo, at which ToC is predicted to be located.
+
+    //Assign aircraft data
+    ATCAircraftType *type = flight->getFlightPlan()->getType();
+    ATCProfileClimb *profile = flight->getProfileClimb();
+    Temp temp = flight->getTemp();
+
+    //Assign altitudes
+    double AFL = flight->getState().h;
+    double CFL = ATCMath::ft2m(flight->getTargetAltitude().right(3).toDouble() * 100);
+    double RFL = ATCMath::ft2m(flight->getFlightPlan()->getAltitude().right(3).toDouble() * 100);
+
+    //Is aircraft cleard for RFL?
+    bool cldForFinalAltitude = (flight->getTargetAltitude().right(3) == flight->getFlightPlan()->getAltitude().right(3)) ? true : false;
+
+    //Calculate total distance from AFL to RFL
+    double dstTotal = profile->distanceInterval(AFL, CFL);
+
+    if(!cldForFinalAltitude)
+    {
+        ISA isa = ATCMath::atmosISA(CFL);
+        BADA::SpeedHoldMode cflShm = ATCMath::assignSHM(CFL, BADA::Level, temp.xoverAltClbM, temp.xoverAltCrsM, temp.xoverAltDesM);
+
+        double Vnom = ATCMath::nominalSpeedCR(CFL, cflShm, type->getAcType().engineType, type->getVelocity().V_CR1_AV, type->getVelocity().V_CR2_AV, type->getVelocity().M_CR_AV, isa.a, isa.rho, isa.p);
+
+        double dstLevelFlight = Vnom * ATCConst::TRAJECTORY_TOC_LVL_FLIGHT;
+        double dstCFLtoRFL = profile->distanceInterval(CFL, RFL);
+
+        dstTotal = dstTotal + dstLevelFlight + dstCFLtoRFL;
+    }
+
+    qDebug() << ATCMath::m2nm(dstTotal);
+
+    //Recalculate ToC position as distanceToGo value
+    double ToC = flight->getDistanceToGo() - dstTotal;
+
+    flight->setTOC(ToC);
+}
+
+void ATCSimulation::assignTOD(ATCFlight *flight)
+{
+
+}
+
 void ATCSimulation::predictTrajectories()
 {
     for(int i = 0; i < predictorCycles; i++)
@@ -1187,7 +1248,7 @@ void ATCSimulation::predictTrajectories()
                 if(flight->isSimulated())
                 {
                     //Predict trajectory
-                    for(int ii = 0; ii < 50000; ii++);
+                    assignTOC(flight);
 //                    qDebug() << "Iterator: " << predictorIterator << ", flight: " << flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber();
 
                     predictorIterator++;

@@ -55,6 +55,9 @@ public:
     static const double PROFILE_SVC_CEILING_VSPD;
     static const double PROFILE_ALT_INTERVAL;
 
+    //Trajectory prediction
+    static const double TRAJECTORY_TOC_LVL_FLIGHT;
+
     //Environment
     static const double betaTrop;
     static const double betaStrat1;

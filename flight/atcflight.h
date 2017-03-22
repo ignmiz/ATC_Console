@@ -48,6 +48,8 @@ struct Temp //Structure for temporary, constant data members preallocated before
     QPair<double, double> rwyDesThr;
     QPair<double, double> rwyDesAppRange;
     double rwyDesAzimuth;
+
+    double routeDistance;
 };
 
 class ATCFlight : public QObject
@@ -169,6 +171,12 @@ public:
     void setDistanceToGo(double dst);
     double getDistanceToGo();
 
+    void setTOC(double dst);
+    double getTOC();
+
+    void setTOD(double dst);
+    double getTOD();
+
 signals:
     void signalCreateDialogAltitude(ATCFlight *flight, QPoint point);
     void signalCreateDialogSpeed(ATCFlight *flight, QPoint point);
@@ -243,6 +251,9 @@ private:
     QVector<double> legAngleChanges;
 
     double distanceToGo;
+
+    double TOC;
+    double TOD;
 };
 
 #endif // ATCFLIGHT_H
