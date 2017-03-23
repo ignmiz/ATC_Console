@@ -47,6 +47,7 @@ const double ATCConst::APP_ALLOWED_XTRACK_INTERCEPT = 370.4;    //0.2nm
 const double ATCConst::APP_ALLOWED_HDG_INTERCEPT = 10;          //deg
 const double ATCConst::APP_PATH_ANGLE = 3;                      //deg
 const double ATCConst::APP_ALT_FLT_TERMINATED = 15.24;          //50ft
+const double ATCConst::APP_TYPICAL_INTERCEPT_ALT = 914.4;       //m (3000ft)
 
 const double ATCConst::PROFILE_CEILING_REL_DIFF = 1e-8;
 const double ATCConst::PROFILE_SVC_CEILING_VSPD = 152.4;        //mps, vertical speed
@@ -54,6 +55,7 @@ const double ATCConst::PROFILE_ALT_INTERVAL = 76.2;             //m
 
 //Trajectory prediction
 const double ATCConst::TRAJECTORY_TOC_LVL_FLIGHT = 120;         //s
+const double ATCConst::TRAJECTORY_TOD_APP_LVL_BUFFER = 4630;    //m (2.5nm)
 
 //Environment
 const double ATCConst::betaTrop = -0.0065;

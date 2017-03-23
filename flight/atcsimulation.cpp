@@ -243,6 +243,12 @@ void ATCSimulation::preallocateTempData()
             createClimbProfile(flight);
             createDescentProfile(flight);
 
+            if(flight->getNavMode() == ATC::Nav)
+            {
+                assignTOC(flight);
+                assignTOD(flight);
+            }
+
             flight->setTempFlag(true);
         }
     }
@@ -1196,6 +1202,7 @@ void ATCSimulation::assignTOC(ATCFlight *flight)
     //Assign aircraft data
     ATCAircraftType *type = flight->getFlightPlan()->getType();
     ATCProfileClimb *profile = flight->getProfileClimb();
+    State state = flight->getState();
     Temp temp = flight->getTemp();
 
     //Assign altitudes
@@ -1205,34 +1212,53 @@ void ATCSimulation::assignTOC(ATCFlight *flight)
 
     //Is aircraft cleard for RFL?
     bool cldForFinalAltitude = (flight->getTargetAltitude().right(3) == flight->getFlightPlan()->getAltitude().right(3)) ? true : false;
+    bool isOnCruise = (cldForFinalAltitude && (state.cm == BADA::Level)) ? true : false;
 
     //Calculate total distance from AFL to RFL
-    double dstTotal = profile->distanceInterval(AFL, CFL);
+    double dstTotal = 0;
 
-    if(!cldForFinalAltitude)
+    if(!isOnCruise)
     {
-        ISA isa = ATCMath::atmosISA(CFL);
-        BADA::SpeedHoldMode cflShm = ATCMath::assignSHM(CFL, BADA::Level, temp.xoverAltClbM, temp.xoverAltCrsM, temp.xoverAltDesM);
+        dstTotal = profile->distanceInterval(AFL, CFL);
 
-        double Vnom = ATCMath::nominalSpeedCR(CFL, cflShm, type->getAcType().engineType, type->getVelocity().V_CR1_AV, type->getVelocity().V_CR2_AV, type->getVelocity().M_CR_AV, isa.a, isa.rho, isa.p);
+        if(!cldForFinalAltitude)
+        {
+            ISA isa = ATCMath::atmosISA(CFL);
+            BADA::SpeedHoldMode cflShm = ATCMath::assignSHM(CFL, BADA::Level, temp.xoverAltClbM, temp.xoverAltCrsM, temp.xoverAltDesM);
 
-        double dstLevelFlight = Vnom * ATCConst::TRAJECTORY_TOC_LVL_FLIGHT;
-        double dstCFLtoRFL = profile->distanceInterval(CFL, RFL);
+            double Vnom = ATCMath::nominalSpeedCR(CFL, cflShm, type->getAcType().engineType, type->getVelocity().V_CR1_AV, type->getVelocity().V_CR2_AV, type->getVelocity().M_CR_AV, isa.a, isa.rho, isa.p);
 
-        dstTotal = dstTotal + dstLevelFlight + dstCFLtoRFL;
+            double dstLevelFlight = Vnom * ATCConst::TRAJECTORY_TOC_LVL_FLIGHT;
+            double dstCFLtoRFL = profile->distanceInterval(CFL, RFL);
+
+            dstTotal = dstTotal + dstLevelFlight + dstCFLtoRFL;
+        }
     }
-
-    qDebug() << ATCMath::m2nm(dstTotal);
 
     //Recalculate ToC position as distanceToGo value
     double ToC = flight->getDistanceToGo() - dstTotal;
-
     flight->setTOC(ToC);
 }
 
 void ATCSimulation::assignTOD(ATCFlight *flight)
 {
+    //Function calculating Top of Descent as distanceToGo, at which ToD is predicted to be located.
 
+    //Assign aircraft data
+    ATCProfileDescent *profile = flight->getProfileDescent();
+
+    //Assign altitude
+    double RFL = ATCMath::ft2m(flight->getFlightPlan()->getAltitude().right(3).toDouble() * 100);
+
+    //Calculate total distance from runway threshold (assumed to be at 0ft) to RFL
+    //ILS interception assumed to be at 3000ft, with 2.5nm level buffer
+    double appDistance = ATCMath::m2nm(ATCMath::ft2m(ATCConst::APP_TYPICAL_INTERCEPT_ALT) / qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE)));
+    double lvlDistance = ATCConst::TRAJECTORY_TOD_APP_LVL_BUFFER;
+    double dstRFLtoIntercept = profile->distanceInterval(RFL, ATCConst::APP_TYPICAL_INTERCEPT_ALT);
+
+    //ToD is already expressed as distanceToGo
+    double ToD = appDistance + lvlDistance + dstRFLtoIntercept;
+    flight->setTOD(ToD);
 }
 
 void ATCSimulation::predictTrajectories()
@@ -1248,7 +1274,11 @@ void ATCSimulation::predictTrajectories()
                 if(flight->isSimulated())
                 {
                     //Predict trajectory
-                    assignTOC(flight);
+                    if(flight->getNavMode() == ATC::Nav)
+                    {
+                        assignTOC(flight);
+                        assignTOD(flight);
+                    }
 //                    qDebug() << "Iterator: " << predictorIterator << ", flight: " << flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber();
 
                     predictorIterator++;

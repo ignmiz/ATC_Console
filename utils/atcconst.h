@@ -50,6 +50,7 @@ public:
     static const double APP_ALLOWED_HDG_INTERCEPT;
     static const double APP_PATH_ANGLE;
     static const double APP_ALT_FLT_TERMINATED;
+    static const double APP_TYPICAL_INTERCEPT_ALT;
 
     static const double PROFILE_CEILING_REL_DIFF;
     static const double PROFILE_SVC_CEILING_VSPD;
@@ -57,6 +58,7 @@ public:
 
     //Trajectory prediction
     static const double TRAJECTORY_TOC_LVL_FLIGHT;
+    static const double TRAJECTORY_TOD_APP_LVL_BUFFER;
 
     //Environment
     static const double betaTrop;
