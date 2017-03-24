@@ -177,6 +177,9 @@ public:
     void setTOD(double dst);
     double getTOD();
 
+    void setTopLevel(double lvlM);
+    double getTopLevel();
+
 signals:
     void signalCreateDialogAltitude(ATCFlight *flight, QPoint point);
     void signalCreateDialogSpeed(ATCFlight *flight, QPoint point);
@@ -254,6 +257,7 @@ private:
 
     double TOC;
     double TOD;
+    double topLevel;
 };
 
 #endif // ATCFLIGHT_H

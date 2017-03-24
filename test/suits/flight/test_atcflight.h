@@ -50,6 +50,7 @@ private slots:
     void test_setDistanceToGo();
     void test_setTOC();
     void test_setTOD();
+    void test_setTopLevel();
 };
 
 #endif // TEST_ATCFLIGHT_H

@@ -666,3 +666,11 @@ void Test_ATCFlight::test_setTOD()
     QVERIFY(foo.getTOD() == 0.25);
 }
 
+void Test_ATCFlight::test_setTopLevel()
+{
+    ATCFlight foo;
+
+    foo.setTopLevel(300);
+    QVERIFY(foo.getTopLevel() == 300);
+}
+

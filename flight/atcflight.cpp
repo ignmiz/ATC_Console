@@ -513,6 +513,16 @@ double ATCFlight::getTOD()
     return TOD;
 }
 
+void ATCFlight::setTopLevel(double lvlM)
+{
+    topLevel = lvlM;
+}
+
+double ATCFlight::getTopLevel()
+{
+    return topLevel;
+}
+
 void ATCFlight::slotCreateDialogAltitude(QPoint point)
 {
     emit signalCreateDialogAltitude(this, point);

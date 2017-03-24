@@ -99,8 +99,9 @@ private:
     void assignContinuousState(ATCFlight *flight, ISA &isa, GeographicLib::Geodesic &geo, int flightIndex, QString &buffer);
     void assignVerticalProfile(ATCFlight *flight, ISA &isa, bool &maxAlt);
 
-    void assignTOC(ATCFlight *flight);
-    void assignTOD(ATCFlight *flight);
+    double distanceTOC(ATCFlight *flight, double AFL, double CFL, double RFL);
+    double distanceTOD(ATCFlight *flight, double RFL);
+    void assignTOCandTOD(ATCFlight *flight);
 
     void predictTrajectories();
 
