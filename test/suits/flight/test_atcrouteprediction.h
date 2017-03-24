@@ -14,6 +14,10 @@ private slots:
     void test_setPredictionType();
     void test_getPolygon();
     void test_getLabels();
+    void test_getTOC();
+    void test_getLabelTOC();
+    void test_getTOD();
+    void test_getLabelTOD();
     void test_hideRoute();
     void test_showRoute();
 };

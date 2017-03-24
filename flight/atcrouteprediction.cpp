@@ -46,6 +46,46 @@ void ATCRoutePrediction::appendLabel(QGraphicsSimpleTextItem *text)
     labels.append(text);
 }
 
+void ATCRoutePrediction::setTOC(QGraphicsEllipseItem *t)
+{
+    toc = t;
+}
+
+QGraphicsEllipseItem *ATCRoutePrediction::getTOC()
+{
+    return toc;
+}
+
+void ATCRoutePrediction::setLabelTOC(QGraphicsSimpleTextItem *t)
+{
+    tocLabel = t;
+}
+
+QGraphicsSimpleTextItem *ATCRoutePrediction::getLabelTOC()
+{
+    return tocLabel;
+}
+
+void ATCRoutePrediction::setTOD(QGraphicsEllipseItem *t)
+{
+    tod = t;
+}
+
+QGraphicsEllipseItem *ATCRoutePrediction::getTOD()
+{
+    return tod;
+}
+
+void ATCRoutePrediction::setLabelTOD(QGraphicsSimpleTextItem *t)
+{
+    todLabel = t;
+}
+
+QGraphicsSimpleTextItem *ATCRoutePrediction::getLabelTOD()
+{
+    return todLabel;
+}
+
 void ATCRoutePrediction::hideRoute()
 {
     if(polygon != nullptr) polygon->hide();
@@ -53,6 +93,12 @@ void ATCRoutePrediction::hideRoute()
     {
         labels.at(i)->hide();
     }
+
+    if(toc != nullptr) toc->hide();
+    if(tocLabel != nullptr) tocLabel->hide();
+
+    if(tod != nullptr) tod->hide();
+    if(todLabel != nullptr) todLabel->hide();
 }
 
 void ATCRoutePrediction::showRoute()
@@ -62,4 +108,10 @@ void ATCRoutePrediction::showRoute()
     {
         labels.at(i)->show();
     }
+
+    if(toc != nullptr) toc->show();
+    if(tocLabel != nullptr) tocLabel->show();
+
+    if(tod != nullptr) tod->show();
+    if(todLabel != nullptr) todLabel->show();
 }
