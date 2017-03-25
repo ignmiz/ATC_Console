@@ -23,7 +23,7 @@ public:
     ~DialogFlightCreator();
 
 signals:
-    void signalGetLocation(QStringList fixList);
+    void signalGetLocation(QStringList &fixList);
     void signalCreateFlightTag(ATCFlight *flight);
     void signalUpdateFlightTag(ATCFlight *flight);
     void signalUpdateFlightList(ATCFlight *flight);

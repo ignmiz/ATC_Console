@@ -413,7 +413,7 @@ void ATCSimulation::preallocateTempData(ATCFlight *flight)
     if(flight->getSimStartTime() != QTime(0, 0, 0))
     {
         emit signalHideFlightTag(flight->getFlightTag());
-        if(flight->getRoutePrediction() != nullptr) emit signalDisplayRoute(flight);
+        if(flight->getRoutePrediction() != nullptr) emit signalClearRoute(flight);
         flight->setSimulated(false);
     }
 }
@@ -931,8 +931,7 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
 
                 if(flight->getRoutePrediction() != nullptr)
                 {
-                    emit signalDisplayRoute(flight);
-                    emit signalDisplayRoute(flight);
+                    emit signalUpdateRoute(flight);
                 }
             }
         }
@@ -984,8 +983,7 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
 
                 if(flight->getRoutePrediction() != nullptr)
                 {
-                    emit signalDisplayRoute(flight);
-                    emit signalDisplayRoute(flight);
+                    emit signalUpdateRoute(flight);
                 }
             }
         }
@@ -1275,6 +1273,8 @@ void ATCSimulation::assignTOCandTOD(ATCFlight *flight)
     flight->setTOD(ToD);
 
     flight->setTopLevel(RFL);
+
+    if(flight->getRoutePrediction() != nullptr) emit signalUpdateRoute(flight);
 }
 
 void ATCSimulation::predictTrajectories()

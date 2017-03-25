@@ -1,12 +1,12 @@
 #include "test_atcrouteprediction.h"
 
-void Test_ATCRoutePrediction::test_setPredictionType()
+void Test_ATCRoutePrediction::test_setPredictionState()
 {
     ATCRoutePrediction foo;
-    QVERIFY(foo.getPredictionType() == PredictionType::FixNames);
+    QVERIFY(foo.getPredictionState() == PredictionState::None);
 
-    foo.setPredictionType(PredictionType::FixETA);
-    QVERIFY(foo.getPredictionType() == PredictionType::FixETA);
+    foo.setPredictionState(PredictionState::FixETA);
+    QVERIFY(foo.getPredictionState() == PredictionState::FixETA);
 }
 
 void Test_ATCRoutePrediction::test_getPolygon()

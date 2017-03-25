@@ -263,7 +263,7 @@ void MainWindow::slotConstructDialogFlightNew()
             ATCFlight *current = simulation->getFlight(i);
 
             current->getFlightTag()->hideTag();
-            if(current->getRoutePrediction() != nullptr) emit current->signalDisplayRoute(current);
+            if(current->getRoutePrediction() != nullptr) emit current->signalClearRoute(current);
         }
     }
 
@@ -378,7 +378,7 @@ void MainWindow::slotConstructDialogFlightCreator(ATCFlight *flight)
 void MainWindow::slotCloseDialogFlightCreator()
 {
     disconnect(dialogFlightCreator, SIGNAL(closed()), this, SLOT(slotCloseDialogFlightCreator()));
-    disconnect(dialogFlightCreator, SIGNAL(signalGetLocation(QStringList)), ui->situationalDisplay, SLOT(slotGetLocation(QStringList)));
+    disconnect(dialogFlightCreator, SIGNAL(signalGetLocation(QStringList&)), ui->situationalDisplay, SLOT(slotGetLocation(QStringList&)));
     disconnect(ui->situationalDisplay, SIGNAL(signalShowFlightCreator()), dialogFlightCreator, SLOT(slotShowFlightCreator()));
     disconnect(ui->situationalDisplay, SIGNAL(signalDisplayClicked(double,double)), dialogFlightCreator, SLOT(slotDisplayClicked(double,double)));
     disconnect(dialogFlightCreator, SIGNAL(signalCreateFlightTag(ATCFlight*)), ui->situationalDisplay, SLOT(slotCreateFlightTag(ATCFlight*)));
@@ -801,6 +801,8 @@ void MainWindow::slotStartSimulation()
         //Prepare simulation & simulation controller
         connect(simulation, SIGNAL(signalUpdateTags()), ui->situationalDisplay, SLOT(slotUpdateTags()));
         connect(simulation, SIGNAL(signalDisplayRoute(ATCFlight*)), ui->situationalDisplay, SLOT(slotDisplayRoute(ATCFlight*)));
+        connect(simulation, SIGNAL(signalUpdateRoute(ATCFlight*)), ui->situationalDisplay, SLOT(slotUpdateRoute(ATCFlight*)));
+        connect(simulation, SIGNAL(signalClearRoute(ATCFlight*)), ui->situationalDisplay, SLOT(slotClearRoute(ATCFlight*)));
         connect(simulation, SIGNAL(signalSetSimulationStartTime()), this, SLOT(slotSetSimulationStartTime()));
         connect(simulation, SIGNAL(signalShowFlightTag(ATCFlightTag*)), ui->situationalDisplay, SLOT(slotShowFlightTag(ATCFlightTag*)));
         connect(simulation, SIGNAL(signalHideFlightTag(ATCFlightTag*)), ui->situationalDisplay, SLOT(slotHideFlightTag(ATCFlightTag*)));
@@ -845,6 +847,8 @@ void MainWindow::slotPauseSimulation()
 
         disconnect(simulation, SIGNAL(signalUpdateTags()), ui->situationalDisplay, SLOT(slotUpdateTags()));
         disconnect(simulation, SIGNAL(signalDisplayRoute(ATCFlight*)), ui->situationalDisplay, SLOT(slotDisplayRoute(ATCFlight*)));
+        disconnect(simulation, SIGNAL(signalUpdateRoute(ATCFlight*)), ui->situationalDisplay, SLOT(slotUpdateRoute(ATCFlight*)));
+        disconnect(simulation, SIGNAL(signalClearRoute(ATCFlight*)), ui->situationalDisplay, SLOT(slotClearRoute(ATCFlight*)));
         disconnect(simulation, SIGNAL(signalSetSimulationStartTime()), this, SLOT(slotSetSimulationStartTime()));
         disconnect(simulation, SIGNAL(signalShowFlightTag(ATCFlightTag*)), ui->situationalDisplay, SLOT(slotShowFlightTag(ATCFlightTag*)));
         disconnect(simulation, SIGNAL(signalHideFlightTag(ATCFlightTag*)), ui->situationalDisplay, SLOT(slotHideFlightTag(ATCFlightTag*)));
@@ -872,6 +876,8 @@ void MainWindow::slotStopSimulation()
 
         disconnect(simulation, SIGNAL(signalUpdateTags()), ui->situationalDisplay, SLOT(slotUpdateTags()));
         disconnect(simulation, SIGNAL(signalDisplayRoute(ATCFlight*)), ui->situationalDisplay, SLOT(slotDisplayRoute(ATCFlight*)));
+        disconnect(simulation, SIGNAL(signalUpdateRoute(ATCFlight*)), ui->situationalDisplay, SLOT(slotUpdateRoute(ATCFlight*)));
+        disconnect(simulation, SIGNAL(signalClearRoute(ATCFlight*)), ui->situationalDisplay, SLOT(slotClearRoute(ATCFlight*)));
         disconnect(simulation, SIGNAL(signalSetSimulationStartTime()), this, SLOT(slotSetSimulationStartTime()));
         disconnect(simulation, SIGNAL(signalShowFlightTag(ATCFlightTag*)), ui->situationalDisplay, SLOT(slotShowFlightTag(ATCFlightTag*)));
         disconnect(simulation, SIGNAL(signalHideFlightTag(ATCFlightTag*)), ui->situationalDisplay, SLOT(slotHideFlightTag(ATCFlightTag*)));
@@ -933,7 +939,7 @@ void MainWindow::mainWindowSetup()
 void MainWindow::connectDialogFlightCreatorSlots()
 {
     connect(dialogFlightCreator, SIGNAL(closed()), this, SLOT(slotCloseDialogFlightCreator()));
-    connect(dialogFlightCreator, SIGNAL(signalGetLocation(QStringList)), ui->situationalDisplay, SLOT(slotGetLocation(QStringList)));
+    connect(dialogFlightCreator, SIGNAL(signalGetLocation(QStringList&)), ui->situationalDisplay, SLOT(slotGetLocation(QStringList&)));
     connect(ui->situationalDisplay, SIGNAL(signalShowFlightCreator()), dialogFlightCreator, SLOT(slotShowFlightCreator()));
     connect(ui->situationalDisplay, SIGNAL(signalDisplayClicked(double,double)), dialogFlightCreator, SLOT(slotDisplayClicked(double,double)));
     connect(dialogFlightCreator, SIGNAL(signalCreateFlightTag(ATCFlight*)), ui->situationalDisplay, SLOT(slotCreateFlightTag(ATCFlight*)));

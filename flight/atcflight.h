@@ -188,6 +188,7 @@ signals:
     void signalCreateDialogHandoff(ATCFlight *flight, QPoint point);
     void signalCreateDialogFlightPlan(ATCFlight *flight);
     void signalDisplayRoute(ATCFlight *flight);
+    void signalClearRoute(ATCFlight *flight);
     void signalClearFlightElements(ATCFlight *flight);
 
 public slots:

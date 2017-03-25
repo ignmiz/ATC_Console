@@ -113,7 +113,7 @@ public slots:
 
 private slots:
     void slotGetLocation();
-    void slotGetLocation(QStringList fixList);
+    void slotGetLocation(QStringList &fixList);
 
     void slotCreateFlightTag(ATCFlight *flight);
     void slotUpdateFlightTag(ATCFlight *flight);
@@ -139,7 +139,7 @@ private slots:
     void slotDialogHandoffCloseOnClick();
 
     void slotDisplayRoute(ATCFlight *flight);
-    void slotDisplayRoute(QStringList fixList);
+    void slotDisplayRoute(QStringList &fixList);
     void slotClearRoute(ATCFlight *flight);
     void slotUpdateRoute(ATCFlight *flight);
 
@@ -271,6 +271,15 @@ private:
     void calculateAirwayHigh();
 
     void deleteRuler();
+
+    ATCRoutePrediction* constructPrediction(QStringList &fixList);      //To be used only when ATCFlight is unavailable
+    void displayRouteFixNames(ATCRoutePrediction *prediction);          //To be used only when ATCFlight is unavailable
+
+    void constructPrediction(ATCFlight *flight);
+    void displayRouteFixNames(ATCFlight *flight);
+    void displayRouteLevels(ATCFlight *flight);
+    void displayRouteETA(ATCFlight *flight);
+
 
     void createFlightTag(ATCFlight *flight);
 

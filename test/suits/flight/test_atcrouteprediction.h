@@ -11,7 +11,7 @@ class Test_ATCRoutePrediction : public QObject
     Q_OBJECT
 
 private slots:
-    void test_setPredictionType();
+    void test_setPredictionState();
     void test_getPolygon();
     void test_getLabels();
     void test_getTOC();

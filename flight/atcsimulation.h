@@ -45,6 +45,9 @@ public:
 signals:
     void signalUpdateTags();
     void signalDisplayRoute(ATCFlight *flight);
+    void signalUpdateRoute(ATCFlight *flight);
+    void signalClearRoute(ATCFlight *flight);
+
     void signalSetSimulationStartTime();
 
     void signalShowFlightTag(ATCFlightTag *tag);

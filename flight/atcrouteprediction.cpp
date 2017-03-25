@@ -16,12 +16,12 @@ ATCRoutePrediction::~ATCRoutePrediction()
     labels.clear();
 }
 
-PredictionType ATCRoutePrediction::getPredictionType()
+PredictionState ATCRoutePrediction::getPredictionState()
 {
     return type;
 }
 
-void ATCRoutePrediction::setPredictionType(PredictionType flag)
+void ATCRoutePrediction::setPredictionState(PredictionState flag)
 {
     type = flag;
 }
