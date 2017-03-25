@@ -111,6 +111,10 @@ public:
     double ROUTE_LABEL_HEIGHT;
     double ROUTE_LABEL_DX;
     double ROUTE_LABEL_DY;
+    double ROUTE_TOC_DIA;
+    QColor ROUTE_TOC_COLOR;
+    double ROUTE_TOD_DIA;
+    QColor ROUTE_TOD_COLOR;
 
     QColor RULER_END_COLOR;
     double RULER_END_DIA;

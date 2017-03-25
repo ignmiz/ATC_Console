@@ -439,6 +439,22 @@ void ATCSettings::interpretSymbologyFile(QString path)
                 {
                     ROUTE_LABEL_DY = stringList.at(1).trimmed().toDouble();
                 }
+                else if(stringList.at(0).trimmed() == "TOC DIAMETER")
+                {
+                    ROUTE_TOC_DIA = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "TOC COLOR")
+                {
+                    ROUTE_TOC_COLOR = colorFromString(stringList.at(1));
+                }
+                else if(stringList.at(0).trimmed() == "TOD DIAMETER")
+                {
+                    ROUTE_TOD_DIA = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "TOD COLOR")
+                {
+                    ROUTE_TOD_COLOR = colorFromString(stringList.at(1));
+                }
             }
             else if(flag == "[RULER]")
             {
@@ -623,6 +639,10 @@ void ATCSettings::exportSymbology(QString path)
     out << "LABEL HEIGHT = " << ROUTE_LABEL_HEIGHT << endl;
     out << "LABEL DX = " << ROUTE_LABEL_DX << endl;
     out << "LABEL DY = " << ROUTE_LABEL_DY << endl;
+    out << "TOC DIAMETER = " << ROUTE_TOC_DIA << endl;
+    out << "TOC COLOR = " << ROUTE_TOC_COLOR.red() << ", " << ROUTE_TOC_COLOR.green() << ", " << ROUTE_TOC_COLOR.blue() << endl;
+    out << "TOD DIAMETER = " << ROUTE_TOD_DIA << endl;
+    out << "TOD COLOR = " << ROUTE_TOD_COLOR.red() << ", " << ROUTE_TOD_COLOR.green() << ", " << ROUTE_TOD_COLOR.blue() << endl;
     out << endl;
 
     out << "[RULER]" << endl;
