@@ -658,12 +658,32 @@ void Test_ATCFlight::test_setTOC()
     QVERIFY(foo.getTOC() == 0.25);
 }
 
+void Test_ATCFlight::test_setTOCposition()
+{
+    ATCFlight foo;
+
+    QPair<double, double> p = QPair<double, double>(0.35, 0.25);
+    foo.setTOCposition(p);
+
+    QVERIFY(foo.getTOCposition() == p);
+}
+
 void Test_ATCFlight::test_setTOD()
 {
     ATCFlight foo;
 
     foo.setTOD(0.25);
     QVERIFY(foo.getTOD() == 0.25);
+}
+
+void Test_ATCFlight::test_setTODposition()
+{
+    ATCFlight foo;
+
+    QPair<double, double> p = QPair<double, double>(0.35, 0.25);
+    foo.setTODposition(p);
+
+    QVERIFY(foo.getTODposition() == p);
 }
 
 void Test_ATCFlight::test_setTopLevel()

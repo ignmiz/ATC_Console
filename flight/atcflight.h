@@ -174,8 +174,14 @@ public:
     void setTOC(double dst);
     double getTOC();
 
+    void setTOCposition(QPair<double, double> &pos);
+    QPair<double, double>& getTOCposition();
+
     void setTOD(double dst);
     double getTOD();
+
+    void setTODposition(QPair<double, double> &pos);
+    QPair<double, double>& getTODposition();
 
     void setTopLevel(double lvlM);
     double getTopLevel();
@@ -230,7 +236,7 @@ private:
     QString sid;
     QString star;
 
-    QVector<QPair<double, double>> waypoints; //Format: lat, lon
+    QVector<QPair<double, double>> waypoints;          //Format: lat, lon
     QVector<QPair<double, double>> projectedWaypoints; //Format: x, y
     int waypointIndex;
     bool dct = false;
@@ -256,8 +262,12 @@ private:
 
     double distanceToGo;
 
-    double TOC;
-    double TOD;
+    double TOC = 0;
+    QPair<double, double> TOCposition;  //Format: lat, lon
+
+    double TOD = 0;
+    QPair<double, double> TODposition;  //Format: lat, lon
+
     double topLevel;
 };
 

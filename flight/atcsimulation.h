@@ -104,7 +104,10 @@ private:
 
     double distanceTOC(ATCFlight *flight, double AFL, double CFL, double RFL);
     double distanceTOD(ATCFlight *flight, double RFL);
+
     void assignTOCandTOD(ATCFlight *flight);
+    void calculateTOCposition(ATCFlight *flight);
+    void calculateTODposition(ATCFlight *flight);
 
     void predictTrajectories();
 

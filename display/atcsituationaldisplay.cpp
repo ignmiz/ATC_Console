@@ -903,7 +903,12 @@ void ATCSituationalDisplay::slotDisplayRoute(ATCFlight *flight)
 {
     ATCRoutePrediction *prediction = flight->getRoutePrediction();
 
-    if(prediction != nullptr)
+    if(prediction == nullptr)
+    {
+        constructPrediction(flight);
+        displayRouteFixNames(flight);
+    }
+    else
     {
         PredictionState state = prediction->getPredictionState();
 
@@ -924,11 +929,6 @@ void ATCSituationalDisplay::slotDisplayRoute(ATCFlight *flight)
                 slotClearRoute(flight);
                 break;
         }
-    }
-    else
-    {
-        constructPrediction(flight);
-        displayRouteFixNames(flight);
     }
 }
 
@@ -3505,9 +3505,6 @@ void ATCSituationalDisplay::constructPrediction(ATCFlight *flight)
             prediction->appendLabel(label);
         }
 
-        //Calculate ToC & ToD predictions
-        //TBD
-
         //Pass ownership to ATCFlight
         flight->setRoutePrediction(prediction);
     }
@@ -3594,6 +3591,51 @@ void ATCSituationalDisplay::displayRouteFixNames(ATCFlight *flight)
 
                 currentScene->addItem(label);
             }
+
+            //Create & display ToC
+            double distanceToGo = flight->getDistanceToGo();
+            double ToC = flight->getTOC();
+
+            if((ToC < distanceToGo) && (ToC != 0))
+            {
+                //Create symbol
+                QPair<double, double> TOCposition = flight->getTOCposition();
+                QPointF TOClocal = ATCMath::geo2local(ATCMath::deg2rad(TOCposition.first), ATCMath::deg2rad(TOCposition.second), ATCConst::AVG_DECLINATION, sectorCentreX, sectorCentreY, scaleFactor);
+
+                QGraphicsEllipseItem *TOCsymbol = new QGraphicsEllipseItem(TOClocal.x() - settings->ROUTE_TOC_DIA / 2 / currentScale,
+                                                                     TOClocal.y() - settings->ROUTE_TOC_DIA / 2 / currentScale,
+                                                                     settings->ROUTE_TOC_DIA / currentScale,
+                                                                     settings->ROUTE_TOC_DIA / currentScale);
+
+                QBrush brush(settings->ROUTE_TOC_COLOR);
+                TOCsymbol->setBrush(brush);
+
+                prediction->setTOC(TOCsymbol);
+                currentScene->addItem(TOCsymbol);
+
+                //Create label
+
+                QGraphicsSimpleTextItem *TOClabel = new QGraphicsSimpleTextItem("TOC");
+
+                QBrush textBrush(Qt::white);
+                QFont textFont("Consolas");
+                textFont.setPointSizeF(settings->ROUTE_LABEL_HEIGHT / currentScale);
+
+                TOClabel->setBrush(textBrush);
+                TOClabel->setFont(textFont);
+                TOClabel->setPos(TOClocal.x() + settings->ROUTE_LABEL_DX / currentScale,
+                                 TOClocal.y() + settings->ROUTE_LABEL_DY / currentScale);
+
+                prediction->setLabelTOC(TOClabel);
+                currentScene->addItem(TOClabel);
+            }
+
+            //Create & display ToD
+            double ToD = flight->getTOD();
+            if(ToD < distanceToGo)
+            {
+
+            }
         }
         else
         {
@@ -3625,13 +3667,16 @@ void ATCSituationalDisplay::displayRouteLevels(ATCFlight *flight)
 
         if(flight->getNavMode() == ATC::Nav)
         {
+            //Display fix labels
             for(int i = 0; i < prediction->getLabels().size(); i++)
             {
-                //Here actual level display will be implemented
-
                 QGraphicsSimpleTextItem *label = labels.at(i);
                 label->setText("---");
             }
+
+            //Display ToC & ToD labels
+            QString topLevel = QString::number(ATCMath::m2ft(flight->getTopLevel()) / 100, 'f', 0).rightJustified(3, ' ');
+            prediction->getLabelTOC()->setText("TOC " + topLevel);
         }
         else
         {
@@ -3663,6 +3708,9 @@ void ATCSituationalDisplay::displayRouteETA(ATCFlight *flight)
                 QGraphicsSimpleTextItem *label = labels.at(i);
                 label->setText("--:--");
             }
+
+            //Display ToC & ToD labels
+            prediction->getLabelTOC()->setText("TOC --.--");
         }
         else
         {

@@ -49,7 +49,9 @@ private slots:
     void test_appendLegAngleChange();
     void test_setDistanceToGo();
     void test_setTOC();
+    void test_setTOCposition();
     void test_setTOD();
+    void test_setTODposition();
     void test_setTopLevel();
 };
 

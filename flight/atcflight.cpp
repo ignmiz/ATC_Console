@@ -503,6 +503,16 @@ double ATCFlight::getTOC()
     return TOC;
 }
 
+void ATCFlight::setTOCposition(QPair<double, double> &pos)
+{
+    TOCposition = pos;
+}
+
+QPair<double, double>& ATCFlight::getTOCposition()
+{
+    return TOCposition;
+}
+
 void ATCFlight::setTOD(double dst)
 {
     TOD = dst;
@@ -511,6 +521,16 @@ void ATCFlight::setTOD(double dst)
 double ATCFlight::getTOD()
 {
     return TOD;
+}
+
+void ATCFlight::setTODposition(QPair<double, double> &pos)
+{
+    TODposition = pos;
+}
+
+QPair<double, double> &ATCFlight::getTODposition()
+{
+    return TODposition;
 }
 
 void ATCFlight::setTopLevel(double lvlM)

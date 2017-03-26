@@ -1256,8 +1256,6 @@ void ATCSimulation::assignTOCandTOD(ATCFlight *flight)
     //Calculate Top of Descent, already expressed as distanceToGo
     double ToD = distanceTOD(flight, RFL);
 
-//    qDebug() << "ToC: " << ATCMath::m2nm(flight->getTOC()) << "ToD: " << ATCMath::m2nm(flight->getTOD());
-
     //Correct values, as needed
     while((ToC < ToD) && (RFL >= AFL) && (ToC != distanceToGo))
     {
@@ -1268,6 +1266,8 @@ void ATCSimulation::assignTOCandTOD(ATCFlight *flight)
         ToD = distanceTOD(flight, RFL);
     }
 
+    qDebug() << " ToC: " << ATCMath::m2nm(ToC) << " ToD: " << ATCMath::m2nm(ToD) << " RFL: " << ATCMath::m2ft(RFL);
+
     //Set values to flight
     flight->setTOC(ToC);
     flight->setTOD(ToD);
@@ -1275,6 +1275,51 @@ void ATCSimulation::assignTOCandTOD(ATCFlight *flight)
     flight->setTopLevel(RFL);
 
     if(flight->getRoutePrediction() != nullptr) emit signalUpdateRoute(flight);
+}
+
+void ATCSimulation::calculateTOCposition(ATCFlight *flight)
+{
+    double ToC = flight->getTOC();
+
+    //Determine route leg at which ToC exists
+    double distanceCounter = 0;
+    double index = -1;
+
+    for(int i = flight->getLegDistanceVectorSize() - 1; i >= 0; i--)
+    {
+        if(distanceCounter < ToC)
+        {
+            distanceCounter += flight->getLegDistance(i);   //BUGGED, NEED TO INCORPORATE DSTTONEXT
+        }
+        else
+        {
+            index = i;
+            break;
+        }
+    }
+
+    //Determine ToC (lat, lon) coordinates
+    if(index != -1)
+    {
+        GeographicLib::Geodesic geo = GeographicLib::Geodesic::WGS84();
+
+        QPair<double, double> WPfirstProj = flight->getProjectedWaypoint(index);
+        QPair<double, double> WPsecondProj = flight->getProjectedWaypoint(index + 1);
+
+        double azimuth = qAtan2(WPsecondProj.first - WPfirstProj.first, WPfirstProj.second - WPsecondProj.second);
+        azimuth = ATCMath::normalizeAngle(ATCMath::rad2deg(azimuth) + ATCConst::AVG_DECLINATION, ATC::Deg);
+
+        QPair<double, double> WPfirst = flight->getWaypoint(index);
+        QPair<double, double> TOCpos;
+
+        geo.Direct(WPfirst.first, WPfirst.second, azimuth, distanceCounter - ToC, TOCpos.first, TOCpos.second);
+        flight->setTOCposition(TOCpos);
+    }
+}
+
+void ATCSimulation::calculateTODposition(ATCFlight *flight)
+{
+
 }
 
 void ATCSimulation::predictTrajectories()
@@ -1293,6 +1338,7 @@ void ATCSimulation::predictTrajectories()
                     if(flight->getNavMode() == ATC::Nav)
                     {
                         assignTOCandTOD(flight);
+                        calculateTOCposition(flight);
                     }
 //                    qDebug() << "Iterator: " << predictorIterator << ", flight: " << flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber();
 

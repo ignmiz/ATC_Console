@@ -14,6 +14,11 @@ ATCRoutePrediction::~ATCRoutePrediction()
        delete labels.at(i);
     }
     labels.clear();
+
+    if(toc != nullptr) delete toc;
+    if(tocLabel != nullptr) delete tocLabel;
+    if(tod != nullptr) delete tod;
+    if(todLabel != nullptr) delete todLabel;
 }
 
 PredictionState ATCRoutePrediction::getPredictionState()
