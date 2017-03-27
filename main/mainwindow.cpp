@@ -192,6 +192,7 @@ void MainWindow::on_buttonList_clicked()
         connect(dialogFlightList, SIGNAL(closed()), this, SLOT(dialogFlightListClosed()));
         connect(dialogFlightList, SIGNAL(signalCreateDialogFlightPlan(ATCFlight*)), this, SLOT(slotCreateDialogFlightPlan(ATCFlight*)));
 
+        if(dialogFlightPlan != nullptr) connect(dialogFlightPlan, SIGNAL(signalUpdateFlightList()), dialogFlightList, SLOT(slotUpdateFlightList()));
         if(simController != nullptr) connect(simulation, SIGNAL(signalUpdateFlightList()), dialogFlightList, SLOT(slotUpdateFlightList()));
     }
 }
