@@ -238,6 +238,8 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             //Rebuild waypoints list
             flight->clearWaypoints();
             fixList = flight->getFixList();
+
+            bool foundWP = false;
             for(int i = 0; i < fixList.size(); i++)
             {
                 ATCNavFix *fix = nullptr;
@@ -282,11 +284,13 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
 
                 flight->appendWaypoint(QPair<double, double>(lat, lon));
                 flight->appendProjectedWaypoint(QPair<double, double>(x, y));
+
                 if(fixList.at(i) == flight->getNextFix())
                 {
                     flight->setWaypointIndex(i);
+                    foundWP = true;
                 }
-                else if(i == fixList.size() - 1) flight->setWaypointIndex(-1);
+                else if(!foundWP && (i == fixList.size() - 1)) flight->setWaypointIndex(-1);
             }
 
             //Assign leg distances and angle changes
@@ -397,8 +401,7 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             //Repaint route prediction
             if(flight->getRoutePrediction() != nullptr)
             {
-                flight->slotDisplayRoute();     //First call deletes existing route prediction
-                flight->slotDisplayRoute();     //Second call creates new, updated route prediction
+                emit flight->signalUpdateRoute(flight);
             }
         }
         else if(index.column() == 6)
@@ -441,6 +444,8 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             //Rebuild waypoints list
             flight->clearWaypoints();
             fixList = flight->getFixList();
+
+            bool foundWP = false;
             for(int i = 0; i < fixList.size(); i++)
             {
                 ATCNavFix *fix = nullptr;
@@ -485,11 +490,13 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
 
                 flight->appendWaypoint(QPair<double, double>(lat, lon));
                 flight->appendProjectedWaypoint(QPair<double, double>(x, y));
+
                 if(fixList.at(i) == flight->getNextFix())
                 {
                     flight->setWaypointIndex(i);
+                    foundWP = true;
                 }
-                else if(i == fixList.size() - 1) flight->setWaypointIndex(-1);
+                else if(!foundWP && (i == fixList.size() - 1)) flight->setWaypointIndex(-1);
             }
 
             //Assign leg distances and angle changes
@@ -600,8 +607,7 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             //Repaint route prediction
             if(flight->getRoutePrediction() != nullptr)
             {
-                flight->slotDisplayRoute();     //First call deletes existing route prediction
-                flight->slotDisplayRoute();     //Second call creates new, updated route prediction
+                emit flight->signalUpdateRoute(flight);
             }
         }
         else if(index.column() == 8)
@@ -710,6 +716,8 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             //Rebuild waypoints list
             flight->clearWaypoints();
             fixList = flight->getFixList();
+
+            bool foundWP = false;
             for(int i = 0; i < fixList.size(); i++)
             {
                 ATCNavFix *fix = nullptr;
@@ -754,11 +762,13 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
 
                 flight->appendWaypoint(QPair<double, double>(lat, lon));
                 flight->appendProjectedWaypoint(QPair<double, double>(x, y));
+
                 if(fixList.at(i) == flight->getNextFix())
                 {
                     flight->setWaypointIndex(i);
+                    foundWP = true;
                 }
-                else if(i == fixList.size() - 1) flight->setWaypointIndex(-1);
+                else if(!foundWP && (i == fixList.size() - 1)) flight->setWaypointIndex(-1);
             }
 
             //Assign leg distances and angle changes
@@ -869,8 +879,7 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             //Repaint route prediction
             if(flight->getRoutePrediction() != nullptr)
             {
-                flight->slotDisplayRoute();     //First call deletes existing route prediction
-                flight->slotDisplayRoute();     //Second call creates new, updated route prediction
+                emit flight->signalUpdateRoute(flight);
             }
         }
         else if(index.column() == 9)
@@ -913,6 +922,8 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             //Rebuild waypoints list
             flight->clearWaypoints();
             fixList = flight->getFixList();
+
+            bool foundWP = false;
             for(int i = 0; i < fixList.size(); i++)
             {
                 ATCNavFix *fix = nullptr;
@@ -957,11 +968,13 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
 
                 flight->appendWaypoint(QPair<double, double>(lat, lon));
                 flight->appendProjectedWaypoint(QPair<double, double>(x, y));
+
                 if(fixList.at(i) == flight->getNextFix())
                 {
                     flight->setWaypointIndex(i);
+                    foundWP = true;
                 }
-                else if(i == fixList.size() - 1) flight->setWaypointIndex(-1);
+                else if(!foundWP && (i == fixList.size() - 1)) flight->setWaypointIndex(-1);
             }
 
             //Assign leg distances and angle changes
@@ -1072,8 +1085,7 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
             //Repaint route prediction
             if(flight->getRoutePrediction() != nullptr)
             {
-                flight->slotDisplayRoute();     //First call deletes existing route prediction
-                flight->slotDisplayRoute();     //Second call creates new, updated route prediction
+                emit flight->signalUpdateRoute(flight);
             }
         }
     }

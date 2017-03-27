@@ -711,6 +711,7 @@ void ATCSituationalDisplay::slotCreateFlightTag(ATCFlight *flight)
 
     connect(tagBox, SIGNAL(signalDisplayRoute()), flight, SLOT(slotDisplayRoute()));
     connect(flight, SIGNAL(signalDisplayRoute(ATCFlight*)), this, SLOT(slotDisplayRoute(ATCFlight*)));
+    connect(flight, SIGNAL(signalUpdateRoute(ATCFlight*)), this, SLOT(slotUpdateRoute(ATCFlight*)));
     connect(flight, SIGNAL(signalClearRoute(ATCFlight*)), this, SLOT(slotClearRoute(ATCFlight*)));
 
     connect(flight, SIGNAL(signalClearFlightElements(ATCFlight*)), this, SLOT(slotClearFlightElements(ATCFlight*)));
