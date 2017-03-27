@@ -650,6 +650,14 @@ void Test_ATCFlight::test_setDistanceToGo()
     QVERIFY(foo.getDistanceToGo() == 0.25);
 }
 
+void Test_ATCFlight::test_setDistanceToNext()
+{
+    ATCFlight foo;
+
+    foo.setDistanceToNext(0.25);
+    QVERIFY(foo.getDistanceToNext() == 0.25);
+}
+
 void Test_ATCFlight::test_setTOC()
 {
     ATCFlight foo;

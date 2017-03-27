@@ -855,6 +855,8 @@ void ATCSimulation::assignContinuousState(ATCFlight *flight, ISA &isa, Geographi
             }
         }
 
+        flight->setDistanceToNext(dstToNext);
+
         if(dataLogged)
         {
             appendToLogBuffer(buffer, QString::number(ATCMath::m2nm(xtrackError), 'f', 3).rightJustified(7, '0'));
@@ -1282,19 +1284,28 @@ void ATCSimulation::calculateTOCposition(ATCFlight *flight)
     double ToC = flight->getTOC();
 
     //Determine route leg at which ToC exists
-    double distanceCounter = 0;
-    double index = -1;
+    double distanceToGo = flight->getDistanceToGo();
+    double distanceToNext = flight->getDistanceToNext();
+    double distanceCounter = distanceToGo;
 
-    for(int i = flight->getLegDistanceVectorSize() - 1; i >= 0; i--)
+    int index = -1;
+    int waypointIndex = flight->getWaypointIndex();
+
+    if(distanceCounter > ToC)
     {
-        if(distanceCounter < ToC)
+        distanceCounter -= distanceToNext;
+
+        for(int i = waypointIndex; i < flight->getLegDistanceVectorSize(); i++)
         {
-            distanceCounter += flight->getLegDistance(i);   //BUGGED, NEED TO INCORPORATE DSTTONEXT
-        }
-        else
-        {
-            index = i;
-            break;
+            if(distanceCounter > ToC)
+            {
+                distanceCounter -= flight->getLegDistance(i);
+            }
+            else
+            {
+                index = i;
+                break;
+            }
         }
     }
 
@@ -1303,16 +1314,23 @@ void ATCSimulation::calculateTOCposition(ATCFlight *flight)
     {
         GeographicLib::Geodesic geo = GeographicLib::Geodesic::WGS84();
 
-        QPair<double, double> WPfirstProj = flight->getProjectedWaypoint(index);
-        QPair<double, double> WPsecondProj = flight->getProjectedWaypoint(index + 1);
+        QPair<double, double> WPfirstProj;
+        if(index == waypointIndex)
+        {
+            QPointF diamondPos = flight->getFlightTag()->getDiamondPosition();
+            WPfirstProj = QPair<double, double>(diamondPos.x(), diamondPos.y());
+        }
+        else WPfirstProj = flight->getProjectedWaypoint(index - 1);
 
-        double azimuth = qAtan2(WPsecondProj.first - WPfirstProj.first, WPfirstProj.second - WPsecondProj.second);
+        QPair<double, double> WPsecondProj = flight->getProjectedWaypoint(index);
+
+        double azimuth = qAtan2(WPfirstProj.first - WPsecondProj.first, WPsecondProj.second - WPfirstProj.second);
         azimuth = ATCMath::normalizeAngle(ATCMath::rad2deg(azimuth) + ATCConst::AVG_DECLINATION, ATC::Deg);
 
-        QPair<double, double> WPfirst = flight->getWaypoint(index);
+        QPair<double, double> WPsecond = flight->getWaypoint(index);
         QPair<double, double> TOCpos;
 
-        geo.Direct(WPfirst.first, WPfirst.second, azimuth, distanceCounter - ToC, TOCpos.first, TOCpos.second);
+        geo.Direct(WPsecond.first, WPsecond.second, azimuth, ToC - distanceCounter, TOCpos.first, TOCpos.second);
         flight->setTOCposition(TOCpos);
     }
 }

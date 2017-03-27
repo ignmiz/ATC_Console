@@ -493,6 +493,16 @@ double ATCFlight::getDistanceToGo()
     return distanceToGo;
 }
 
+void ATCFlight::setDistanceToNext(double dst)
+{
+    distanceToNext = dst;
+}
+
+double ATCFlight::getDistanceToNext()
+{
+    return distanceToNext;
+}
+
 void ATCFlight::setTOC(double dst)
 {
     TOC = dst;

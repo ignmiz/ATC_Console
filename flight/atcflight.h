@@ -171,6 +171,9 @@ public:
     void setDistanceToGo(double dst);
     double getDistanceToGo();
 
+    void setDistanceToNext(double dst);
+    double getDistanceToNext();
+
     void setTOC(double dst);
     double getTOC();
 
@@ -261,6 +264,7 @@ private:
     QVector<double> legAngleChanges;
 
     double distanceToGo;
+    double distanceToNext = 0;
 
     double TOC = 0;
     QPair<double, double> TOCposition;  //Format: lat, lon

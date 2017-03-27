@@ -3596,7 +3596,7 @@ void ATCSituationalDisplay::displayRouteFixNames(ATCFlight *flight)
             double distanceToGo = flight->getDistanceToGo();
             double ToC = flight->getTOC();
 
-            if((ToC < distanceToGo) && (ToC != 0))
+            if((ToC != 0) && (ToC < distanceToGo))
             {
                 //Create symbol
                 QPair<double, double> TOCposition = flight->getTOCposition();
@@ -3675,8 +3675,11 @@ void ATCSituationalDisplay::displayRouteLevels(ATCFlight *flight)
             }
 
             //Display ToC & ToD labels
-            QString topLevel = QString::number(ATCMath::m2ft(flight->getTopLevel()) / 100, 'f', 0).rightJustified(3, ' ');
-            prediction->getLabelTOC()->setText("TOC " + topLevel);
+            if(prediction->getLabelTOC() != nullptr)
+            {
+                QString topLevel = QString::number(ATCMath::m2ft(flight->getTopLevel()) / 100, 'f', 0).rightJustified(3, ' ');
+                prediction->getLabelTOC()->setText("TOC " + topLevel);
+            }
         }
         else
         {
@@ -3710,7 +3713,7 @@ void ATCSituationalDisplay::displayRouteETA(ATCFlight *flight)
             }
 
             //Display ToC & ToD labels
-            prediction->getLabelTOC()->setText("TOC --.--");
+            if(prediction->getLabelTOC() != nullptr) prediction->getLabelTOC()->setText("TOC --.--");
         }
         else
         {
