@@ -50,6 +50,22 @@ private:
 
     bool routeValid = false;
 
+    struct
+    {
+        QString dep;
+        QString des;
+        QString alt;
+        QStringList route;
+    } temp;
+
+    void getFlightPlanSnapshot();
+
+    bool isSIDchanged();
+    bool isSTARchanged();
+    bool isADEPchanged();
+    bool isADESchanged();
+    bool isAALTchanged();
+
     bool verifyForm();
     bool validateRoute();
     void errorMessage(QString msg);

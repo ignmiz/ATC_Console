@@ -13,6 +13,8 @@ DialogFlightPlan::DialogFlightPlan(ATCFlight *flight, ATCAirspace *airspace, ATC
     uiInner->setupUi(this);
     windowSetup();
 
+    getFlightPlanSnapshot();
+
     for(int i = 0; i < flightFactory->getAircraftTypeFactory().getTypeVectorSize(); i++)
     {
         QString type = flightFactory->getAircraftTypeFactory().getType(i)->getAcType().ICAOcode;
@@ -541,19 +543,43 @@ void DialogFlightPlan::on_buttonOK_clicked()
         QTime fuelTime = uiInner->timeEditFuelTime->time();
         flight->getFlightPlan()->setFuelTime(fuelTime);
 
+        //Check changes in route
+        bool SIDchanged = isSIDchanged();
+        bool STARchanged = isSTARchanged();
+        bool ADEPchanged = isADEPchanged();
+        bool ADESchanged = isADESchanged();
+
         //Reset sid and star
-        flight->setSID("");
-        flight->setSTAR("");
+        if(SIDchanged) flight->setSID("");
+        if(STARchanged) flight->setSTAR("");
 
         //Flight - fix list
         QStringList fixList;
+        ATCProcedureSID *sid = airspace->findSID(flight->getSID());
+        ATCProcedureSTAR *star = airspace->findSTAR(flight->getSTAR());
 
         fixList.append(departure);
+
+        if(sid != nullptr)
+        {
+            for(int i = 0; i < sid->getFixListSize(); i++)
+            {
+                if(sid->getFixName(i) != routeStr.at(0)) fixList.append(sid->getFixName(i));
+            }
+        }
 
         for(int i = 0; i < model->rowCount(); i++)
         {
             QString fix = model->data(model->index(i, 1), Qt::DisplayRole).toString();
             if(fix != "DCT") fixList.append(fix);
+        }
+
+        if(star != nullptr)
+        {
+            for(int i = 0; i < star->getFixListSize(); i++)
+            {
+                if(star->getFixName(i) != routeStr.last()) fixList.append(star->getFixName(i));
+            }
         }
 
         fixList.append(destination);
@@ -564,6 +590,8 @@ void DialogFlightPlan::on_buttonOK_clicked()
         //Rebuild waypoints list
         flight->clearWaypoints();
         fixList = flight->getFixList();
+        bool foundWP = false;
+
         for(int i = 0; i < fixList.size(); i++)
         {
             ATCNavFix *fix = nullptr;
@@ -611,8 +639,9 @@ void DialogFlightPlan::on_buttonOK_clicked()
             if(fixList.at(i) == flight->getNextFix())
             {
                 flight->setWaypointIndex(i);
+                foundWP = true;
             }
-            else if(i == fixList.size() - 1) flight->setWaypointIndex(-1);
+            else if(!foundWP && (i == fixList.size() - 1)) flight->setWaypointIndex(-1);
         }
 
         //Assign leg distances and angle changes
@@ -718,17 +747,27 @@ void DialogFlightPlan::on_buttonOK_clicked()
         flight->setAssignedSquawk(uiInner->lineEditSquawk->text());
 
         //Assign departure & destination runway
-        QVector<ActiveAirport> activeAirports = simulation->getActiveRunways()->getActiveAirports();
-
-        flight->setRunwayDeparture("");
-        flight->setRunwayDestination("");
-
-        for(int i = 0; i < activeAirports.size(); i++)
+        if(ADEPchanged || ADESchanged)
         {
-            ActiveAirport current = activeAirports.at(i);
+            QVector<ActiveAirport> activeAirports = simulation->getActiveRunways()->getActiveAirports();
 
-            if((departure == current.airportCode) && (!current.depRwys.isEmpty())) flight->setRunwayDeparture(current.depRwys.at(0));
-            if((destination == current.airportCode) && (!current.arrRwys.isEmpty())) flight->setRunwayDestination(current.arrRwys.at(0));
+            if(ADEPchanged) flight->setRunwayDeparture("");
+            if(ADESchanged) flight->setRunwayDestination("");
+
+            for(int i = 0; i < activeAirports.size(); i++)
+            {
+                ActiveAirport current = activeAirports.at(i);
+
+                if(ADEPchanged)
+                {
+                    if((departure == current.airportCode) && (!current.depRwys.isEmpty())) flight->setRunwayDeparture(current.depRwys.at(0));
+                }
+
+                if(ADESchanged)
+                {
+                    if((destination == current.airportCode) && (!current.arrRwys.isEmpty())) flight->setRunwayDestination(current.arrRwys.at(0));
+                }
+            }
         }
 
         //Modify callsign on data tag
@@ -770,6 +809,50 @@ void DialogFlightPlan::on_buttonCancel_clicked()
 {
     emit closed();
     close();
+}
+
+void DialogFlightPlan::getFlightPlanSnapshot()
+{
+    ATCRoute route(flight->getFlightPlan()->getRoute());
+
+    temp.dep = route.getDeparture();
+    temp.des = route.getDestination();
+    temp.alt = route.getAlternate();
+    temp.route = route.getRoute();
+}
+
+bool DialogFlightPlan::isSIDchanged()
+{
+    QString depUI = uiInner->lineEditDeparture->text();
+    QString firstFix = uiInner->plainTextEditRoute->toPlainText().split(' ', QString::SkipEmptyParts).at(0);
+
+    return ((depUI != temp.dep) || (firstFix != temp.route.at(0)));
+}
+
+bool DialogFlightPlan::isSTARchanged()
+{
+    QString desUI = uiInner->lineEditDestination->text();
+    QString lastFix = uiInner->plainTextEditRoute->toPlainText().split(' ', QString::SkipEmptyParts).last();
+
+    return ((desUI != temp.des) || (lastFix != temp.route.last()));
+}
+
+bool DialogFlightPlan::isADEPchanged()
+{
+    QString depUI = uiInner->lineEditDeparture->text();
+    return (depUI != temp.dep);
+}
+
+bool DialogFlightPlan::isADESchanged()
+{
+    QString desUI = uiInner->lineEditDestination->text();
+    return (desUI != temp.des);
+}
+
+bool DialogFlightPlan::isAALTchanged()
+{
+    QString altUI = uiInner->lineEditAlternate->text();
+    return (altUI != temp.alt);
 }
 
 bool DialogFlightPlan::verifyForm()
