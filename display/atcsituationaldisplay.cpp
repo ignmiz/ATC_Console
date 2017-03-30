@@ -3597,7 +3597,7 @@ void ATCSituationalDisplay::displayRouteFixNames(ATCFlight *flight)
             double distanceToGo = flight->getDistanceToGo();
             double ToC = flight->getTOC();
 
-            if((ToC != 0) && (ToC < distanceToGo))
+            if((ToC != 0) && (ToC < distanceToGo) && flight->hasAccuratePrediction())
             {
                 //Create symbol
                 QPair<double, double> TOCposition = flight->getTOCposition();
@@ -3615,7 +3615,6 @@ void ATCSituationalDisplay::displayRouteFixNames(ATCFlight *flight)
                 currentScene->addItem(TOCsymbol);
 
                 //Create label
-
                 QGraphicsSimpleTextItem *TOClabel = new QGraphicsSimpleTextItem("TOC");
 
                 QBrush textBrush(Qt::white);

@@ -150,7 +150,9 @@ void DialogRoute::slotClicked(const QModelIndex &index)
         flight->setGlidePath(false);
     }
 
+    flight->setAccuratePredictionFlag(false);
     if(flight->getRoutePrediction() != nullptr) emit signalUpdateRoute(flight);
+
     emit signalClosed();
     close();
 }

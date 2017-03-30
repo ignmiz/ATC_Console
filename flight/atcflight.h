@@ -168,6 +168,9 @@ public:
     void appendLegAngleChange(double chng);
     void clearLegAngleChanges();
 
+    bool hasAccuratePrediction();
+    void setAccuratePredictionFlag(bool flag);
+
     void setDistanceToGo(double dst);
     double getDistanceToGo();
 
@@ -263,6 +266,8 @@ private:
 
     QVector<double> legDistances;
     QVector<double> legAngleChanges;
+
+    bool accuratePrediction = false;
 
     double distanceToGo;
     double distanceToNext = 0;

@@ -47,6 +47,7 @@ private slots:
     void test_setProfileDescent();
     void test_appendLegDistance();
     void test_appendLegAngleChange();
+    void test_setAccuratePredictionFlag();
     void test_setDistanceToGo();
     void test_setDistanceToNext();
     void test_setTOC();

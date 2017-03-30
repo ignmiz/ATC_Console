@@ -1275,8 +1275,6 @@ void ATCSimulation::assignTOCandTOD(ATCFlight *flight)
     flight->setTOD(ToD);
 
     flight->setTopLevel(RFL);
-
-    if(flight->getRoutePrediction() != nullptr) emit signalUpdateRoute(flight);
 }
 
 void ATCSimulation::calculateTOCposition(ATCFlight *flight)
@@ -1357,6 +1355,9 @@ void ATCSimulation::predictTrajectories()
                     {
                         assignTOCandTOD(flight);
                         calculateTOCposition(flight);
+
+                        flight->setAccuratePredictionFlag(true);
+                        if(flight->getRoutePrediction() != nullptr) emit signalUpdateRoute(flight);
                     }
 //                    qDebug() << "Iterator: " << predictorIterator << ", flight: " << flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber();
 

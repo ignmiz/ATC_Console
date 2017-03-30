@@ -483,6 +483,16 @@ void ATCFlight::clearLegAngleChanges()
     legAngleChanges.clear();
 }
 
+bool ATCFlight::hasAccuratePrediction()
+{
+    return accuratePrediction;
+}
+
+void ATCFlight::setAccuratePredictionFlag(bool flag)
+{
+    accuratePrediction = flag;
+}
+
 void ATCFlight::setDistanceToGo(double dst)
 {
     distanceToGo = dst;
