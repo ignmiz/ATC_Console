@@ -1335,7 +1335,63 @@ void ATCSimulation::calculateTOCposition(ATCFlight *flight)
 
 void ATCSimulation::calculateTODposition(ATCFlight *flight)
 {
+    double ToD = flight->getTOD();
 
+    //Determine route leg at which ToD exists
+    double distanceToNext = flight->getDistanceToNext();
+    double distanceCounter = 0;
+
+    int index = -1;
+    int waypointIndex = flight->getWaypointIndex();
+    int i = flight->getLegDistanceVectorSize() - 1;
+
+    if(distanceCounter < ToD)
+    {
+        while(i >= waypointIndex)
+        {
+            if(distanceCounter < ToD)
+            {
+                distanceCounter += flight->getLegDistance(i);
+                i--;
+            }
+            else
+            {
+                index = i;
+                break;
+            }
+        }
+
+        if(index == -1)
+        {
+            distanceCounter += distanceToNext;
+            if(distanceCounter > ToD) index = waypointIndex;
+        }
+    }
+
+    //Determine ToD (lat, lon) coordinates
+    if(index != -1)
+    {
+        GeographicLib::Geodesic geo = GeographicLib::Geodesic::WGS84();
+
+        QPair<double, double> WPfirstProj;
+        if(index == waypointIndex)
+        {
+            QPointF diamondPos = flight->getFlightTag()->getDiamondPosition();
+            WPfirstProj = QPair<double, double>(diamondPos.x(), diamondPos.y());
+        }
+        else WPfirstProj = flight->getProjectedWaypoint(index);
+
+        QPair<double, double> WPsecondProj = flight->getProjectedWaypoint(index + 1);
+
+        double azimuth = qAtan2(WPfirstProj.first - WPsecondProj.first, WPsecondProj.second - WPfirstProj.second);
+        azimuth = ATCMath::normalizeAngle(ATCMath::rad2deg(azimuth) + ATCConst::AVG_DECLINATION, ATC::Deg);
+
+        QPair<double, double> WPfirst = flight->getWaypoint(index);
+        QPair<double, double> TODpos;
+
+        geo.Direct(WPfirst.first, WPfirst.second, azimuth, distanceCounter - ToD, TODpos.first, TODpos.second);
+        flight->setTODposition(TODpos);
+    }
 }
 
 void ATCSimulation::predictTrajectories()
@@ -1355,6 +1411,7 @@ void ATCSimulation::predictTrajectories()
                     {
                         assignTOCandTOD(flight);
                         calculateTOCposition(flight);
+                        calculateTODposition(flight);
 
                         flight->setAccuratePredictionFlag(true);
                         if(flight->getRoutePrediction() != nullptr) emit signalUpdateRoute(flight);

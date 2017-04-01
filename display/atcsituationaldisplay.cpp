@@ -3632,9 +3632,37 @@ void ATCSituationalDisplay::displayRouteFixNames(ATCFlight *flight)
 
             //Create & display ToD
             double ToD = flight->getTOD();
-            if(ToD < distanceToGo)
+            if((ToD != 0) && (ToD < distanceToGo) && flight->hasAccuratePrediction())
             {
+                //Create symbol
+                QPair<double, double> TODposition = flight->getTODposition();
+                QPointF TODlocal = ATCMath::geo2local(ATCMath::deg2rad(TODposition.first), ATCMath::deg2rad(TODposition.second), ATCConst::AVG_DECLINATION, sectorCentreX, sectorCentreY, scaleFactor);
 
+                QGraphicsEllipseItem *TODsymbol = new QGraphicsEllipseItem(TODlocal.x() - settings->ROUTE_TOD_DIA / 2 / currentScale,
+                                                                           TODlocal.y() - settings->ROUTE_TOD_DIA / 2 / currentScale,
+                                                                           settings->ROUTE_TOD_DIA / currentScale,
+                                                                           settings->ROUTE_TOD_DIA / currentScale);
+
+                QBrush brush(settings->ROUTE_TOD_COLOR);
+                TODsymbol->setBrush(brush);
+
+                prediction->setTOD(TODsymbol);
+                currentScene->addItem(TODsymbol);
+
+                //Create label
+                QGraphicsSimpleTextItem *TODlabel = new QGraphicsSimpleTextItem("TOD");
+
+                QBrush textBrush(Qt::white);
+                QFont textFont("Consolas");
+                textFont.setPointSizeF(settings->ROUTE_LABEL_HEIGHT / currentScale);
+
+                TODlabel->setBrush(textBrush);
+                TODlabel->setFont(textFont);
+                TODlabel->setPos(TODlocal.x() + settings->ROUTE_LABEL_DX / currentScale,
+                                 TODlocal.y() + settings->ROUTE_LABEL_DY / currentScale);
+
+                prediction->setLabelTOD(TODlabel);
+                currentScene->addItem(TODlabel);
             }
         }
         else
@@ -3675,11 +3703,10 @@ void ATCSituationalDisplay::displayRouteLevels(ATCFlight *flight)
             }
 
             //Display ToC & ToD labels
-            if(prediction->getLabelTOC() != nullptr)
-            {
-                QString topLevel = QString::number(ATCMath::m2ft(flight->getTopLevel()) / 100, 'f', 0).rightJustified(3, ' ');
-                prediction->getLabelTOC()->setText("TOC " + topLevel);
-            }
+            QString topLevel = QString::number(ATCMath::m2ft(flight->getTopLevel()) / 100, 'f', 0).rightJustified(3, ' ');
+
+            if(prediction->getLabelTOC() != nullptr) prediction->getLabelTOC()->setText("TOC " + topLevel);
+            if(prediction->getLabelTOD() != nullptr) prediction->getLabelTOD()->setText("TOD " + topLevel);
         }
         else
         {
@@ -3714,6 +3741,7 @@ void ATCSituationalDisplay::displayRouteETA(ATCFlight *flight)
 
             //Display ToC & ToD labels
             if(prediction->getLabelTOC() != nullptr) prediction->getLabelTOC()->setText("TOC --.--");
+            if(prediction->getLabelTOD() != nullptr) prediction->getLabelTOD()->setText("TOD --.--");
         }
         else
         {
