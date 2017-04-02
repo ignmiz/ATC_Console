@@ -63,6 +63,7 @@ private slots:
     void on_buttonLeaderLine_clicked();
     void on_buttonTrailingDots_clicked();
     void on_buttonList_clicked();
+    void on_buttonRunway_clicked();
 
     void dialogMainMenuClosed();
     void dialogSectorSetupClosed();

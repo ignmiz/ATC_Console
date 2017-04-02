@@ -21,6 +21,8 @@ MainWindow::MainWindow(ATCFlightFactory *flightFactory, QWidget *parent) :
     airspaceData = ui->situationalDisplay->getAirspaceData();
     settings = ui->situationalDisplay->getSettings();
 
+    ui->buttonRunway->setEnabled(false);
+
     mainWindowSetup();
     setSituationalDisplayFocus();
 }
@@ -196,6 +198,14 @@ void MainWindow::on_buttonList_clicked()
         if(dialogFlightPlan != nullptr) connect(dialogFlightPlan, SIGNAL(signalUpdateFlightList()), dialogFlightList, SLOT(slotUpdateFlightList()));
         if(simController != nullptr) connect(simulation, SIGNAL(signalUpdateFlightList()), dialogFlightList, SLOT(slotUpdateFlightList()));
     }
+}
+
+void MainWindow::on_buttonRunway_clicked()
+{
+    dialogActiveRunways = new DialogActiveRunways(airspaceData, simulation->getActiveRunways(), this);
+    dialogActiveRunways->show();
+
+    connect(dialogActiveRunways, SIGNAL(closed()), this, SLOT(slotCloseDialogActiveRunways()));
 }
 
 void MainWindow::dialogMainMenuClosed()
@@ -411,7 +421,7 @@ void MainWindow::slotConstructDialogActiveRunways(ATC::SimCreationMode m)
 void MainWindow::slotCloseDialogActiveRunways()
 {
     dialogActiveRunways = nullptr;
-    dialogFlight->show();
+    if(dialogFlight != nullptr) dialogFlight->show();
 }
 
 void MainWindow::slotImportScenario()
@@ -828,6 +838,9 @@ void MainWindow::slotStartSimulation()
             dialogFlightList->setSimulation(simulation);
             connect(simulation, SIGNAL(signalUpdateFlightList()), dialogFlightList, SLOT(slotUpdateFlightList()));
         }
+
+        //Enable runways button
+        ui->buttonRunway->setEnabled(true);
     }
 }
 
@@ -859,6 +872,9 @@ void MainWindow::slotPauseSimulation()
 
         //Delete trailing dots
         ui->situationalDisplay->deleteTrailingDots();
+
+        //Disable runways button
+        ui->buttonRunway->setEnabled(false);
     }
 }
 
@@ -901,6 +917,9 @@ void MainWindow::slotStopSimulation()
         dialogFlightList->clearFlightList();
         dialogFlightList->setSimulation(simulation);
     }
+
+    //Disable runways button
+    ui->buttonRunway->setEnabled(false);
 }
 
 void MainWindow::slotSetSimulationStartTime()
