@@ -87,5 +87,10 @@ namespace BADA
     };
 }
 
+enum class PredictionPhase
+{
+    Climb, Cruise, Descent
+};
+
 
 #endif // ATCFLAGS_H

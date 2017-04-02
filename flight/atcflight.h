@@ -13,11 +13,6 @@
 #include <QObject>
 #include <QPair>
 
-enum class PredictionPhase
-{
-    Climb, Cruise, Descent
-};
-
 struct State
 {
     double x;
