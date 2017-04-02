@@ -1268,8 +1268,6 @@ void ATCSimulation::assignTOCandTOD(ATCFlight *flight)
         ToD = distanceTOD(flight, RFL);
     }
 
-    qDebug() << " ToC: " << ATCMath::m2nm(ToC) << " ToD: " << ATCMath::m2nm(ToD) << " RFL: " << ATCMath::m2ft(RFL);
-
     //Set values to flight
     flight->setTOC(ToC);
     flight->setTOD(ToD);
@@ -1338,33 +1336,28 @@ void ATCSimulation::calculateTODposition(ATCFlight *flight)
     double ToD = flight->getTOD();
 
     //Determine route leg at which ToD exists
+    double distanceToGo = flight->getDistanceToGo();
     double distanceToNext = flight->getDistanceToNext();
-    double distanceCounter = 0;
+    double distanceCounter = distanceToGo;
 
     int index = -1;
     int waypointIndex = flight->getWaypointIndex();
-    int i = flight->getLegDistanceVectorSize() - 1;
 
-    if(distanceCounter < ToD)
+    if(distanceCounter > ToD)
     {
-        while(i >= waypointIndex)
+        distanceCounter -= distanceToNext;
+
+        for(int i = waypointIndex; i < flight->getLegDistanceVectorSize(); i++)
         {
-            if(distanceCounter < ToD)
+            if(distanceCounter > ToD)
             {
-                distanceCounter += flight->getLegDistance(i);
-                i--;
+                distanceCounter -= flight->getLegDistance(i);
             }
             else
             {
                 index = i;
                 break;
             }
-        }
-
-        if(index == -1)
-        {
-            distanceCounter += distanceToNext;
-            if(distanceCounter > ToD) index = waypointIndex;
         }
     }
 
@@ -1379,17 +1372,17 @@ void ATCSimulation::calculateTODposition(ATCFlight *flight)
             QPointF diamondPos = flight->getFlightTag()->getDiamondPosition();
             WPfirstProj = QPair<double, double>(diamondPos.x(), diamondPos.y());
         }
-        else WPfirstProj = flight->getProjectedWaypoint(index);
+        else WPfirstProj = flight->getProjectedWaypoint(index - 1);
 
-        QPair<double, double> WPsecondProj = flight->getProjectedWaypoint(index + 1);
+        QPair<double, double> WPsecondProj = flight->getProjectedWaypoint(index);
 
         double azimuth = qAtan2(WPfirstProj.first - WPsecondProj.first, WPsecondProj.second - WPfirstProj.second);
         azimuth = ATCMath::normalizeAngle(ATCMath::rad2deg(azimuth) + ATCConst::AVG_DECLINATION, ATC::Deg);
 
-        QPair<double, double> WPfirst = flight->getWaypoint(index);
+        QPair<double, double> WPsecond = flight->getWaypoint(index);
         QPair<double, double> TODpos;
 
-        geo.Direct(WPfirst.first, WPfirst.second, azimuth, distanceCounter - ToD, TODpos.first, TODpos.second);
+        geo.Direct(WPsecond.first, WPsecond.second, azimuth, ToD - distanceCounter, TODpos.first, TODpos.second);
         flight->setTODposition(TODpos);
     }
 }
@@ -1416,7 +1409,7 @@ void ATCSimulation::predictTrajectories()
                         flight->setAccuratePredictionFlag(true);
                         if(flight->getRoutePrediction() != nullptr) emit signalUpdateRoute(flight);
                     }
-//                    qDebug() << "Iterator: " << predictorIterator << ", flight: " << flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber();
+//                    qDebug() << "Iterator: " << predictorIterator << ", flight: " << flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber() << " ToC: " << ATCMath::m2nm(flight->getTOC()) << " ToD: " << ATCMath::m2nm(flight->getTOD()) << " RFL: " << ATCMath::m2ft(flight->getTopLevel());;
 
                     predictorIterator++;
                     break;
