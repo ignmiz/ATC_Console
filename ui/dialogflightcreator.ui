@@ -934,6 +934,66 @@ QScrollBar::sub-page:vertical
        <number>359</number>
       </property>
      </widget>
+     <widget class="QLabel" name="labelPredictionPhase">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>180</y>
+        <width>120</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Pred. Phase:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBoxPredictionPhase">
+      <property name="geometry">
+       <rect>
+        <x>410</x>
+        <y>180</y>
+        <width>120</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QComboBox
+{
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #141414;
+	font: 13px;
+}
+
+QComboBox QAbstractItemView
+{	
+	color: #c8c8c8;
+	background-color: #1e1e1e;
+    selection-background-color: #060064;
+	font: 13px;
+}</string>
+      </property>
+      <item>
+       <property name="text">
+        <string>CLIMB</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>CRUISE</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>DESCENT</string>
+       </property>
+      </item>
+     </widget>
     </widget>
     <widget class="QGroupBox" name="groupBoxNavType">
      <property name="geometry">

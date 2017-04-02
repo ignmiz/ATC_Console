@@ -254,6 +254,22 @@ void DialogFlightCreator::on_buttonOK_clicked()
         flight->setSID(uiInner->comboBoxSID->currentText());
         flight->setSTAR(uiInner->comboBoxSTAR->currentText());
 
+        //Set prediction phase
+        QString phase = uiInner->comboBoxPredictionPhase->currentText();
+
+        if(phase == "CLIMB")
+        {
+            flight->setPredictionPhase(PredictionPhase::Climb);
+        }
+        else if(phase == "CRUISE")
+        {
+            flight->setPredictionPhase(PredictionPhase::Cruise);
+        }
+        else
+        {
+            flight->setPredictionPhase(PredictionPhase::Descent);
+        }
+
         //Append flight to simulation
         simulation->appendFlight(flight);
 
@@ -471,6 +487,22 @@ void DialogFlightCreator::on_buttonOK_clicked()
         flight->setRunwayDestination(uiInner->comboBoxRwyDes->currentText());
         flight->setSID(uiInner->comboBoxSID->currentText());
         flight->setSTAR(uiInner->comboBoxSTAR->currentText());
+
+        //Set prediction phase
+        QString phase = uiInner->comboBoxPredictionPhase->currentText();
+
+        if(phase == "CLIMB")
+        {
+            flight->setPredictionPhase(PredictionPhase::Climb);
+        }
+        else if(phase == "CRUISE")
+        {
+            flight->setPredictionPhase(PredictionPhase::Cruise);
+        }
+        else
+        {
+            flight->setPredictionPhase(PredictionPhase::Descent);
+        }
 
         emit signalUpdateFlightTag(flight);
         emit signalUpdateFlightList(flight);
@@ -1170,6 +1202,21 @@ void DialogFlightCreator::formSetup(ATCFlight *flight)
         uiInner->comboBoxRwyDes->setCurrentText(flight->getRunwayDestination());
         uiInner->comboBoxSID->setCurrentText(flight->getSID());
         uiInner->comboBoxSTAR->setCurrentText(flight->getSTAR());
+
+        switch(flight->getPredictionPhase())
+        {
+            case PredictionPhase::Climb:
+                uiInner->comboBoxPredictionPhase->setCurrentText("CLIMB");
+                break;
+
+            case PredictionPhase::Cruise:
+                uiInner->comboBoxPredictionPhase->setCurrentText("CRUISE");
+                break;
+
+            case PredictionPhase::Descent:
+                uiInner->comboBoxPredictionPhase->setCurrentText("DESCENT");
+                break;
+        }
     }
 }
 

@@ -687,6 +687,23 @@ void MainWindow::slotImportScenario(QString path)
                 {
                     stringList.at(1).trimmed() == "1" ? flight->setFinalApp(true) : flight->setFinalApp(false);
                 }
+                else if(stringList.at(0).trimmed() == "PREDICTION PHASE")
+                {
+                    QString phase = stringList.at(1).trimmed();
+
+                    if(phase == "CLIMB")
+                    {
+                        flight->setPredictionPhase(PredictionPhase::Climb);
+                    }
+                    else if(phase == "CRUISE")
+                    {
+                        flight->setPredictionPhase(PredictionPhase::Cruise);
+                    }
+                    else
+                    {
+                        flight->setPredictionPhase(PredictionPhase::Descent);
+                    }
+                }
             }
 
         }
@@ -791,6 +808,22 @@ void MainWindow::slotExportScenario()
             out << "STAR = " << (current->getSTAR().isEmpty() ? "" : current->getSTAR()) << endl;
             out << "CLD FINAL APP = " << (current->isCldFinalApp() ? "1" : "0") << endl;
             out << "FINAL APP = " << (current->isFinalApp() ? "1" : "0") << endl;
+
+            switch(current->getPredictionPhase())
+            {
+                case PredictionPhase::Climb:
+                    out << "PREDICTION PHASE = CLIMB" << endl;
+                    break;
+
+                case PredictionPhase::Cruise:
+                    out << "PREDICTION PHASE = CRUISE" << endl;
+                    break;
+
+                case PredictionPhase::Descent:
+                    out << "PREDICTION PHASE = DESCENT" << endl;
+                    break;
+            }
+
             out << endl;
         }
         out << endl;
