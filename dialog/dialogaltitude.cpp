@@ -61,6 +61,7 @@ void DialogAltitude::slotClicked(const QModelIndex &index)
         }
     }
 
+    emit signalUpdateFlightList(flight);
     emit signalClosed();
     close();
 }

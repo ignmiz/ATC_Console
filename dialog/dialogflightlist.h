@@ -28,6 +28,7 @@ signals:
 
 public slots:
     void slotUpdateFlightList();
+    void slotUpdateFlightList(ATCFlight *flight);
 
 private slots:
     ATC_MOUSE_HANDLER

@@ -762,6 +762,7 @@ void ATCSituationalDisplay::slotCreateDialogAltitude(ATCFlight *flight, QPoint p
 
     QTimer::singleShot(100, this, SLOT(slotDialogAltitudeCloseOnClick()));
     connect(dialogAltitude, SIGNAL(signalClosed()), this, SLOT(slotDialogAltitudeClosed()));
+    connect(dialogAltitude, SIGNAL(signalUpdateFlightList(ATCFlight*)), this, SLOT(slotUpdateFlightList(ATCFlight*)));
 }
 
 void ATCSituationalDisplay::slotDialogAltitudeClosed()
@@ -1122,6 +1123,11 @@ void ATCSituationalDisplay::slotUpdateTrailingDots()
             }
         }
     }
+}
+
+void ATCSituationalDisplay::slotUpdateFlightList(ATCFlight *flight)
+{
+    emit signalUpdateFlightList(flight);
 }
 
 void ATCSituationalDisplay::slotItemHovered(bool flag)

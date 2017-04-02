@@ -62,6 +62,7 @@ public:
 signals:
     void signalDisplayClicked(double x, double y);
     void signalShowFlightCreator();
+    void signalUpdateFlightList(ATCFlight *flight);
 
 public slots:
     void slotSetColorSectorARTCCLow(QColor color);
@@ -146,6 +147,8 @@ private slots:
     void slotUpdateTags();
     void slotUpdateLeaders();
     void slotUpdateTrailingDots();
+
+    void slotUpdateFlightList(ATCFlight *flight);
 
     void slotItemHovered(bool flag);
 

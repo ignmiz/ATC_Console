@@ -50,6 +50,26 @@ void DialogFlightList::slotUpdateFlightList()
     fillFlightList();
 }
 
+void DialogFlightList::slotUpdateFlightList(ATCFlight *flight)
+{
+    //Find and delete old instance
+    for(int i = 0; i < model->rowCount(); i++)
+    {
+        QString callsign = flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber();
+        if(model->index(i, 0).data() == callsign)
+        {
+            model->removeRow(i);
+            break;
+        }
+    }
+
+    //Update row
+    if(flight->isSimulated()) appendRow(flight, model);
+
+    //Sort
+    model->sort(0, Qt::AscendingOrder);
+}
+
 void DialogFlightList::on_tableViewList_clicked(const QModelIndex &index)
 {
     ATCFlight *flight = simulation->getFlight(model->index(index.row(), 0).data().toString());

@@ -20,6 +20,7 @@ public:
     ~DialogAltitude();
 
 signals:
+    void signalUpdateFlightList(ATCFlight *flight);
     void signalClosed();
 
 private slots:
