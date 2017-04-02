@@ -667,6 +667,14 @@ void Test_ATCFlight::test_setDistanceToNext()
     QVERIFY(foo.getDistanceToNext() == 0.25);
 }
 
+void Test_ATCFlight::test_setPredictionPhase()
+{
+    ATCFlight foo;
+
+    foo.setPredictionPhase(PredictionPhase::Descent);
+    QVERIFY(foo.getPredictionPhase() == PredictionPhase::Descent);
+}
+
 void Test_ATCFlight::test_setTOC()
 {
     ATCFlight foo;

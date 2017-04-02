@@ -513,6 +513,16 @@ double ATCFlight::getDistanceToNext()
     return distanceToNext;
 }
 
+void ATCFlight::setPredictionPhase(PredictionPhase p)
+{
+    predictionPhase = p;
+}
+
+PredictionPhase ATCFlight::getPredictionPhase()
+{
+    return predictionPhase;
+}
+
 void ATCFlight::setTOC(double dst)
 {
     TOC = dst;

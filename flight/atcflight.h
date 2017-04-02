@@ -13,6 +13,11 @@
 #include <QObject>
 #include <QPair>
 
+enum class PredictionPhase
+{
+    Climb, Cruise, Descent
+};
+
 struct State
 {
     double x;
@@ -177,6 +182,9 @@ public:
     void setDistanceToNext(double dst);
     double getDistanceToNext();
 
+    void setPredictionPhase(PredictionPhase p);
+    PredictionPhase getPredictionPhase();
+
     void setTOC(double dst);
     double getTOC();
 
@@ -271,6 +279,8 @@ private:
 
     double distanceToGo;
     double distanceToNext = 0;
+
+    PredictionPhase predictionPhase;
 
     double TOC = 0;
     QPair<double, double> TOCposition;  //Format: lat, lon

@@ -50,6 +50,7 @@ private slots:
     void test_setAccuratePredictionFlag();
     void test_setDistanceToGo();
     void test_setDistanceToNext();
+    void test_setPredictionPhase();
     void test_setTOC();
     void test_setTOCposition();
     void test_setTOD();
