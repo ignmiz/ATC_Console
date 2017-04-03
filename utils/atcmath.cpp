@@ -907,6 +907,15 @@ BADA::AccelerationMode ATCMath::assignAM(double tasMPS, double tasNomMPS)
     return BADA::ErrorAM;
 }
 
+PredictionPhase ATCMath::assignPredictionPhase(double CFL, double RFL, BADA::ClimbMode cm, PredictionPhase currentPP)
+{
+    if(cm == BADA::Climb) return PredictionPhase::Climb;
+    if((cm == BADA::Level) && (CFL == RFL)) return PredictionPhase::Cruise;
+    if(cm == BADA::Descend) return PredictionPhase::Descent;
+
+    return currentPP;
+}
+
 double ATCMath::mercatorProjectionLon(double longitudeDeg, double referenceLongitudeDeg, double scale)
 {
     return scale * (longitudeDeg - referenceLongitudeDeg);

@@ -100,6 +100,8 @@ public:
     static BADA::TroposphereMode assignTRM(double currentAltM);
     static BADA::AccelerationMode assignAM(double tasMPS, double tasNomMPS);
 
+    static PredictionPhase assignPredictionPhase(double CFL, double RFL, BADA::ClimbMode cm, PredictionPhase currentPP);
+
     //Transformations & projections
     static double mercatorProjectionLon(double longitudeDeg, double referenceLongitudeDeg = 0, double scale = ATCConst::WGS84_A);
     static double mercatorProjectionLat(double latitudeDeg, double scale = ATCConst::WGS84_A);

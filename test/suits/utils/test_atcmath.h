@@ -85,6 +85,8 @@ private slots:
     void test_assignTRM();
     void test_assignAM();
 
+    void test_assignPredictionPhase();
+
     void test_mercatorProjectionLon();
     void test_mercatorProjectionLat();
 

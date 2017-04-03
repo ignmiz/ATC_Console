@@ -905,6 +905,29 @@ void Test_ATCMath::test_assignAM()
     QVERIFY(ATCMath::assignAM(5, 10) == BADA::Accelerate);
 }
 
+void Test_ATCMath::test_assignPredictionPhase()
+{
+    //Test target: PredictionPhase::Climb
+    QVERIFY(ATCMath::assignPredictionPhase(5, 10, BADA::Climb, PredictionPhase::Climb) == PredictionPhase::Climb);
+    QVERIFY(ATCMath::assignPredictionPhase(12, 10, BADA::Climb, PredictionPhase::Climb) == PredictionPhase::Climb);
+    QVERIFY(ATCMath::assignPredictionPhase(10, 10, BADA::Climb, PredictionPhase::Cruise) == PredictionPhase::Climb);
+    QVERIFY(ATCMath::assignPredictionPhase(5, 10, BADA::Climb, PredictionPhase::Descent) == PredictionPhase::Climb);
+    QVERIFY(ATCMath::assignPredictionPhase(5, 10, BADA::Level, PredictionPhase::Climb) == PredictionPhase::Climb);
+    QVERIFY(ATCMath::assignPredictionPhase(12, 10, BADA::Level, PredictionPhase::Climb) == PredictionPhase::Climb);
+
+    //Test target: PredictionPhase::Cruise
+    QVERIFY(ATCMath::assignPredictionPhase(10, 10, BADA::Level, PredictionPhase::Climb) == PredictionPhase::Cruise);
+    QVERIFY(ATCMath::assignPredictionPhase(10, 10, BADA::Level, PredictionPhase::Cruise) == PredictionPhase::Cruise);
+    QVERIFY(ATCMath::assignPredictionPhase(10, 10, BADA::Level, PredictionPhase::Descent) == PredictionPhase::Cruise);
+
+    //Test target: PredictionPhase::Descent
+    QVERIFY(ATCMath::assignPredictionPhase(5, 10, BADA::Level, PredictionPhase::Descent) == PredictionPhase::Descent);
+    QVERIFY(ATCMath::assignPredictionPhase(5, 10, BADA::Descend, PredictionPhase::Climb) == PredictionPhase::Descent);
+    QVERIFY(ATCMath::assignPredictionPhase(10, 10, BADA::Descend, PredictionPhase::Climb) == PredictionPhase::Descent);
+    QVERIFY(ATCMath::assignPredictionPhase(5, 10, BADA::Descend, PredictionPhase::Cruise) == PredictionPhase::Descent);
+    QVERIFY(ATCMath::assignPredictionPhase(5, 10, BADA::Descend, PredictionPhase::Descent) == PredictionPhase::Descent);
+}
+
 void Test_ATCMath::test_mercatorProjectionLon()
 {
     QVERIFY(ATCMath::mercatorProjectionLon(10, 0, 2) == 20);
