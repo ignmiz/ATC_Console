@@ -754,6 +754,13 @@ void ATCSimulation::assignDiscreteState(ATCFlight *flight, ISA &isa, QString &bu
 
     flight->setState(state);
 
+    //Assign prediction phase
+    double CFL = ATCMath::ft2m(flight->getTargetAltitude().right(3).toDouble() * 100);
+    double RFL = ATCMath::ft2m(flight->getFlightPlan()->getAltitude().right(3).toDouble() * 100);
+
+    flight->setPredictionPhase(ATCMath::assignPredictionPhase(CFL, RFL, state.cm, flight->getPredictionPhase()));
+
+    //Log data to buffer
     if(dataLogged)
     {
         appendToLogBuffer(buffer, QString::number(state.cm));
