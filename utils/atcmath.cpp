@@ -910,7 +910,7 @@ BADA::AccelerationMode ATCMath::assignAM(double tasMPS, double tasNomMPS)
 PredictionPhase ATCMath::assignPredictionPhase(double CFL, double RFL, BADA::ClimbMode cm, PredictionPhase currentPP)
 {
     if(cm == BADA::Climb) return PredictionPhase::Climb;
-    if((cm == BADA::Level) && (CFL == RFL)) return PredictionPhase::Cruise;
+    if((cm == BADA::Level) && (CFL >= RFL)) return PredictionPhase::Cruise;
     if(cm == BADA::Descend) return PredictionPhase::Descent;
 
     return currentPP;

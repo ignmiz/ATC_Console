@@ -913,11 +913,11 @@ void Test_ATCMath::test_assignPredictionPhase()
     QVERIFY(ATCMath::assignPredictionPhase(10, 10, BADA::Climb, PredictionPhase::Cruise) == PredictionPhase::Climb);
     QVERIFY(ATCMath::assignPredictionPhase(5, 10, BADA::Climb, PredictionPhase::Descent) == PredictionPhase::Climb);
     QVERIFY(ATCMath::assignPredictionPhase(5, 10, BADA::Level, PredictionPhase::Climb) == PredictionPhase::Climb);
-    QVERIFY(ATCMath::assignPredictionPhase(12, 10, BADA::Level, PredictionPhase::Climb) == PredictionPhase::Climb);
 
     //Test target: PredictionPhase::Cruise
     QVERIFY(ATCMath::assignPredictionPhase(10, 10, BADA::Level, PredictionPhase::Climb) == PredictionPhase::Cruise);
     QVERIFY(ATCMath::assignPredictionPhase(10, 10, BADA::Level, PredictionPhase::Cruise) == PredictionPhase::Cruise);
+    QVERIFY(ATCMath::assignPredictionPhase(12, 10, BADA::Level, PredictionPhase::Climb) == PredictionPhase::Cruise);
     QVERIFY(ATCMath::assignPredictionPhase(10, 10, BADA::Level, PredictionPhase::Descent) == PredictionPhase::Cruise);
 
     //Test target: PredictionPhase::Descent
