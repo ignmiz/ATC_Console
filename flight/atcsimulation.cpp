@@ -1243,7 +1243,7 @@ double ATCSimulation::distanceTOD(ATCFlight *flight, double RFL)
 
     //Calculate total distance from runway threshold (assumed to be at 0ft) to RFL
     //ILS interception assumed to be at 3000ft, with 2.5nm level buffer
-    double appDistance = ATCMath::ft2m(ATCConst::APP_TYPICAL_INTERCEPT_ALT) / qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE));
+    double appDistance = ATCConst::APP_TYPICAL_INTERCEPT_ALT / qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE));
     double lvlDistance = ATCConst::TRAJECTORY_TOD_APP_LVL_BUFFER;
     double dstRFLtoIntercept = profile->distanceInterval(RFL, ATCConst::APP_TYPICAL_INTERCEPT_ALT);
 
@@ -1256,30 +1256,64 @@ void ATCSimulation::assignTOCandTOD(ATCFlight *flight)
     double AFL = flight->getState().h;
     double CFL = ATCMath::ft2m(flight->getTargetAltitude().right(3).toDouble() * 100);
     double RFL = ATCMath::ft2m(flight->getFlightPlan()->getAltitude().right(3).toDouble() * 100);
-
     double distanceToGo = flight->getDistanceToGo();
 
-    //Calculate Top of Climb, transform to distanceToGo
-    double ToC = distanceToGo - distanceTOC(flight, AFL, CFL, RFL);
+    PredictionPhase phase = flight->getPredictionPhase();
+    BADA::ClimbMode cm = flight->getState().cm;
 
-    //Calculate Top of Descent, already expressed as distanceToGo
-    double ToD = distanceTOD(flight, RFL);
+    //Declare ToC & ToD
+    double ToC;
+    double ToD;
 
-    //Correct values, as needed
-    while((ToC < ToD) && (RFL >= AFL) && (ToC != distanceToGo))
+    //Assign ToC & ToD based on prediction phase and flight parameters
+    switch(phase)
     {
-        RFL -= ATCMath::ft2m(2000);
-        CFL -= ATCMath::ft2m(2000);
+        case PredictionPhase::Climb:
+            //TOC prediction @ CFL and TOD prediction @ CFL or RFL, whichever is higher
+            //if in level flight below RFL: TOD @ RFL
+            if(cm == BADA::Climb)
+            {
+                ToC = distanceToGo - distanceTOC(flight, AFL, CFL, CFL);
+                ToD = distanceTOD(flight, (CFL <= RFL) ? RFL : CFL);
 
-        ToC = distanceToGo - distanceTOC(flight, AFL, CFL, RFL);
-        ToD = distanceTOD(flight, RFL);
+                flight->setTOClevel(CFL);
+                flight->setTODlevel((CFL <= RFL) ? RFL : CFL);
+            }
+            else if((cm == BADA::Level) && (AFL < RFL))
+            {
+                ToC = 0;
+                ToD = distanceTOD(flight, RFL);
+
+                flight->setTOClevel(0);
+                flight->setTODlevel(RFL);
+            }
+
+            break;
+
+        case PredictionPhase::Cruise:
+            //Only TOD prediction @ CFL
+            ToC = 0;
+            ToD = distanceTOD(flight, CFL);
+
+            flight->setTOClevel(0);
+            flight->setTODlevel(CFL);
+
+            break;
+
+        case PredictionPhase::Descent:
+            //Only TOD prediction @ CFL
+            ToC = 0;
+            ToD = distanceTOD(flight, CFL);
+
+            flight->setTOClevel(0);
+            flight->setTODlevel(CFL);
+
+            break;
     }
 
     //Set values to flight
     flight->setTOC(ToC);
     flight->setTOD(ToD);
-
-    flight->setTopLevel(RFL);
 }
 
 void ATCSimulation::calculateTOCposition(ATCFlight *flight)
@@ -1416,7 +1450,7 @@ void ATCSimulation::predictTrajectories()
                         flight->setAccuratePredictionFlag(true);
                         if(flight->getRoutePrediction() != nullptr) emit signalUpdateRoute(flight);
                     }
-//                    qDebug() << "Iterator: " << predictorIterator << ", flight: " << flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber() << " ToC: " << ATCMath::m2nm(flight->getTOC()) << " ToD: " << ATCMath::m2nm(flight->getTOD()) << " RFL: " << ATCMath::m2ft(flight->getTopLevel());;
+//                    qDebug() << "Iterator: " << predictorIterator << ", flight: " << flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber() << " ToC: " << ATCMath::m2nm(flight->getTOC()) << " TOClevel: " << ATCMath::m2ft(flight->getTOClevel()) << " ToD: " << ATCMath::m2nm(flight->getTOD()) << " TODlevel: " << ATCMath::m2ft(flight->getTODlevel());
 
                     predictorIterator++;
                     break;
