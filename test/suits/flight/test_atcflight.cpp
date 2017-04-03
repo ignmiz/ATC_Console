@@ -693,6 +693,15 @@ void Test_ATCFlight::test_setTOCposition()
     QVERIFY(foo.getTOCposition() == p);
 }
 
+void Test_ATCFlight::test_setTOClevel()
+{
+    ATCFlight foo;
+
+    foo.setTOClevel(300);
+    QVERIFY(foo.getTOClevel() == 300);
+}
+
+
 void Test_ATCFlight::test_setTOD()
 {
     ATCFlight foo;
@@ -711,11 +720,12 @@ void Test_ATCFlight::test_setTODposition()
     QVERIFY(foo.getTODposition() == p);
 }
 
-void Test_ATCFlight::test_setTopLevel()
+void Test_ATCFlight::test_setTODlevel()
 {
     ATCFlight foo;
 
-    foo.setTopLevel(300);
-    QVERIFY(foo.getTopLevel() == 300);
+    foo.setTODlevel(300);
+    QVERIFY(foo.getTODlevel() == 300);
 }
+
 

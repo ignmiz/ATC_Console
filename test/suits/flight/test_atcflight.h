@@ -53,9 +53,10 @@ private slots:
     void test_setPredictionPhase();
     void test_setTOC();
     void test_setTOCposition();
+    void test_setTOClevel();
     void test_setTOD();
     void test_setTODposition();
-    void test_setTopLevel();
+    void test_setTODlevel();
 };
 
 #endif // TEST_ATCFLIGHT_H

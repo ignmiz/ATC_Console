@@ -543,6 +543,16 @@ QPair<double, double>& ATCFlight::getTOCposition()
     return TOCposition;
 }
 
+void ATCFlight::setTOClevel(double lvlM)
+{
+    TOClevel = lvlM;
+}
+
+double ATCFlight::getTOClevel()
+{
+    return TOClevel;
+}
+
 void ATCFlight::setTOD(double dst)
 {
     TOD = dst;
@@ -563,14 +573,14 @@ QPair<double, double> &ATCFlight::getTODposition()
     return TODposition;
 }
 
-void ATCFlight::setTopLevel(double lvlM)
+void ATCFlight::setTODlevel(double lvlM)
 {
-    topLevel = lvlM;
+    TODlevel = lvlM;
 }
 
-double ATCFlight::getTopLevel()
+double ATCFlight::getTODlevel()
 {
-    return topLevel;
+    return TODlevel;
 }
 
 void ATCFlight::slotCreateDialogAltitude(QPoint point)

@@ -186,14 +186,17 @@ public:
     void setTOCposition(QPair<double, double> &pos);
     QPair<double, double>& getTOCposition();
 
+    void setTOClevel(double lvlM);
+    double getTOClevel();
+
     void setTOD(double dst);
     double getTOD();
 
     void setTODposition(QPair<double, double> &pos);
     QPair<double, double>& getTODposition();
 
-    void setTopLevel(double lvlM);
-    double getTopLevel();
+    void setTODlevel(double lvlM);
+    double getTODlevel();
 
 signals:
     void signalCreateDialogAltitude(ATCFlight *flight, QPoint point);
@@ -279,11 +282,11 @@ private:
 
     double TOC = 0;
     QPair<double, double> TOCposition;  //Format: lat, lon
+    double TOClevel;
 
     double TOD = 0;
     QPair<double, double> TODposition;  //Format: lat, lon
-
-    double topLevel;
+    double TODlevel;
 };
 
 #endif // ATCFLIGHT_H
