@@ -198,6 +198,16 @@ public:
     void setTODlevel(double lvlM);
     double getTODlevel();
 
+    void setWaypointLevels(QVector<QString> &vector);
+    QVector<QString>& getWaypointLevels();
+    QString getWaypointLevel(int i);
+    int getWaypointLevelsVectorSize();
+
+    void setWaypointTimes(QVector<QTime> &vector);
+    QVector<QTime>& getWaypointTimes();
+    QTime getWaypointTime(int i);
+    int getWaypointTimesVectorSize();
+
 signals:
     void signalCreateDialogAltitude(ATCFlight *flight, QPoint point);
     void signalCreateDialogSpeed(ATCFlight *flight, QPoint point);
@@ -287,6 +297,9 @@ private:
     double TOD = 0;
     QPair<double, double> TODposition;  //Format: lat, lon
     double TODlevel;
+
+    QVector<QString> waypointLevels;
+    QVector<QTime> waypointTimes;
 };
 
 #endif // ATCFLIGHT_H

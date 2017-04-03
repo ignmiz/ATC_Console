@@ -583,6 +583,46 @@ double ATCFlight::getTODlevel()
     return TODlevel;
 }
 
+void ATCFlight::setWaypointLevels(QVector<QString> &vector)
+{
+    waypointLevels = vector;
+}
+
+QVector<QString> &ATCFlight::getWaypointLevels()
+{
+    return waypointLevels;
+}
+
+QString ATCFlight::getWaypointLevel(int i)
+{
+    return waypointLevels.at(i);
+}
+
+int ATCFlight::getWaypointLevelsVectorSize()
+{
+    return waypointLevels.size();
+}
+
+void ATCFlight::setWaypointTimes(QVector<QTime> &vector)
+{
+    waypointTimes = vector;
+}
+
+QVector<QTime> &ATCFlight::getWaypointTimes()
+{
+    return waypointTimes;
+}
+
+QTime ATCFlight::getWaypointTime(int i)
+{
+    return waypointTimes.at(i);
+}
+
+int ATCFlight::getWaypointTimesVectorSize()
+{
+    return waypointTimes.size();
+}
+
 void ATCFlight::slotCreateDialogAltitude(QPoint point)
 {
     emit signalCreateDialogAltitude(this, point);

@@ -728,4 +728,45 @@ void Test_ATCFlight::test_setTODlevel()
     QVERIFY(foo.getTODlevel() == 300);
 }
 
+void Test_ATCFlight::test_setWaypointLevels()
+{
+    ATCFlight foo;
+
+    QVector<QString> levels;
+    levels << "230";
+    levels << "150";
+
+    QVERIFY(foo.getWaypointLevelsVectorSize() == 0);
+
+    foo.setWaypointLevels(levels);
+    QVERIFY(foo.getWaypointLevelsVectorSize() == 2);
+
+    QVERIFY(foo.getWaypointLevel(0) == "230");
+    QVERIFY(foo.getWaypointLevel(1) == "150");
+
+    QVERIFY(foo.getWaypointLevels() == levels);
+}
+
+void Test_ATCFlight::test_setWaypointTimes()
+{
+    ATCFlight foo;
+
+    QVector<QTime> times;
+    QTime t1 = QTime(1, 30, 15);
+    QTime t2 = QTime(3, 10, 20);
+
+    times << t1;
+    times << t2;
+
+    QVERIFY(foo.getWaypointTimesVectorSize() == 0);
+
+    foo.setWaypointTimes(times);
+    QVERIFY(foo.getWaypointTimesVectorSize() == 2);
+
+    QVERIFY(foo.getWaypointTime(0) == t1);
+    QVERIFY(foo.getWaypointTime(1) == t2);
+
+    QVERIFY(foo.getWaypointTimes() == times);
+}
+
 

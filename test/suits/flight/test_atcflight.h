@@ -57,6 +57,8 @@ private slots:
     void test_setTOD();
     void test_setTODposition();
     void test_setTODlevel();
+    void test_setWaypointLevels();
+    void test_setWaypointTimes();
 };
 
 #endif // TEST_ATCFLIGHT_H
