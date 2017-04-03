@@ -3709,10 +3709,11 @@ void ATCSituationalDisplay::displayRouteLevels(ATCFlight *flight)
             }
 
             //Display ToC & ToD labels
-            QString topLevel = QString::number(ATCMath::m2ft(flight->getTopLevel()) / 100, 'f', 0).rightJustified(3, ' ');
+            QString TOClevel = QString::number(ATCMath::m2ft(flight->getTOClevel()) / 100, 'f', 0).rightJustified(3, '0');
+            QString TODlevel = QString::number(ATCMath::m2ft(flight->getTODlevel()) / 100, 'f', 0).rightJustified(3, '0');
 
-            if(prediction->getLabelTOC() != nullptr) prediction->getLabelTOC()->setText("TOC " + topLevel);
-            if(prediction->getLabelTOD() != nullptr) prediction->getLabelTOD()->setText("TOD " + topLevel);
+            if(prediction->getLabelTOC() != nullptr) prediction->getLabelTOC()->setText("TOC " + TOClevel);
+            if(prediction->getLabelTOD() != nullptr) prediction->getLabelTOD()->setText("TOD " + TODlevel);
         }
         else
         {
