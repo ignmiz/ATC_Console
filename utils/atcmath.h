@@ -54,6 +54,9 @@ public:
     static double min(double a, double b);
     static double max(double a, double b);
 
+    template <typename T>
+    static void inverseQVector(QVector<T> &v);
+
     //Simulation Functions
     static ISA atmosISA(double h);
 
@@ -122,5 +125,19 @@ public:
     static QPointF local2geo(double x, double y, double avgDeclinationDeg, double sectorCentreX, double sectorCentreY, double scaleFactor, double scale = ATCConst::WGS84_A, double refLon = 0, double error = 1e-8);
     static QPointF rotatePoint(QPointF pt, double angle, ATC::AngularUnits units);
 };
+
+template<typename T> void ATCMath::inverseQVector(QVector<T> &v)
+{
+    int size = v.size();
+    int middle = qFloor(v.size() / 2);
+
+    for(int i = 0; i < middle; i++)
+    {
+        T tmp = v[i];
+
+        v[i] = v[size - 1 - i];
+        v[size - 1 - i] = tmp;
+    }
+}
 
 #endif // ATCMATH_H

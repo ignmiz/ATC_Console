@@ -1025,4 +1025,3 @@ QPointF ATCMath::rotatePoint(QPointF pt, double angle, ATC::AngularUnits units)
 
     return(QPointF(x, y));
 }
-

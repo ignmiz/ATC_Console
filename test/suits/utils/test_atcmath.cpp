@@ -145,6 +145,29 @@ void Test_ATCMath::test_max()
     QVERIFY(ATCMath::max(5, 3) == 5);
 }
 
+void Test_ATCMath::test_inverseQVector()
+{
+    QVector<int> vector;
+    QVector<int> invVector;
+
+    //Even elements number test
+    vector << 0 << 1 << 2 << 3;
+    invVector << 3 << 2 << 1 << 0;
+
+    ATCMath::inverseQVector(vector);
+    QVERIFY(vector == invVector);
+
+    //Odd elements number test
+    vector.clear();
+    invVector.clear();
+
+    vector << 0 << 1 << 2 << 3 << 4;
+    invVector << 4 << 3 << 2 << 1 << 0;
+
+    ATCMath::inverseQVector(vector);
+    QVERIFY(vector == invVector);
+}
+
 void Test_ATCMath::test_atmosISA()
 {
     double errorA = 1E-5;
