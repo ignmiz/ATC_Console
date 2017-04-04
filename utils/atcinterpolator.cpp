@@ -19,7 +19,7 @@ ATCInterpolator::ATCInterpolator(const ATCInterpolator &other)
 {
     xBreakpoints = other.xBreakpoints;
     yValues = other.yValues;
-    userParams = other.userParams;
+    userParams = {&xBreakpoints, &yValues, other.userParams.type};
 
     if(!validateConstructionArgs()) return;
     initializeTask();
@@ -107,7 +107,7 @@ ATCInterpolator &ATCInterpolator::operator=(ATCInterpolator const &other)
 
     xBreakpoints = other.xBreakpoints;
     yValues = other.yValues;
-    userParams = other.userParams;
+    userParams = {&xBreakpoints, &yValues, other.userParams.type};
 
     if(!validateConstructionArgs()) return *this;
     initializeTask();
