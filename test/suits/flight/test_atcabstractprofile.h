@@ -15,6 +15,8 @@ private slots:
     void test_setDistanceExtrapolationType();
     void test_timeInterval();
     void test_distanceInterval();
+    void test_mixedTimeInterval();
+    void test_mixedDistanceInterval();
 };
 
 #endif // TEST_ATCABSTRACTPROFILE_H

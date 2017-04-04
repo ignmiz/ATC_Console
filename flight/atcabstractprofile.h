@@ -21,6 +21,11 @@ public:
     double timeInterval(double lvlFrom, double lvlTo);
     double distanceInterval(double lvlFrom, double lvlTo);
 
+    double mixedTimeInterval(double lvlFrom, double interval);
+    QVector<double> mixedTimeInterval(double lvlFrom, QVector<double> &intervals);
+    double mixedDistanceInterval(double lvlFrom, double interval);
+    QVector<double> mixedDistanceInterval(double lvlFrom, QVector<double> &intervals);
+
 private:
     QVector<double> levels;
     QVector<double> time;
@@ -29,7 +34,13 @@ private:
     ATCInterpolator timeInterpolator;
     ATCInterpolator distanceInterpolator;
 
+    ATCInterpolator inverseTimeInterpolator;
+    ATCInterpolator inverseDistanceInterpolator;
+
     double interval(ATCInterpolator &interpolator, double lvlFrom, double lvlTo);
+
+    double mixedInterval(ATCInterpolator &interpolator, ATCInterpolator &inverseInterpolator, double lvlFrom, double interval);
+    QVector<double> mixedInterval(ATCInterpolator &interpolator, ATCInterpolator &inverseInterpolator, double lvlFrom, QVector<double> &intervals);
 };
 
 #endif // ATCABSTRACTPROFILE_H
