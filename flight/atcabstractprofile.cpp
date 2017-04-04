@@ -6,11 +6,15 @@ ATCAbstractProfile::ATCAbstractProfile(QVector<double> &levels, QVector<double> 
     time(time),
     distance(distance),
     timeInterpolator(levels, time, type),
-    distanceInterpolator(levels, distance, type),
-    inverseTimeInterpolator(time, levels, type),
-    inverseDistanceInterpolator(distance, levels, type)
+    distanceInterpolator(levels, distance, type)
 {
+    //Inverse interpolators need to be implemented in derived classes due breakpoints sequence limitation
+}
 
+void ATCAbstractProfile::initializeInverseInterpolators(ATCInterpolator &invTime, ATCInterpolator &invDst)
+{
+    inverseTimeInterpolator = invTime;
+    inverseDistanceInterpolator = invDst;
 }
 
 ATCAbstractProfile::~ATCAbstractProfile()

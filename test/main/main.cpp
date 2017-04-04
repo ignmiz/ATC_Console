@@ -42,6 +42,8 @@
 #include "test_atcrouteprediction.h"
 #include "test_atcactiverunways.h"
 #include "test_atcabstractprofile.h"
+#include "test_atcprofileclimb.h"
+#include "test_atcprofiledescent.h"
 
 //----------Submodule: utils----------
 #include "test_atcmath.h"
@@ -98,6 +100,8 @@ int main(int argc, char *argv[])
     Test_ATCRoutePrediction test_ATCRoutePrediction;
     Test_ATCActiveRunways test_ATCActiveRunways;
     Test_ATCAbstractProfile test_ATCAbstractProfile;
+    Test_ATCProfileClimb test_ATCProfileClimb;
+    Test_ATCProfileDescent test_ATCProfileDescent;
 
     //----------Submodule: utils----------
     Test_ATCMath test_ATCMath;
@@ -148,6 +152,8 @@ int main(int argc, char *argv[])
     failed.append(QTest::qExec(&test_ATCRoutePrediction, argc,argv));
     failed.append(QTest::qExec(&test_ATCActiveRunways, argc, argv));
     failed.append(QTest::qExec(&test_ATCAbstractProfile, argc, argv));
+    failed.append(QTest::qExec(&test_ATCProfileClimb, argc, argv));
+    failed.append(QTest::qExec(&test_ATCProfileDescent, argc, argv));
 
     //----------Submodule: utils----------
     failed.append(QTest::qExec(&test_ATCMath, argc, argv));

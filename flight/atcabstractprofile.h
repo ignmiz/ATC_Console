@@ -12,6 +12,8 @@ public:
     explicit ATCAbstractProfile(QVector<double> &levels, QVector<double> &time, QVector<double> &distance, ExType type = ExType::Tangent);
     virtual ~ATCAbstractProfile() = 0;
 
+    void initializeInverseInterpolators(ATCInterpolator &invTime, ATCInterpolator &invDst);
+
     void setTimeExtrapolationType(ExType t);
     ExType getTimeExtrapolationType();
 
