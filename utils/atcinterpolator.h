@@ -14,7 +14,9 @@ enum class ExType
 class ATCInterpolator
 {
 public:
+    explicit ATCInterpolator();
     explicit ATCInterpolator(QVector<double> &x, QVector<double> &y, ExType type);
+    explicit ATCInterpolator(const ATCInterpolator &other);
     ~ATCInterpolator();
 
     void setExtrapolationType(ExType t);
@@ -23,6 +25,8 @@ public:
     bool isCorrect();
 
     void interpolate(QVector<double> &sites, QVector<double> &results);
+
+    ATCInterpolator& operator=(ATCInterpolator const &other);
 
 private:
     QVector<double> xBreakpoints;
@@ -42,6 +46,8 @@ private:
         QVector<double> *values;
         ExType type;
     } userParams;
+
+    void initializeTask();
 
     bool validateConstructionArgs();
     void errorMessage(QString s, bool &valid);

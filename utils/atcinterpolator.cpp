@@ -1,47 +1,28 @@
 
 #include "atcinterpolator.h"
 
+ATCInterpolator::ATCInterpolator()
+{
+
+}
+
 ATCInterpolator::ATCInterpolator(QVector<double> &x, QVector<double> &y, ExType type) :
     xBreakpoints(x),
     yValues(y),
     userParams{&xBreakpoints, &yValues, type}
 {
     if(!validateConstructionArgs()) return;
+    initializeTask();
+}
 
-    //Create task
-    MKL_INT nx = xBreakpoints.size();
-    double *xArray = &xBreakpoints[0];
-    MKL_INT xhint = DF_NON_UNIFORM_PARTITION;
+ATCInterpolator::ATCInterpolator(const ATCInterpolator &other)
+{
+    xBreakpoints = other.xBreakpoints;
+    yValues = other.yValues;
+    userParams = other.userParams;
 
-    MKL_INT ny = 1;
-    double *yArray = &yValues[0];
-    MKL_INT yhint = DF_MATRIX_STORAGE_ROWS;
-
-    dfdNewTask1D(&task, nx, xArray, xhint, ny, yArray, yhint);
-
-    //Edit task parameters: linear interpolation
-    MKL_INT s_order = DF_PP_LINEAR;
-    MKL_INT s_type = DF_PP_DEFAULT;
-
-    MKL_INT bc_type = DF_NO_BC;
-    bc = NULL;
-
-    MKL_INT ic_type = DF_NO_IC;
-    ic = NULL;
-
-    scoeff = new double[(nx - 1) * s_order];
-    MKL_INT scoeffhint = DF_NO_HINT;
-
-    dfdEditPPSpline1D(task, s_order, s_type, bc_type, bc, ic_type, ic, scoeff, scoeffhint);
-
-    //Construct spline
-    MKL_INT s_format = DF_PP_SPLINE;
-    MKL_INT method = DF_METHOD_STD;
-
-    dfdConstruct1D(task, s_format, method);
-
-    //Set construction flag
-    constructedCorrectly = true;
+    if(!validateConstructionArgs()) return;
+    initializeTask();
 }
 
 ATCInterpolator::~ATCInterpolator()
@@ -118,6 +99,58 @@ void ATCInterpolator::interpolate(QVector<double> &sites, QVector<double> &resul
     {
         dfdInterpolate1D(task, type, method, nsite, &sites[0], sitehint, ndorder, dorder, datahint, &results[0], rhint, cell);
     }
+}
+
+ATCInterpolator &ATCInterpolator::operator=(ATCInterpolator const &other)
+{
+    if(&other == this) return *this;
+
+    xBreakpoints = other.xBreakpoints;
+    yValues = other.yValues;
+    userParams = other.userParams;
+
+    if(!validateConstructionArgs()) return *this;
+    initializeTask();
+
+    return *this;
+}
+
+void ATCInterpolator::initializeTask()
+{
+    //Create task
+    MKL_INT nx = xBreakpoints.size();
+    double *xArray = &xBreakpoints[0];
+    MKL_INT xhint = DF_NON_UNIFORM_PARTITION;
+
+    MKL_INT ny = 1;
+    double *yArray = &yValues[0];
+    MKL_INT yhint = DF_MATRIX_STORAGE_ROWS;
+
+    dfdNewTask1D(&task, nx, xArray, xhint, ny, yArray, yhint);
+
+    //Edit task parameters: linear interpolation
+    MKL_INT s_order = DF_PP_LINEAR;
+    MKL_INT s_type = DF_PP_DEFAULT;
+
+    MKL_INT bc_type = DF_NO_BC;
+    bc = NULL;
+
+    MKL_INT ic_type = DF_NO_IC;
+    ic = NULL;
+
+    scoeff = new double[(nx - 1) * s_order];
+    MKL_INT scoeffhint = DF_NO_HINT;
+
+    dfdEditPPSpline1D(task, s_order, s_type, bc_type, bc, ic_type, ic, scoeff, scoeffhint);
+
+    //Construct spline
+    MKL_INT s_format = DF_PP_SPLINE;
+    MKL_INT method = DF_METHOD_STD;
+
+    dfdConstruct1D(task, s_format, method);
+
+    //Set construction flag
+    constructedCorrectly = true;
 }
 
 bool ATCInterpolator::validateConstructionArgs()
@@ -234,5 +267,7 @@ int ATCInterpolator::rightExtrapolation(MKL_INT64 *n, MKL_INT64 cell[], double s
 
     return -1;
 }
+
+
 
 

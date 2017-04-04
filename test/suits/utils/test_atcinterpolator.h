@@ -11,6 +11,7 @@ class Test_ATCInterpolator : public QObject
     Q_OBJECT
 
 private slots:
+    void test_constructObject();
     void test_interpolate();
     void test_setExtrapolationType();
     void test_isCorrect();

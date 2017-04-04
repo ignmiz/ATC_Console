@@ -1,6 +1,27 @@
 
 #include "test_atcinterpolator.h"
 
+void Test_ATCInterpolator::test_constructObject()
+{
+    QVector<double> x;
+    QVector<double> y;
+
+    x << 0 << 1 << 2;
+    y << 0 << 1 << 3;
+
+    ATCInterpolator interpolator1(x, y, ExType::Tangent);
+    QVERIFY(interpolator1.isCorrect() == true);
+
+    ATCInterpolator interpolator2;
+    QVERIFY(interpolator2.isCorrect() == false);
+
+    ATCInterpolator interpolator3(interpolator1);
+    QVERIFY(interpolator3.isCorrect() == true);
+
+    interpolator2 = ATCInterpolator(x, y, ExType::Tangent);
+    QVERIFY(interpolator2.isCorrect() == true);
+}
+
 void Test_ATCInterpolator::test_interpolate()
 {
     QVector<double> x;
