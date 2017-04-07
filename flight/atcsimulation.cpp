@@ -1362,11 +1362,11 @@ void ATCSimulation::calculateTODposition(ATCFlight *flight)
     {
         distanceCounter -= distanceToNext;
 
-        for(int i = waypointIndex; i < flight->getLegDistanceVectorSize(); i++)
+        for(int i = waypointIndex; i < flight->getWaypointsVectorSize(); i++)
         {
             if(distanceCounter > ToD)
             {
-                distanceCounter -= flight->getLegDistance(i);
+                if(i != flight->getWaypointsVectorSize() - 1) distanceCounter -= flight->getLegDistance(i);
             }
             else
             {
