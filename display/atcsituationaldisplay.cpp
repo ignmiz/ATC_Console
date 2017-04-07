@@ -3702,10 +3702,19 @@ void ATCSituationalDisplay::displayRouteLevels(ATCFlight *flight)
         if(flight->getNavMode() == ATC::Nav)
         {
             //Display fix labels
+            int waypointIndex = flight->getWaypointIndex();
             for(int i = 0; i < prediction->getLabels().size(); i++)
             {
                 QGraphicsSimpleTextItem *label = labels.at(i);
-                label->setText("---");
+
+                if(flight->hasAccuratePrediction())
+                {
+                    label->setText(flight->getWaypointLevel(waypointIndex + i));
+                }
+                else
+                {
+                    label->setText("---");
+                }
             }
 
             //Display ToC & ToD labels

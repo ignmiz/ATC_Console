@@ -1402,6 +1402,228 @@ void ATCSimulation::calculateTODposition(ATCFlight *flight)
     }
 }
 
+void ATCSimulation::calculateWaypointsLevels(ATCFlight *flight)
+{
+    double AFL = flight->getState().h;
+    double CFL = ATCMath::ft2m(flight->getTargetAltitude().right(3).toDouble() * 100);
+    double RFL = ATCMath::ft2m(flight->getFlightPlan()->getAltitude().right(3).toDouble() * 100);
+
+    double distanceToGo = flight->getDistanceToGo();
+
+    PredictionPhase phase = flight->getPredictionPhase();
+
+    ATCProfileClimb *climbProfile = flight->getProfileClimb();
+    ATCProfileDescent *descentProfile = flight->getProfileDescent();
+
+    //Declare container for fix levels
+    int fixListSize = flight->getFixList().size();
+
+    //Calculate ToC & ToD
+    double ToC = distanceToGo - distanceTOC(flight, AFL, (CFL <= RFL) ? RFL : CFL);
+    double ToD = flight->getTOD();
+
+    //Get current waypoint index
+    int waypointIndex = flight->getWaypointIndex();
+
+    //Initialize counters
+    double distanceCounter = distanceToGo - flight->getDistanceToNext();
+    int climbCounter = 0;
+    int cruiseCounter = 0;
+    int descentCounter = 0;
+
+    //Count waypoints in every phase segment
+    for(int i = waypointIndex; i < fixListSize; i++)
+    {
+        if(distanceCounter > ToC)
+        {
+            climbCounter++;
+        }
+        else if(distanceCounter >= ToD)
+        {
+            cruiseCounter++;
+        }
+        else
+        {
+            descentCounter++;
+        }
+
+        if(i != fixListSize - 1) distanceCounter -= flight->getLegDistance(i);
+    }
+
+    //Reset distance counter for intervals calculation
+    distanceCounter = flight->getDistanceToNext();
+
+    //Initialize range limits
+    int climbLimit = waypointIndex + climbCounter;
+    int cruiseLimit = climbLimit + cruiseCounter;
+
+    //Initialize container
+    QVector<QString> labels(fixListSize, "---");
+
+    //Predict waypoint levels
+    switch(phase)
+    {
+        case PredictionPhase::Climb:
+            {
+                //Interpolate levels for climb
+                for(int i = waypointIndex; i < climbLimit; i++)
+                {
+                    double level = climbProfile->mixedDistanceInterval(AFL, distanceCounter);
+                    labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+
+                    distanceCounter += flight->getLegDistance(i);
+                }
+
+                //Assign levels for cruise
+                for(int i = climbLimit; i < cruiseLimit; i++)
+                {
+                    labels.replace(i, QString::number(qRound(ATCMath::m2ft((CFL <= RFL) ? RFL : CFL) / 100), 'f', 0).rightJustified(3, '0'));
+                    distanceCounter += flight->getLegDistance(i);
+                }
+
+                //Prepare counter for descent interpolation
+                distanceCounter = (ToC >= ToD) ? ToD : ToC;
+                for(int i = cruiseLimit; i < flight->getLegDistanceVectorSize(); i++) distanceCounter -= flight->getLegDistance(i);
+
+                double ilsDst = ToD - ATCConst::APP_TYPICAL_INTERCEPT_ALT / qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE));
+
+                //Interpolate levels for descent
+                for(int i = cruiseLimit; i < fixListSize; i++)
+                {
+                    if(ToC >= ToD) //When cruising level is planned correctly
+                    {
+                        if(distanceCounter < ilsDst) //On descent
+                        {
+                            double level = descentProfile->mixedDistanceInterval((CFL <= RFL) ? RFL : CFL, distanceCounter);
+                            labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+                        }
+                        else //On approach
+                        {
+                            double level = (ToD - distanceCounter) * qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE));
+                            labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+                        }
+                    }
+                    else //When cruising level is too high to descend in time
+                    {
+                        double level = descentProfile->mixedDistanceInterval((CFL <= RFL) ? RFL : CFL, distanceCounter);
+                        labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+                    }
+
+                    if(i != fixListSize - 1) distanceCounter += flight->getLegDistance(i);
+                }
+            }
+
+            break;
+
+        case PredictionPhase::Cruise:
+            {
+                if(distanceToGo >= ToD)
+                {
+                    //Assign levels for cruise
+                    for(int i = climbLimit; i < cruiseLimit; i++)
+                    {
+                        labels.replace(i, QString::number(qRound(ATCMath::m2ft((CFL <= RFL) ? RFL : CFL) / 100), 'f', 0).rightJustified(3, '0'));
+                        distanceCounter += flight->getLegDistance(i);
+                    }
+                }
+
+                //Prepare counter for descent interpolation
+                distanceCounter = (ToC >= ToD) ? ToD : ToC;
+                for(int i = cruiseLimit; i < flight->getLegDistanceVectorSize(); i++) distanceCounter -= flight->getLegDistance(i);
+
+                double ilsDst = ToD - ATCConst::APP_TYPICAL_INTERCEPT_ALT / qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE));
+
+                //Interpolate levels for descent
+                for(int i = cruiseLimit; i < fixListSize; i++)
+                {
+                    if(distanceToGo >= ToD)
+                    {
+                        if(distanceCounter < ilsDst) //On descent
+                        {
+                            double level = descentProfile->mixedDistanceInterval((CFL <= RFL) ? RFL : CFL, distanceCounter);
+                            labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+                        }
+                        else //On approach
+                        {
+                            double level = (ToD - distanceCounter) * qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE));
+                            labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+                        }
+                    }
+                    else
+                    {
+                        double level = descentProfile->mixedDistanceInterval((CFL <= RFL) ? RFL : CFL, distanceCounter);
+                        labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+                    }
+
+                    if(i != fixListSize - 1) distanceCounter += flight->getLegDistance(i);
+                }
+            }
+
+            break;
+
+        case PredictionPhase::Descent:
+            {
+                //Prepare counter for descent interpolation
+                distanceCounter = flight->getDistanceToNext();
+
+                bool belowStdAppAlt = (CFL < ATCConst::APP_TYPICAL_INTERCEPT_ALT) ? true : false;
+                double appLvl = belowStdAppAlt ? CFL : ATCConst::APP_TYPICAL_INTERCEPT_ALT;
+
+                double ilsDst = distanceToGo - appLvl / qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE));
+
+                //Determine descent base and ToD@CFL
+                double descentBase = flight->getProfileDescent()->distanceInterval(AFL, CFL);
+                double TODfromCFL = distanceToGo - distanceTOD(flight, CFL);
+
+                //Interpolate levels for descent
+                for(int i = waypointIndex; i < fixListSize; i++)
+                {
+                    if(ToD != 0) //Descent phase before ToD
+                    {
+                        if(distanceCounter < descentBase)
+                        {
+                            double level = descentProfile->mixedDistanceInterval(AFL, distanceCounter);
+                            labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+                        }
+                        else if(distanceCounter <= TODfromCFL)
+                        {
+                            labels.replace(i, QString::number(qRound(ATCMath::m2ft(CFL) / 100), 'f', 0).rightJustified(3, '0'));
+                        }
+                        else if(distanceCounter < ilsDst)
+                        {
+                            double level = descentProfile->mixedDistanceInterval(CFL, distanceCounter - TODfromCFL);
+                            labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+                        }
+                        else
+                        {
+                            double level = (distanceToGo - distanceCounter) * qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE));
+                            labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+                        }
+                    }
+                    else //Level flight past ToD or descent past ToD
+                    {
+                        double level = descentProfile->mixedDistanceInterval(AFL, distanceCounter);
+                        labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+                    }
+
+                    if(i != fixListSize - 1) distanceCounter += flight->getLegDistance(i);
+                }
+
+                qDebug() << "DescentBase: " << ATCMath::m2nm(descentBase) << " TODfromCFL: " << ATCMath::m2nm(TODfromCFL) << " ilsDst: " << ATCMath::m2nm(ilsDst);
+            }
+
+            break;
+    }
+
+    //Pass container to flight
+    flight->setWaypointLevels(labels);
+}
+
+void ATCSimulation::calculateWaypointsTimes(ATCFlight *flight)
+{
+
+}
+
 void ATCSimulation::predictTrajectories()
 {
     for(int i = 0; i < predictorCycles; i++)
@@ -1420,6 +1642,8 @@ void ATCSimulation::predictTrajectories()
                         assignTOCandTOD(flight);
                         calculateTOCposition(flight);
                         calculateTODposition(flight);
+
+                        calculateWaypointsLevels(flight);
 
                         flight->setAccuratePredictionFlag(true);
                         if(flight->getRoutePrediction() != nullptr) emit signalUpdateRoute(flight);

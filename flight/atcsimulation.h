@@ -102,12 +102,15 @@ private:
     void assignContinuousState(ATCFlight *flight, ISA &isa, GeographicLib::Geodesic &geo, int flightIndex, QString &buffer);
     void assignVerticalProfile(ATCFlight *flight, ISA &isa, bool &maxAlt);
 
-    double distanceTOC(ATCFlight *flight, double AFL, double CFL, double RFL);
+    double distanceTOC(ATCFlight *flight, double AFL, double targetFL);
     double distanceTOD(ATCFlight *flight, double RFL);
 
     void assignTOCandTOD(ATCFlight *flight);
     void calculateTOCposition(ATCFlight *flight);
     void calculateTODposition(ATCFlight *flight);
+
+    void calculateWaypointsLevels(ATCFlight *flight);
+    void calculateWaypointsTimes(ATCFlight *flight);
 
     void predictTrajectories();
 
