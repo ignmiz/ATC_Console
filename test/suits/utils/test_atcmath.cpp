@@ -168,6 +168,18 @@ void Test_ATCMath::test_inverseQVector()
     QVERIFY(vector == invVector);
 }
 
+void Test_ATCMath::test_sortQVector()
+{
+    QVector<double> vector;
+    QVector<double> sorted;
+
+    vector << 2 << 1 << 7 << 3 << 5 << 0 << 9;
+    sorted << 0 << 1 << 2 << 3 << 5 << 7 << 9;
+
+    ATCMath::sortQVector(vector);
+    QVERIFY(vector == sorted);
+}
+
 void Test_ATCMath::test_atmosISA()
 {
     double errorA = 1E-5;

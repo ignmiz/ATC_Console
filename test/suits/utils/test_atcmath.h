@@ -40,6 +40,7 @@ private slots:
     void test_min();
     void test_max();
     void test_inverseQVector();
+    void test_sortQVector();
 
     void test_atmosISA();
 

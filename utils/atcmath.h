@@ -57,6 +57,9 @@ public:
     template <typename T>
     static void inverseQVector(QVector<T> &v);
 
+    template<typename T>
+    static void sortQVector(QVector<T> &v);
+
     //Simulation Functions
     static ISA atmosISA(double h);
 
@@ -126,7 +129,8 @@ public:
     static QPointF rotatePoint(QPointF pt, double angle, ATC::AngularUnits units);
 };
 
-template<typename T> void ATCMath::inverseQVector(QVector<T> &v)
+template<typename T>
+void ATCMath::inverseQVector(QVector<T> &v)
 {
     int size = v.size();
     int middle = qFloor(v.size() / 2);
@@ -138,6 +142,12 @@ template<typename T> void ATCMath::inverseQVector(QVector<T> &v)
         v[i] = v[size - 1 - i];
         v[size - 1 - i] = tmp;
     }
+}
+
+template<typename T>
+void ATCMath::sortQVector(QVector<T> &v)
+{
+    std::sort(v.begin(), v.end());
 }
 
 #endif // ATCMATH_H
