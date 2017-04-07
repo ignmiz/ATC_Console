@@ -1211,12 +1211,14 @@ double ATCSimulation::distanceTOD(ATCFlight *flight, double RFL)
     ATCProfileDescent *profile = flight->getProfileDescent();
 
     //Calculate total distance from runway threshold (assumed to be at 0ft) to RFL
-    //ILS interception assumed to be at 3000ft, with 2.5nm level buffer
-    double appDistance = ATCConst::APP_TYPICAL_INTERCEPT_ALT / qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE));
-    double lvlDistance = ATCConst::TRAJECTORY_TOD_APP_LVL_BUFFER;
-    double dstRFLtoIntercept = profile->distanceInterval(RFL, ATCConst::APP_TYPICAL_INTERCEPT_ALT);
+    //Default ILS interception assumed to be at 3000ft, with no level buffer
+    double appLvl = (RFL < ATCConst::APP_TYPICAL_INTERCEPT_ALT) ? RFL : ATCConst::APP_TYPICAL_INTERCEPT_ALT;
+    double appDistance = appLvl / qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE));
 
-    return appDistance + lvlDistance + dstRFLtoIntercept;
+    if(RFL < ATCConst::APP_TYPICAL_INTERCEPT_ALT) return appDistance;
+
+    double dstRFLtoIntercept = profile->distanceInterval(RFL, ATCConst::APP_TYPICAL_INTERCEPT_ALT);
+    return appDistance + dstRFLtoIntercept;
 }
 
 void ATCSimulation::assignTOCandTOD(ATCFlight *flight)
