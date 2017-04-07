@@ -1196,42 +1196,11 @@ void ATCSimulation::assignVerticalProfile(ATCFlight *flight, ISA &isa, bool &max
     flight->setState(state);
 }
 
-double ATCSimulation::distanceTOC(ATCFlight *flight, double AFL, double CFL, double RFL)
+double ATCSimulation::distanceTOC(ATCFlight *flight, double AFL, double targetFL)
 {
-    //Function calculating distance necessary to reach the top of climb
-
-    //Assign aircraft data
-    ATCAircraftType *type = flight->getFlightPlan()->getType();
     ATCProfileClimb *profile = flight->getProfileClimb();
-    State state = flight->getState();
-    Temp temp = flight->getTemp();
 
-    //Profile flags
-    bool cldForRFL = (CFL == RFL) ? true : false;
-    bool onCruise = (cldForRFL && (state.cm == BADA::Level)) ? true : false;
-
-    //Calculate total distance from AFL to ToC
-    double dstTotal = 0;
-
-    if(!onCruise)
-    {
-        dstTotal = profile->distanceInterval(AFL, CFL);
-
-        if(!cldForRFL)
-        {
-            ISA isa = ATCMath::atmosISA(CFL);
-            BADA::SpeedHoldMode CFLshm = ATCMath::assignSHM(CFL, BADA::Level, temp.xoverAltClbM, temp.xoverAltCrsM, temp.xoverAltDesM);
-
-            double Vnom = ATCMath::nominalSpeedCR(CFL, CFLshm, type->getAcType().engineType, type->getVelocity().V_CR1_AV, type->getVelocity().V_CR2_AV, type->getVelocity().M_CR_AV, isa.a, isa.rho, isa.p);
-
-            double dstLevelFlight = Vnom * ATCConst::TRAJECTORY_TOC_LVL_FLIGHT;
-            double dstCFLtoRFL = profile->distanceInterval(CFL, RFL);
-
-            dstTotal += dstLevelFlight + dstCFLtoRFL;
-        }
-    }
-
-    return dstTotal;
+    return profile->distanceInterval(AFL, targetFL);
 }
 
 double ATCSimulation::distanceTOD(ATCFlight *flight, double RFL)
@@ -1273,7 +1242,7 @@ void ATCSimulation::assignTOCandTOD(ATCFlight *flight)
             //if in level flight below RFL: TOD @ RFL
             if(cm == BADA::Climb)
             {
-                ToC = distanceToGo - distanceTOC(flight, AFL, CFL, CFL);
+                ToC = distanceToGo - distanceTOC(flight, AFL, CFL);
                 ToD = distanceTOD(flight, (CFL <= RFL) ? RFL : CFL);
 
                 flight->setTOClevel(CFL);
@@ -1301,12 +1270,15 @@ void ATCSimulation::assignTOCandTOD(ATCFlight *flight)
             break;
 
         case PredictionPhase::Descent:
-            //Only TOD prediction @ CFL
+            //TOD prediction displayed only if descent base (as distanceToGo) is more than distanceTOD from CFL
+            double descentBase = distanceToGo - flight->getProfileDescent()->distanceInterval(AFL, CFL);
+            double TODfromCFL = distanceTOD(flight, CFL);
+
             ToC = 0;
-            ToD = distanceTOD(flight, CFL);
+            ToD = (descentBase > TODfromCFL) ? TODfromCFL : 0;
 
             flight->setTOClevel(0);
-            flight->setTODlevel(CFL);
+            flight->setTODlevel((descentBase > TODfromCFL) ? CFL : 0);
 
             break;
     }
