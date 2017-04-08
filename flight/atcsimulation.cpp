@@ -1306,11 +1306,11 @@ void ATCSimulation::calculateTOCposition(ATCFlight *flight)
     {
         distanceCounter -= distanceToNext;
 
-        for(int i = waypointIndex; i < flight->getLegDistanceVectorSize(); i++)
+        for(int i = waypointIndex; i < flight->getWaypointsVectorSize(); i++)
         {
             if(distanceCounter > ToC)
             {
-                distanceCounter -= flight->getLegDistance(i);
+                if(i != flight->getWaypointsVectorSize() - 1) distanceCounter -= flight->getLegDistance(i);
             }
             else
             {
@@ -1471,14 +1471,14 @@ void ATCSimulation::calculateWaypointsLevels(ATCFlight *flight)
                     double level = climbProfile->mixedDistanceInterval(AFL, distanceCounter);
                     labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
 
-                    distanceCounter += flight->getLegDistance(i);
+                    if(i != fixListSize - 1) distanceCounter += flight->getLegDistance(i);
                 }
 
                 //Assign levels for cruise
                 for(int i = climbLimit; i < cruiseLimit; i++)
                 {
                     labels.replace(i, QString::number(qRound(ATCMath::m2ft((CFL <= RFL) ? RFL : CFL) / 100), 'f', 0).rightJustified(3, '0'));
-                    distanceCounter += flight->getLegDistance(i);
+                    if(i != fixListSize - 1) distanceCounter += flight->getLegDistance(i);
                 }
 
                 //Prepare counter for descent interpolation
@@ -1523,7 +1523,7 @@ void ATCSimulation::calculateWaypointsLevels(ATCFlight *flight)
                     for(int i = climbLimit; i < cruiseLimit; i++)
                     {
                         labels.replace(i, QString::number(qRound(ATCMath::m2ft((CFL <= RFL) ? RFL : CFL) / 100), 'f', 0).rightJustified(3, '0'));
-                        distanceCounter += flight->getLegDistance(i);
+                        if(i != fixListSize - 1) distanceCounter += flight->getLegDistance(i);
                     }
                 }
 
@@ -1608,8 +1608,6 @@ void ATCSimulation::calculateWaypointsLevels(ATCFlight *flight)
 
                     if(i != fixListSize - 1) distanceCounter += flight->getLegDistance(i);
                 }
-
-                qDebug() << "DescentBase: " << ATCMath::m2nm(descentBase) << " TODfromCFL: " << ATCMath::m2nm(TODfromCFL) << " ilsDst: " << ATCMath::m2nm(ilsDst);
             }
 
             break;
