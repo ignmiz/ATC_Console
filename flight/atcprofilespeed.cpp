@@ -1,12 +1,12 @@
 
 #include "atcprofilespeed.h"
 
-ATCProfileSpeed::ATCProfileSpeed(QVector<double> &lvls, QVector<double> &climbSpds, QVector<double> &crsSpds, QVector<double> &dscSpds, ExType type) :
+ATCProfileSpeed::ATCProfileSpeed(QVector<double> &lvls, QVector<double> &clbSpds, QVector<double> &crsSpds, QVector<double> &dscSpds, ExType type) :
     levels(lvls),
-    climbSpeeds(climbSpds),
+    climbSpeeds(clbSpds),
     cruiseSpeeds(crsSpds),
     descentSpeeds(dscSpds),
-    climbInterpolator(levels, climbSpds, type),
+    climbInterpolator(levels, clbSpds, type),
     cruiseInterpolator(levels, crsSpds, type),
     descentInterpolator(levels, dscSpds, type)
 {

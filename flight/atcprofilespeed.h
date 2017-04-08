@@ -9,7 +9,7 @@
 class ATCProfileSpeed
 {
 public:
-    explicit ATCProfileSpeed(QVector<double> &lvls, QVector<double> &climbSpds, QVector<double> &crsSpds, QVector<double> &dscSpds, ExType type = ExType::Saturation);
+    explicit ATCProfileSpeed(QVector<double> &lvls, QVector<double> &clbSpds, QVector<double> &crsSpds, QVector<double> &dscSpds, ExType type = ExType::Saturation);
     ~ATCProfileSpeed();
 
     double nominalClimbSpeed(double lvl);
