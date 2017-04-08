@@ -3638,7 +3638,7 @@ void ATCSituationalDisplay::displayRouteFixNames(ATCFlight *flight)
 
             //Create & display ToD
             double ToD = flight->getTOD();
-            if((ToD != 0) && (ToD < distanceToGo) && ((ToC <= 0) || (ToC > ToD)) && flight->hasAccuratePrediction())
+            if((ToD != 0) && (ToD < distanceToGo) && ((ToC > ToD) || (ToC == 0)) && flight->hasAccuratePrediction())
             {
                 //Create symbol
                 QPair<double, double> TODposition = flight->getTODposition();
