@@ -94,6 +94,7 @@ private:
 
     void createClimbProfile(ATCFlight *flight);
     void createDescentProfile(ATCFlight *flight);
+    void createSpeedProfile(ATCFlight *flight);
 
     void progressState(GeographicLib::Geodesic &geo);
 

@@ -242,6 +242,7 @@ void ATCSimulation::preallocateTempData()
             preallocateTempData(flight);
             createClimbProfile(flight);
             createDescentProfile(flight);
+            createSpeedProfile(flight);
 
             flight->setTempFlag(true);
         }
@@ -621,6 +622,41 @@ void ATCSimulation::createDescentProfile(ATCFlight *flight)
     //Create ATCProfile, ATCFlight takes ownership
     ATCProfileDescent *profile = new ATCProfileDescent(levels, time, distance);
     flight->setProfileDescent(profile);
+}
+
+void ATCSimulation::createSpeedProfile(ATCFlight *flight)
+{
+    Temp temp = flight->getTemp();
+    ATCAircraftType *type = flight->getFlightPlan()->getType();
+
+    double ceiling = ATCMath::ft2m(type->getEnvelope().h_max);
+    double interval = ATCConst::PROFILE_ALT_INTERVAL;
+    double limit = ceiling + interval;
+
+    QVector<double> levels;
+    QVector<double> clbSpds;
+    QVector<double> crsSpds;
+    QVector<double> dscSpds;
+
+    double currentLvl = 0;
+
+    while(currentLvl <= limit)
+    {
+        ISA isa = ATCMath::atmosISA(currentLvl);
+
+        BADA::SpeedHoldMode shmCL = (currentLvl < temp.xoverAltClbM) ? BADA::CAS : BADA::Mach;
+        BADA::SpeedHoldMode shmCR = (currentLvl < temp.xoverAltCrsM) ? BADA::CAS : BADA::Mach;
+        BADA::SpeedHoldMode shmDS = (currentLvl < temp.xoverAltDesM) ? BADA::CAS : BADA::Mach;
+
+        levels.append(currentLvl);
+        clbSpds.append(ATCMath::nominalSpeedCL(currentLvl, shmCL, type->getAcType().engineType, temp.vStallTO, type->getVelocity().V_CL1_AV, type->getVelocity().V_CL2_AV, type->getVelocity().M_CL_AV, isa.a, isa.rho, isa.p));
+        crsSpds.append(ATCMath::nominalSpeedCR(currentLvl, shmCR, type->getAcType().engineType, type->getVelocity().V_CR1_AV, type->getVelocity().V_CR2_AV, type->getVelocity().M_CR_AV, isa.a, isa.rho, isa.p));
+        dscSpds.append(ATCMath::nominalSpeedDS(currentLvl, shmDS, type->getAcType().engineType, temp.vStallTO, type->getVelocity().V_DS1_AV, type->getVelocity().V_DS2_AV, type->getVelocity().M_DS_AV, isa.a, isa.rho, isa.p));
+
+        currentLvl += interval;
+    }
+
+    flight->setProfileSpeed(new ATCProfileSpeed(levels, clbSpds, crsSpds, dscSpds));
 }
 
 void ATCSimulation::progressState(GeographicLib::Geodesic &geo)
