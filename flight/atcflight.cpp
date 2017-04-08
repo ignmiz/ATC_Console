@@ -26,6 +26,7 @@ ATCFlight::~ATCFlight()
     if(prediction != nullptr) delete prediction;
     if(profileClimb != nullptr) delete profileClimb;
     if(profileDescent != nullptr) delete profileDescent;
+    if(profileSpeed != nullptr) delete profileSpeed;
 
     if(!trailingDots.isEmpty())
     {
@@ -441,6 +442,16 @@ ATCProfileDescent *ATCFlight::getProfileDescent()
 void ATCFlight::setProfileDescent(ATCProfileDescent *profile)
 {
     profileDescent = profile;
+}
+
+ATCProfileSpeed *ATCFlight::getProfileSpeed()
+{
+    return profileSpeed;
+}
+
+void ATCFlight::setProfileSpeed(ATCProfileSpeed *profile)
+{
+    profileSpeed = profile;
 }
 
 double ATCFlight::getLegDistance(int i)

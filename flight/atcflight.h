@@ -8,6 +8,7 @@
 #include "atctrailingdot.h"
 #include "atcprofileclimb.h"
 #include "atcprofiledescent.h"
+#include "atcprofilespeed.h"
 
 #include <QString>
 #include <QObject>
@@ -158,6 +159,9 @@ public:
     ATCProfileDescent* getProfileDescent();
     void setProfileDescent(ATCProfileDescent *profile);
 
+    ATCProfileSpeed* getProfileSpeed();
+    void setProfileSpeed(ATCProfileSpeed *profile);
+
     double getLegDistance(int i);
     int getLegDistanceVectorSize();
     void appendLegDistance(double dst);
@@ -279,6 +283,7 @@ private:
 
     ATCProfileClimb *profileClimb = nullptr;
     ATCProfileDescent *profileDescent = nullptr;
+    ATCProfileSpeed *profileSpeed = nullptr;
 
     QVector<double> legDistances;
     QVector<double> legAngleChanges;

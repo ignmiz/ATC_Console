@@ -612,6 +612,27 @@ void Test_ATCFlight::test_setProfileDescent()
     QVERIFY(foo.getProfileDescent() == p);
 }
 
+void Test_ATCFlight::test_setProfileSpeed()
+{
+    QVector<double> levels;
+    QVector<double> clbSpds;
+    QVector<double> crsSpds;
+    QVector<double> dscSpds;
+
+    levels << 0 << 1 << 2 << 3;
+    clbSpds << 0 << 1 << 2 << 3;
+    crsSpds << 0 << 2 << 4 << 6;
+    dscSpds << 0 << 3 << 6 << 9;
+
+    ATCProfileSpeed *p = new ATCProfileSpeed(levels, clbSpds, crsSpds, dscSpds);
+
+    ATCFlight foo;
+    QVERIFY(foo.getProfileSpeed() == nullptr);
+
+    foo.setProfileSpeed(p);
+    QVERIFY(foo.getProfileSpeed() == p);
+}
+
 void Test_ATCFlight::test_appendLegDistance()
 {
     ATCFlight foo;
