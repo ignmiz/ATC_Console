@@ -564,6 +564,16 @@ double ATCFlight::getTOClevel()
     return TOClevel;
 }
 
+void ATCFlight::setTOCtime(QTime &time)
+{
+    TOCtime = time;
+}
+
+QTime &ATCFlight::getTOCtime()
+{
+    return TOCtime;
+}
+
 void ATCFlight::setTOD(double dst)
 {
     TOD = dst;
@@ -592,6 +602,16 @@ void ATCFlight::setTODlevel(double lvlM)
 double ATCFlight::getTODlevel()
 {
     return TODlevel;
+}
+
+void ATCFlight::setTODtime(QTime &time)
+{
+    TODtime = time;
+}
+
+QTime &ATCFlight::getTODtime()
+{
+    return TODtime;
 }
 
 void ATCFlight::setWaypointLevels(QVector<QString> &vector)

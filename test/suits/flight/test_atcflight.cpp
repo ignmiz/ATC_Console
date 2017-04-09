@@ -722,6 +722,16 @@ void Test_ATCFlight::test_setTOClevel()
     QVERIFY(foo.getTOClevel() == 300);
 }
 
+void Test_ATCFlight::test_setTOCtime()
+{
+    ATCFlight foo;
+    QVERIFY(foo.getTOCtime().isValid() == false);
+
+    QTime t(3, 10, 15, 25);
+    foo.setTOCtime(t);
+    QVERIFY(foo.getTOCtime() == t);
+}
+
 
 void Test_ATCFlight::test_setTOD()
 {
@@ -747,6 +757,16 @@ void Test_ATCFlight::test_setTODlevel()
 
     foo.setTODlevel(300);
     QVERIFY(foo.getTODlevel() == 300);
+}
+
+void Test_ATCFlight::test_setTODtime()
+{
+    ATCFlight foo;
+    QVERIFY(foo.getTOCtime().isValid() == false);
+
+    QTime t(3, 10, 15, 25);
+    foo.setTOCtime(t);
+    QVERIFY(foo.getTOCtime() == t);
 }
 
 void Test_ATCFlight::test_setWaypointLevels()

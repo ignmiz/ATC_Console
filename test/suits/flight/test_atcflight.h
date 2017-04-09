@@ -55,9 +55,11 @@ private slots:
     void test_setTOC();
     void test_setTOCposition();
     void test_setTOClevel();
+    void test_setTOCtime();
     void test_setTOD();
     void test_setTODposition();
     void test_setTODlevel();
+    void test_setTODtime();
     void test_setWaypointLevels();
     void test_setWaypointTimes();
 };

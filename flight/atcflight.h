@@ -193,6 +193,9 @@ public:
     void setTOClevel(double lvlM);
     double getTOClevel();
 
+    void setTOCtime(QTime &time);
+    QTime& getTOCtime();
+
     void setTOD(double dst);
     double getTOD();
 
@@ -201,6 +204,9 @@ public:
 
     void setTODlevel(double lvlM);
     double getTODlevel();
+
+    void setTODtime(QTime &time);
+    QTime& getTODtime();
 
     void setWaypointLevels(QVector<QString> &vector);
     QVector<QString>& getWaypointLevels();
@@ -298,10 +304,12 @@ private:
     double TOC = 0;
     QPair<double, double> TOCposition;  //Format: lat, lon
     double TOClevel;
+    QTime TOCtime;
 
     double TOD = 0;
     QPair<double, double> TODposition;  //Format: lat, lon
     double TODlevel;
+    QTime TODtime;
 
     QVector<QString> waypointLevels;
     QVector<QTime> waypointTimes;
