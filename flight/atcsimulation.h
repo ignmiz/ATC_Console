@@ -94,6 +94,7 @@ private:
 
     void createClimbProfile(ATCFlight *flight);
     void createDescentProfile(ATCFlight *flight);
+    void createApproachProfile(ATCFlight *flight);
     void createSpeedProfile(ATCFlight *flight);
 
     void progressState(GeographicLib::Geodesic &geo);
@@ -102,6 +103,7 @@ private:
     void assignDiscreteState(ATCFlight *flight, ISA &isa, QString &buffer);
     void assignContinuousState(ATCFlight *flight, ISA &isa, GeographicLib::Geodesic &geo, int flightIndex, QString &buffer);
     void assignVerticalProfile(ATCFlight *flight, ISA &isa, bool &maxAlt);
+    void assignApproachProfile(ATCFlight *flight, ISA &isa);
 
     double distanceTOC(ATCFlight *flight, double AFL, double targetFL);
     double distanceTOD(ATCFlight *flight, double RFL);
