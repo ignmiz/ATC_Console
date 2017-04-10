@@ -45,6 +45,7 @@ private slots:
     void test_setTrailingDots();
     void test_setProfileClimb();
     void test_setProfileDescent();
+    void test_setProfileApproach();
     void test_setProfileSpeed();
     void test_appendLegDistance();
     void test_appendLegAngleChange();

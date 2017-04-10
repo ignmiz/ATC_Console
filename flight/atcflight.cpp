@@ -444,6 +444,16 @@ void ATCFlight::setProfileDescent(ATCProfileDescent *profile)
     profileDescent = profile;
 }
 
+ATCProfileApproach *ATCFlight::getProfileApproach()
+{
+    return profileApproach;
+}
+
+void ATCFlight::setProfileApproach(ATCProfileApproach *profile)
+{
+    profileApproach = profile;
+}
+
 ATCProfileSpeed *ATCFlight::getProfileSpeed()
 {
     return profileSpeed;
