@@ -126,7 +126,8 @@ SOURCES += main.cpp\
     flight/atcprofileclimb.cpp \
     flight/atcprofiledescent.cpp \
     dialog/dialogflightlist.cpp \
-    flight/atcprofilespeed.cpp
+    flight/atcprofilespeed.cpp \
+    flight/atcprofileapproach.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -273,7 +274,8 @@ HEADERS  += mainwindow.h \
     flight/atcprofileclimb.h \
     flight/atcprofiledescent.h \
     dialog/dialogflightlist.h \
-    flight/atcprofilespeed.h
+    flight/atcprofilespeed.h \
+    flight/atcprofileapproach.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
