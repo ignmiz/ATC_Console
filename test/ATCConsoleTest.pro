@@ -139,7 +139,8 @@ SOURCES += \
     ../flight/atcprofileclimb.cpp \
     ../flight/atcprofiledescent.cpp \
     ../dialog/dialogflightlist.cpp \
-    ../flight/atcprofilespeed.cpp
+    ../flight/atcprofilespeed.cpp \
+    ../flight/atcprofileapproach.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -287,7 +288,8 @@ HEADERS  += \
     ../flight/atcprofileclimb.h \
     ../flight/atcprofiledescent.h \
     ../dialog/dialogflightlist.h \
-    ../flight/atcprofilespeed.h
+    ../flight/atcprofilespeed.h \
+    ../flight/atcprofileapproach.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
@@ -377,6 +379,7 @@ SOURCES += main.cpp \
     test_atcprofileclimb.cpp \
     test_atcprofiledescent.cpp \
     test_atcprofilespeed.cpp \
+    test_atcprofileapproach.cpp \
     \
     test_atcmath.cpp \
     test_atcinterpolator.cpp
@@ -427,6 +430,7 @@ HEADERS += \
     test_atcprofileclimb.h \
     test_atcprofiledescent.h \
     test_atcprofilespeed.h \
+    test_atcprofileapproach.h \
     \
     test_atcmath.h \
     test_atcinterpolator.h
