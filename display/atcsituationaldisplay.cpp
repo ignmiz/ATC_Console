@@ -1623,11 +1623,15 @@ void ATCSituationalDisplay::rescaleRoutes()
 
         for(int i = 0; i < visibleRoutes.size(); i++)
         {
-            QGraphicsPathItem *currentPath = visibleRoutes.at(i)->getPolygon();
-            QVector<QGraphicsSimpleTextItem*> labels = visibleRoutes.at(i)->getLabels();
+            ATCRoutePrediction *prediction = visibleRoutes.at(i);
+
+            //Rescale path
+            QGraphicsPathItem *currentPath = prediction->getPolygon();
+            QVector<QGraphicsSimpleTextItem*> labels = prediction->getLabels();
 
             currentPath->setPen(pen);
 
+            //Rescale labels
             QList<QPointF> pointList = currentPath->path().toFillPolygon().toList();
 
             for(int j = 0; j < labels.size(); j++)
@@ -1644,6 +1648,62 @@ void ATCSituationalDisplay::rescaleRoutes()
                     labels.at(j)->setPos(pointList.at(j + 1).x() + settings->ROUTE_LABEL_DX / currentScale,
                                          pointList.at(j + 1).y() + settings->ROUTE_LABEL_DY / currentScale);
                 }
+            }
+
+            //Rescale TOC symbol
+            QGraphicsEllipseItem *TOC = prediction->getTOC();
+            QPointF TOCpos;
+
+            if(TOC != nullptr)
+            {
+                QRectF TOCrect = TOC->rect();
+                TOCpos = QPointF(TOCrect.x() + TOCrect.width()/2, TOCrect.y() + TOCrect.height()/2);
+
+                TOC->setRect(TOCpos.x() - settings->ROUTE_TOC_DIA / 2 / currentScale,
+                             TOCpos.y() - settings->ROUTE_TOC_DIA / 2 / currentScale,
+                             settings->ROUTE_TOC_DIA / currentScale,
+                             settings->ROUTE_TOC_DIA / currentScale);
+            }
+
+            //Rescale TOC label
+            QGraphicsSimpleTextItem *TOClabel = prediction->getLabelTOC();
+
+            if(TOClabel != nullptr)
+            {
+                QFont font = TOClabel->font();
+                font.setPointSizeF(settings->ROUTE_LABEL_HEIGHT / currentScale);
+                TOClabel->setFont(font);
+
+                TOClabel->setPos(TOCpos.x() + settings->ROUTE_LABEL_DX / currentScale,
+                                 TOCpos.y() + settings->ROUTE_LABEL_DY / currentScale);
+            }
+
+            //Rescale TOD symbol
+            QGraphicsEllipseItem *TOD = prediction->getTOD();
+            QPointF TODpos;
+
+            if(TOD != nullptr)
+            {
+                QRectF TODrect = TOD->rect();
+                TODpos = QPointF(TODrect.x() + TODrect.width()/2, TODrect.y() + TODrect.height()/2);
+
+                TOD->setRect(TODpos.x() - settings->ROUTE_TOD_DIA / 2 / currentScale,
+                             TODpos.y() - settings->ROUTE_TOD_DIA / 2 / currentScale,
+                             settings->ROUTE_TOD_DIA / currentScale,
+                             settings->ROUTE_TOD_DIA / currentScale);
+            }
+
+            //Rescale TOD label
+            QGraphicsSimpleTextItem *TODlabel = prediction->getLabelTOD();
+
+            if(TODlabel != nullptr)
+            {
+                QFont font = TODlabel->font();
+                font.setPointSizeF(settings->ROUTE_LABEL_HEIGHT / currentScale);
+                TODlabel->setFont(font);
+
+                TODlabel->setPos(TODpos.x() + settings->ROUTE_LABEL_DX / currentScale,
+                                 TODpos.y() + settings->ROUTE_LABEL_DY / currentScale);
             }
         }
     }
