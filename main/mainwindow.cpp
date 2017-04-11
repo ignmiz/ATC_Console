@@ -854,6 +854,7 @@ void MainWindow::slotStartSimulation()
 
         simulation->setAirspace(airspaceData);
         simulation->setDataLogged(dataLogged, dataLoggedPath);
+        simulation->setTimeHandle(ui->buttonTime->getTime());
 
         simController = new ATCSimulationController(simulation);
         simController->start();

@@ -113,6 +113,11 @@ void ATCSimulation::clearFlights()
     flights.clear();
 }
 
+void ATCSimulation::setTimeHandle(QTime *t)
+{
+    timeHandle = t;
+}
+
 void ATCSimulation::subtractFlightTimeouts()
 {
     qint64 elapsedTimeMS = globalTimer.elapsed();
@@ -291,21 +296,32 @@ void ATCSimulation::preallocateTempData(ATCFlight *flight)
             double thrLat;
             double thrLon;
             double azimuth;
+            double x;
+            double y;
 
             if(flight->getRunwayDestination().left(2).toInt() <= 18)
             {
                 thrLat = runway->getStartPoint().latitude();
                 thrLon = runway->getStartPoint().longitude();
+
                 azimuth = runway->getAzimuth();
+
+                x = runway->getExtendedCentreline1()->getCentreline()->line().x1();
+                y = runway->getExtendedCentreline1()->getCentreline()->line().y1();
             }
             else
             {
                 thrLat = runway->getEndPoint().latitude();
                 thrLon = runway->getEndPoint().longitude();
+
                 azimuth = ATCMath::normalizeAngle(runway->getAzimuth() + ATCConst::PI, ATC::Deg);
+
+                x = runway->getExtendedCentreline2()->getCentreline()->line().x1();
+                y = runway->getExtendedCentreline2()->getCentreline()->line().y1();
             }
 
             temp.rwyDesThr = QPair<double, double>(thrLat, thrLon);
+            temp.rwyDesThrProjected = QPair<double, double>(x, y);
             temp.rwyDesAzimuth = azimuth;
 
             double rangeLat;
@@ -1424,7 +1440,7 @@ double ATCSimulation::distanceTOC(ATCFlight *flight, double AFL, double targetFL
     return profile->distanceInterval(AFL, targetFL);
 }
 
-double ATCSimulation::distanceTOD(ATCFlight *flight, double RFL)
+double ATCSimulation::distanceTOD(ATCFlight *flight, double fromLvl)
 {
     //Function calculating Top of Descent as distanceToGo, at which ToD is predicted to be located.
 
@@ -1433,13 +1449,31 @@ double ATCSimulation::distanceTOD(ATCFlight *flight, double RFL)
 
     //Calculate total distance from runway threshold (assumed to be at 0ft) to RFL
     //Default ILS interception assumed to be at 3000ft, with no level buffer
-    double appLvl = (RFL < ATCConst::APP_TYPICAL_INTERCEPT_ALT) ? RFL : ATCConst::APP_TYPICAL_INTERCEPT_ALT;
+    double appLvl = (fromLvl < ATCConst::APP_TYPICAL_INTERCEPT_ALT) ? fromLvl : ATCConst::APP_TYPICAL_INTERCEPT_ALT;
     double appDistance = appLvl / qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE));
 
-    if(RFL < ATCConst::APP_TYPICAL_INTERCEPT_ALT) return appDistance;
+    if(fromLvl <= ATCConst::APP_TYPICAL_INTERCEPT_ALT) return appDistance;
 
-    double dstRFLtoIntercept = profile->distanceInterval(RFL, ATCConst::APP_TYPICAL_INTERCEPT_ALT);
-    return appDistance + dstRFLtoIntercept;
+    double dstToIntercept = profile->distanceInterval(fromLvl, ATCConst::APP_TYPICAL_INTERCEPT_ALT);
+    return appDistance + dstToIntercept;
+}
+
+QTime ATCSimulation::timeTOC(ATCFlight *flight, double AFL, double targetFL)
+{
+    return timeHandle->addSecs(qRound(flight->getProfileClimb()->timeInterval(AFL, targetFL)));
+}
+
+QTime ATCSimulation::timeTOD(ATCFlight *flight, double AFL, double fromLvl, double dstToTOD)
+{
+    ATCProfileClimb *profileClimb = flight->getProfileClimb();
+
+    int climbSecs = qRound(profileClimb->timeInterval(AFL, fromLvl));
+
+    double cruiseSpeed = flight->getProfileSpeed()->nominalCruiseSpeed(fromLvl);
+    double cruiseDistance = dstToTOD - profileClimb->distanceInterval(AFL, fromLvl);
+    int cruiseSecs = qRound(cruiseDistance / cruiseSpeed);
+
+    return timeHandle->addSecs(climbSecs + cruiseSecs);
 }
 
 void ATCSimulation::assignTOCandTOD(ATCFlight *flight)
@@ -1457,6 +1491,12 @@ void ATCSimulation::assignTOCandTOD(ATCFlight *flight)
     double ToC;
     double ToD;
 
+    QTime ToCtime;
+    QTime ToDtime;
+
+    double ToClevel;
+    double ToDlevel;
+
     //Assign ToC & ToD based on prediction phase and flight parameters
     switch(phase)
     {
@@ -1468,16 +1508,22 @@ void ATCSimulation::assignTOCandTOD(ATCFlight *flight)
                 ToC = distanceToGo - distanceTOC(flight, AFL, CFL);
                 ToD = distanceTOD(flight, (CFL <= RFL) ? RFL : CFL);
 
-                flight->setTOClevel(CFL);
-                flight->setTODlevel((CFL <= RFL) ? RFL : CFL);
+                ToCtime = timeTOC(flight, AFL, CFL);
+                ToDtime = timeTOD(flight, AFL, (CFL <= RFL) ? RFL : CFL, distanceToGo - ToD);
+
+                ToClevel = CFL;
+                ToDlevel = (CFL <= RFL) ? RFL : CFL;
             }
             else if((cm == BADA::Level) && (AFL < RFL))
             {
                 ToC = 0;
                 ToD = distanceTOD(flight, RFL);
 
-                flight->setTOClevel(0);
-                flight->setTODlevel(RFL);
+                ToCtime = QTime();
+                ToDtime = timeTOD(flight, AFL, RFL, distanceToGo - ToD);
+
+                ToClevel = 0;
+                ToDlevel = RFL;
             }
 
             break;
@@ -1487,8 +1533,11 @@ void ATCSimulation::assignTOCandTOD(ATCFlight *flight)
             ToC = 0;
             ToD = distanceTOD(flight, CFL);
 
-            flight->setTOClevel(0);
-            flight->setTODlevel(CFL);
+            ToCtime = QTime();
+            ToDtime = timeTOD(flight, CFL, CFL, distanceToGo - ToD);
+
+            ToClevel = 0;
+            ToDlevel = CFL;
 
             break;
 
@@ -1497,11 +1546,18 @@ void ATCSimulation::assignTOCandTOD(ATCFlight *flight)
             double descentBase = distanceToGo - flight->getProfileDescent()->distanceInterval(AFL, CFL);
             double TODfromCFL = distanceTOD(flight, CFL);
 
+            QTime descentBaseTime = timeHandle->addSecs(qRound(flight->getProfileDescent()->timeInterval(AFL, CFL)));
+            double levelDst = (distanceToGo - TODfromCFL) - (distanceToGo - descentBase);
+            double levelSpd = flight->getProfileSpeed()->nominalCruiseSpeed(CFL);
+
             ToC = 0;
             ToD = (descentBase > TODfromCFL) ? TODfromCFL : 0;
 
-            flight->setTOClevel(0);
-            flight->setTODlevel((descentBase > TODfromCFL) ? CFL : 0);
+            ToCtime = QTime();
+            ToDtime = descentBaseTime.addSecs(qRound(levelDst / levelSpd));
+
+            ToClevel = 0;
+            ToDlevel = (descentBase > TODfromCFL) ? CFL : 0;
 
             break;
     }
@@ -1509,6 +1565,12 @@ void ATCSimulation::assignTOCandTOD(ATCFlight *flight)
     //Set values to flight
     flight->setTOC(ToC);
     flight->setTOD(ToD);
+
+    flight->setTOCtime(ToCtime);
+    flight->setTODtime(ToDtime);
+
+    flight->setTOClevel(ToClevel);
+    flight->setTODlevel(ToDlevel);
 }
 
 void ATCSimulation::calculateTOCposition(ATCFlight *flight)
@@ -1610,12 +1672,23 @@ void ATCSimulation::calculateTODposition(ATCFlight *flight)
         }
         else WPfirstProj = flight->getProjectedWaypoint(index - 1);
 
-        QPair<double, double> WPsecondProj = flight->getProjectedWaypoint(index);
+        QPair<double, double> WPsecond;
+        QPair<double, double> WPsecondProj;
+
+        if((waypointIndex != flight->getLegDistanceVectorSize()) || flight->getRunwayDestination().isEmpty()) //Any waypoint but the destination airfield or no destination runway assigned
+        {
+            WPsecond = flight->getWaypoint(index);
+            WPsecondProj = flight->getProjectedWaypoint(index);
+        }
+        else //Threshold of destination airfield chosen runway
+        {
+            WPsecond = flight->getTemp().rwyDesThr;
+            WPsecondProj = flight->getTemp().rwyDesThrProjected;
+        }
 
         double azimuth = qAtan2(WPfirstProj.first - WPsecondProj.first, WPsecondProj.second - WPfirstProj.second);
         azimuth = ATCMath::normalizeAngle(ATCMath::rad2deg(azimuth) + ATCConst::AVG_DECLINATION, ATC::Deg);
 
-        QPair<double, double> WPsecond = flight->getWaypoint(index);
         QPair<double, double> TODpos;
 
         geo.Direct(WPsecond.first, WPsecond.second, azimuth, ToD - distanceCounter, TODpos.first, TODpos.second);
@@ -1623,7 +1696,7 @@ void ATCSimulation::calculateTODposition(ATCFlight *flight)
     }
 }
 
-void ATCSimulation::calculateWaypointsLevels(ATCFlight *flight)
+void ATCSimulation::calculateWaypointTraits(ATCFlight *flight)
 {
     double AFL = flight->getState().h;
     double CFL = ATCMath::ft2m(flight->getTargetAltitude().right(3).toDouble() * 100);
@@ -1635,13 +1708,21 @@ void ATCSimulation::calculateWaypointsLevels(ATCFlight *flight)
 
     ATCProfileClimb *climbProfile = flight->getProfileClimb();
     ATCProfileDescent *descentProfile = flight->getProfileDescent();
+    ATCProfileApproach *approachProfile = flight->getProfileApproach();
+    ATCProfileSpeed *speedProfile = flight->getProfileSpeed();
 
     //Declare container for fix levels
     int fixListSize = flight->getFixList().size();
 
-    //Calculate ToC & ToD
-    double ToC = distanceToGo - distanceTOC(flight, AFL, (CFL <= RFL) ? RFL : CFL);
+    //Calculate top level
+    double topLevel = (CFL <= RFL) ? RFL : CFL;
+
+    //Calculate ToC & ToD distances and times
+    double ToC = distanceToGo - distanceTOC(flight, AFL, topLevel);
     double ToD = flight->getTOD();
+
+    QTime ToCtime = timeTOC(flight, AFL, topLevel);
+    QTime ToDtime = timeTOD(flight, AFL, topLevel, distanceToGo - ToD);
 
     //Get current waypoint index
     int waypointIndex = flight->getWaypointIndex();
@@ -1678,8 +1759,9 @@ void ATCSimulation::calculateWaypointsLevels(ATCFlight *flight)
     int climbLimit = waypointIndex + climbCounter;
     int cruiseLimit = climbLimit + cruiseCounter;
 
-    //Initialize container
+    //Initialize containers
     QVector<QString> labels(fixListSize, "---");
+    QVector<QTime> times(fixListSize, QTime());
 
     //Predict waypoint levels
     switch(phase)
@@ -1692,13 +1774,23 @@ void ATCSimulation::calculateWaypointsLevels(ATCFlight *flight)
                     double level = climbProfile->mixedDistanceInterval(AFL, distanceCounter);
                     labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
 
+                    QTime time = timeHandle->addSecs(qRound(climbProfile->timeInterval(AFL, level)));
+                    times.replace(i, time);
+
                     if(i != fixListSize - 1) distanceCounter += flight->getLegDistance(i);
                 }
 
                 //Assign levels for cruise
+                double crsSpd = speedProfile->nominalCruiseSpeed(topLevel);
+
                 for(int i = climbLimit; i < cruiseLimit; i++)
                 {
-                    labels.replace(i, QString::number(qRound(ATCMath::m2ft((CFL <= RFL) ? RFL : CFL) / 100), 'f', 0).rightJustified(3, '0'));
+                    labels.replace(i, QString::number(qRound(ATCMath::m2ft(topLevel) / 100), 'f', 0).rightJustified(3, '0'));
+
+                    double crsDst = distanceCounter - (distanceToGo - ToC);
+                    QTime time = ToCtime.addSecs(qRound(crsDst / crsSpd));
+                    times.replace(i, time);
+
                     if(i != fixListSize - 1) distanceCounter += flight->getLegDistance(i);
                 }
 
@@ -1707,6 +1799,7 @@ void ATCSimulation::calculateWaypointsLevels(ATCFlight *flight)
                 for(int i = cruiseLimit; i < flight->getLegDistanceVectorSize(); i++) distanceCounter -= flight->getLegDistance(i);
 
                 double ilsDst = ToD - ATCConst::APP_TYPICAL_INTERCEPT_ALT / qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE));
+                QTime ilsTime = ToDtime.addSecs(qRound(descentProfile->timeInterval(topLevel, ATCConst::APP_TYPICAL_INTERCEPT_ALT)));
 
                 //Interpolate levels for descent
                 for(int i = cruiseLimit; i < fixListSize; i++)
@@ -1715,19 +1808,28 @@ void ATCSimulation::calculateWaypointsLevels(ATCFlight *flight)
                     {
                         if(distanceCounter < ilsDst) //On descent
                         {
-                            double level = descentProfile->mixedDistanceInterval((CFL <= RFL) ? RFL : CFL, distanceCounter);
+                            double level = descentProfile->mixedDistanceInterval(topLevel, distanceCounter);
                             labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+
+                            QTime time = ToDtime.addSecs(qRound(descentProfile->timeInterval(topLevel, level)));
+                            times.replace(i, time);
                         }
                         else //On approach
                         {
                             double level = (ToD - distanceCounter) * qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE));
                             labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+
+                            QTime time = ilsTime.addSecs(qRound(approachProfile->timeInterval(ATCConst::APP_TYPICAL_INTERCEPT_ALT, level)));
+                            times.replace(i, time);
                         }
                     }
                     else //When cruising level is too high to descend in time
                     {
-                        double level = descentProfile->mixedDistanceInterval((CFL <= RFL) ? RFL : CFL, distanceCounter);
+                        double level = descentProfile->mixedDistanceInterval(topLevel, distanceCounter);
                         labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+
+                        QTime time = ToDtime.addSecs(qRound(descentProfile->timeInterval(topLevel, level)));
+                        times.replace(i, time);
                     }
 
                     if(i != fixListSize - 1) distanceCounter += flight->getLegDistance(i);
@@ -1741,9 +1843,17 @@ void ATCSimulation::calculateWaypointsLevels(ATCFlight *flight)
                 if(distanceToGo >= ToD)
                 {
                     //Assign levels for cruise
+                    distanceCounter = flight->getDistanceToNext();
+                    double crsSpd = speedProfile->nominalCruiseSpeed(topLevel);
+
                     for(int i = climbLimit; i < cruiseLimit; i++)
                     {
-                        labels.replace(i, QString::number(qRound(ATCMath::m2ft((CFL <= RFL) ? RFL : CFL) / 100), 'f', 0).rightJustified(3, '0'));
+                        labels.replace(i, QString::number(qRound(ATCMath::m2ft(topLevel) / 100), 'f', 0).rightJustified(3, '0'));
+
+                        double crsDst = distanceCounter;
+                        QTime time = timeHandle->addSecs(qRound(crsDst / crsSpd));
+                        times.replace(i, time);
+
                         if(i != fixListSize - 1) distanceCounter += flight->getLegDistance(i);
                     }
                 }
@@ -1753,6 +1863,7 @@ void ATCSimulation::calculateWaypointsLevels(ATCFlight *flight)
                 for(int i = cruiseLimit; i < flight->getLegDistanceVectorSize(); i++) distanceCounter -= flight->getLegDistance(i);
 
                 double ilsDst = ToD - ATCConst::APP_TYPICAL_INTERCEPT_ALT / qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE));
+                QTime ilsTime = ToDtime.addSecs(qRound(descentProfile->timeInterval(topLevel, ATCConst::APP_TYPICAL_INTERCEPT_ALT)));
 
                 //Interpolate levels for descent
                 for(int i = cruiseLimit; i < fixListSize; i++)
@@ -1761,19 +1872,28 @@ void ATCSimulation::calculateWaypointsLevels(ATCFlight *flight)
                     {
                         if(distanceCounter < ilsDst) //On descent
                         {
-                            double level = descentProfile->mixedDistanceInterval((CFL <= RFL) ? RFL : CFL, distanceCounter);
+                            double level = descentProfile->mixedDistanceInterval(topLevel, distanceCounter);
                             labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+
+                            QTime time = ToDtime.addSecs(qRound(descentProfile->timeInterval(topLevel, level)));
+                            times.replace(i, time);
                         }
                         else //On approach
                         {
                             double level = (ToD - distanceCounter) * qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE));
                             labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+
+                            QTime time = ilsTime.addSecs(qRound(approachProfile->timeInterval(ATCConst::APP_TYPICAL_INTERCEPT_ALT, level)));
+                            times.replace(i, time);
                         }
                     }
                     else
                     {
-                        double level = descentProfile->mixedDistanceInterval((CFL <= RFL) ? RFL : CFL, distanceCounter);
+                        double level = descentProfile->mixedDistanceInterval(topLevel, distanceCounter);
                         labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+
+                        QTime time = ToDtime.addSecs(qRound(descentProfile->timeInterval(topLevel, level)));
+                        times.replace(i, time);
                     }
 
                     if(i != fixListSize - 1) distanceCounter += flight->getLegDistance(i);
@@ -1793,8 +1913,13 @@ void ATCSimulation::calculateWaypointsLevels(ATCFlight *flight)
                 double ilsDst = distanceToGo - appLvl / qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE));
 
                 //Determine descent base and ToD@CFL
-                double descentBase = flight->getProfileDescent()->distanceInterval(AFL, CFL);
+                double descentBase = descentProfile->distanceInterval(AFL, CFL);
                 double TODfromCFL = distanceToGo - distanceTOD(flight, CFL);
+
+                QTime descentBaseTime = timeHandle->addSecs(qRound(descentProfile->timeInterval(AFL, CFL)));
+                double lvlSpd = speedProfile->nominalCruiseSpeed(CFL);
+                QTime TODfromCFLtime = descentBaseTime.addSecs(qRound((TODfromCFL - descentBase) / lvlSpd));
+                QTime ilsTime = TODfromCFLtime.addSecs(descentProfile->timeInterval(CFL, appLvl));
 
                 //Interpolate levels for descent
                 for(int i = waypointIndex; i < fixListSize; i++)
@@ -1805,23 +1930,43 @@ void ATCSimulation::calculateWaypointsLevels(ATCFlight *flight)
                         {
                             double level = descentProfile->mixedDistanceInterval(AFL, distanceCounter);
                             labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+
+                            QTime time = timeHandle->addSecs(qRound(descentProfile->timeInterval(AFL, level)));
+                            times.replace(i, time);
                         }
                         else if(distanceCounter <= TODfromCFL)
                         {
                             labels.replace(i, QString::number(qRound(ATCMath::m2ft(CFL) / 100), 'f', 0).rightJustified(3, '0'));
+
+                            QTime time = descentBaseTime.addSecs(qRound((distanceCounter - descentBase)/ lvlSpd));
+                            times.replace(i, time);
                         }
                         else if(distanceCounter < ilsDst)
                         {
                             double level = descentProfile->mixedDistanceInterval(CFL, distanceCounter - TODfromCFL);
                             labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+
+                            QTime time = TODfromCFLtime.addSecs(descentProfile->timeInterval(CFL, level));
+                            times.replace(i, time);
                         }
                         else
                         {
                             double level = (distanceToGo - distanceCounter) * qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE));
                             labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+
+                            QTime time = ilsTime.addSecs(approachProfile->timeInterval(appLvl, level));
+                            times.replace(i, time);
                         }
                     }
-                    else //Level flight past ToD or descent past ToD
+                    else if(flight->isGlidePath()) //On ILS GP
+                    {
+                        double level = (distanceToGo - distanceCounter) * qTan(ATCMath::deg2rad(ATCConst::APP_PATH_ANGLE));
+                        labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+
+                        QTime time = timeHandle->addSecs(approachProfile->timeInterval(AFL, level));
+                        times.replace(i, time);
+                    }
+                    else //Level flight past ToD or descent past ToD, not on approach
                     {
                         double level = descentProfile->mixedDistanceInterval(AFL, distanceCounter);
                         labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
@@ -1836,11 +1981,7 @@ void ATCSimulation::calculateWaypointsLevels(ATCFlight *flight)
 
     //Pass container to flight
     flight->setWaypointLevels(labels);
-}
-
-void ATCSimulation::calculateWaypointsTimes(ATCFlight *flight)
-{
-
+    flight->setWaypointTimes(times);
 }
 
 void ATCSimulation::predictTrajectories()
@@ -1862,7 +2003,7 @@ void ATCSimulation::predictTrajectories()
                         calculateTOCposition(flight);
                         calculateTODposition(flight);
 
-                        calculateWaypointsLevels(flight);
+                        calculateWaypointTraits(flight);
 
                         flight->setAccuratePredictionFlag(true);
                         if(flight->getRoutePrediction() != nullptr) emit signalUpdateRoute(flight);

@@ -48,6 +48,7 @@ struct Temp //Structure for temporary, constant data members preallocated before
     double xoverAltDesM;
 
     QPair<double, double> rwyDesThr;
+    QPair<double, double> rwyDesThrProjected;
     QPair<double, double> rwyDesAppRange;
     double rwyDesAzimuth;
 

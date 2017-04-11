@@ -3747,24 +3747,45 @@ void ATCSituationalDisplay::displayRouteETA(ATCFlight *flight)
 
         if(flight->getNavMode() == ATC::Nav)
         {
+            int waypointIndex = flight->getWaypointIndex();
             for(int i = 0; i < prediction->getLabels().size(); i++)
             {
                 //Here actual ETA display will be implemented
 
                 QGraphicsSimpleTextItem *label = labels.at(i);
-                label->setText("--:--");
+
+                if(flight->hasAccuratePrediction())
+                {
+                    QTime time = flight->getWaypointTime(waypointIndex + i);
+                    label->setText(time.isValid() ? time.toString("HH:mm:ss") : "--:--:--");
+                }
+                else
+                {
+                    label->setText("--:--:--");
+                }
             }
 
             //Display ToC & ToD labels
-            if(prediction->getLabelTOC() != nullptr) prediction->getLabelTOC()->setText("TOC --.--");
-            if(prediction->getLabelTOD() != nullptr) prediction->getLabelTOD()->setText("TOD --.--");
+            if(prediction->getLabelTOC() != nullptr)
+            {
+                QTime TOCtime = flight->getTOCtime();
+                QString text = TOCtime.isValid() ? TOCtime.toString("TOC HH:mm:ss") : "TOD --:--:--";
+                prediction->getLabelTOC()->setText(text);
+            }
+
+            if(prediction->getLabelTOD() != nullptr)
+            {
+                QTime TODtime = flight->getTODtime();
+                QString text = TODtime.isValid() ? TODtime.toString("TOD HH:mm:ss") : "TOD --:--:--";
+                prediction->getLabelTOD()->setText(text);
+            }
         }
         else
         {
             for(int i = 0; i < prediction->getLabels().size(); i++)
             {
                 QGraphicsSimpleTextItem *label = labels.at(i);
-                label->setText("--:--");
+                label->setText("--:--:--");
             }
         }
 

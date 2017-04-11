@@ -40,6 +40,7 @@ public:
     void removeFlight(QString callsign);
     void clearFlights();
 
+    void setTimeHandle(QTime *t);
     void subtractFlightTimeouts();
 
 signals:
@@ -64,6 +65,8 @@ private:
     ATCActiveRunways *activeRunways = nullptr;
     QVector<ATCFlight*> flights;
     QVector<int> cleanupIndices;
+
+    QTime *timeHandle = nullptr;
 
     QElapsedTimer globalTimer;
 
@@ -106,14 +109,15 @@ private:
     void assignApproachProfile(ATCFlight *flight, ISA &isa);
 
     double distanceTOC(ATCFlight *flight, double AFL, double targetFL);
-    double distanceTOD(ATCFlight *flight, double RFL);
+    double distanceTOD(ATCFlight *flight, double fromLvl);
+    QTime timeTOC(ATCFlight *flight, double AFL, double targetFL);
+    QTime timeTOD(ATCFlight *flight, double AFL, double fromLvl, double dstToTOD);
 
     void assignTOCandTOD(ATCFlight *flight);
     void calculateTOCposition(ATCFlight *flight);
     void calculateTODposition(ATCFlight *flight);
 
-    void calculateWaypointsLevels(ATCFlight *flight);
-    void calculateWaypointsTimes(ATCFlight *flight);
+    void calculateWaypointTraits(ATCFlight *flight);
 
     void predictTrajectories();
 

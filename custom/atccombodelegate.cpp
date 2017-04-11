@@ -653,21 +653,32 @@ void ATCComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, 
                     double thrLat;
                     double thrLon;
                     double azimuth;
+                    double x;
+                    double y;
 
                     if(flight->getRunwayDestination().left(2).toInt() <= 18)
                     {
                         thrLat = runway->getStartPoint().latitude();
                         thrLon = runway->getStartPoint().longitude();
+
                         azimuth = runway->getAzimuth();
+
+                        x = runway->getExtendedCentreline1()->getCentreline()->line().x1();
+                        y = runway->getExtendedCentreline1()->getCentreline()->line().y1();
                     }
                     else
                     {
                         thrLat = runway->getEndPoint().latitude();
                         thrLon = runway->getEndPoint().longitude();
+
                         azimuth = ATCMath::normalizeAngle(runway->getAzimuth() + ATCConst::PI, ATC::Deg);
+
+                        x = runway->getExtendedCentreline2()->getCentreline()->line().x1();
+                        y = runway->getExtendedCentreline2()->getCentreline()->line().y1();
                     }
 
                     temp.rwyDesThr = QPair<double, double>(thrLat, thrLon);
+                    temp.rwyDesThrProjected = QPair<double, double>(x, y);
                     temp.rwyDesAzimuth = azimuth;
 
                     double rangeLat;
