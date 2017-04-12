@@ -154,7 +154,7 @@ A</string>
     </property>
    </widget>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="buttonMeteringFix">
    <property name="geometry">
     <rect>
      <x>290</x>

@@ -215,7 +215,7 @@ void MainWindow::on_buttonAman_clicked()
 {
     if(dialogAman == nullptr)
     {
-        dialogAman = new DialogAman(this);
+        dialogAman = new DialogAman(airspaceData, this);
         dialogAman->show();
 
         connect(dialogAman, SIGNAL(closed()), this, SLOT(dialogAmanClosed()));
