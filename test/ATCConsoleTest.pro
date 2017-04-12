@@ -15,6 +15,7 @@ VPATH += ./main \
     ./suits/nav \
     ./suits/utils \
     \
+    ../aman \
     ../bin \
     ../custom \
     ../dialog \
@@ -36,6 +37,7 @@ INCLUDEPATH += ./main \
     ./suits/nav \
     ./suits/utils \
     \
+    ../aman \
     ../bin \
     ../custom \
     ../dialog \

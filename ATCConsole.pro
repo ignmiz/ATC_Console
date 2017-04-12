@@ -14,7 +14,8 @@ CONFIG(release): LIBS += -L"$$_PRO_FILE_PWD_/lib/GeographicLib/" -lGeographic
 LIBS += -L"C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2017.2.187/windows/mkl/lib/intel64_win" -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core
 LIBS += -L"C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2017.2.187/windows/compiler/lib/intel64_win" -llibiomp5md
 
-VPATH += ./bin \
+VPATH += ./aman \
+    ./bin \
     ./custom \
     ./dialog \
     ./display \
@@ -28,7 +29,8 @@ VPATH += ./bin \
     ./ui \
     ./utils
 
-INCLUDEPATH += ./bin \
+INCLUDEPATH += ./aman \
+    ./bin \
     ./custom \
     ./dialog \
     ./display \
@@ -128,7 +130,8 @@ SOURCES += main.cpp\
     dialog/dialogflightlist.cpp \
     flight/atcprofilespeed.cpp \
     flight/atcprofileapproach.cpp \
-    dialog/dialogaman.cpp
+    dialog/dialogaman.cpp \
+    aman/atcamandisplay.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -277,7 +280,8 @@ HEADERS  += mainwindow.h \
     dialog/dialogflightlist.h \
     flight/atcprofilespeed.h \
     flight/atcprofileapproach.h \
-    dialog/dialogaman.h
+    dialog/dialogaman.h \
+    aman/atcamandisplay.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
