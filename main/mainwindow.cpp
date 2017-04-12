@@ -202,10 +202,24 @@ void MainWindow::on_buttonList_clicked()
 
 void MainWindow::on_buttonRunway_clicked()
 {
-    dialogActiveRunways = new DialogActiveRunways(airspaceData, simulation->getActiveRunways(), this);
-    dialogActiveRunways->show();
+    if(dialogActiveRunways == nullptr)
+    {
+        dialogActiveRunways = new DialogActiveRunways(airspaceData, simulation->getActiveRunways(), this);
+        dialogActiveRunways->show();
 
-    connect(dialogActiveRunways, SIGNAL(closed()), this, SLOT(slotCloseDialogActiveRunways()));
+        connect(dialogActiveRunways, SIGNAL(closed()), this, SLOT(slotCloseDialogActiveRunways()));
+    }
+}
+
+void MainWindow::on_buttonAman_clicked()
+{
+    if(dialogAman == nullptr)
+    {
+        dialogAman = new DialogAman(this);
+        dialogAman->show();
+
+        connect(dialogAman, SIGNAL(closed()), this, SLOT(dialogAmanClosed()));
+    }
 }
 
 void MainWindow::dialogMainMenuClosed()
@@ -238,6 +252,11 @@ void MainWindow::dialogTrailingDotsClosed()
 void MainWindow::dialogFlightListClosed()
 {
     dialogFlightList = nullptr;
+}
+
+void MainWindow::dialogAmanClosed()
+{
+    dialogAman = nullptr;
 }
 
 void MainWindow::changeFocusToDisplay()

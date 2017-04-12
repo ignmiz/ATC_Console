@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DialogAman</class>
+ <widget class="QDialog" name="DialogAman">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>700</width>
+    <height>900</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QGraphicsView" name="graphicsView">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>30</y>
+     <width>700</width>
+     <height>795</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QGraphicsView
+{
+	background-color: #000000;
+	border-style: outset;
+	border-width: 2px;
+	border-color: #3e3e3e;
+}</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonClock">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>825</y>
+     <width>120</width>
+     <height>50</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton::disabled
+{
+	font: 19pt;
+	color: #c8c8c8;
+}</string>
+   </property>
+   <property name="text">
+    <string>14:35:27</string>
+   </property>
+  </widget>
+  <widget class="QFrame" name="frameETA">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>825</y>
+     <width>290</width>
+     <height>75</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QFrame
+{
+	border-style: outset;
+	border-width: 2px;
+	border-color: #3e3e3e;
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QLabel" name="labelETA">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>0</y>
+      <width>20</width>
+      <height>75</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel
+{
+	border-style: outset;
+	border-width: 2px;
+	border-color: #3e3e3e;
+	font: 12pt;
+}</string>
+    </property>
+    <property name="text">
+     <string>E
+T
+A</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QFrame" name="frameRTA">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>825</y>
+     <width>290</width>
+     <height>75</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QFrame
+{
+	border-style: outset;
+	border-width: 2px;
+	border-color: #3e3e3e;
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QLabel" name="labelRTA">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>20</width>
+      <height>75</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel
+{
+	border-style: outset;
+	border-width: 2px;
+	border-color: #3e3e3e;
+	font: 12pt;
+}</string>
+    </property>
+    <property name="text">
+     <string>R
+T
+A</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>875</y>
+     <width>120</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 13pt;
+color: #c8c8c8;</string>
+   </property>
+   <property name="text">
+    <string>EVINA</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

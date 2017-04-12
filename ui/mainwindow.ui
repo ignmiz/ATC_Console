@@ -301,9 +301,9 @@
    <widget class="ATCButtonMainWindow" name="buttonSpacerTop">
     <property name="geometry">
      <rect>
-      <x>880</x>
+      <x>960</x>
       <y>0</y>
-      <width>1000</width>
+      <width>920</width>
       <height>30</height>
      </rect>
     </property>
@@ -353,6 +353,25 @@
 }</string>
     </property>
    </widget>
+   <widget class="ATCButtonMainWindow" name="buttonAman">
+    <property name="geometry">
+     <rect>
+      <x>880</x>
+      <y>0</y>
+      <width>80</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="text">
+     <string>AMAN</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -360,7 +379,7 @@
      <x>0</x>
      <y>0</y>
      <width>1920</width>
-     <height>25</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>
