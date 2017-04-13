@@ -45,10 +45,40 @@ void ATCClock::stop()
     }
 }
 
+void ATCClock::appendChildClock(QPushButton *child)
+{
+    child->setText(time->toString("HH:mm:ss"));
+    childClocks.append(child);
+}
+
+void ATCClock::removeChildClock(int i)
+{
+    childClocks.remove(i);
+}
+
+void ATCClock::removeChildClock(QPushButton *child)
+{
+
+    for(int i = 0; i < childClocks.size(); i++)
+    {
+        if(childClocks.at(i) == child)
+        {
+            childClocks.remove(i);
+            break;
+        }
+    }
+}
+
 void ATCClock::slotUpdateTime()
 {
     *time = time->addSecs(1);
     setText(time->toString("HH:mm:ss"));
+
+    //Update child clocks
+    for(int i = 0; i < childClocks.size(); i++)
+    {
+        childClocks.at(i)->setText(time->toString("HH:mm:ss"));
+    }
 }
 
 void ATCClock::setup()

@@ -4,6 +4,7 @@
 #include <QPushButton>
 #include <QTime>
 #include <QTimer>
+#include <QVector>
 
 class ATCClock : public QPushButton
 {
@@ -18,6 +19,11 @@ public:
     void start();
     void stop();
 
+    void appendChildClock(QPushButton *child);
+
+    void removeChildClock(int i);
+    void removeChildClock(QPushButton *child);
+
 private slots:
     void slotUpdateTime();
 
@@ -26,6 +32,8 @@ private:
 
     QTimer *timer;
     QTime *time;
+
+    QVector<QPushButton*> childClocks;
 };
 
 #endif // ATCCLOCK_H
