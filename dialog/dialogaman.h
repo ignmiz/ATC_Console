@@ -19,6 +19,8 @@ public:
     explicit DialogAman(ATCAirspace *airspace, QWidget *parent = 0);
     ~DialogAman();
 
+    QPushButton* getClock();
+
 private slots:
     ATC_MOUSE_HANDLER
 

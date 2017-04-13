@@ -20,6 +20,11 @@ DialogAman::~DialogAman()
     delete uiInner;
 }
 
+QPushButton *DialogAman::getClock()
+{
+    return uiInner->buttonClock;
+}
+
 void DialogAman::on_buttonMeteringFix_clicked()
 {
     uiInner->buttonMeteringFix->hide();

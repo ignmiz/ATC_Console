@@ -52,7 +52,7 @@
 }</string>
    </property>
    <property name="text">
-    <string>14:35:27</string>
+    <string>--:--:--</string>
    </property>
   </widget>
   <widget class="QFrame" name="frameETA">

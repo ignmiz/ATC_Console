@@ -216,6 +216,8 @@ void MainWindow::on_buttonAman_clicked()
     if(dialogAman == nullptr)
     {
         dialogAman = new DialogAman(airspaceData, this);
+        ui->buttonTime->appendChildClock(dialogAman->getClock());
+
         dialogAman->show();
 
         connect(dialogAman, SIGNAL(closed()), this, SLOT(dialogAmanClosed()));
@@ -256,6 +258,7 @@ void MainWindow::dialogFlightListClosed()
 
 void MainWindow::dialogAmanClosed()
 {
+    ui->buttonTime->removeChildClock(dialogAman->getClock());
     dialogAman = nullptr;
 }
 
