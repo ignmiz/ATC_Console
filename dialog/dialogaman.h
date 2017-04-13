@@ -25,6 +25,7 @@ private slots:
     void on_buttonMeteringFix_clicked();
 
     void slotMeteringFixEntered();
+    void slotHideLineEdit();
 
 private:
     Ui::DialogAman *uiInner;

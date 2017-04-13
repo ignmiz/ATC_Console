@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QGraphicsView" name="graphicsView">
+  <widget class="ATCAmanDisplay" name="amanDisplay">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -172,6 +172,13 @@ color: #c8c8c8;</string>
    </property>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ATCAmanDisplay</class>
+   <extends>QGraphicsView</extends>
+   <header>atcamandisplay.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

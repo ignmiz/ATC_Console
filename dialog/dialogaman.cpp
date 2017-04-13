@@ -10,6 +10,7 @@ DialogAman::DialogAman(ATCAirspace *airspace, QWidget *parent) :
     windowSetup();
 
     createLineEdit();
+    connect(uiInner->amanDisplay, SIGNAL(signalHideLineEdit()), this, SLOT(slotHideLineEdit()));
 }
 
 DialogAman::~DialogAman()
@@ -24,9 +25,21 @@ void DialogAman::on_buttonMeteringFix_clicked()
     uiInner->buttonMeteringFix->hide();
 
     lineEditMeteringFix->setText(uiInner->buttonMeteringFix->text());
+    lineEditMeteringFix->setStyleSheet("QLineEdit"
+                                       "{"
+                                       "    color: #c8c8c8;"
+                                       "    background-color: #00153a;"
+                                       "    border-style: inset;"
+                                       "    border-width: 2px;"
+                                       "    border-color: #3e3e3e;"
+                                       "    font: 14px;"
+                                       "}"
+                                       );
+    lineEditMeteringFix->selectAll();
+    lineEditMeteringFix->setFocus();
     lineEditMeteringFix->show();
 
-    connect(lineEditMeteringFix, SIGNAL(returnPressed()), this, SLOT(slotMeteringFixEntered()));
+    uiInner->amanDisplay->setLineEditMeteringFixVisible(true);
 }
 
 void DialogAman::slotMeteringFixEntered()
@@ -54,6 +67,15 @@ void DialogAman::slotMeteringFixEntered()
     uiInner->buttonMeteringFix->show();
 }
 
+void DialogAman::slotHideLineEdit()
+{
+    lineEditMeteringFix->hide();
+    lineEditMeteringFix->clear();
+
+
+    uiInner->buttonMeteringFix->show();
+}
+
 void DialogAman::createLineEdit()
 {
     lineEditMeteringFix = new QLineEdit(this);
@@ -61,15 +83,7 @@ void DialogAman::createLineEdit()
     lineEditMeteringFix->setAlignment(Qt::AlignHCenter);
     lineEditMeteringFix->setInputMask(">nnnnn");
     lineEditMeteringFix->hide();
-    lineEditMeteringFix->setStyleSheet("QLineEdit"
-                                       "{"
-                                       "    color: #c8c8c8;"
-                                       "    background-color: #00153a;"
-                                       "    border-style: inset;"
-                                       "    border-width: 2px;"
-                                       "    border-color: #3e3e3e;"
-                                       "    font: 14px;"
-                                       "}"
-                                       );
+
+    connect(lineEditMeteringFix, SIGNAL(returnPressed()), this, SLOT(slotMeteringFixEntered()));
 }
 
