@@ -32,6 +32,10 @@ const int ATCConst::SCENE_WIDTH = ATCConst::DISPLAY_WIDTH * ATCConst::SCENE_FACT
 const int ATCConst::SCENE_HEIGHT = ATCConst::DISPLAY_HEIGHT * ATCConst::SCENE_FACTOR;
 const double ATCConst::SECTOR_SHRINK_FACTOR = 2;
 
+//AMAN
+const double ATCConst::AMAN_DISPLAY_WIDTH = 696;
+const double ATCConst::AMAN_DISPLAY_HEIGHT = 791;
+
 //Simulation Performance
 const double ATCConst::DT = 0.1;
 const double ATCConst::DT_COARSE = 0.5;

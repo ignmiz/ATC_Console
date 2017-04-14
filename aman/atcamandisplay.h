@@ -1,8 +1,12 @@
 #ifndef ATCAMANDISPLAY_H
 #define ATCAMANDISPLAY_H
 
+#include "atcconst.h"
+
 #include <QMouseEvent>
+#include <QGraphicsItem>
 #include <QGraphicsView>
+
 
 class ATCAmanDisplay : public QGraphicsView
 {
@@ -18,6 +22,8 @@ signals:
     void signalHideLineEdit();
 
 private:
+    QGraphicsScene *currentScene;
+
     bool lineEditMeteringFixVisible;
 
 protected:

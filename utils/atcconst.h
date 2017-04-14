@@ -35,6 +35,10 @@ public:
     static const int SCENE_HEIGHT;
     static const double SECTOR_SHRINK_FACTOR;
 
+    //AMAN
+    static const double AMAN_DISPLAY_WIDTH;
+    static const double AMAN_DISPLAY_HEIGHT;
+
     //Simulation Performance
     static const double DT;
     static const double DT_COARSE;
