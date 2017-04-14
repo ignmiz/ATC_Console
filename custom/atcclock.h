@@ -24,6 +24,9 @@ public:
     void removeChildClock(int i);
     void removeChildClock(QPushButton *child);
 
+signals:
+    void signalClockUpdated();
+
 private slots:
     void slotUpdateTime();
 

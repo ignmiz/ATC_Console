@@ -74,6 +74,8 @@ void ATCClock::slotUpdateTime()
     *time = time->addSecs(1);
     setText(time->toString("HH:mm:ss"));
 
+    emit signalClockUpdated();
+
     //Update child clocks
     for(int i = 0; i < childClocks.size(); i++)
     {

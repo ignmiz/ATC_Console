@@ -3,10 +3,11 @@
 
 #include "atcconst.h"
 
+#include <QList>
 #include <QMouseEvent>
 #include <QGraphicsItem>
 #include <QGraphicsView>
-
+#include <QDebug>
 
 class ATCAmanDisplay : public QGraphicsView
 {
@@ -17,6 +18,7 @@ public:
     ~ATCAmanDisplay();
 
     void setLineEditMeteringFixVisible(bool flag);
+    void clockUpdated();
 
 signals:
     void signalHideLineEdit();
@@ -24,7 +26,20 @@ signals:
 private:
     QGraphicsScene *currentScene;
 
+    QGraphicsLineItem *leftBar;
+    QGraphicsLineItem *rightBar;
+    QList<QGraphicsLineItem*> minorLeftTicks;
+    QList<QGraphicsLineItem*> minorRightTicks;
+    QList<QGraphicsLineItem*> majorLeftTicks;
+    QList<QGraphicsLineItem*> majorRightTicks;
+    QList<QGraphicsSimpleTextItem*> labels;
+
+    double majorTickSpacing;
+    double minorTickSpacing;
+
     bool lineEditMeteringFixVisible;
+
+    void progressTimeBy(double seconds);
 
 protected:
     void mousePressEvent(QMouseEvent *event);

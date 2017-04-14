@@ -81,6 +81,11 @@ void DialogAman::slotHideLineEdit()
     uiInner->buttonMeteringFix->show();
 }
 
+void DialogAman::slotClockUpdated()
+{
+    uiInner->amanDisplay->clockUpdated();
+}
+
 void DialogAman::createLineEdit()
 {
     lineEditMeteringFix = new QLineEdit(this);

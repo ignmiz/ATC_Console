@@ -28,6 +28,7 @@ private slots:
 
     void slotMeteringFixEntered();
     void slotHideLineEdit();
+    void slotClockUpdated();
 
 private:
     Ui::DialogAman *uiInner;

@@ -30,17 +30,17 @@ ATCAmanDisplay::ATCAmanDisplay(QWidget *parent) : QGraphicsView(parent)
     pen3.setWidthF(1);
 
     //Time scale vertical lines
-    QGraphicsLineItem *leftVert = new QGraphicsLineItem(-30, -ATCConst::AMAN_DISPLAY_HEIGHT/2, -30, ATCConst::AMAN_DISPLAY_HEIGHT);
-    leftVert->setPen(pen);
-    currentScene->addItem(leftVert);
+    leftBar = new QGraphicsLineItem(-30, -ATCConst::AMAN_DISPLAY_HEIGHT/2, -30, ATCConst::AMAN_DISPLAY_HEIGHT);
+    leftBar->setPen(pen);
+    currentScene->addItem(leftBar);
 
-    QGraphicsLineItem *rightVert = new QGraphicsLineItem(30, -ATCConst::AMAN_DISPLAY_HEIGHT/2, 30, ATCConst::AMAN_DISPLAY_HEIGHT);
-    rightVert->setPen(pen);
-    currentScene->addItem(rightVert);
+    rightBar = new QGraphicsLineItem(30, -ATCConst::AMAN_DISPLAY_HEIGHT/2, 30, ATCConst::AMAN_DISPLAY_HEIGHT);
+    rightBar->setPen(pen);
+    currentScene->addItem(rightBar);
 
     //Time scale ticks spacing
-    double majorTickSpacing = ATCConst::AMAN_DISPLAY_HEIGHT / 13;
-    double minorTickSpacing = majorTickSpacing / 5;
+    majorTickSpacing = ATCConst::AMAN_DISPLAY_HEIGHT / 13;
+    minorTickSpacing = majorTickSpacing / 5;
 
     //Time scale horizon
     QGraphicsLineItem *timeHorizon = new QGraphicsLineItem(-ATCConst::AMAN_DISPLAY_WIDTH/2, ATCConst::AMAN_DISPLAY_HEIGHT/2 - majorTickSpacing, ATCConst::AMAN_DISPLAY_WIDTH/2, ATCConst::AMAN_DISPLAY_HEIGHT/2 - majorTickSpacing);
@@ -54,22 +54,24 @@ ATCAmanDisplay::ATCAmanDisplay(QWidget *parent) : QGraphicsView(parent)
     double innerMinorTickBound = 25;
     double outerMinorTickBound = 30;
 
-    double majorY = -ATCConst::AMAN_DISPLAY_HEIGHT / 2;
-    int labelValue = 60;
+    double majorY = ATCConst::AMAN_DISPLAY_HEIGHT / 2 + majorTickSpacing;
+    int labelValue = -10;
 
-    for(int i = 0; i < 14; i++)
+    for(int i = 0; i < 15; i++)
     {
         //Create major tick
         QGraphicsLineItem *leftMajorTick = new QGraphicsLineItem(-outerMajorTickBound,  majorY, -innerMajorTickBound, majorY);
         leftMajorTick->setPen(pen);
         currentScene->addItem(leftMajorTick);
+        majorLeftTicks.append(leftMajorTick);
 
         QGraphicsLineItem *rightMajorTick = new QGraphicsLineItem(outerMajorTickBound, majorY, innerMajorTickBound, majorY);
         rightMajorTick->setPen(pen);
         currentScene->addItem(rightMajorTick);
+        majorRightTicks.append(rightMajorTick);
 
         //Create major tick label
-        if((i > 0) && (i < 13))
+        if((i > 1) && (i < 14))
         {
             QGraphicsSimpleTextItem *label = new QGraphicsSimpleTextItem(QString::number(labelValue).rightJustified(2, '0'));
             QBrush textBrush(Qt::white);
@@ -85,28 +87,31 @@ ATCAmanDisplay::ATCAmanDisplay(QWidget *parent) : QGraphicsView(parent)
             label->setPos(-width/2, majorY - height / 2);
 
             currentScene->addItem(label);
+            labels.append(label);
         }
 
         //Create minor ticks
-        if(i < 13)
+        if(i < 14)
         {
             for(int j = 0; j < 4; j++)
             {
-                double minorY = majorY + (j + 1) * minorTickSpacing;
+                double minorY = majorY - (j + 1) * minorTickSpacing;
 
                 QGraphicsLineItem *leftMinorTick = new QGraphicsLineItem(-outerMinorTickBound, minorY, -innerMinorTickBound, minorY);
                 leftMinorTick->setPen(pen);
                 currentScene->addItem(leftMinorTick);
+                minorLeftTicks.append(leftMinorTick);
 
                 QGraphicsLineItem *rightMinorTick = new QGraphicsLineItem(outerMinorTickBound, minorY, innerMinorTickBound, minorY);
                 rightMinorTick->setPen(pen);
                 currentScene->addItem(rightMinorTick);
+                minorRightTicks.append(rightMinorTick);
             }
         }
 
         //Progress counters
-        majorY += majorTickSpacing;
-        labelValue -= 5;
+        majorY -= majorTickSpacing;
+        labelValue += 5;
     }
 
 
@@ -121,6 +126,30 @@ ATCAmanDisplay::~ATCAmanDisplay()
 void ATCAmanDisplay::setLineEditMeteringFixVisible(bool flag)
 {
     lineEditMeteringFixVisible = flag;
+}
+
+void ATCAmanDisplay::clockUpdated()
+{
+    progressTimeBy(1);
+}
+
+void ATCAmanDisplay::progressTimeBy(double seconds)
+{
+    double dy = seconds * minorTickSpacing / 60;
+
+    for(int i = 0; i < minorLeftTicks.size(); i++)
+    {
+        minorLeftTicks.at(i)->moveBy(0, dy);
+        minorRightTicks.at(i)->moveBy(0, dy);
+    }
+
+    for(int i = 0; i < majorRightTicks.size(); i++)
+    {
+        majorLeftTicks.at(i)->moveBy(0, dy);
+        majorRightTicks.at(i)->moveBy(0, dy);
+    }
+
+    for(int i = 0; i < labels.size(); i++) labels.at(i)->moveBy(0, dy);
 }
 
 void ATCAmanDisplay::mousePressEvent(QMouseEvent *event)
