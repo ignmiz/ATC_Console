@@ -112,6 +112,10 @@ void ATCSettings::interpretSymbologyFile(QString path)
             {
                 flag = "[TRAILING DOTS]";
             }
+            else if(textLine.contains("[AMAN]", Qt::CaseInsensitive))
+            {
+                flag = "[AMAN]";
+            }
             else if(flag == "[INFO]")
             {
                 if(stringList.at(0).trimmed() == "NAME")
@@ -502,6 +506,53 @@ void ATCSettings::interpretSymbologyFile(QString path)
                     TRAILING_DIA = stringList.at(1).trimmed().toDouble();
                 }
             }
+            else if(flag == "[AMAN]")
+            {
+                if(stringList.at(0).trimmed() == "TIMELINE COLOR")
+                {
+                    AMAN_TIMELINE_COLOR = colorFromString(stringList.at(1));
+                }
+                else if(stringList.at(0).trimmed() == "TIMELINE LINE WIDTH")
+                {
+                    AMAN_TIMELINE_LINE_WIDTH = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "TIMELINE LABEL COLOR")
+                {
+                    AMAN_TIMELINE_LABEL_COLOR = colorFromString(stringList.at(1));
+                }
+                else if(stringList.at(0).trimmed() == "TIMELINE LABEL HEIGHT")
+                {
+                    AMAN_TIMELINE_LABEL_HEIGHT = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "HORIZON COLOR")
+                {
+                    AMAN_HORIZON_COLOR = colorFromString(stringList.at(1));
+                }
+                else if(stringList.at(0).trimmed() == "HORIZON LINE WIDTH")
+                {
+                    AMAN_HORIZON_LINE_WIDTH = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "BAR SPAN")
+                {
+                    AMAN_BAR_SPAN = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "MAJOR INNER SPAN")
+                {
+                    AMAN_MAJOR_INNER_SPAN = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "MAJOR OUTER SPAN")
+                {
+                    AMAN_MAJOR_OUTER_SPAN = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "MINOR INNER SPAN")
+                {
+                    AMAN_MINOR_INNER_SPAN = stringList.at(1).trimmed().toDouble();
+                }
+                else if(stringList.at(0).trimmed() == "MINOR OUTER SPAN")
+                {
+                    AMAN_MINOR_OUTER_SPAN = stringList.at(1).trimmed().toDouble();
+                }
+            }
         }
     }
 
@@ -659,6 +710,20 @@ void ATCSettings::exportSymbology(QString path)
     out << "COUNT = " << TRAILING_COUNT << endl;
     out << "COLOR = " << TRAILING_COLOR.red() << ", " << TRAILING_COLOR.green() << ", " << TRAILING_COLOR.blue() << endl;
     out << "DIAMETER = " << TRAILING_DIA << endl;
+    out << endl;
+
+    out << "[AMAN]" << endl;
+    out << "TIMELINE COLOR = " << AMAN_TIMELINE_COLOR.red() << ", " << AMAN_TIMELINE_COLOR.green() << ", " << AMAN_TIMELINE_COLOR.blue() << endl;
+    out << "TIMELINE LINE WIDTH = " << AMAN_TIMELINE_LINE_WIDTH << endl;
+    out << "TIMELINE LABEL COLOR = " << AMAN_TIMELINE_LABEL_COLOR.red() << ", " << AMAN_TIMELINE_LABEL_COLOR.green() << ", " << AMAN_TIMELINE_LABEL_COLOR.blue() << endl;
+    out << "TIMELINE LABEL HEIGHT = " << AMAN_TIMELINE_LABEL_HEIGHT << endl;
+    out << "HORIZON COLOR = " << AMAN_HORIZON_COLOR.red() << ", " << AMAN_HORIZON_COLOR.green() << ", " << AMAN_HORIZON_COLOR.blue() << endl;
+    out << "HORIZON LINE WIDTH = " << AMAN_HORIZON_LINE_WIDTH << endl;
+    out << "BAR SPAN = " << AMAN_BAR_SPAN << endl;
+    out << "MAJOR INNER SPAN = " << AMAN_MAJOR_INNER_SPAN << endl;
+    out << "MAJOR OUTER SPAN = " << AMAN_MAJOR_OUTER_SPAN << endl;
+    out << "MINOR INNER SPAN = " << AMAN_MINOR_INNER_SPAN << endl;
+    out << "MINOR OUTER SPAN = " << AMAN_MINOR_OUTER_SPAN << endl;
 
     file.close();
 }

@@ -1,13 +1,18 @@
 #include "dialogaman.h"
 #include "ui_dialogaman.h"
 
-DialogAman::DialogAman(ATCAirspace *airspace, QWidget *parent) :
+DialogAman::DialogAman(ATCAirspace *airspace, ATCSettings *settings, QTime *time, QWidget *parent) :
     ATCDialog(parent, "Approach Manager", 700, 900),
     airspace(airspace),
+    settings(settings),
+    time(time),
     uiInner(new Ui::DialogAman)
 {
     uiInner->setupUi(this);
     windowSetup();
+
+    uiInner->amanDisplay->setSettings(settings);
+    uiInner->amanDisplay->createTimeline(time);
 
     createLineEdit();
     connect(uiInner->amanDisplay, SIGNAL(signalHideLineEdit()), this, SLOT(slotHideLineEdit()));

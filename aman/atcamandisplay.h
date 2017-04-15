@@ -2,8 +2,11 @@
 #define ATCAMANDISPLAY_H
 
 #include "atcconst.h"
+#include "atcsettings.h"
 
+#include <QTime>
 #include <QList>
+#include <QPushButton>
 #include <QMouseEvent>
 #include <QGraphicsItem>
 #include <QGraphicsView>
@@ -17,6 +20,9 @@ public:
     explicit ATCAmanDisplay(QWidget *parent = 0);
     ~ATCAmanDisplay();
 
+    void setSettings(ATCSettings *s);
+    void createTimeline(QTime *t);
+
     void setLineEditMeteringFixVisible(bool flag);
     void clockUpdated();
 
@@ -24,7 +30,10 @@ signals:
     void signalHideLineEdit();
 
 private:
+    ATCSettings *settings;
+
     QGraphicsScene *currentScene;
+    QTime *time;
 
     QGraphicsLineItem *leftBar;
     QGraphicsLineItem *rightBar;
@@ -37,8 +46,14 @@ private:
     double majorTickSpacing;
     double minorTickSpacing;
 
-    bool lineEditMeteringFixVisible;
+    int currentHour;
+    int overflowCounter;
+    int lowestLabel;
 
+    bool lineEditMeteringFixVisible;
+    bool timelineCreated = false;
+
+    void initializeTimelinePosition();
     void progressTimeBy(double seconds);
 
 protected:

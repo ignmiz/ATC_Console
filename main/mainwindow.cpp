@@ -215,7 +215,7 @@ void MainWindow::on_buttonAman_clicked()
 {
     if(dialogAman == nullptr)
     {
-        dialogAman = new DialogAman(airspaceData, this);
+        dialogAman = new DialogAman(airspaceData, settings, ui->buttonTime->getTime(), this);
         ui->buttonTime->appendChildClock(dialogAman->getClock());
 
         dialogAman->show();

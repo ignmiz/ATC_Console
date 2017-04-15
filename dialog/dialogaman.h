@@ -3,6 +3,7 @@
 
 #include "atcdialog.h"
 #include "atcairspace.h"
+#include "atcsettings.h"
 
 #include <QLineEdit>
 #include <QDebug>
@@ -16,7 +17,7 @@ class DialogAman : public ATCDialog
     Q_OBJECT
 
 public:
-    explicit DialogAman(ATCAirspace *airspace, QWidget *parent = 0);
+    explicit DialogAman(ATCAirspace *airspace, ATCSettings *settings, QTime *time, QWidget *parent = 0);
     ~DialogAman();
 
     QPushButton* getClock();
@@ -33,6 +34,9 @@ private slots:
 private:
     Ui::DialogAman *uiInner;
     ATCAirspace *airspace;
+    ATCSettings *settings;
+    QTime *time;
+
     QLineEdit *lineEditMeteringFix;
 
     void createLineEdit();
