@@ -142,7 +142,10 @@ SOURCES += \
     ../flight/atcprofiledescent.cpp \
     ../dialog/dialogflightlist.cpp \
     ../flight/atcprofilespeed.cpp \
-    ../flight/atcprofileapproach.cpp
+    ../flight/atcprofileapproach.cpp \
+    ../dialog/dialogaman.cpp \
+    ../aman/atcamandisplay.cpp \
+    ../aman/atcamanflightlabel.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -291,7 +294,10 @@ HEADERS  += \
     ../flight/atcprofiledescent.h \
     ../dialog/dialogflightlist.h \
     ../flight/atcprofilespeed.h \
-    ../flight/atcprofileapproach.h
+    ../flight/atcprofileapproach.h \
+    ../dialog/dialogaman.h \
+    ../aman/atcamandisplay.h \
+    ../aman/atcamanflightlabel.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
@@ -310,7 +316,8 @@ FORMS    += mainwindow.ui \
     dialogactiverunways.ui \
     dialogleaders.ui \
     ../ui/dialogtrailingdots.ui \
-    ../ui/dialogflightlist.ui
+    ../ui/dialogflightlist.ui \
+    ../ui/dialogaman.ui
 
 #MOCK SOURCES & HEADERS GO HERE:
 
@@ -335,7 +342,7 @@ HEADERS += mock_atcabstractairway.h \
 
 #TEST SOURCES & HEADERS GO HERE:
 
-SOURCES += main.cpp \
+SOURCES += main/main.cpp \
     test_atcabstractairway.cpp \
     test_atcabstractbeacon.cpp \
     test_atcabstractfix.cpp \

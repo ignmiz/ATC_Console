@@ -131,7 +131,8 @@ SOURCES += main.cpp\
     flight/atcprofilespeed.cpp \
     flight/atcprofileapproach.cpp \
     dialog/dialogaman.cpp \
-    aman/atcamandisplay.cpp
+    aman/atcamandisplay.cpp \
+    aman/atcamanflightlabel.cpp
 
 HEADERS  += mainwindow.h \
     atcdialog.h \
@@ -281,7 +282,8 @@ HEADERS  += mainwindow.h \
     flight/atcprofilespeed.h \
     flight/atcprofileapproach.h \
     dialog/dialogaman.h \
-    aman/atcamandisplay.h
+    aman/atcamandisplay.h \
+    aman/atcamanflightlabel.h
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
