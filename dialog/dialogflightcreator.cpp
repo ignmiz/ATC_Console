@@ -1055,7 +1055,7 @@ void DialogFlightCreator::formSetup()
     uiInner->spinBoxHeadingRes->setEnabled(false);
     uiInner->comboBoxNextFix->setEnabled(false);
 
-    uiInner->lineEditCallsign->setInputMask(">AAAxxxxxxx");
+    uiInner->lineEditCallsign->setInputMask(">AAAxxxxxx");
     uiInner->lineEditDeparture->setInputMask(">AAAA");
     uiInner->lineEditDestination->setInputMask(">AAAA");
     uiInner->lineEditAlternate->setInputMask(">AAAA");
