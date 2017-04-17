@@ -142,6 +142,16 @@ void ATCSimulation::subtractFlightTimeouts()
     }
 }
 
+void ATCSimulation::setMeteringFix(QString &fix)
+{
+    meteringFix = fix;
+}
+
+QString &ATCSimulation::getMeteringFix()
+{
+    return meteringFix;
+}
+
 void ATCSimulation::slotStartSimulation()
 {
     GeographicLib::Geodesic geo = GeographicLib::Geodesic::WGS84();

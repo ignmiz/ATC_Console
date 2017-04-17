@@ -3,6 +3,7 @@
 
 #include "atcconst.h"
 #include "atcsettings.h"
+#include "atcamanflightlabel.h"
 
 #include <QTime>
 #include <QList>
@@ -21,6 +22,7 @@ public:
     ~ATCAmanDisplay();
 
     void setSettings(ATCSettings *s);
+
     void createTimeline(QTime *t);
 
     void setLineEditMeteringFixVisible(bool flag);

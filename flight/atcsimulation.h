@@ -10,6 +10,7 @@
 #include <QElapsedTimer>
 #include <QObject>
 #include <QThread>
+#include <QList>
 #include <QDebug>
 
 class ATCSimulation : public QObject
@@ -42,6 +43,9 @@ public:
 
     void setTimeHandle(QTime *t);
     void subtractFlightTimeouts();
+
+    void setMeteringFix(QString &fix);
+    QString& getMeteringFix();
 
 signals:
     void signalUpdateTags();
@@ -78,6 +82,8 @@ private:
     QString dataLoggedPath;
 
     double sweepCounter = 0;
+
+    QString meteringFix;
 
     int activeCount = 0;
     int predictorIterator = 0;

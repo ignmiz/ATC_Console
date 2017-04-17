@@ -1,19 +1,48 @@
 #ifndef ATCAMANFLIGHTLABEL_H
 #define ATCAMANFLIGHTLABEL_H
 
-#include <QGraphicsItem>
+#include "atcflight.h"
 
-class ATCAmanFlightLabel
+#include <QPen>
+#include <QPolygonF>
+#include <QGraphicsItem>
+#include <QGraphicsPolygonItem>
+#include <QGraphicsScene>
+
+enum class SelectStatus
+{
+    Inactive, Active
+};
+
+class ATCAmanFlightLabel : public QGraphicsPolygonItem
 {
 public:
-    explicit ATCAmanFlightLabel(QPointF arrowPos);
+    explicit ATCAmanFlightLabel(ATCFlight *flight, QPointF arrowPos);
     ~ATCAmanFlightLabel();
 
+    void addToScene(QGraphicsScene *scene);
+
 private:
+    ATCFlight *flight;
+    QPointF arrowPos;
+
     QGraphicsLineItem *timeArrow = nullptr;
     QGraphicsLineItem *connector = nullptr;
-    QGraphicsPolygonItem *polygon = nullptr;
     QGraphicsSimpleTextItem *text = nullptr;
+
+    void createLabelItems(QPointF arrowPos);
+
+    void moveLine(QPointF newPos);
+
+    void swapLine(QGraphicsLineItem *line);
+    void swapPolygon(QGraphicsPolygonItem *polygon);
+    void swapText(QGraphicsSimpleTextItem *text);
+
+    void swapSide();
+
+protected:
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
 };
 
 #endif // ATCAMANFLIGHTLABEL_H

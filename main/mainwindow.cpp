@@ -22,6 +22,7 @@ MainWindow::MainWindow(ATCFlightFactory *flightFactory, QWidget *parent) :
     settings = ui->situationalDisplay->getSettings();
 
     ui->buttonRunway->setEnabled(false);
+    ui->buttonAman->setEnabled(false);
 
     mainWindowSetup();
     setSituationalDisplayFocus();
@@ -217,6 +218,11 @@ void MainWindow::on_buttonAman_clicked()
     {
         dialogAman = new DialogAman(airspaceData, settings, ui->buttonTime->getTime(), this);
         ui->buttonTime->appendChildClock(dialogAman->getClock());
+        if(simulation != nullptr)
+        {
+            dialogAman->setSimulation(simulation);
+            dialogAman->setMeteringFix(simulation->getMeteringFix());
+        }
 
         dialogAman->show();
 
@@ -896,8 +902,9 @@ void MainWindow::slotStartSimulation()
             connect(simulation, SIGNAL(signalUpdateFlightList()), dialogFlightList, SLOT(slotUpdateFlightList()));
         }
 
-        //Enable runways button
+        //Enable buttons
         ui->buttonRunway->setEnabled(true);
+        ui->buttonAman->setEnabled(true);
     }
 }
 
@@ -975,8 +982,17 @@ void MainWindow::slotStopSimulation()
         dialogFlightList->setSimulation(simulation);
     }
 
-    //Disable runways button
+    //Disable buttons
     ui->buttonRunway->setEnabled(false);
+    ui->buttonAman->setEnabled(false);
+
+    //Close windows
+    if(dialogActiveRunways != nullptr) dialogActiveRunways->close();
+    if(dialogAman != nullptr)
+    {
+        dialogAman->close();
+        dialogAmanClosed();
+    }
 }
 
 void MainWindow::slotSetSimulationStartTime()

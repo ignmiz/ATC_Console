@@ -30,6 +30,17 @@ QPushButton *DialogAman::getClock()
     return uiInner->buttonClock;
 }
 
+void DialogAman::setMeteringFix(QString &fix)
+{
+    if(fix.isEmpty() || airspace->isValidNavaid(fix)) uiInner->buttonMeteringFix->setText(fix);
+}
+
+void DialogAman::setSimulation(ATCSimulation *sim)
+{
+    simulation = sim;
+    populateAman();
+}
+
 void DialogAman::on_buttonMeteringFix_clicked()
 {
     uiInner->buttonMeteringFix->hide();
@@ -56,7 +67,7 @@ void DialogAman::slotMeteringFixEntered()
 {
     QString name = lineEditMeteringFix->text();
 
-    if(!airspace->isValidNavaid(name))
+    if(!name.isEmpty() && !airspace->isValidNavaid(name))
     {
         lineEditMeteringFix->setStyleSheet("QLineEdit"
                                            "{"
@@ -75,6 +86,8 @@ void DialogAman::slotMeteringFixEntered()
 
     uiInner->buttonMeteringFix->setText(name);
     uiInner->buttonMeteringFix->show();
+
+    if(simulation != nullptr) simulation->setMeteringFix(name);
 }
 
 void DialogAman::slotHideLineEdit()
@@ -100,5 +113,14 @@ void DialogAman::createLineEdit()
     lineEditMeteringFix->hide();
 
     connect(lineEditMeteringFix, SIGNAL(returnPressed()), this, SLOT(slotMeteringFixEntered()));
+}
+
+void DialogAman::populateAman()
+{
+    if(simulation != nullptr)
+    {
+        ATCAmanFlightLabel *label = new ATCAmanFlightLabel(simulation->getFlight(0), QPointF(32, 100));
+        label->addToScene(uiInner->amanDisplay->scene());
+    }
 }
 
