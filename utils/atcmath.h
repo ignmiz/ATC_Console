@@ -53,6 +53,7 @@ public:
     //General
     static double min(double a, double b);
     static double max(double a, double b);
+    static int sgn(double x);
 
     template <typename T>
     static void inverseQVector(QVector<T> &v);

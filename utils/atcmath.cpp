@@ -119,6 +119,22 @@ double ATCMath::max(double a, double b)
     return (a > b) ? a : b;
 }
 
+int ATCMath::sgn(double x)
+{
+    if(x > 0)
+    {
+        return 1;
+    }
+    else if(x < 0)
+    {
+        return -1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 ISA ATCMath::atmosISA(double h)
 {
     ISA isa;

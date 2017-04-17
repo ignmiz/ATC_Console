@@ -145,6 +145,16 @@ void Test_ATCMath::test_max()
     QVERIFY(ATCMath::max(5, 3) == 5);
 }
 
+void Test_ATCMath::test_sgn()
+{
+    QVERIFY(ATCMath::sgn(-10) == -1);
+    QVERIFY(ATCMath::sgn(-0.1) == -1);
+    QVERIFY(ATCMath::sgn(0) == 0);
+    QVERIFY(ATCMath::sgn(0.0) == 0);
+    QVERIFY(ATCMath::sgn(0.1) == 1);
+    QVERIFY(ATCMath::sgn(10) == 1);
+}
+
 void Test_ATCMath::test_inverseQVector()
 {
     QVector<int> vector;

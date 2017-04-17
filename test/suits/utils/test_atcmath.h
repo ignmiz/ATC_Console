@@ -39,6 +39,7 @@ private slots:
 
     void test_min();
     void test_max();
+    void test_sgn();
     void test_inverseQVector();
     void test_sortQVector();
 
