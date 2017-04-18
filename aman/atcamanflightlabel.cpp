@@ -165,8 +165,22 @@ QVariant ATCAmanFlightLabel::itemChange(QGraphicsItem::GraphicsItemChange change
 {
     if(change == ItemPositionChange)
     {
-        moveLine(value.toPointF());
-        return QPointF(pos().x(), value.toPointF().y());
+        //Assign initial y value
+        double yValue = value.toPointF().y();
+
+        //Check saturation conditions
+        if(yValue > ATCConst::AMAN_DISPLAY_HEIGHT / 2 - arrowPos.y())
+        {
+            yValue = ATCConst::AMAN_DISPLAY_HEIGHT / 2 - arrowPos.y();
+        }
+        else if(yValue < - ATCConst::AMAN_DISPLAY_HEIGHT / 2 - arrowPos.y())
+        {
+            yValue = - ATCConst::AMAN_DISPLAY_HEIGHT / 2 - arrowPos.y();
+        }
+
+        //Move connector and flight label
+        moveLine(QPointF(pos().x(), yValue));
+        return QPointF(pos().x(), yValue);
     }
 
     return QGraphicsItem::itemChange(change, value);
