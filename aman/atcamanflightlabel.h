@@ -21,6 +21,7 @@ public:
     ~ATCAmanFlightLabel();
 
     void addToScene(QGraphicsScene *scene);
+    void moveByInterval(double dx, double dy);
 
 private:
     ATCFlight *flight;
@@ -37,7 +38,6 @@ private:
     void swapLine(QGraphicsLineItem *line);
     void swapPolygon(QGraphicsPolygonItem *polygon);
     void swapText(QGraphicsSimpleTextItem *text);
-
     void swapSide();
 
 protected:

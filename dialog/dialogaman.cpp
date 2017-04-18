@@ -121,6 +121,8 @@ void DialogAman::populateAman()
     {
         ATCAmanFlightLabel *label = new ATCAmanFlightLabel(simulation->getFlight(0), QPointF(32, 100));
         label->addToScene(uiInner->amanDisplay->scene());
+
+        uiInner->amanDisplay->appendFlightLabel(label);
     }
 }
 

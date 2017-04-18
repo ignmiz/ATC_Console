@@ -145,7 +145,7 @@ SOURCES += \
     ../flight/atcprofileapproach.cpp \
     ../dialog/dialogaman.cpp \
     ../aman/atcamandisplay.cpp \
-    ../aman/atcamanflightlabel.cpp
+    ../aman/atcamanflightlabel.cpp \
 
 HEADERS  += \
     mainwindow.h \
@@ -297,7 +297,7 @@ HEADERS  += \
     ../flight/atcprofileapproach.h \
     ../dialog/dialogaman.h \
     ../aman/atcamandisplay.h \
-    ../aman/atcamanflightlabel.h
+    ../aman/atcamanflightlabel.h \
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \

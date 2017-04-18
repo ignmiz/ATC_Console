@@ -22,7 +22,10 @@ ATCAmanDisplay::ATCAmanDisplay(QWidget *parent) : QGraphicsView(parent)
 
 ATCAmanDisplay::~ATCAmanDisplay()
 {
-
+    for(int i = 0; i < flightLabels.size(); i++)
+    {
+        if(flightLabels.at(i) != nullptr) delete flightLabels.at(i);
+    }
 }
 
 void ATCAmanDisplay::setSettings(ATCSettings *s)
@@ -143,6 +146,11 @@ void ATCAmanDisplay::createTimeline(QTime *t)
     }
 }
 
+void ATCAmanDisplay::appendFlightLabel(ATCAmanFlightLabel *lbl)
+{
+    flightLabels.append(lbl);
+}
+
 void ATCAmanDisplay::setLineEditMeteringFixVisible(bool flag)
 {
     lineEditMeteringFixVisible = flag;
@@ -150,10 +158,12 @@ void ATCAmanDisplay::setLineEditMeteringFixVisible(bool flag)
 
 void ATCAmanDisplay::clockUpdated()
 {
-    int tempDt = 1;
-    progressTimeBy(tempDt);
+    //Progress time
+    double dt = 1;
+    progressTimeBy(dt);
 
-    overflowCounter += tempDt;
+    //Manage labels to create the proper illusion of timeline moving down all the time
+    overflowCounter += dt;
     if(overflowCounter == 300)
     {
         progressTimeBy(-300);
@@ -177,6 +187,14 @@ void ATCAmanDisplay::clockUpdated()
             }
             else labelValue += 5;
         }
+    }
+
+    //Move flight labels down
+    double dy = dt * minorTickSpacing / 60;
+
+    for(int i = 0; i < flightLabels.size(); i++)
+    {
+        flightLabels.at(i)->moveByInterval(0, dy);
     }
 }
 

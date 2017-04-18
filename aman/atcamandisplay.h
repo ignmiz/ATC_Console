@@ -22,8 +22,9 @@ public:
     ~ATCAmanDisplay();
 
     void setSettings(ATCSettings *s);
-
     void createTimeline(QTime *t);
+
+    void appendFlightLabel(ATCAmanFlightLabel *lbl);
 
     void setLineEditMeteringFixVisible(bool flag);
     void clockUpdated();
@@ -44,6 +45,8 @@ private:
     QList<QGraphicsLineItem*> majorLeftTicks;
     QList<QGraphicsLineItem*> majorRightTicks;
     QList<QGraphicsSimpleTextItem*> labels;
+
+    QList<ATCAmanFlightLabel*> flightLabels;
 
     double majorTickSpacing;
     double minorTickSpacing;

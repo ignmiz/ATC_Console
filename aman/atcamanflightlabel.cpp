@@ -2,7 +2,6 @@
 #include "atcamanflightlabel.h"
 
 ATCAmanFlightLabel::ATCAmanFlightLabel(ATCFlight *flight, QPointF arrowPos) :
-    QGraphicsPolygonItem(new QGraphicsPolygonItem),
     flight(flight),
     arrowPos(arrowPos)
 {
@@ -24,6 +23,15 @@ void ATCAmanFlightLabel::addToScene(QGraphicsScene *scene)
     scene->addItem(this);
 }
 
+void ATCAmanFlightLabel::moveByInterval(double dx, double dy)
+{
+    //Move time arrow
+    timeArrow->moveBy(dx, dy);
+
+    //Move polygon and text
+    this->moveBy(dx, dy);
+}
+
 void ATCAmanFlightLabel::createLabelItems(QPointF arrowPos)
 {
     //Initialize pens & brushes
@@ -38,17 +46,17 @@ void ATCAmanFlightLabel::createLabelItems(QPointF arrowPos)
 
     QBrush labelBrush(Qt::black);
 
-    //Create time arrow
+    //Initialize characteristic lengths
     double timeArrowWidth = 5;
-
-    timeArrow = new QGraphicsLineItem(arrowPos.x(), arrowPos.y(), arrowPos.x() + timeArrowWidth, arrowPos.y());
-    timeArrow->setPen(linePen);
-
-    //Create connector
     double connectorWidth = 20;
 
+    //Create connector
     connector = new QGraphicsLineItem(arrowPos.x() + timeArrowWidth, arrowPos.y(), arrowPos.x() + timeArrowWidth + connectorWidth, arrowPos.y());
     connector->setPen(connectorPen);
+
+    //Create time arrow
+    timeArrow = new QGraphicsLineItem(arrowPos.x(), arrowPos.y(), arrowPos.x() + timeArrowWidth, arrowPos.y());
+    timeArrow->setPen(linePen);
 
     //Create polygon
     double width = 280;
@@ -109,10 +117,10 @@ void ATCAmanFlightLabel::createLabelItems(QPointF arrowPos)
 
 void ATCAmanFlightLabel::moveLine(QPointF newPos)
 {
-    QLineF line = connector->line();
+    QPointF timeArrowEnd = timeArrow->line().p2();
 
-    QPointF p1 = line.p1();
-    QPointF p2 = QPointF(line.p2().x(), newPos.y() + p1.y());
+    QPointF p1 = timeArrow->mapToScene(timeArrowEnd);
+    QPointF p2(connector->line().p2().x(), timeArrowEnd.y() + newPos.y());
 
     connector->setLine(QLineF(p1, p2));
 }
@@ -168,14 +176,21 @@ QVariant ATCAmanFlightLabel::itemChange(QGraphicsItem::GraphicsItemChange change
         //Assign initial y value
         double yValue = value.toPointF().y();
 
-        //Check saturation conditions
-        if(yValue > ATCConst::AMAN_DISPLAY_HEIGHT / 2 - arrowPos.y())
+        //Assign levels of time arrow and polygon
+        double timeArrowEndY = timeArrow->line().p2().y();
+        double polygonArrowY = timeArrowEndY + yValue;
+
+        //Assign scene limits
+        double limit = ATCConst::AMAN_DISPLAY_HEIGHT / 2;
+
+        //Check saturation
+        if(polygonArrowY > limit)
         {
-            yValue = ATCConst::AMAN_DISPLAY_HEIGHT / 2 - arrowPos.y();
+            yValue = limit - timeArrowEndY;
         }
-        else if(yValue < - ATCConst::AMAN_DISPLAY_HEIGHT / 2 - arrowPos.y())
+        else if(polygonArrowY < - limit)
         {
-            yValue = - ATCConst::AMAN_DISPLAY_HEIGHT / 2 - arrowPos.y();
+            yValue = - limit - timeArrowEndY;
         }
 
         //Move connector and flight label
@@ -188,12 +203,6 @@ QVariant ATCAmanFlightLabel::itemChange(QGraphicsItem::GraphicsItemChange change
 
 void ATCAmanFlightLabel::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if(event->button() == Qt::LeftButton)
-    {
-
-    }
-
     if(event->button() == Qt::RightButton) swapSide();
-
     event->accept();
 }
