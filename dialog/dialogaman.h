@@ -37,6 +37,8 @@ private slots:
     void slotHideLineEdit();
     void slotClockUpdated();
 
+    void slotFlightLabelSelected(ATCAmanFlightLabel *label);
+
 private:
     Ui::DialogAman *uiInner;
     ATCSimulation *simulation = nullptr;
@@ -45,6 +47,8 @@ private:
     QTime *time;
 
     QLineEdit *lineEditMeteringFix;
+
+    ATCAmanFlightLabel *activeLabel = nullptr;
 
     void createLineEdit();
     void populateAman();

@@ -14,14 +14,26 @@ enum class SelectStatus
     Inactive, Active
 };
 
-class ATCAmanFlightLabel : public QGraphicsPolygonItem
+class ATCAmanFlightLabel : public QObject, public QGraphicsPolygonItem
 {
+    Q_OBJECT
+
 public:
     explicit ATCAmanFlightLabel(ATCFlight *flight, QPointF arrowPos);
     ~ATCAmanFlightLabel();
 
     void addToScene(QGraphicsScene *scene);
     void moveByInterval(double dx, double dy);
+
+    void select();
+    void deselect();
+
+    bool isSelected();
+    bool isHovered();
+
+signals:
+    void signalFlightLabelSelected(ATCAmanFlightLabel *label);
+    void signalLabelHovered(bool flag);
 
 private:
     ATCFlight *flight;
@@ -30,6 +42,9 @@ private:
     QGraphicsLineItem *timeArrow = nullptr;
     QGraphicsLineItem *connector = nullptr;
     QGraphicsSimpleTextItem *text = nullptr;
+
+    bool selected = false;
+    bool hovered = false;
 
     void createLabelItems(QPointF arrowPos);
 
@@ -43,6 +58,9 @@ private:
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 };
 
 #endif // ATCAMANFLIGHTLABEL_H

@@ -104,6 +104,20 @@ void DialogAman::slotClockUpdated()
     uiInner->amanDisplay->clockUpdated();
 }
 
+void DialogAman::slotFlightLabelSelected(ATCAmanFlightLabel *label)
+{
+    activeLabel = label;
+
+    if(label != nullptr)
+    {
+        //create RTA UI
+    }
+    else
+    {
+        //destroy RTA UI
+    }
+}
+
 void DialogAman::createLineEdit()
 {
     lineEditMeteringFix = new QLineEdit(this);
@@ -119,10 +133,17 @@ void DialogAman::populateAman()
 {
     if(simulation != nullptr)
     {
+        //Create labels
         ATCAmanFlightLabel *label = new ATCAmanFlightLabel(simulation->getFlight(0), QPointF(32, 100));
         label->addToScene(uiInner->amanDisplay->scene());
 
         uiInner->amanDisplay->appendFlightLabel(label);
+
+
+        //Connect slots
+        connect(label, SIGNAL(signalFlightLabelSelected(ATCAmanFlightLabel*)), uiInner->amanDisplay, SLOT(slotFlightLabelSelected(ATCAmanFlightLabel*)));
+        connect(label, SIGNAL(signalFlightLabelSelected(ATCAmanFlightLabel*)), this, SLOT(slotFlightLabelSelected(ATCAmanFlightLabel*)));
+        connect(label, SIGNAL(signalLabelHovered(bool)), uiInner->amanDisplay, SLOT(slotLabelHovered(bool)));
     }
 }
 

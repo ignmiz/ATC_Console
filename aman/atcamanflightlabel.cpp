@@ -9,6 +9,7 @@ ATCAmanFlightLabel::ATCAmanFlightLabel(ATCFlight *flight, QPointF arrowPos) :
 
     setFlag(QGraphicsItem::ItemIsMovable);
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
+    setAcceptHoverEvents(true);
 }
 
 ATCAmanFlightLabel::~ATCAmanFlightLabel()
@@ -30,6 +31,28 @@ void ATCAmanFlightLabel::moveByInterval(double dx, double dy)
 
     //Move polygon and text
     this->moveBy(dx, dy);
+}
+
+void ATCAmanFlightLabel::select()
+{
+    setBrush(QColor(45, 45, 45));
+    selected = true;
+}
+
+void ATCAmanFlightLabel::deselect()
+{
+    setBrush(QColor(0, 0, 0));
+    selected = false;
+}
+
+bool ATCAmanFlightLabel::isSelected()
+{
+    return selected;
+}
+
+bool ATCAmanFlightLabel::isHovered()
+{
+    return hovered;
 }
 
 void ATCAmanFlightLabel::createLabelItems(QPointF arrowPos)
@@ -204,5 +227,33 @@ QVariant ATCAmanFlightLabel::itemChange(QGraphicsItem::GraphicsItemChange change
 void ATCAmanFlightLabel::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if(event->button() == Qt::RightButton) swapSide();
+    event->accept();
+}
+
+void ATCAmanFlightLabel::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton)
+    {
+        if(!selected)
+        {
+            select();
+            emit signalFlightLabelSelected(this);
+        }
+    }
+
+    event->accept();
+}
+
+void ATCAmanFlightLabel::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    hovered = true;
+    emit signalLabelHovered(hovered);
+    event->accept();
+}
+
+void ATCAmanFlightLabel::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    hovered = false;
+    emit signalLabelHovered(hovered);
     event->accept();
 }

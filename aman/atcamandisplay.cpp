@@ -198,6 +198,17 @@ void ATCAmanDisplay::clockUpdated()
     }
 }
 
+void ATCAmanDisplay::slotFlightLabelSelected(ATCAmanFlightLabel *label)
+{
+    if(activeLabel != nullptr) activeLabel->deselect();
+    activeLabel = label;
+}
+
+void ATCAmanDisplay::slotLabelHovered(bool flag)
+{
+    labelHovered = flag;
+}
+
 void ATCAmanDisplay::initializeTimelinePosition()
 {
     int minutes = time->minute();
@@ -232,6 +243,14 @@ void ATCAmanDisplay::mousePressEvent(QMouseEvent *event)
     {
         emit signalHideLineEdit();
         lineEditMeteringFixVisible = false;
+    }
+
+    if(event->button() == Qt::LeftButton)
+    {
+        if((activeLabel != nullptr) && !activeLabel->isHovered())
+        {
+            emit activeLabel->signalFlightLabelSelected(nullptr);
+        }
     }
 
     QGraphicsView::mousePressEvent(event);

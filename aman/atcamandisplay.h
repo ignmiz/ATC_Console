@@ -32,6 +32,10 @@ public:
 signals:
     void signalHideLineEdit();
 
+private slots:
+    void slotFlightLabelSelected(ATCAmanFlightLabel *label);
+    void slotLabelHovered(bool flag);
+
 private:
     ATCSettings *settings;
 
@@ -47,6 +51,7 @@ private:
     QList<QGraphicsSimpleTextItem*> labels;
 
     QList<ATCAmanFlightLabel*> flightLabels;
+    ATCAmanFlightLabel *activeLabel = nullptr;
 
     double majorTickSpacing;
     double minorTickSpacing;
@@ -57,6 +62,8 @@ private:
 
     bool lineEditMeteringFixVisible;
     bool timelineCreated = false;
+
+    bool labelHovered = false;
 
     void initializeTimelinePosition();
     void progressTimeBy(double seconds);
