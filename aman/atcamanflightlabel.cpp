@@ -45,6 +45,24 @@ void ATCAmanFlightLabel::deselect()
     selected = false;
 }
 
+void ATCAmanFlightLabel::showLabel()
+{
+    timeArrow->show();
+    connector->show();
+    this->show();
+
+    labelVisible = true;
+}
+
+void ATCAmanFlightLabel::hideLabel()
+{
+    timeArrow->hide();
+    connector->hide();
+    this->hide();
+
+    labelVisible = false;
+}
+
 bool ATCAmanFlightLabel::isSelected()
 {
     return selected;
@@ -53,6 +71,11 @@ bool ATCAmanFlightLabel::isSelected()
 bool ATCAmanFlightLabel::isHovered()
 {
     return hovered;
+}
+
+bool ATCAmanFlightLabel::isLabelVisible()
+{
+    return labelVisible;
 }
 
 void ATCAmanFlightLabel::createLabelItems(QPointF arrowPos)

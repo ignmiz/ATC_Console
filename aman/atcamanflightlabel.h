@@ -28,8 +28,12 @@ public:
     void select();
     void deselect();
 
+    void showLabel();
+    void hideLabel();
+
     bool isSelected();
     bool isHovered();
+    bool isLabelVisible();
 
 signals:
     void signalFlightLabelSelected(ATCAmanFlightLabel *label);
@@ -45,6 +49,7 @@ private:
 
     bool selected = false;
     bool hovered = false;
+    bool labelVisible = true;
 
     void createLabelItems(QPointF arrowPos);
 
