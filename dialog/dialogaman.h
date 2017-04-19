@@ -49,9 +49,13 @@ private:
     QLineEdit *lineEditMeteringFix;
 
     ATCAmanFlightLabel *activeLabel = nullptr;
+    bool RTAgui = false;
 
     void createLineEdit();
     void populateAman();
+
+    void activateRTAgui();
+    void deactivateRTAgui();
 };
 
 #endif // DIALOGAMAN_H

@@ -14,6 +14,8 @@ DialogAman::DialogAman(ATCAirspace *airspace, ATCSettings *settings, QTime *time
     uiInner->amanDisplay->setSettings(settings);
     uiInner->amanDisplay->createTimeline(time);
 
+    deactivateRTAgui();
+
     createLineEdit();
     connect(uiInner->amanDisplay, SIGNAL(signalHideLineEdit()), this, SLOT(slotHideLineEdit()));
 }
@@ -110,11 +112,11 @@ void DialogAman::slotFlightLabelSelected(ATCAmanFlightLabel *label)
 
     if(label != nullptr)
     {
-        //create RTA UI
+        if(!RTAgui) activateRTAgui();
     }
     else
     {
-        //destroy RTA UI
+        if(RTAgui) deactivateRTAgui();
     }
 }
 
@@ -154,5 +156,27 @@ void DialogAman::populateAman()
     QFont font("Consolas");
     font.setPointSizeF(12);
     uiInner->labelStats->setFont(font);
+}
+
+void DialogAman::activateRTAgui()
+{
+    uiInner->timeEdit->setEnabled(true);
+    uiInner->buttonClear->setEnabled(true);
+    uiInner->horizontalSlider->setEnabled(true);
+    uiInner->labelLater->setEnabled(true);
+    uiInner->labelSooner->setEnabled(true);
+
+    RTAgui = true;
+}
+
+void DialogAman::deactivateRTAgui()
+{
+    uiInner->timeEdit->setEnabled(false);
+    uiInner->buttonClear->setEnabled(false);
+    uiInner->horizontalSlider->setEnabled(false);
+    uiInner->labelLater->setEnabled(false);
+    uiInner->labelSooner->setEnabled(false);
+
+    RTAgui = false;
 }
 

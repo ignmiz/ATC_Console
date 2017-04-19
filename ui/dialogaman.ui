@@ -118,7 +118,7 @@
    <property name="frameShadow">
     <enum>QFrame::Raised</enum>
    </property>
-   <widget class="QPushButton" name="buttonClearRestrictions">
+   <widget class="QPushButton" name="buttonClearAll">
     <property name="geometry">
      <rect>
       <x>215</x>
@@ -129,7 +129,6 @@
     </property>
     <property name="text">
      <string>CLR
-ALL
 RES</string>
     </property>
    </widget>
@@ -154,14 +153,14 @@ RES</string>
 	font: 18px;
 }
 
-QTimeEdit
+QTimeEdit:disabled
 {
 	color: #323232;
-	background-color: #050505;
-	border-style: inset;
+	background-color: #000000;
+	border-style: outset;
 	border-width: 2px;
-	border-color: #0a0a0a;
-	font: 15px;
+	border-color: #3e3e3e;
+	font: 18px;
 }</string>
     </property>
     <property name="alignment">
@@ -174,7 +173,7 @@ QTimeEdit
      <string>HH:mm:ss</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="buttonClear">
     <property name="geometry">
      <rect>
       <x>140</x>
@@ -210,6 +209,21 @@ QSlider::handle:horizontal {
     width: 18px;
     margin: -2px 0;
     border-radius: 3px;
+}
+
+QSlider::groove:horizontal:disabled{
+    border: 1px solid #191919;
+    height: 8px;
+    background: #191919;
+    margin: 2px 0;
+}
+
+QSlider::handle:horizontal:disabled {
+    background: #323232;
+    border: 1px solid #191919;
+    width: 18px;
+    margin: -2px 0;
+    border-radius: 3px;
 }</string>
     </property>
     <property name="maximum">
@@ -229,8 +243,14 @@ QSlider::handle:horizontal {
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">QLabel
+     <string notr="true">QLabel:enabled
 {
+	border: none;
+}
+
+QLabel:disabled
+{
+	color: #323232;
 	border: none;
 }</string>
     </property>
@@ -251,8 +271,14 @@ QSlider::handle:horizontal {
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">QLabel
+     <string notr="true">QLabel:enabled
 {
+	border: none;
+}
+
+QLabel:disabled
+{
+	color: #323232;
 	border: none;
 }</string>
     </property>
