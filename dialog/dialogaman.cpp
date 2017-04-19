@@ -139,11 +139,20 @@ void DialogAman::populateAman()
 
         uiInner->amanDisplay->appendFlightLabel(label);
 
-
         //Connect slots
         connect(label, SIGNAL(signalFlightLabelSelected(ATCAmanFlightLabel*)), uiInner->amanDisplay, SLOT(slotFlightLabelSelected(ATCAmanFlightLabel*)));
         connect(label, SIGNAL(signalFlightLabelSelected(ATCAmanFlightLabel*)), this, SLOT(slotFlightLabelSelected(ATCAmanFlightLabel*)));
         connect(label, SIGNAL(signalLabelHovered(bool)), uiInner->amanDisplay, SLOT(slotLabelHovered(bool)));
     }
+
+    QString etiquette("CONCERNED: AAA     ON TIME: DDD\n"
+                      "UNMETERED: BBB    DEVIATED: EEE\n"
+                      "  METERED: CCC COMPROMISED: FFF"
+                     );
+    uiInner->labelStats->setText(etiquette);
+
+    QFont font("Consolas");
+    font.setPointSizeF(12);
+    uiInner->labelStats->setFont(font);
 }
 
