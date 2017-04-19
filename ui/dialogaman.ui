@@ -118,6 +118,148 @@
    <property name="frameShadow">
     <enum>QFrame::Raised</enum>
    </property>
+   <widget class="QPushButton" name="buttonClearRestrictions">
+    <property name="geometry">
+     <rect>
+      <x>215</x>
+      <y>0</y>
+      <width>75</width>
+      <height>75</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>CLR
+ALL
+RES</string>
+    </property>
+   </widget>
+   <widget class="QTimeEdit" name="timeEdit">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>140</width>
+      <height>35</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QTimeEdit:enabled
+{
+	color: #c8c8c8;
+	background-color: #000000;
+	border-style: outset;
+	border-width: 2px;
+	border-color: #3e3e3e;
+	selection-background-color: #060064;
+	font: 18px;
+}
+
+QTimeEdit
+{
+	color: #323232;
+	background-color: #050505;
+	border-style: inset;
+	border-width: 2px;
+	border-color: #0a0a0a;
+	font: 15px;
+}</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="buttonSymbols">
+     <enum>QAbstractSpinBox::NoButtons</enum>
+    </property>
+    <property name="displayFormat">
+     <string>HH:mm:ss</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>0</y>
+      <width>75</width>
+      <height>35</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>CLR</string>
+    </property>
+   </widget>
+   <widget class="QSlider" name="horizontalSlider">
+    <property name="geometry">
+     <rect>
+      <x>5</x>
+      <y>35</y>
+      <width>205</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QSlider::groove:horizontal {
+    border: 1px solid #191919;
+    height: 8px;
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #282828, stop:1 #323232);
+    margin: 2px 0;
+}
+
+QSlider::handle:horizontal {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #b4b4b4, stop:1 #8f8f8f);
+    border: 1px solid #5c5c5c;
+    width: 18px;
+    margin: -2px 0;
+    border-radius: 3px;
+}</string>
+    </property>
+    <property name="maximum">
+     <number>100</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelSooner">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>57</y>
+      <width>50</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel
+{
+	border: none;
+}</string>
+    </property>
+    <property name="text">
+     <string>Sooner</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelLater">
+    <property name="geometry">
+     <rect>
+      <x>5</x>
+      <y>57</y>
+      <width>50</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel
+{
+	border: none;
+}</string>
+    </property>
+    <property name="text">
+     <string>Later</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QPushButton" name="buttonMeteringFix">
    <property name="geometry">
