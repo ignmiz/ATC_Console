@@ -56,6 +56,8 @@ private:
 
     void activateRTAgui();
     void deactivateRTAgui();
+
+    void calculateSliderPosition();
 };
 
 #endif // DIALOGAMAN_H

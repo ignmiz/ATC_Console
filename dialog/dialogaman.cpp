@@ -112,7 +112,11 @@ void DialogAman::slotFlightLabelSelected(ATCAmanFlightLabel *label)
 
     if(label != nullptr)
     {
-        if(!RTAgui) activateRTAgui();
+        if(!RTAgui)
+        {
+            activateRTAgui();
+            calculateSliderPosition();
+        }
     }
     else
     {
@@ -178,5 +182,24 @@ void DialogAman::deactivateRTAgui()
     uiInner->labelSooner->setEnabled(false);
 
     RTAgui = false;
+}
+
+void DialogAman::calculateSliderPosition()
+{
+    if(activeLabel != nullptr)
+    {
+        double lowBound = ATCConst::AMAN_DISPLAY_HEIGHT / 2;
+
+        QGraphicsLineItem *timeArrow = activeLabel->getTimeArrow();
+        QGraphicsRectItem *rangeBar = activeLabel->getRangeBar();
+
+        double timeArrowDst = lowBound - timeArrow->mapToScene(timeArrow->line().p1()).y();
+        double rangeBarBottomDst = lowBound - rangeBar->mapToScene(rangeBar->rect().bottomLeft()).y();
+        double rangeBarUpperDst = lowBound - rangeBar->mapToScene(rangeBar->rect().topLeft()).y();
+
+        int sliderValue = qRound((rangeBarUpperDst - timeArrowDst) / (rangeBarUpperDst - rangeBarBottomDst) * 100);
+
+        uiInner->horizontalSlider->setValue(sliderValue);
+    }
 }
 
