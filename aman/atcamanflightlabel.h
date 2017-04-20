@@ -25,6 +25,8 @@ public:
     void addToScene(QGraphicsScene *scene);
     void moveByInterval(double dx, double dy);
 
+    void createTimeRangeBar(QGraphicsScene *scene);
+
     void select();
     void deselect();
 
@@ -46,6 +48,8 @@ private:
     QGraphicsLineItem *connector = nullptr;
     QGraphicsSimpleTextItem *text = nullptr;
 
+    QGraphicsRectItem *rangeBar = nullptr;
+
     bool selected = false;
     bool hovered = false;
     bool labelVisible = true;
@@ -57,6 +61,7 @@ private:
     void swapLine(QGraphicsLineItem *line);
     void swapPolygon(QGraphicsPolygonItem *polygon);
     void swapText(QGraphicsSimpleTextItem *text);
+    void swapRect(QGraphicsRectItem *rect);
     void swapSide();
 
 protected:

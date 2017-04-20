@@ -17,6 +17,7 @@ ATCAmanFlightLabel::~ATCAmanFlightLabel()
     if(connector != nullptr) delete connector;
     if(text != nullptr) delete text;
 
+    if(rangeBar != nullptr) delete rangeBar;
 }
 
 void ATCAmanFlightLabel::addToScene(QGraphicsScene *scene)
@@ -33,6 +34,34 @@ void ATCAmanFlightLabel::moveByInterval(double dx, double dy)
 
     //Move polygon and text
     this->moveBy(dx, dy);
+
+    //If exists, move range bar
+    if(rangeBar != nullptr) rangeBar->moveBy(dx, dy);
+}
+
+void ATCAmanFlightLabel::createTimeRangeBar(QGraphicsScene *scene)
+{
+    QPointF arrow = timeArrow->mapToScene(timeArrow->line().p1());
+    int direction = arrow.x() > 0 ? 1 : 0;
+
+    //Here a proper calculation of height should be made based on acft performance
+
+    double oneSecondInterval = ATCConst::AMAN_DISPLAY_HEIGHT / 13 / 5 / 60;
+
+    double lower = 60;
+    double upper = 180;
+
+    double height = (lower + upper) * oneSecondInterval; //Lower part + upper part
+    double width = 20;
+
+    QPointF topLeft(arrow.x() - direction * width, arrow.y() - upper * oneSecondInterval);
+
+    rangeBar = new QGraphicsRectItem(topLeft.x(), topLeft.y(), width, height);
+    rangeBar->setBrush(QBrush(QColor(0, 100, 0)));
+    rangeBar->setPen(QPen(QColor(0, 100, 0)));
+    rangeBar->setZValue(-1);
+
+    scene->addItem(rangeBar);
 }
 
 void ATCAmanFlightLabel::select()
@@ -44,6 +73,12 @@ void ATCAmanFlightLabel::select()
 void ATCAmanFlightLabel::deselect()
 {
     setBrush(QColor(0, 0, 0));
+    if(rangeBar != nullptr)
+    {
+        delete rangeBar;
+        rangeBar = nullptr;
+    }
+
     selected = false;
 }
 
@@ -207,12 +242,24 @@ void ATCAmanFlightLabel::swapText(QGraphicsSimpleTextItem *text)
     text->moveBy(direction * value, 0);
 }
 
+void ATCAmanFlightLabel::swapRect(QGraphicsRectItem *rect)
+{
+    QRectF boundary = rect->rect();
+
+    QPointF newTopLeft(- boundary.topRight().x(), boundary.topRight().y());
+    QPointF newBottomRight(- boundary.bottomLeft().x(), boundary.bottomLeft().y());
+
+    rect->setRect(QRectF(newTopLeft, newBottomRight));
+}
+
 void ATCAmanFlightLabel::swapSide()
 {
     swapLine(timeArrow);
     swapLine(connector);
     swapPolygon(this);
     swapText(text);
+
+    if(rangeBar != nullptr) swapRect(rangeBar);
 }
 
 QVariant ATCAmanFlightLabel::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
