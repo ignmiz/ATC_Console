@@ -165,6 +165,7 @@ void DialogAman::populateAman()
 void DialogAman::activateRTAgui()
 {
     uiInner->timeEdit->setEnabled(true);
+    uiInner->buttonSetRTA->setEnabled(true);
     uiInner->buttonClear->setEnabled(true);
     uiInner->horizontalSlider->setEnabled(true);
     uiInner->labelLater->setEnabled(true);
@@ -176,6 +177,7 @@ void DialogAman::activateRTAgui()
 void DialogAman::deactivateRTAgui()
 {
     uiInner->timeEdit->setEnabled(false);
+    uiInner->buttonSetRTA->setEnabled(false);
     uiInner->buttonClear->setEnabled(false);
     uiInner->horizontalSlider->setEnabled(false);
     uiInner->labelLater->setEnabled(false);

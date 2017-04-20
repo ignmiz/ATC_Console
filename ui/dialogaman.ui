@@ -129,7 +129,7 @@
     </property>
     <property name="text">
      <string>CLR
-RES</string>
+ALL</string>
     </property>
    </widget>
    <widget class="QTimeEdit" name="timeEdit">
@@ -137,7 +137,7 @@ RES</string>
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>140</width>
+      <width>115</width>
       <height>35</height>
      </rect>
     </property>
@@ -176,9 +176,9 @@ QTimeEdit:disabled
    <widget class="QPushButton" name="buttonClear">
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>165</x>
       <y>0</y>
-      <width>75</width>
+      <width>50</width>
       <height>35</height>
      </rect>
     </property>
@@ -284,6 +284,19 @@ QLabel:disabled
     </property>
     <property name="text">
      <string>Later</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonSetRTA">
+    <property name="geometry">
+     <rect>
+      <x>115</x>
+      <y>0</y>
+      <width>50</width>
+      <height>35</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>SET</string>
     </property>
    </widget>
   </widget>
