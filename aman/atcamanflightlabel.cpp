@@ -134,6 +134,31 @@ bool ATCAmanFlightLabel::isLabelVisible()
     return labelVisible;
 }
 
+QGraphicsLineItem *ATCAmanFlightLabel::getTimeArrow()
+{
+    return timeArrow;
+}
+
+QGraphicsLineItem *ATCAmanFlightLabel::getConnector()
+{
+    return connector;
+}
+
+QGraphicsSimpleTextItem *ATCAmanFlightLabel::getText()
+{
+    return text;
+}
+
+QGraphicsRectItem *ATCAmanFlightLabel::getRangeBar()
+{
+    return rangeBar;
+}
+
+QGraphicsLineItem *ATCAmanFlightLabel::getSelector()
+{
+    return selector;
+}
+
 void ATCAmanFlightLabel::createLabelItems(QPointF arrowPos)
 {
     //Initialize pens & brushes

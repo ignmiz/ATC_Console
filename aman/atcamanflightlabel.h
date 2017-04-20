@@ -38,6 +38,12 @@ public:
     bool isHovered();
     bool isLabelVisible();
 
+    QGraphicsLineItem* getTimeArrow();
+    QGraphicsLineItem* getConnector();
+    QGraphicsSimpleTextItem* getText();
+    QGraphicsRectItem* getRangeBar();
+    QGraphicsLineItem* getSelector();
+
 signals:
     void signalFlightLabelSelected(ATCAmanFlightLabel *label);
     void signalLabelHovered(bool flag);
