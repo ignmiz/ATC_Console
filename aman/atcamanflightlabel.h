@@ -26,6 +26,7 @@ public:
     void moveByInterval(double dx, double dy);
 
     void createTimeRangeBar(QGraphicsScene *scene);
+    void createSelector(QGraphicsScene *scene);
 
     void select();
     void deselect();
@@ -49,6 +50,7 @@ private:
     QGraphicsSimpleTextItem *text = nullptr;
 
     QGraphicsRectItem *rangeBar = nullptr;
+    QGraphicsLineItem *selector = nullptr;
 
     bool selected = false;
     bool hovered = false;
