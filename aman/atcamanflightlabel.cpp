@@ -2,8 +2,7 @@
 #include "atcamanflightlabel.h"
 
 ATCAmanFlightLabel::ATCAmanFlightLabel(ATCFlight *flight, QPointF arrowPos) :
-    flight(flight),
-    arrowPos(arrowPos)
+    flight(flight)
 {
     createLabelItems(arrowPos);
 
@@ -178,8 +177,6 @@ void ATCAmanFlightLabel::swapLine(QGraphicsLineItem *line)
     QPointF newP1(- ln.p1().x(), ln.p1().y());
     QPointF newP2(- ln.p2().x(), ln.p2().y());
 
-    arrowPos = newP1;
-
     line->setLine(QLineF(newP1, newP2));
 }
 
@@ -201,7 +198,7 @@ void ATCAmanFlightLabel::swapPolygon(QGraphicsPolygonItem *polygon)
 void ATCAmanFlightLabel::swapText(QGraphicsSimpleTextItem *text)
 {
     double width = text->boundingRect().width();
-    double direction = ATCMath::sgn(arrowPos.x());
+    double direction = ATCMath::sgn(timeArrow->mapToScene(timeArrow->line().p1()).x());
     double value = 2 * qFabs(text->scenePos().x() + width/2);
 
     text->moveBy(direction * value, 0);

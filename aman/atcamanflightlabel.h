@@ -41,7 +41,6 @@ signals:
 
 private:
     ATCFlight *flight;
-    QPointF arrowPos;
 
     QGraphicsLineItem *timeArrow = nullptr;
     QGraphicsLineItem *connector = nullptr;
