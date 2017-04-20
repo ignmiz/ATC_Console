@@ -13,6 +13,9 @@ ATCAmanFlightLabel::ATCAmanFlightLabel(ATCFlight *flight, QPointF arrowPos) :
 
 ATCAmanFlightLabel::~ATCAmanFlightLabel()
 {
+    if(timeArrow != nullptr) delete timeArrow;
+    if(connector != nullptr) delete connector;
+    if(text != nullptr) delete text;
 
 }
 
