@@ -194,6 +194,9 @@ void DialogAman::deactivateRTAgui()
     uiInner->labelLater->setEnabled(false);
     uiInner->labelSooner->setEnabled(false);
 
+    uiInner->timeEdit->setTime(QTime(0, 0, 0));
+    uiInner->horizontalSlider->setValue(50);
+
     RTAgui = false;
 }
 
