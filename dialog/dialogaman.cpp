@@ -123,7 +123,8 @@ void DialogAman::slotFlightLabelSelected(ATCAmanFlightLabel *label)
         if(!RTAgui)
         {
             activateRTAgui();
-            calculateSliderPosition();
+            initializeSliderPosition();
+            initializeTimeEditValue();
         }
 
         connect(uiInner->horizontalSlider, SIGNAL(valueChanged(int)), activeLabel, SLOT(slotValueChanged(int)));
@@ -196,7 +197,15 @@ void DialogAman::deactivateRTAgui()
     RTAgui = false;
 }
 
-void DialogAman::calculateSliderPosition()
+QTime DialogAman::timeFromPoint(QPointF pt)
+{
+    double oneSecondInterval = ATCConst::AMAN_DISPLAY_HEIGHT / 13 / 5 / 60;
+    double secondsFromCurrent = pageNumber * pageDelta + (ATCConst::AMAN_DISPLAY_HEIGHT / 2 - pt.y()) / oneSecondInterval - 300;
+
+    return time->addMSecs(qRound(secondsFromCurrent * 1000));
+}
+
+void DialogAman::initializeSliderPosition()
 {
     if(activeLabel != nullptr)
     {
@@ -212,6 +221,15 @@ void DialogAman::calculateSliderPosition()
         int sliderValue = qRound((rangeBarUpperDst - timeArrowDst) / (rangeBarUpperDst - rangeBarBottomDst) * 100);
 
         uiInner->horizontalSlider->setValue(sliderValue);
+    }
+}
+
+void DialogAman::initializeTimeEditValue()
+{
+    if(activeLabel != nullptr)
+    {
+        QGraphicsLineItem *selector = activeLabel->getSelector();
+        uiInner->timeEdit->setTime(timeFromPoint(selector->mapToScene(selector->line().p1())));
     }
 }
 

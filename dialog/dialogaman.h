@@ -51,13 +51,19 @@ private:
     ATCAmanFlightLabel *activeLabel = nullptr;
     bool RTAgui = false;
 
+    int pageNumber = 0;
+    double pageDelta = 1200;   //seconds
+
     void createLineEdit();
     void populateAman();
 
     void activateRTAgui();
     void deactivateRTAgui();
 
-    void calculateSliderPosition();
+    QTime timeFromPoint(QPointF pt);
+
+    void initializeSliderPosition();
+    void initializeTimeEditValue();
 };
 
 #endif // DIALOGAMAN_H
