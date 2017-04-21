@@ -48,9 +48,6 @@ signals:
     void signalFlightLabelSelected(ATCAmanFlightLabel *label);
     void signalLabelHovered(bool flag);
 
-private slots:
-    void slotValueChanged(int value);
-
 private:
     ATCFlight *flight;
 

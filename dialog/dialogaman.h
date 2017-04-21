@@ -38,6 +38,7 @@ private slots:
     void slotClockUpdated();
 
     void slotFlightLabelSelected(ATCAmanFlightLabel *label);
+    void slotValueChanged(int value);
 
 private:
     Ui::DialogAman *uiInner;

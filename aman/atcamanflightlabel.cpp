@@ -155,24 +155,6 @@ QGraphicsLineItem *ATCAmanFlightLabel::getSelector()
     return selector;
 }
 
-void ATCAmanFlightLabel::slotValueChanged(int value)
-{
-    if((rangeBar != nullptr) && (selector != nullptr))
-    {
-        double rangeBarBottom = rangeBar->rect().bottomLeft().y();
-        double rangeBarUpper = rangeBar->rect().topLeft().y();
-
-        double selectorPosition = rangeBarUpper + static_cast<double>(value) / 100 * (rangeBarBottom - rangeBarUpper);
-
-        QLineF line = selector->line();
-
-        QPointF inner(line.p1().x(), selectorPosition);
-        QPointF outer(line.p2().x(), selectorPosition);
-
-        selector->setLine(QLineF(inner, outer));
-    }
-}
-
 void ATCAmanFlightLabel::createLabelItems(QPointF arrowPos)
 {
     //Initialize pens & brushes

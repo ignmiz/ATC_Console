@@ -111,7 +111,7 @@ void DialogAman::slotFlightLabelSelected(ATCAmanFlightLabel *label)
     //Disconnect previous activeLabel
     if(activeLabel != nullptr)
     {
-        disconnect(uiInner->horizontalSlider, SIGNAL(valueChanged(int)), activeLabel, SLOT(slotValueChanged(int)));
+        disconnect(uiInner->horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(slotValueChanged(int)));
     }
 
     //Assign new active label
@@ -127,11 +127,32 @@ void DialogAman::slotFlightLabelSelected(ATCAmanFlightLabel *label)
             initializeTimeEditValue();
         }
 
-        connect(uiInner->horizontalSlider, SIGNAL(valueChanged(int)), activeLabel, SLOT(slotValueChanged(int)));
+        connect(uiInner->horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(slotValueChanged(int)));
     }
     else
     {
         if(RTAgui) deactivateRTAgui();
+    }
+}
+
+void DialogAman::slotValueChanged(int value)
+{
+    if(activeLabel != nullptr)
+    {
+        QGraphicsRectItem *rangeBar = activeLabel->getRangeBar();
+        QGraphicsLineItem *selector = activeLabel->getSelector();
+
+        double rangeBarBottom = rangeBar->rect().bottomLeft().y();
+        double rangeBarUpper = rangeBar->rect().topLeft().y();
+
+        double selectorPosition = rangeBarUpper + static_cast<double>(value) / 100 * (rangeBarBottom - rangeBarUpper);
+
+        QLineF line = selector->line();
+
+        QPointF inner(line.p1().x(), selectorPosition);
+        QPointF outer(line.p2().x(), selectorPosition);
+
+        selector->setLine(QLineF(inner, outer));
     }
 }
 
