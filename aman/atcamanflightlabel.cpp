@@ -39,8 +39,6 @@ void ATCAmanFlightLabel::moveByInterval(double dx, double dy)
 void ATCAmanFlightLabel::createTimeRangeBar(QGraphicsScene *scene)
 {
     QPointF arrow = timeArrow->mapToScene(timeArrow->line().p1());
-    int direction = ATCMath::sgn(arrow.x());
-    int multiplier = arrow.x() > 0 ? 0 : -1;
 
     //Here a proper calculation of height should be made based on acft performance
 
@@ -50,9 +48,9 @@ void ATCAmanFlightLabel::createTimeRangeBar(QGraphicsScene *scene)
     double upper = 180;
 
     double height = (lower + upper) * oneSecondInterval; //Lower part + upper part
-    double width = 15;
 
-    QPointF topLeft(direction * 15 + multiplier * width, arrow.y() - upper * oneSecondInterval);
+    double width = 60;
+    QPointF topLeft(-30, arrow.y() - upper * oneSecondInterval);
 
     rangeBar = new QGraphicsRectItem(topLeft.x(), topLeft.y(), width, height);
     rangeBar->setBrush(QBrush(QColor(0, 75, 0)));
@@ -65,11 +63,9 @@ void ATCAmanFlightLabel::createTimeRangeBar(QGraphicsScene *scene)
 void ATCAmanFlightLabel::createSelector(QGraphicsScene *scene)
 {
     QPointF arrow = timeArrow->mapToScene(timeArrow->line().p1());
-    int direction = ATCMath::sgn(arrow.x());
 
     //Here an actual value of RTA assignment should be done. If no RTA, then assign current ETA value
-
-    selector = new QGraphicsLineItem(direction * 15, arrow.y(), direction * 30, arrow.y());
+    selector = new QGraphicsLineItem(-30, arrow.y(), 30, arrow.y());
     selector->setPen(QPen(QColor(255, 0, 0) , 2));
     selector->setZValue(1);
 
@@ -302,9 +298,6 @@ void ATCAmanFlightLabel::swapSide()
     swapLine(connector);
     swapPolygon(this);
     swapText(text);
-
-    if(rangeBar != nullptr) swapRect(rangeBar);
-    if(selector != nullptr) swapLine(selector);
 }
 
 QVariant ATCAmanFlightLabel::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
