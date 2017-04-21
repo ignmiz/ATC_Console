@@ -112,6 +112,7 @@ void DialogAman::slotFlightLabelSelected(ATCAmanFlightLabel *label)
     if(activeLabel != nullptr)
     {
         disconnect(uiInner->horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(slotValueChanged(int)));
+        disconnect(uiInner->timeEdit, SIGNAL(timeChanged(QTime)), this, SLOT(slotTimeChanged(QTime)));
     }
 
     //Assign new active label
@@ -128,6 +129,7 @@ void DialogAman::slotFlightLabelSelected(ATCAmanFlightLabel *label)
         }
 
         connect(uiInner->horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(slotValueChanged(int)));
+        connect(uiInner->timeEdit, SIGNAL(timeChanged(QTime)), this, SLOT(slotTimeChanged(QTime)));
     }
     else
     {
@@ -156,6 +158,22 @@ void DialogAman::slotValueChanged(int value)
     }
 }
 
+void DialogAman::slotTimeChanged(QTime t)
+{
+    if(activeLabel != nullptr)
+    {
+        QGraphicsLineItem *selector = activeLabel->getSelector();
+        QLineF line = selector->line();
+
+        double y = timeToY(t);
+
+        QPointF p1new = selector->mapFromScene(line.p1().x(), y);
+        QPointF p2new = selector->mapFromScene(line.p2().x(), y);
+
+        selector->setLine(QLineF(p1new, p2new));
+    }
+}
+
 void DialogAman::createLineEdit()
 {
     lineEditMeteringFix = new QLineEdit(this);
@@ -181,6 +199,18 @@ void DialogAman::populateAman()
         connect(label, SIGNAL(signalFlightLabelSelected(ATCAmanFlightLabel*)), uiInner->amanDisplay, SLOT(slotFlightLabelSelected(ATCAmanFlightLabel*)));
         connect(label, SIGNAL(signalFlightLabelSelected(ATCAmanFlightLabel*)), this, SLOT(slotFlightLabelSelected(ATCAmanFlightLabel*)));
         connect(label, SIGNAL(signalLabelHovered(bool)), uiInner->amanDisplay, SLOT(slotLabelHovered(bool)));
+
+//        //---------TEST---------
+//        ATCAmanFlightLabel *label2 = new ATCAmanFlightLabel(simulation->getFlight(0), QPointF(32, -200));
+//        label2->addToScene(uiInner->amanDisplay->scene());
+
+//        uiInner->amanDisplay->appendFlightLabel(label2);
+
+//        //Connect slots
+//        connect(label2, SIGNAL(signalFlightLabelSelected(ATCAmanFlightLabel*)), uiInner->amanDisplay, SLOT(slotFlightLabelSelected(ATCAmanFlightLabel*)));
+//        connect(label2, SIGNAL(signalFlightLabelSelected(ATCAmanFlightLabel*)), this, SLOT(slotFlightLabelSelected(ATCAmanFlightLabel*)));
+//        connect(label2, SIGNAL(signalLabelHovered(bool)), uiInner->amanDisplay, SLOT(slotLabelHovered(bool)));
+//        //----------------------
     }
 
     QString etiquette("CONCERNED: AAA     ON TIME: DDD\n"
@@ -230,6 +260,14 @@ QTime DialogAman::timeFromPoint(QPointF pt)
     double secondsFromCurrent = pageNumber * pageDelta + (ATCConst::AMAN_DISPLAY_HEIGHT / 2 - pt.y()) / oneSecondInterval - 300;
 
     return time->addMSecs(qRound(secondsFromCurrent * 1000));
+}
+
+double DialogAman::timeToY(QTime &t)
+{
+    double oneSecondInterval = ATCConst::AMAN_DISPLAY_HEIGHT / 13 / 5 / 60;
+    double secDiff = static_cast<double>(time->msecsTo(t)) / 1000.0;
+
+    return ATCConst::AMAN_DISPLAY_HEIGHT / 2 - (300.0 + secDiff) * oneSecondInterval;
 }
 
 void DialogAman::initializeSliderPosition()

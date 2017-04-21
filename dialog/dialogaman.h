@@ -39,6 +39,7 @@ private slots:
 
     void slotFlightLabelSelected(ATCAmanFlightLabel *label);
     void slotValueChanged(int value);
+    void slotTimeChanged(QTime t);
 
 private:
     Ui::DialogAman *uiInner;
@@ -62,6 +63,7 @@ private:
     void deactivateRTAgui();
 
     QTime timeFromPoint(QPointF pt);
+    double timeToY(QTime &t);
 
     void initializeSliderPosition();
     void initializeTimeEditValue();
