@@ -49,7 +49,7 @@ signals:
     void signalLabelHovered(bool flag);
 
 private slots:
-    void slotSliderMoved(int value);
+    void slotValueChanged(int value);
 
 private:
     ATCFlight *flight;

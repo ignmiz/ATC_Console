@@ -108,8 +108,16 @@ void DialogAman::slotClockUpdated()
 
 void DialogAman::slotFlightLabelSelected(ATCAmanFlightLabel *label)
 {
+    //Disconnect previous activeLabel
+    if(activeLabel != nullptr)
+    {
+        disconnect(uiInner->horizontalSlider, SIGNAL(valueChanged(int)), activeLabel, SLOT(slotValueChanged(int)));
+    }
+
+    //Assign new active label
     activeLabel = label;
 
+    //Perform actions based on whether label exists
     if(label != nullptr)
     {
         if(!RTAgui)
@@ -117,6 +125,8 @@ void DialogAman::slotFlightLabelSelected(ATCAmanFlightLabel *label)
             activateRTAgui();
             calculateSliderPosition();
         }
+
+        connect(uiInner->horizontalSlider, SIGNAL(valueChanged(int)), activeLabel, SLOT(slotValueChanged(int)));
     }
     else
     {
