@@ -254,10 +254,10 @@ void DialogAman::deactivateRTAgui()
     RTAgui = false;
 }
 
-QTime DialogAman::timeFromPoint(QPointF pt)
+QTime DialogAman::timeFromY(double y)
 {
     double oneSecondInterval = ATCConst::AMAN_DISPLAY_HEIGHT / 13 / 5 / 60;
-    double secondsFromCurrent = pageNumber * pageDelta + (ATCConst::AMAN_DISPLAY_HEIGHT / 2 - pt.y()) / oneSecondInterval - 300;
+    double secondsFromCurrent = pageNumber * pageDelta + (ATCConst::AMAN_DISPLAY_HEIGHT / 2 - y) / oneSecondInterval - 300;
 
     return time->addMSecs(qRound(secondsFromCurrent * 1000));
 }
@@ -294,11 +294,11 @@ void DialogAman::initializeTimeEditValue()
     if(activeLabel != nullptr)
     {
         QGraphicsLineItem *selector = activeLabel->getSelector();
-        uiInner->timeEdit->setTime(timeFromPoint(selector->mapToScene(selector->line().p1())));
+        uiInner->timeEdit->setTime(timeFromY(selector->mapToScene(selector->line().p1()).y()));
 
         QGraphicsRectItem *rangeBar = activeLabel->getRangeBar();
-        uiInner->timeEdit->setMinimumTime(timeFromPoint(rangeBar->mapToScene(rangeBar->rect().bottomLeft())));
-        uiInner->timeEdit->setMaximumTime(timeFromPoint(rangeBar->mapToScene(rangeBar->rect().topLeft())));
+        uiInner->timeEdit->setMinimumTime(timeFromY(rangeBar->mapToScene(rangeBar->rect().bottomLeft()).y()));
+        uiInner->timeEdit->setMaximumTime(timeFromY(rangeBar->mapToScene(rangeBar->rect().topLeft()).y()));
     }
 }
 

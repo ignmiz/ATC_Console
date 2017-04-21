@@ -62,7 +62,7 @@ private:
     void activateRTAgui();
     void deactivateRTAgui();
 
-    QTime timeFromPoint(QPointF pt);
+    QTime timeFromY(double y);
     double timeToY(QTime &t);
 
     void initializeSliderPosition();
