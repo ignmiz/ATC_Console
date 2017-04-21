@@ -194,6 +194,9 @@ void DialogAman::deactivateRTAgui()
     uiInner->labelLater->setEnabled(false);
     uiInner->labelSooner->setEnabled(false);
 
+    uiInner->timeEdit->setMinimumTime(QTime(0, 0, 0));
+    uiInner->timeEdit->setMaximumTime(QTime(23, 59, 59, 999));
+
     uiInner->timeEdit->setTime(QTime(0, 0, 0));
     uiInner->horizontalSlider->setValue(50);
 
@@ -233,6 +236,10 @@ void DialogAman::initializeTimeEditValue()
     {
         QGraphicsLineItem *selector = activeLabel->getSelector();
         uiInner->timeEdit->setTime(timeFromPoint(selector->mapToScene(selector->line().p1())));
+
+        QGraphicsRectItem *rangeBar = activeLabel->getRangeBar();
+        uiInner->timeEdit->setMinimumTime(timeFromPoint(rangeBar->mapToScene(rangeBar->rect().bottomLeft())));
+        uiInner->timeEdit->setMaximumTime(timeFromPoint(rangeBar->mapToScene(rangeBar->rect().topLeft())));
     }
 }
 
