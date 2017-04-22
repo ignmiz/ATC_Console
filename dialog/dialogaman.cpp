@@ -169,6 +169,7 @@ void DialogAman::slotTimeChanged(QTime t)
 {
     if((activeLabel != nullptr) && !flagSliderPressed)
     {
+        //Set selector position
         QGraphicsLineItem *selector = activeLabel->getSelector();
         QLineF line = selector->line();
 
@@ -178,6 +179,19 @@ void DialogAman::slotTimeChanged(QTime t)
         QPointF p2new = selector->mapFromScene(line.p2().x(), y);
 
         selector->setLine(QLineF(p1new, p2new));
+
+        //Set slider value
+        double lowBound = ATCConst::AMAN_DISPLAY_HEIGHT / 2;
+
+        QGraphicsRectItem *rangeBar = activeLabel->getRangeBar();
+
+        double selectorDst = lowBound - selector->mapToScene(selector->line().p1()).y();
+        double rangeBarBottomDst = lowBound - rangeBar->mapToScene(rangeBar->rect().bottomLeft()).y();
+        double rangeBarUpperDst = lowBound - rangeBar->mapToScene(rangeBar->rect().topLeft()).y();
+
+        int sliderValue = qRound((rangeBarUpperDst - selectorDst) / (rangeBarUpperDst - rangeBarBottomDst) * 100);
+
+        uiInner->horizontalSlider->setValue(sliderValue);
     }
 }
 
