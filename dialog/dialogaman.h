@@ -40,6 +40,8 @@ private slots:
     void slotFlightLabelSelected(ATCAmanFlightLabel *label);
     void slotValueChanged(int value);
     void slotTimeChanged(QTime t);
+    void slotSliderPressed();
+    void slotSliderReleased();
 
 private:
     Ui::DialogAman *uiInner;
@@ -49,9 +51,10 @@ private:
     QTime *time;
 
     QLineEdit *lineEditMeteringFix;
-
     ATCAmanFlightLabel *activeLabel = nullptr;
+
     bool RTAgui = false;
+    bool flagSliderPressed = false;
 
     int pageNumber = 0;
     double pageDelta = 1200;   //seconds

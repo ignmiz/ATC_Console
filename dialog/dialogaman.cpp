@@ -18,6 +18,9 @@ DialogAman::DialogAman(ATCAirspace *airspace, ATCSettings *settings, QTime *time
 
     createLineEdit();
     connect(uiInner->amanDisplay, SIGNAL(signalHideLineEdit()), this, SLOT(slotHideLineEdit()));
+
+    connect(uiInner->horizontalSlider, SIGNAL(sliderPressed()), this, SLOT(slotSliderPressed()));
+    connect(uiInner->horizontalSlider, SIGNAL(sliderReleased()), this, SLOT(slotSliderReleased()));
 }
 
 DialogAman::~DialogAman()
@@ -141,11 +144,12 @@ void DialogAman::slotValueChanged(int value)
 {
     if(activeLabel != nullptr)
     {
+        //Set selector position
         QGraphicsRectItem *rangeBar = activeLabel->getRangeBar();
         QGraphicsLineItem *selector = activeLabel->getSelector();
 
-        double rangeBarBottom = rangeBar->rect().bottomLeft().y();
-        double rangeBarUpper = rangeBar->rect().topLeft().y();
+        double rangeBarBottom = rangeBar->mapToScene(rangeBar->rect().bottomLeft()).y();
+        double rangeBarUpper = rangeBar->mapToScene(rangeBar->rect().topLeft()).y();
 
         double selectorPosition = rangeBarUpper + static_cast<double>(value) / 100 * (rangeBarBottom - rangeBarUpper);
 
@@ -154,13 +158,16 @@ void DialogAman::slotValueChanged(int value)
         QPointF inner(line.p1().x(), selectorPosition);
         QPointF outer(line.p2().x(), selectorPosition);
 
-        selector->setLine(QLineF(inner, outer));
+        selector->setLine(QLineF(selector->mapFromScene(inner), selector->mapFromScene(outer)));
+
+        //Set time edit value
+        uiInner->timeEdit->setTime(timeFromY(selectorPosition));
     }
 }
 
 void DialogAman::slotTimeChanged(QTime t)
 {
-    if(activeLabel != nullptr)
+    if((activeLabel != nullptr) && !flagSliderPressed)
     {
         QGraphicsLineItem *selector = activeLabel->getSelector();
         QLineF line = selector->line();
@@ -172,6 +179,16 @@ void DialogAman::slotTimeChanged(QTime t)
 
         selector->setLine(QLineF(p1new, p2new));
     }
+}
+
+void DialogAman::slotSliderPressed()
+{
+    flagSliderPressed = true;
+}
+
+void DialogAman::slotSliderReleased()
+{
+    flagSliderPressed = false;
 }
 
 void DialogAman::createLineEdit()
