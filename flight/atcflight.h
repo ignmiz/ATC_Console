@@ -223,6 +223,9 @@ public:
     QTime getWaypointTime(int i);
     int getWaypointTimesVectorSize();
 
+    void setRTA(QTime rta);
+    QTime& getRTA();
+
 signals:
     void signalCreateDialogAltitude(ATCFlight *flight, QPoint point);
     void signalCreateDialogSpeed(ATCFlight *flight, QPoint point);
@@ -319,6 +322,8 @@ private:
 
     QVector<QString> waypointLevels;
     QVector<QTime> waypointTimes;
+
+    QTime RTA;
 };
 
 #endif // ATCFLIGHT_H

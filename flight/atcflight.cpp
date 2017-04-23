@@ -664,6 +664,16 @@ int ATCFlight::getWaypointTimesVectorSize()
     return waypointTimes.size();
 }
 
+void ATCFlight::setRTA(QTime rta)
+{
+    RTA = rta;
+}
+
+QTime &ATCFlight::getRTA()
+{
+    return RTA;
+}
+
 void ATCFlight::slotCreateDialogAltitude(QPoint point)
 {
     emit signalCreateDialogAltitude(this, point);

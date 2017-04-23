@@ -827,4 +827,15 @@ void Test_ATCFlight::test_setWaypointTimes()
     QVERIFY(foo.getWaypointTimes() == times);
 }
 
+void Test_ATCFlight::test_setRTA()
+{
+    ATCFlight foo;
+
+    QTime rta(3, 15, 10);
+    QVERIFY(foo.getRTA() == QTime());
+
+    foo.setRTA(rta);
+    QVERIFY(foo.getRTA() == rta);
+}
+
 
