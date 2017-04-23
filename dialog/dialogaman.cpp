@@ -68,6 +68,17 @@ void DialogAman::on_buttonMeteringFix_clicked()
     uiInner->amanDisplay->setLineEditMeteringFixVisible(true);
 }
 
+void DialogAman::on_buttonSetRTA_clicked()
+{
+    if(activeLabel != nullptr)
+    {
+        activeLabel->getFlight()->setRTA(uiInner->timeEdit->time());
+        activeLabel->updateRTA();
+
+        emit activeLabel->signalFlightLabelSelected(nullptr);
+    }
+}
+
 void DialogAman::slotMeteringFixEntered()
 {
     QString name = lineEditMeteringFix->text();
@@ -126,6 +137,9 @@ void DialogAman::slotFlightLabelSelected(ATCAmanFlightLabel *label)
     {
         if(!RTAgui)
         {
+            createTimeRangeBar();
+            createSelector();
+
             activateRTAgui();
             initializeSliderPosition();
             initializeTimeEditValue();
@@ -253,6 +267,44 @@ void DialogAman::populateAman()
     QFont font("Consolas");
     font.setPointSizeF(12);
     uiInner->labelStats->setFont(font);
+}
+
+void DialogAman::createSelector()
+{
+    QGraphicsLineItem *timeArrow = activeLabel->getTimeArrow();
+    QPointF arrow = timeArrow->mapToScene(timeArrow->line().p1());
+
+    QTime RTA(activeLabel->getFlight()->getRTA());
+    double y;
+
+    if(RTA.isValid())
+    {
+        y = timeToY(RTA);
+    }
+    else
+    {
+        y = arrow.y();
+    }
+
+    activeLabel->createSelector(uiInner->amanDisplay->scene(), y);
+}
+
+void DialogAman::createTimeRangeBar()
+{
+    QGraphicsLineItem *timeArrow = activeLabel->getTimeArrow();
+    QPointF arrow = timeArrow->mapToScene(timeArrow->line().p1());
+
+    //Here a proper calculation of height should be made based on acft performance
+
+    double oneSecondInterval = ATCConst::AMAN_DISPLAY_HEIGHT / 13 / 5 / 60;
+
+    double lower = 60;
+    double upper = 180;
+
+    double height = (lower + upper) * oneSecondInterval; //Lower part + upper part
+    double topY = arrow.y() - upper * oneSecondInterval;
+
+    activeLabel->createTimeRangeBar(uiInner->amanDisplay->scene(), topY, height);
 }
 
 void DialogAman::activateRTAgui()

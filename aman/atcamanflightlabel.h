@@ -25,8 +25,8 @@ public:
     void addToScene(QGraphicsScene *scene);
     void moveByInterval(double dx, double dy);
 
-    void createTimeRangeBar(QGraphicsScene *scene);
-    void createSelector(QGraphicsScene *scene);
+    void createTimeRangeBar(QGraphicsScene *scene, double topY, double height);
+    void createSelector(QGraphicsScene *scene, double y);
 
     void select();
     void deselect();
@@ -38,11 +38,16 @@ public:
     bool isHovered();
     bool isLabelVisible();
 
+    void updateEtiquette();
+    void updateRTA();
+
     QGraphicsLineItem* getTimeArrow();
     QGraphicsLineItem* getConnector();
     QGraphicsSimpleTextItem* getText();
     QGraphicsRectItem* getRangeBar();
     QGraphicsLineItem* getSelector();
+
+    ATCFlight* getFlight();
 
 signals:
     void signalFlightLabelSelected(ATCAmanFlightLabel *label);

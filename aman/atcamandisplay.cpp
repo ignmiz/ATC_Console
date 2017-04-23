@@ -201,13 +201,6 @@ void ATCAmanDisplay::clockUpdated()
 void ATCAmanDisplay::slotFlightLabelSelected(ATCAmanFlightLabel *label)
 {
     if(activeLabel != nullptr) activeLabel->deselect();
-
-    if(label != nullptr)
-    {
-        label->createTimeRangeBar(currentScene);
-        label->createSelector(currentScene);
-    }
-
     activeLabel = label;
 }
 

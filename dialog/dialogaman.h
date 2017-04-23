@@ -32,6 +32,7 @@ private slots:
     ATC_MOUSE_HANDLER
 
     void on_buttonMeteringFix_clicked();
+    void on_buttonSetRTA_clicked();
 
     void slotMeteringFixEntered();
     void slotHideLineEdit();
@@ -61,6 +62,9 @@ private:
 
     void createLineEdit();
     void populateAman();
+
+    void createSelector();
+    void createTimeRangeBar();
 
     void activateRTAgui();
     void deactivateRTAgui();

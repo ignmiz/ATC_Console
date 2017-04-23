@@ -36,23 +36,11 @@ void ATCAmanFlightLabel::moveByInterval(double dx, double dy)
     if(selector != nullptr) selector->moveBy(dx, dy);
 }
 
-void ATCAmanFlightLabel::createTimeRangeBar(QGraphicsScene *scene)
+void ATCAmanFlightLabel::createTimeRangeBar(QGraphicsScene *scene, double topY, double height)
 {
-    QPointF arrow = timeArrow->mapToScene(timeArrow->line().p1());
-
-    //Here a proper calculation of height should be made based on acft performance
-
-    double oneSecondInterval = ATCConst::AMAN_DISPLAY_HEIGHT / 13 / 5 / 60;
-
-    double lower = 60;
-    double upper = 180;
-
-    double height = (lower + upper) * oneSecondInterval; //Lower part + upper part
-
     double width = 60;
-    QPointF topLeft(-30, arrow.y() - upper * oneSecondInterval);
 
-    rangeBar = new QGraphicsRectItem(topLeft.x(), topLeft.y(), width, height);
+    rangeBar = new QGraphicsRectItem(-30, topY, width, height);
     rangeBar->setBrush(QBrush(QColor(0, 75, 0)));
     rangeBar->setPen(QPen(QColor(0, 75, 0), 2));
     rangeBar->setZValue(-1);
@@ -60,12 +48,9 @@ void ATCAmanFlightLabel::createTimeRangeBar(QGraphicsScene *scene)
     scene->addItem(rangeBar);
 }
 
-void ATCAmanFlightLabel::createSelector(QGraphicsScene *scene)
+void ATCAmanFlightLabel::createSelector(QGraphicsScene *scene, double y)
 {
-    QPointF arrow = timeArrow->mapToScene(timeArrow->line().p1());
-
-    //Here an actual value of RTA assignment should be done. If no RTA, then assign current ETA value
-    selector = new QGraphicsLineItem(-30, arrow.y(), 30, arrow.y());
+    selector = new QGraphicsLineItem(-30, y, 30, y);
     selector->setPen(QPen(QColor(255, 0, 0) , 2));
     selector->setZValue(1);
 
@@ -130,6 +115,40 @@ bool ATCAmanFlightLabel::isLabelVisible()
     return labelVisible;
 }
 
+void ATCAmanFlightLabel::updateEtiquette()
+{
+    int rtaIndex = 5; //TEMP, HERE STH LIKE flight->getRTAindex();
+
+    QString callsign = (flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber()).left(9).leftJustified(9, ' ');
+    QString level;
+    QString eta;
+
+    if(flight->hasAccuratePrediction())
+    {
+        level = flight->getWaypointLevel(rtaIndex);
+        eta = flight->getWaypointTime(rtaIndex).isValid() ? flight->getWaypointTime(rtaIndex).toString("HH:mm:ss") : "--:--:--";
+    }
+    else
+    {
+        level = "---";
+        eta = "--:--:--";
+    }
+
+    QString rta = flight->getRTA().isValid() ? flight->getRTA().toString("HH:mm:ss") : "--:--:--";
+    QString label = callsign + "  " + level + "  E" + eta + "  R" + rta;
+
+    text->setText(label);
+}
+
+void ATCAmanFlightLabel::updateRTA()
+{
+    QString rta = flight->getRTA().isValid() ? flight->getRTA().toString("HH:mm:ss") : "--:--:--";
+    QString label = text->text();
+
+    label.replace(28, rta.size(), rta);
+    text->setText(label);
+}
+
 QGraphicsLineItem *ATCAmanFlightLabel::getTimeArrow()
 {
     return timeArrow;
@@ -153,6 +172,11 @@ QGraphicsRectItem *ATCAmanFlightLabel::getRangeBar()
 QGraphicsLineItem *ATCAmanFlightLabel::getSelector()
 {
     return selector;
+}
+
+ATCFlight *ATCAmanFlightLabel::getFlight()
+{
+    return flight;
 }
 
 void ATCAmanFlightLabel::createLabelItems(QPointF arrowPos)
@@ -218,9 +242,7 @@ void ATCAmanFlightLabel::createLabelItems(QPointF arrowPos)
         eta = "--:--:--";
     }
 
-    //CHECK IF IT HAS RTA?
-    QString rta = "12:30:40"; //TEMP
-
+    QString rta = flight->getRTA().isValid() ? flight->getRTA().toString("HH:mm:ss") : "--:--:--";
     QString label = callsign + "  " + level + "  E" + eta + "  R" + rta;
 
     text = new QGraphicsSimpleTextItem(label, this);
