@@ -151,6 +151,11 @@ void ATCAmanDisplay::appendFlightLabel(ATCAmanFlightLabel *lbl)
     flightLabels.append(lbl);
 }
 
+QList<ATCAmanFlightLabel*>& ATCAmanDisplay::getFlightLabels()
+{
+    return flightLabels;
+}
+
 void ATCAmanDisplay::setLineEditMeteringFixVisible(bool flag)
 {
     lineEditMeteringFixVisible = flag;

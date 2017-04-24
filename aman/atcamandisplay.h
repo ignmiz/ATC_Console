@@ -25,6 +25,7 @@ public:
     void createTimeline(QTime *t);
 
     void appendFlightLabel(ATCAmanFlightLabel *lbl);
+    QList<ATCAmanFlightLabel*>& getFlightLabels();
 
     void setLineEditMeteringFixVisible(bool flag);
     void clockUpdated();

@@ -44,6 +44,22 @@ void DialogAman::setSimulation(ATCSimulation *sim)
 {
     simulation = sim;
     populateAman();
+
+    countRTAs();
+}
+
+void DialogAman::countRTAs()
+{
+    //TEMP: TO BE UPDATED WITH HASH CONTAINER HANDLING
+
+    QList<ATCAmanFlightLabel*> labels(uiInner->amanDisplay->getFlightLabels());
+
+    RTAcount = 0;
+
+    for(int i = 0; i < labels.size(); i++)
+    {
+        if(labels.at(i)->getFlight()->getRTA().isValid()) RTAcount++;
+    }
 }
 
 void DialogAman::on_buttonMeteringFix_clicked()
@@ -77,6 +93,8 @@ void DialogAman::on_buttonSetRTA_clicked()
         activeLabel->updateColor();
 
         emit activeLabel->signalFlightLabelSelected(nullptr);
+
+        RTAcount++;
     }
 }
 
@@ -89,6 +107,8 @@ void DialogAman::on_buttonClear_clicked()
         activeLabel->updateColor();
 
         emit activeLabel->signalFlightLabelSelected(nullptr);
+
+        RTAcount--;
     }
 }
 

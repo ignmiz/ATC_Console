@@ -28,6 +28,8 @@ public:
     void setMeteringFix(QString &fix);
     void setSimulation(ATCSimulation *sim);
 
+    void countRTAs();
+
 private slots:
     ATC_MOUSE_HANDLER
 
@@ -60,6 +62,8 @@ private:
 
     int pageNumber = 0;
     double pageDelta = 1200;   //seconds
+
+    int RTAcount = 0;
 
     void createLineEdit();
     void populateAman();
