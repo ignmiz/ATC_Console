@@ -117,7 +117,24 @@ void DialogAman::on_buttonClear_clicked()
 
 void DialogAman::on_buttonClearAll_clicked()
 {
+    //TEMP CONTAINER, TO BE REPLACED WITH HASHMAP @ DIALOGAMAN
+    QList<ATCAmanFlightLabel*> labels(uiInner->amanDisplay->getFlightLabels());
+    if(activeLabel != nullptr) activeLabel->signalFlightLabelSelected(nullptr);
 
+    for(int i = 0; i < labels.size(); i++)
+    {
+        ATCAmanFlightLabel *current = labels.at(i);
+
+        if(current->getFlight()->getRTA().isValid())
+        {
+            current->getFlight()->setRTA(QTime());
+            current->updateRTA();
+            current->updateColor();
+        }
+    }
+
+    RTAcount = 0;
+    toggleClearAll();
 }
 
 void DialogAman::slotMeteringFixEntered()

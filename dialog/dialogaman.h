@@ -36,6 +36,7 @@ private slots:
     void on_buttonMeteringFix_clicked();
     void on_buttonSetRTA_clicked();
     void on_buttonClear_clicked();
+    void on_buttonClearAll_clicked();
 
     void slotMeteringFixEntered();
     void slotHideLineEdit();
