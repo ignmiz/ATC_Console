@@ -66,7 +66,7 @@ private:
     void createSelector();
     void createTimeRangeBar();
 
-    void activateRTAgui();
+    void activateRTAgui(bool hasRTA);
     void deactivateRTAgui();
 
     QTime timeFromY(double y);

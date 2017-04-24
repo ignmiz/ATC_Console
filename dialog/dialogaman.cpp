@@ -308,11 +308,11 @@ void DialogAman::createTimeRangeBar()
     activeLabel->createTimeRangeBar(uiInner->amanDisplay->scene(), topY, height);
 }
 
-void DialogAman::activateRTAgui()
+void DialogAman::activateRTAgui(bool hasRTA)
 {
     uiInner->timeEdit->setEnabled(true);
     uiInner->buttonSetRTA->setEnabled(true);
-    uiInner->buttonClear->setEnabled(true);
+    if(hasRTA) uiInner->buttonClear->setEnabled(true);
     uiInner->horizontalSlider->setEnabled(true);
     uiInner->labelLater->setEnabled(true);
     uiInner->labelSooner->setEnabled(true);
