@@ -80,6 +80,23 @@ void DialogAman::on_buttonSetRTA_clicked()
     }
 }
 
+void DialogAman::on_buttonClear_clicked()
+{
+    if(activeLabel != nullptr)
+    {
+        activeLabel->getFlight()->setRTA(QTime());
+        activeLabel->updateRTA();
+        activeLabel->updateColor();
+
+        emit activeLabel->signalFlightLabelSelected(nullptr);
+    }
+}
+
+void DialogAman::on_buttonClearAll_clicked()
+{
+
+}
+
 void DialogAman::slotMeteringFixEntered()
 {
     QString name = lineEditMeteringFix->text();
@@ -141,7 +158,7 @@ void DialogAman::slotFlightLabelSelected(ATCAmanFlightLabel *label)
             createTimeRangeBar();
             createSelector();
 
-            activateRTAgui();
+            activateRTAgui(label->getFlight()->getRTA().isValid());
             initializeSliderPosition();
             initializeTimeEditValue();
         }
