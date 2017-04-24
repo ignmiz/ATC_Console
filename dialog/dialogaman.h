@@ -74,6 +74,8 @@ private:
     void activateRTAgui(bool hasRTA);
     void deactivateRTAgui();
 
+    void toggleClearAll();
+
     QTime timeFromY(double y);
     double timeToY(QTime &t);
 

@@ -46,6 +46,7 @@ void DialogAman::setSimulation(ATCSimulation *sim)
     populateAman();
 
     countRTAs();
+    toggleClearAll();
 }
 
 void DialogAman::countRTAs()
@@ -95,6 +96,7 @@ void DialogAman::on_buttonSetRTA_clicked()
         emit activeLabel->signalFlightLabelSelected(nullptr);
 
         RTAcount++;
+        toggleClearAll();
     }
 }
 
@@ -109,6 +111,7 @@ void DialogAman::on_buttonClear_clicked()
         emit activeLabel->signalFlightLabelSelected(nullptr);
 
         RTAcount--;
+        toggleClearAll();
     }
 }
 
@@ -373,6 +376,14 @@ void DialogAman::deactivateRTAgui()
     uiInner->horizontalSlider->setValue(50);
 
     RTAgui = false;
+}
+
+void DialogAman::toggleClearAll()
+{
+    if(RTAcount > 0)
+        uiInner->buttonClearAll->setEnabled(true);
+    else
+        uiInner->buttonClearAll->setEnabled(false);
 }
 
 QTime DialogAman::timeFromY(double y)
