@@ -74,6 +74,7 @@ void DialogAman::on_buttonSetRTA_clicked()
     {
         activeLabel->getFlight()->setRTA(uiInner->timeEdit->time());
         activeLabel->updateRTA();
+        activeLabel->updateColor();
 
         emit activeLabel->signalFlightLabelSelected(nullptr);
     }

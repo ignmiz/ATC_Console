@@ -149,6 +149,38 @@ void ATCAmanFlightLabel::updateRTA()
     text->setText(label);
 }
 
+void ATCAmanFlightLabel::updateColor()
+{
+    QPen pen(this->pen());
+
+    QTime ETA;  //TEMP
+    QTime RTA = flight->getRTA();
+
+    if(RTA.isValid() && ETA.isValid())
+    {
+        int diff = qFabs(ETA.secsTo(RTA));
+
+        if(diff <= 10)
+        {
+            pen.setColor(Qt::green);
+        }
+        else if(diff <= 30)
+        {
+            pen.setColor(QColor(255, 150, 0));
+        }
+        else
+        {
+            pen.setColor(Qt::red);
+        }
+    }
+    else
+    {
+        pen.setColor(Qt::blue);
+    }
+
+    setPen(pen);
+}
+
 QGraphicsLineItem *ATCAmanFlightLabel::getTimeArrow()
 {
     return timeArrow;
@@ -188,7 +220,7 @@ void ATCAmanFlightLabel::createLabelItems(QPointF arrowPos)
     QPen connectorPen(Qt::gray);
     connectorPen.setWidthF(1);
 
-    QPen labelPen(Qt::green);
+    QPen labelPen(Qt::black);
     labelPen.setWidthF(1.5);
 
     QBrush labelBrush(Qt::black);
@@ -223,6 +255,8 @@ void ATCAmanFlightLabel::createLabelItems(QPointF arrowPos)
     setPolygon(QPolygonF(vertices));
     setPen(labelPen);
     setBrush(labelBrush);
+
+    updateColor();
 
     //Create text
     int rtaIndex = 5; //TEMP, HERE STH LIKE flight->getRTAindex();

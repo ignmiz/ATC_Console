@@ -40,6 +40,7 @@ public:
 
     void updateEtiquette();
     void updateRTA();
+    void updateColor();
 
     QGraphicsLineItem* getTimeArrow();
     QGraphicsLineItem* getConnector();
