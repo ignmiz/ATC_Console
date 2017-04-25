@@ -11,6 +11,7 @@
 #include <QObject>
 #include <QThread>
 #include <QList>
+#include <QSet>
 #include <QDebug>
 
 class ATCSimulation : public QObject
@@ -46,6 +47,9 @@ public:
 
     void setMeteringFix(QString &fix);
     QString& getMeteringFix();
+
+    QSet<ATCFlight*>& getConcernedFlights();
+    void clearConcernedFlights();
 
 signals:
     void signalUpdateTags();
@@ -84,6 +88,7 @@ private:
     double sweepCounter = 0;
 
     QString meteringFix;
+    QSet<ATCFlight*> concernedFlights;
 
     int activeCount = 0;
     int predictorIterator = 0;
