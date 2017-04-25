@@ -1994,6 +1994,29 @@ void ATCSimulation::calculateWaypointTraits(ATCFlight *flight)
     flight->setWaypointTimes(times);
 }
 
+void ATCSimulation::findMeteringFixIndex(ATCFlight *flight)
+{
+    if(!meteringFix.isEmpty())
+    {
+        QStringList fixList = flight->getFixList();
+        int fixListSize = fixList.size();
+
+        bool found = false;
+        for(int i = flight->getWaypointIndex(); i < fixListSize; i++)
+        {
+            if(fixList.at(i) == meteringFix)
+            {
+                flight->setMeteringFixIndex(i);
+                found = true;
+
+                break;
+            }
+        }
+
+        if(!found) flight->setMeteringFixIndex(-1);
+    }
+}
+
 void ATCSimulation::predictTrajectories()
 {
     for(int i = 0; i < predictorCycles; i++)
@@ -2014,6 +2037,7 @@ void ATCSimulation::predictTrajectories()
                         calculateTODposition(flight);
 
                         calculateWaypointTraits(flight);
+                        findMeteringFixIndex(flight);
 
                         flight->setAccuratePredictionFlag(true);
                         if(flight->getRoutePrediction() != nullptr) emit signalUpdateRoute(flight);

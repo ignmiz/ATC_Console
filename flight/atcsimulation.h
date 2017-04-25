@@ -124,6 +124,7 @@ private:
     void calculateTODposition(ATCFlight *flight);
 
     void calculateWaypointTraits(ATCFlight *flight);
+    void findMeteringFixIndex(ATCFlight *flight);
 
     void predictTrajectories();
 
