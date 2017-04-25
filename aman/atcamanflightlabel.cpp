@@ -1,6 +1,13 @@
 
 #include "atcamanflightlabel.h"
 
+ATCAmanFlightLabel::ATCAmanFlightLabel(ATCFlight *flight) : flight(flight)
+{
+    setFlag(QGraphicsItem::ItemIsMovable);
+    setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
+    setAcceptHoverEvents(true);
+}
+
 ATCAmanFlightLabel::ATCAmanFlightLabel(ATCFlight *flight, QPointF arrowPos) :
     flight(flight)
 {
@@ -26,6 +33,17 @@ void ATCAmanFlightLabel::addToScene(QGraphicsScene *scene)
     scene->addItem(timeArrow);
     scene->addItem(connector);
     scene->addItem(this);
+
+    onScene = true;
+}
+
+void ATCAmanFlightLabel::removeFromScene(QGraphicsScene *scene)
+{
+    scene->removeItem(tmieArrow);
+    scene->removeItem(connector);
+    scene->removeItem(this);
+
+    onScene = false;
 }
 
 void ATCAmanFlightLabel::moveByInterval(double dx, double dy)
@@ -34,6 +52,89 @@ void ATCAmanFlightLabel::moveByInterval(double dx, double dy)
     this->moveBy(dx, dy);
     if(rangeBar != nullptr) rangeBar->moveBy(dx, dy);
     if(selector != nullptr) selector->moveBy(dx, dy);
+}
+
+void ATCAmanFlightLabel::createLabelItems(QPointF arrowPos)
+{
+    //Initialize pens & brushes
+    QPen linePen(Qt::green);
+    linePen.setWidthF(2);
+
+    QPen connectorPen(Qt::gray);
+    connectorPen.setWidthF(1);
+
+    QPen labelPen(Qt::black);
+    labelPen.setWidthF(1.5);
+
+    QBrush labelBrush(Qt::black);
+
+    //Initialize characteristic lengths
+    double timeArrowWidth = 5;
+    double connectorWidth = 20;
+
+    //Create connector
+    connector = new QGraphicsLineItem(arrowPos.x() + timeArrowWidth, arrowPos.y(), arrowPos.x() + timeArrowWidth + connectorWidth, arrowPos.y());
+    connector->setPen(connectorPen);
+
+    //Create time arrow
+    timeArrow = new QGraphicsLineItem(arrowPos.x(), arrowPos.y(), arrowPos.x() + timeArrowWidth, arrowPos.y());
+    timeArrow->setPen(linePen);
+
+    //Create polygon
+    double width = 280;
+    double height = 20;
+    double labelArrowWidth = 5;
+
+    QVector<QPointF> vertices;
+
+    QPointF pointLabelArrow(arrowPos.x() + timeArrowWidth + connectorWidth, arrowPos.y());
+    QPointF pointBottomLeft(pointLabelArrow.x() + labelArrowWidth, pointLabelArrow.y() - height / 2);
+    QPointF pointBottomRight(pointBottomLeft.x() + width, pointBottomLeft.y());
+    QPointF pointTopRight(pointBottomRight.x(), pointBottomRight.y() + height);
+    QPointF pointTopLeft(pointTopRight.x() - width, pointTopRight.y());
+
+    vertices << pointLabelArrow << pointBottomLeft << pointBottomRight << pointTopRight << pointTopLeft;
+
+    setPolygon(QPolygonF(vertices));
+    setPen(labelPen);
+    setBrush(labelBrush);
+
+    updateColor();
+
+    //Create text
+    int rtaIndex = 5; //TEMP, HERE STH LIKE flight->getRTAindex();
+
+    QString callsign = (flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber()).left(9).leftJustified(9, ' ');
+    QString level;
+    QString eta;
+
+    if(flight->hasAccuratePrediction())
+    {
+        level = flight->getWaypointLevel(rtaIndex);
+        eta = flight->getWaypointTime(rtaIndex).isValid() ? flight->getWaypointTime(rtaIndex).toString("HH:mm:ss") : "--:--:--";
+    }
+    else
+    {
+        level = "---";
+        eta = "--:--:--";
+    }
+
+    QString rta = flight->getRTA().isValid() ? flight->getRTA().toString("HH:mm:ss") : "--:--:--";
+    QString label = callsign + "  " + level + "  E" + eta + "  R" + rta;
+
+    text = new QGraphicsSimpleTextItem(label, this);
+
+    QBrush textBrush(Qt::white);
+    QFont textFont("Consolas");
+    textFont.setPointSizeF(9);
+
+    text->setBrush(textBrush);
+    text->setFont(textFont);
+
+    double w = text->boundingRect().width();
+    double h = text->boundingRect().height();
+
+    text->setPos(pointLabelArrow.x() + labelArrowWidth + (width - w)/2, pointLabelArrow.y() - h/2);
 }
 
 void ATCAmanFlightLabel::createTimeRangeBar(QGraphicsScene *scene, double topY, double height)
@@ -113,6 +214,11 @@ bool ATCAmanFlightLabel::isHovered()
 bool ATCAmanFlightLabel::isLabelVisible()
 {
     return labelVisible;
+}
+
+bool ATCAmanFlightLabel::isOnScene()
+{
+    return onScene;
 }
 
 void ATCAmanFlightLabel::updateEtiquette()
@@ -209,89 +315,6 @@ QGraphicsLineItem *ATCAmanFlightLabel::getSelector()
 ATCFlight *ATCAmanFlightLabel::getFlight()
 {
     return flight;
-}
-
-void ATCAmanFlightLabel::createLabelItems(QPointF arrowPos)
-{
-    //Initialize pens & brushes
-    QPen linePen(Qt::green);
-    linePen.setWidthF(2);
-
-    QPen connectorPen(Qt::gray);
-    connectorPen.setWidthF(1);
-
-    QPen labelPen(Qt::black);
-    labelPen.setWidthF(1.5);
-
-    QBrush labelBrush(Qt::black);
-
-    //Initialize characteristic lengths
-    double timeArrowWidth = 5;
-    double connectorWidth = 20;
-
-    //Create connector
-    connector = new QGraphicsLineItem(arrowPos.x() + timeArrowWidth, arrowPos.y(), arrowPos.x() + timeArrowWidth + connectorWidth, arrowPos.y());
-    connector->setPen(connectorPen);
-
-    //Create time arrow
-    timeArrow = new QGraphicsLineItem(arrowPos.x(), arrowPos.y(), arrowPos.x() + timeArrowWidth, arrowPos.y());
-    timeArrow->setPen(linePen);
-
-    //Create polygon
-    double width = 280;
-    double height = 20;
-    double labelArrowWidth = 5;
-
-    QVector<QPointF> vertices;
-
-    QPointF pointLabelArrow(arrowPos.x() + timeArrowWidth + connectorWidth, arrowPos.y());
-    QPointF pointBottomLeft(pointLabelArrow.x() + labelArrowWidth, pointLabelArrow.y() - height / 2);
-    QPointF pointBottomRight(pointBottomLeft.x() + width, pointBottomLeft.y());
-    QPointF pointTopRight(pointBottomRight.x(), pointBottomRight.y() + height);
-    QPointF pointTopLeft(pointTopRight.x() - width, pointTopRight.y());
-
-    vertices << pointLabelArrow << pointBottomLeft << pointBottomRight << pointTopRight << pointTopLeft;
-
-    setPolygon(QPolygonF(vertices));
-    setPen(labelPen);
-    setBrush(labelBrush);
-
-    updateColor();
-
-    //Create text
-    int rtaIndex = 5; //TEMP, HERE STH LIKE flight->getRTAindex();
-
-    QString callsign = (flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber()).left(9).leftJustified(9, ' ');
-    QString level;
-    QString eta;
-
-    if(flight->hasAccuratePrediction())
-    {
-        level = flight->getWaypointLevel(rtaIndex);
-        eta = flight->getWaypointTime(rtaIndex).isValid() ? flight->getWaypointTime(rtaIndex).toString("HH:mm:ss") : "--:--:--";
-    }
-    else
-    {
-        level = "---";
-        eta = "--:--:--";
-    }
-
-    QString rta = flight->getRTA().isValid() ? flight->getRTA().toString("HH:mm:ss") : "--:--:--";
-    QString label = callsign + "  " + level + "  E" + eta + "  R" + rta;
-
-    text = new QGraphicsSimpleTextItem(label, this);
-
-    QBrush textBrush(Qt::white);
-    QFont textFont("Consolas");
-    textFont.setPointSizeF(9);
-
-    text->setBrush(textBrush);
-    text->setFont(textFont);
-
-    double w = text->boundingRect().width();
-    double h = text->boundingRect().height();
-
-    text->setPos(pointLabelArrow.x() + labelArrowWidth + (width - w)/2, pointLabelArrow.y() - h/2);
 }
 
 void ATCAmanFlightLabel::moveLine(QPointF newPos)

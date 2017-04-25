@@ -19,11 +19,15 @@ class ATCAmanFlightLabel : public QObject, public QGraphicsPolygonItem
     Q_OBJECT
 
 public:
+    explicit ATCAmanFlightLabel(ATCFlight *flight);
     explicit ATCAmanFlightLabel(ATCFlight *flight, QPointF arrowPos);
     ~ATCAmanFlightLabel();
 
     void addToScene(QGraphicsScene *scene);
+    void removeFromScene(QGraphicsScene *scene);
     void moveByInterval(double dx, double dy);
+
+    void createLabelItems(QPointF arrowPos);
 
     void createTimeRangeBar(QGraphicsScene *scene, double topY, double height);
     void createSelector(QGraphicsScene *scene, double y);
@@ -37,6 +41,7 @@ public:
     bool isSelected();
     bool isHovered();
     bool isLabelVisible();
+    bool isOnScene();
 
     void updateEtiquette();
     void updateRTA();
@@ -67,8 +72,7 @@ private:
     bool selected = false;
     bool hovered = false;
     bool labelVisible = true;
-
-    void createLabelItems(QPointF arrowPos);
+    bool onScene = false;
 
     void moveLine(QPointF newPos);
 
