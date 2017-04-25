@@ -226,6 +226,9 @@ public:
     void setRTA(QTime rta);
     QTime& getRTA();
 
+    void setMeteringFixIndex(int i);
+    int getMeteringFixIndex();
+
 signals:
     void signalCreateDialogAltitude(ATCFlight *flight, QPoint point);
     void signalCreateDialogSpeed(ATCFlight *flight, QPoint point);
@@ -324,6 +327,7 @@ private:
     QVector<QTime> waypointTimes;
 
     QTime RTA;
+    int meteringFixIndex = -1;
 };
 
 #endif // ATCFLIGHT_H

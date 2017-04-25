@@ -838,4 +838,11 @@ void Test_ATCFlight::test_setRTA()
     QVERIFY(foo.getRTA() == rta);
 }
 
+void Test_ATCFlight::test_setMeteringFixIndex()
+{
+    ATCFlight foo;
+    QVERIFY(foo.getMeteringFixIndex() == -1);
 
+    foo.setMeteringFixIndex(5);
+    QVERIFY(foo.getMeteringFixIndex() == 5);
+}
