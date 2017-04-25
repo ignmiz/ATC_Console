@@ -277,6 +277,14 @@ void DialogAman::slotSliderReleased()
     flagSliderPressed = false;
 }
 
+void DialogAman::slotUpdateContainer()
+{
+    if(!uiInner->buttonMeteringFix->text().isEmpty())
+    {
+        QSet<ATCFlight*> concernedFlights = simulation->getConcernedFlights();
+    }
+}
+
 void DialogAman::createLineEdit()
 {
     lineEditMeteringFix = new QLineEdit(this);

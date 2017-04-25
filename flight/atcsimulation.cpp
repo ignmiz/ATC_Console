@@ -2066,6 +2066,8 @@ void ATCSimulation::predictTrajectories()
             }
             else
             {
+                emit signalUpdateContainer();
+
                 predictorIterator = 0;
                 concernedFlights.clear();
             }

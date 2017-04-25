@@ -48,6 +48,8 @@ private slots:
     void slotSliderPressed();
     void slotSliderReleased();
 
+    void slotUpdateContainer();
+
 private:
     Ui::DialogAman *uiInner;
     ATCSimulation *simulation = nullptr;

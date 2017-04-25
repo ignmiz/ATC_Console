@@ -228,6 +228,7 @@ void MainWindow::on_buttonAman_clicked()
 
         connect(dialogAman, SIGNAL(closed()), this, SLOT(dialogAmanClosed()));
         connect(ui->buttonTime, SIGNAL(signalClockUpdated()), dialogAman, SLOT(slotClockUpdated()));
+        connect(simulation, SIGNAL(signalUpdateContainer()), dialogAman, SLOT(slotUpdateContainer()));
     }
 }
 

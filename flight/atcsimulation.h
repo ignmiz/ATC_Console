@@ -63,6 +63,7 @@ signals:
     void signalHideFlightTag(ATCFlightTag *tag);
 
     void signalUpdateFlightList();
+    void signalUpdateContainer();
 
 public slots:
     void slotStartSimulation();
