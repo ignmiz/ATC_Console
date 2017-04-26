@@ -51,6 +51,8 @@ private slots:
     void slotMeteringFixFound(ATCFlight *flight);
     void slotMeteringFixLost(ATCFlight *flight);
 
+    void slotUpdateStatistics();
+
 private:
     Ui::DialogAman *uiInner;
     ATCSimulation *simulation = nullptr;
@@ -68,9 +70,14 @@ private:
     double pageDelta = 1200;   //seconds
 
     int RTAcount = 0;
+    int onTimeCount = 0;
+    int deviatedCount = 0;
+    int compromisedCount = 0;
+
     QHash<ATCFlight*, ATCAmanFlightLabel*> labelsHash;
 
     void createLineEdit();
+    void updateStatsEtiquette();
 
     void createSelector();
     void createTimeRangeBar();

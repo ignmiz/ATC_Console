@@ -17,11 +17,7 @@ DialogAman::DialogAman(ATCAirspace *airspace, ATCSettings *settings, QTime *time
     deactivateRTAgui();
     toggleClearAll();
 
-    QString etiquette("CONCERNED: AAA     ON TIME: DDD\n"
-                      "UNMETERED: BBB    DEVIATED: EEE\n"
-                      "  METERED: CCC COMPROMISED: FFF"
-                     );
-    uiInner->labelStats->setText(etiquette);
+    updateStatsEtiquette();
 
     QFont font("Consolas");
     font.setPointSizeF(12);
@@ -105,6 +101,8 @@ void DialogAman::on_buttonSetRTA_clicked()
         activeLabel->updateRTA();
         activeLabel->updateColor();
 
+        slotUpdateStatistics();
+
         emit activeLabel->signalFlightLabelSelected(nullptr);
         toggleClearAll();
     }
@@ -121,6 +119,8 @@ void DialogAman::on_buttonClear_clicked()
         emit activeLabel->signalFlightLabelSelected(nullptr);
 
         RTAcount--;
+        slotUpdateStatistics();
+
         toggleClearAll();
     }
 }
@@ -143,6 +143,8 @@ void DialogAman::on_buttonClearAll_clicked()
     }
 
     RTAcount = 0;
+    slotUpdateStatistics();
+
     toggleClearAll();
 }
 
@@ -179,6 +181,13 @@ void DialogAman::slotMeteringFixEntered()
     }
 
     labelsHash.clear();
+
+    RTAcount = 0;
+    onTimeCount = 0;
+    deviatedCount = 0;
+    compromisedCount = 0;
+
+    updateStatsEtiquette();
 
     if(simulation != nullptr) simulation->setMeteringFix(name);
 }
@@ -305,9 +314,10 @@ void DialogAman::slotMeteringFixFound(ATCFlight *flight)
         {
             QTime ETA = flight->getWaypointTime(flight->getMeteringFixIndex());
 
+            ATCAmanFlightLabel *label;
             if(time->secsTo(ETA) <= 3600) //On current page - create & add to scene - TO BE CHANGED FOR SCROLLING
             {
-                ATCAmanFlightLabel *label = new ATCAmanFlightLabel(flight, time, QPointF(32, timeToY(ETA)));
+                label = new ATCAmanFlightLabel(flight, time, QPointF(32, timeToY(ETA)));
                 label->addToScene(uiInner->amanDisplay->scene());
                 uiInner->amanDisplay->insertFlightLabel(label);
 
@@ -319,7 +329,7 @@ void DialogAman::slotMeteringFixFound(ATCFlight *flight)
             }
             else //Not on current page - just create
             {
-                ATCAmanFlightLabel *label = new ATCAmanFlightLabel(flight, time);
+                label = new ATCAmanFlightLabel(flight, time);
                 labelsHash.insert(flight, label);
             }
 
@@ -332,6 +342,7 @@ void DialogAman::slotMeteringFixFound(ATCFlight *flight)
             updateLabelPosition(i.value());
         }
 
+        slotUpdateStatistics();
         toggleClearAll();
     }
 }
@@ -361,8 +372,28 @@ void DialogAman::slotMeteringFixLost(ATCFlight *flight)
             }
         }
 
+        slotUpdateStatistics();
         toggleClearAll();
     }
+}
+
+void DialogAman::slotUpdateStatistics()
+{
+    onTimeCount = 0;
+    deviatedCount = 0;
+    compromisedCount = 0;
+
+    QHash<ATCFlight*, ATCAmanFlightLabel*>::iterator i;
+    for(i = labelsHash.begin(); i != labelsHash.end(); i++)
+    {
+        ATCAmanFlightLabel *label = i.value();
+
+        if(label->isOnTime()) onTimeCount++;
+        if(label->isDeviated()) deviatedCount++;
+        if(label->isCompromised()) compromisedCount++;
+    }
+
+    updateStatsEtiquette();
 }
 
 void DialogAman::createLineEdit()
@@ -374,6 +405,15 @@ void DialogAman::createLineEdit()
     lineEditMeteringFix->hide();
 
     connect(lineEditMeteringFix, SIGNAL(returnPressed()), this, SLOT(slotMeteringFixEntered()));
+}
+
+void DialogAman::updateStatsEtiquette()
+{
+    QString etiquette("CONCERNED: " + QString::number(labelsHash.size()).rightJustified(3, ' ') + "     ON TIME: " + QString::number(onTimeCount).rightJustified(3, ' ') + "\n"
+                      "UNMETERED: " + QString::number(labelsHash.size() - RTAcount).rightJustified(3, ' ') + "    DEVIATED: " + QString::number(deviatedCount).rightJustified(3, ' ') + "\n"
+                      "  METERED: " + QString::number(RTAcount).rightJustified(3, ' ') + " COMPROMISED: " + QString::number(compromisedCount).rightJustified(3, ' ')
+                     );
+    uiInner->labelStats->setText(etiquette);
 }
 
 void DialogAman::createSelector()
