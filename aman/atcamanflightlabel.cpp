@@ -224,6 +224,24 @@ bool ATCAmanFlightLabel::isOnScene()
     return onScene;
 }
 
+bool ATCAmanFlightLabel::isOnTime()
+{
+    if(pen().color() == Qt::green) return true;
+    else return false;
+}
+
+bool ATCAmanFlightLabel::isDeviated()
+{
+    if(pen().color() == QColor(255, 150, 0)) return true;
+    else return false;
+}
+
+bool ATCAmanFlightLabel::isCompromised()
+{
+    if(pen().color() == Qt::red) return true;
+    else return false;
+}
+
 void ATCAmanFlightLabel::updateEtiquette()
 {
     int rtaIndex = flight->getMeteringFixIndex();

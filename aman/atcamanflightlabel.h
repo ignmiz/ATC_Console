@@ -39,6 +39,10 @@ public:
     bool isLabelVisible();
     bool isOnScene();
 
+    bool isOnTime();
+    bool isDeviated();
+    bool isCompromised();
+
     void updateEtiquette();
     void updateRTA();
     void updateColor();
