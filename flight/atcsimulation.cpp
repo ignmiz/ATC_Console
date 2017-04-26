@@ -152,16 +152,6 @@ QString &ATCSimulation::getMeteringFix()
     return meteringFix;
 }
 
-QSet<ATCFlight*>& ATCSimulation::getConcernedFlights()
-{
-    return concernedFlights;
-}
-
-void ATCSimulation::clearConcernedFlights()
-{
-    concernedFlights.clear();
-}
-
 void ATCSimulation::slotStartSimulation()
 {
     GeographicLib::Geodesic geo = GeographicLib::Geodesic::WGS84();
@@ -2019,13 +2009,17 @@ void ATCSimulation::findMeteringFixIndex(ATCFlight *flight)
                 flight->setMeteringFixIndex(i);
                 found = true;
 
-                concernedFlights.insert(flight);
-
+                emit signalMeteringFixFound(flight);
                 break;
             }
         }
 
-        if(!found) flight->setMeteringFixIndex(-1);
+
+        if(!found && (flight->getMeteringFixIndex() != -1))
+        {
+            if(fixList.at(flight->getMeteringFixIndex()) == meteringFix) emit signalMeteringFixLost(flight);
+            flight->setMeteringFixIndex(-1);
+        }
     }
 }
 
@@ -2066,10 +2060,7 @@ void ATCSimulation::predictTrajectories()
             }
             else
             {
-                emit signalUpdateContainer();
-
                 predictorIterator = 0;
-                concernedFlights.clear();
             }
         }
     }

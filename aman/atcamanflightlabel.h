@@ -4,6 +4,7 @@
 #include "atcflight.h"
 
 #include <QPen>
+#include <QTime>
 #include <QPolygonF>
 #include <QGraphicsItem>
 #include <QGraphicsPolygonItem>
@@ -19,8 +20,8 @@ class ATCAmanFlightLabel : public QObject, public QGraphicsPolygonItem
     Q_OBJECT
 
 public:
-    explicit ATCAmanFlightLabel(ATCFlight *flight);
-    explicit ATCAmanFlightLabel(ATCFlight *flight, QPointF arrowPos);
+    explicit ATCAmanFlightLabel(ATCFlight *flight, QTime *time);
+    explicit ATCAmanFlightLabel(ATCFlight *flight, QTime *time, QPointF arrowPos);
     ~ATCAmanFlightLabel();
 
     void addToScene(QGraphicsScene *scene);
@@ -61,6 +62,7 @@ signals:
 
 private:
     ATCFlight *flight;
+    QTime *time;
 
     QGraphicsLineItem *timeArrow = nullptr;
     QGraphicsLineItem *connector = nullptr;

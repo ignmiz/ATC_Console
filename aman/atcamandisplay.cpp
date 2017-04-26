@@ -22,10 +22,7 @@ ATCAmanDisplay::ATCAmanDisplay(QWidget *parent) : QGraphicsView(parent)
 
 ATCAmanDisplay::~ATCAmanDisplay()
 {
-    for(int i = 0; i < flightLabels.size(); i++)
-    {
-        if(flightLabels.at(i) != nullptr) delete flightLabels.at(i);
-    }
+
 }
 
 void ATCAmanDisplay::setSettings(ATCSettings *s)
@@ -146,14 +143,24 @@ void ATCAmanDisplay::createTimeline(QTime *t)
     }
 }
 
-void ATCAmanDisplay::appendFlightLabel(ATCAmanFlightLabel *lbl)
+void ATCAmanDisplay::insertFlightLabel(ATCAmanFlightLabel *lbl)
 {
-    flightLabels.append(lbl);
+    flightLabels.insert(lbl);
 }
 
-QList<ATCAmanFlightLabel*>& ATCAmanDisplay::getFlightLabels()
+QSet<ATCAmanFlightLabel*>& ATCAmanDisplay::getFlightLabels()
 {
     return flightLabels;
+}
+
+void ATCAmanDisplay::removeFlightLabel(ATCAmanFlightLabel *lbl)
+{
+    QSet<ATCAmanFlightLabel*>::iterator i = flightLabels.find(lbl);
+    if(i != flightLabels.end())
+    {
+        lbl->removeFromScene(currentScene);
+        flightLabels.erase(i);
+    }
 }
 
 void ATCAmanDisplay::setLineEditMeteringFixVisible(bool flag)
@@ -197,9 +204,10 @@ void ATCAmanDisplay::clockUpdated()
     //Move flight labels down
     double dy = dt * minorTickSpacing / 60;
 
-    for(int i = 0; i < flightLabels.size(); i++)
+    QSet<ATCAmanFlightLabel*>::iterator it;
+    for(it = flightLabels.begin(); it != flightLabels.end(); it++)
     {
-        flightLabels.at(i)->moveByInterval(0, dy);
+        (*it)->moveByInterval(0, dy);
     }
 }
 

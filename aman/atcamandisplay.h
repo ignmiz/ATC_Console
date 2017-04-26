@@ -6,7 +6,7 @@
 #include "atcamanflightlabel.h"
 
 #include <QTime>
-#include <QList>
+#include <QSet>
 #include <QPushButton>
 #include <QMouseEvent>
 #include <QGraphicsItem>
@@ -24,8 +24,9 @@ public:
     void setSettings(ATCSettings *s);
     void createTimeline(QTime *t);
 
-    void appendFlightLabel(ATCAmanFlightLabel *lbl);
-    QList<ATCAmanFlightLabel*>& getFlightLabels();
+    void insertFlightLabel(ATCAmanFlightLabel *lbl);
+    QSet<ATCAmanFlightLabel*>& getFlightLabels();
+    void removeFlightLabel(ATCAmanFlightLabel *lbl);
 
     void setLineEditMeteringFixVisible(bool flag);
     void clockUpdated();
@@ -51,7 +52,7 @@ private:
     QList<QGraphicsLineItem*> majorRightTicks;
     QList<QGraphicsSimpleTextItem*> labels;
 
-    QList<ATCAmanFlightLabel*> flightLabels;
+    QSet<ATCAmanFlightLabel*> flightLabels;
     ATCAmanFlightLabel *activeLabel = nullptr;
 
     double majorTickSpacing;

@@ -1,15 +1,18 @@
 
 #include "atcamanflightlabel.h"
 
-ATCAmanFlightLabel::ATCAmanFlightLabel(ATCFlight *flight) : flight(flight)
+ATCAmanFlightLabel::ATCAmanFlightLabel(ATCFlight *flight, QTime *time) :
+    flight(flight),
+    time(time)
 {
     setFlag(QGraphicsItem::ItemIsMovable);
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
     setAcceptHoverEvents(true);
 }
 
-ATCAmanFlightLabel::ATCAmanFlightLabel(ATCFlight *flight, QPointF arrowPos) :
-    flight(flight)
+ATCAmanFlightLabel::ATCAmanFlightLabel(ATCFlight *flight, QTime *time, QPointF arrowPos) :
+    flight(flight),
+    time(time)
 {
     createLabelItems(arrowPos);
 
@@ -39,7 +42,7 @@ void ATCAmanFlightLabel::addToScene(QGraphicsScene *scene)
 
 void ATCAmanFlightLabel::removeFromScene(QGraphicsScene *scene)
 {
-    scene->removeItem(tmieArrow);
+    scene->removeItem(timeArrow);
     scene->removeItem(connector);
     scene->removeItem(this);
 
@@ -102,7 +105,7 @@ void ATCAmanFlightLabel::createLabelItems(QPointF arrowPos)
     updateColor();
 
     //Create text
-    int rtaIndex = 5; //TEMP, HERE STH LIKE flight->getRTAindex();
+    int rtaIndex = flight->getMeteringFixIndex();
 
     QString callsign = (flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber()).left(9).leftJustified(9, ' ');
     QString level;
@@ -223,7 +226,7 @@ bool ATCAmanFlightLabel::isOnScene()
 
 void ATCAmanFlightLabel::updateEtiquette()
 {
-    int rtaIndex = 5; //TEMP, HERE STH LIKE flight->getRTAindex();
+    int rtaIndex = flight->getMeteringFixIndex();
 
     QString callsign = (flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber()).left(9).leftJustified(9, ' ');
     QString level;
@@ -259,7 +262,7 @@ void ATCAmanFlightLabel::updateColor()
 {
     QPen pen(this->pen());
 
-    QTime ETA;  //TEMP
+    QTime ETA = flight->getWaypointTime(flight->getMeteringFixIndex());
     QTime RTA = flight->getRTA();
 
     if(RTA.isValid() && ETA.isValid())

@@ -15,6 +15,17 @@ DialogAman::DialogAman(ATCAirspace *airspace, ATCSettings *settings, QTime *time
     uiInner->amanDisplay->createTimeline(time);
 
     deactivateRTAgui();
+    toggleClearAll();
+
+    QString etiquette("CONCERNED: AAA     ON TIME: DDD\n"
+                      "UNMETERED: BBB    DEVIATED: EEE\n"
+                      "  METERED: CCC COMPROMISED: FFF"
+                     );
+    uiInner->labelStats->setText(etiquette);
+
+    QFont font("Consolas");
+    font.setPointSizeF(12);
+    uiInner->labelStats->setFont(font);
 
     createLineEdit();
     connect(uiInner->amanDisplay, SIGNAL(signalHideLineEdit()), this, SLOT(slotHideLineEdit()));
@@ -26,6 +37,12 @@ DialogAman::DialogAman(ATCAirspace *airspace, ATCSettings *settings, QTime *time
 DialogAman::~DialogAman()
 {
     if(lineEditMeteringFix != nullptr) delete lineEditMeteringFix;
+
+    QHash<ATCFlight*, ATCAmanFlightLabel*>::iterator i;
+    for(i = labelsHash.begin(); i != labelsHash.end(); i++)
+    {
+        if(i.value() != nullptr) delete i.value();
+    }
 
     delete uiInner;
 }
@@ -43,23 +60,16 @@ void DialogAman::setMeteringFix(QString &fix)
 void DialogAman::setSimulation(ATCSimulation *sim)
 {
     simulation = sim;
-    populateAman();
-
-    countRTAs();
-    toggleClearAll();
 }
 
 void DialogAman::countRTAs()
 {
-    //TEMP: TO BE UPDATED WITH HASH CONTAINER HANDLING
-
-    QList<ATCAmanFlightLabel*> labels(uiInner->amanDisplay->getFlightLabels());
-
+    QHash<ATCFlight*, ATCAmanFlightLabel*>::iterator i;
     RTAcount = 0;
 
-    for(int i = 0; i < labels.size(); i++)
+    for(i = labelsHash.begin(); i != labelsHash.end(); i++)
     {
-        if(labels.at(i)->getFlight()->getRTA().isValid()) RTAcount++;
+        if(i.key()->getRTA().isValid()) RTAcount++;
     }
 }
 
@@ -117,13 +127,12 @@ void DialogAman::on_buttonClear_clicked()
 
 void DialogAman::on_buttonClearAll_clicked()
 {
-    //TEMP CONTAINER, TO BE REPLACED WITH HASHMAP @ DIALOGAMAN
-    QList<ATCAmanFlightLabel*> labels(uiInner->amanDisplay->getFlightLabels());
-    if(activeLabel != nullptr) activeLabel->signalFlightLabelSelected(nullptr);
+    if(activeLabel != nullptr) emit activeLabel->signalFlightLabelSelected(nullptr);
 
-    for(int i = 0; i < labels.size(); i++)
+    QHash<ATCFlight*, ATCAmanFlightLabel*>::iterator i;
+    for(i = labelsHash.begin(); i != labelsHash.end(); i++)
     {
-        ATCAmanFlightLabel *current = labels.at(i);
+        ATCAmanFlightLabel *current = i.value();
 
         if(current->getFlight()->getRTA().isValid())
         {
@@ -160,6 +169,16 @@ void DialogAman::slotMeteringFixEntered()
 
     uiInner->buttonMeteringFix->setText(name);
     uiInner->buttonMeteringFix->show();
+
+    QHash<ATCFlight*, ATCAmanFlightLabel*>::iterator i;
+    for(i = labelsHash.begin(); i != labelsHash.end(); i++)
+    {
+        ATCAmanFlightLabel *label = i.value();
+        if(label->isOnScene()) uiInner->amanDisplay->removeFlightLabel(label);
+        delete label;
+    }
+
+    labelsHash.clear();
 
     if(simulation != nullptr) simulation->setMeteringFix(name);
 }
@@ -277,11 +296,72 @@ void DialogAman::slotSliderReleased()
     flagSliderPressed = false;
 }
 
-void DialogAman::slotUpdateContainer()
+void DialogAman::slotMeteringFixFound(ATCFlight *flight)
 {
     if(!uiInner->buttonMeteringFix->text().isEmpty())
     {
-        QSet<ATCFlight*> concernedFlights = simulation->getConcernedFlights();
+        QHash<ATCFlight*, ATCAmanFlightLabel*>::iterator i = labelsHash.find(flight);
+        if(i == labelsHash.end()) //Flight not found in container - create
+        {
+            QTime ETA = flight->getWaypointTime(flight->getMeteringFixIndex());
+
+            if(time->secsTo(ETA) <= 3600) //On current page - create & add to scene - TO BE CHANGED FOR SCROLLING
+            {
+                ATCAmanFlightLabel *label = new ATCAmanFlightLabel(flight, time, QPointF(32, timeToY(ETA)));
+                label->addToScene(uiInner->amanDisplay->scene());
+                uiInner->amanDisplay->insertFlightLabel(label);
+
+                connect(label, SIGNAL(signalFlightLabelSelected(ATCAmanFlightLabel*)), uiInner->amanDisplay, SLOT(slotFlightLabelSelected(ATCAmanFlightLabel*)));
+                connect(label, SIGNAL(signalFlightLabelSelected(ATCAmanFlightLabel*)), this, SLOT(slotFlightLabelSelected(ATCAmanFlightLabel*)));
+                connect(label, SIGNAL(signalLabelHovered(bool)), uiInner->amanDisplay, SLOT(slotLabelHovered(bool)));
+
+                labelsHash.insert(flight, label);
+            }
+            else //Not on current page - just create
+            {
+                ATCAmanFlightLabel *label = new ATCAmanFlightLabel(flight, time);
+                labelsHash.insert(flight, label);
+            }
+
+            if(flight->getRTA().isValid()) RTAcount++;
+        }
+        else //Flight found in container - update
+        {
+            i.value()->updateEtiquette();
+            i.value()->updateColor();
+            updateLabelPosition(i.value());
+        }
+
+        toggleClearAll();
+    }
+}
+
+void DialogAman::slotMeteringFixLost(ATCFlight *flight)
+{
+    if(!uiInner->buttonMeteringFix->text().isEmpty())
+    {
+        QHash<ATCFlight*, ATCAmanFlightLabel*>::iterator i = labelsHash.find(flight);
+
+        if(i != labelsHash.end())
+        {
+            ATCAmanFlightLabel *label = i.value();
+
+            if(label != nullptr)
+            {
+                if(label->isOnScene()) uiInner->amanDisplay->removeFlightLabel(label);
+                delete label;
+            }
+
+            labelsHash.erase(i);
+
+            if(flight->getRTA().isValid())
+            {
+                flight->setRTA(QTime());
+                RTAcount--;
+            }
+        }
+
+        toggleClearAll();
     }
 }
 
@@ -294,45 +374,6 @@ void DialogAman::createLineEdit()
     lineEditMeteringFix->hide();
 
     connect(lineEditMeteringFix, SIGNAL(returnPressed()), this, SLOT(slotMeteringFixEntered()));
-}
-
-void DialogAman::populateAman()
-{
-    if(simulation != nullptr)
-    {
-        //Create labels
-        ATCAmanFlightLabel *label = new ATCAmanFlightLabel(simulation->getFlight(0), QPointF(32, 100));
-        label->addToScene(uiInner->amanDisplay->scene());
-
-        uiInner->amanDisplay->appendFlightLabel(label);
-
-        //Connect slots
-        connect(label, SIGNAL(signalFlightLabelSelected(ATCAmanFlightLabel*)), uiInner->amanDisplay, SLOT(slotFlightLabelSelected(ATCAmanFlightLabel*)));
-        connect(label, SIGNAL(signalFlightLabelSelected(ATCAmanFlightLabel*)), this, SLOT(slotFlightLabelSelected(ATCAmanFlightLabel*)));
-        connect(label, SIGNAL(signalLabelHovered(bool)), uiInner->amanDisplay, SLOT(slotLabelHovered(bool)));
-
-//        //---------TEST---------
-//        ATCAmanFlightLabel *label2 = new ATCAmanFlightLabel(simulation->getFlight(0), QPointF(32, -200));
-//        label2->addToScene(uiInner->amanDisplay->scene());
-
-//        uiInner->amanDisplay->appendFlightLabel(label2);
-
-//        //Connect slots
-//        connect(label2, SIGNAL(signalFlightLabelSelected(ATCAmanFlightLabel*)), uiInner->amanDisplay, SLOT(slotFlightLabelSelected(ATCAmanFlightLabel*)));
-//        connect(label2, SIGNAL(signalFlightLabelSelected(ATCAmanFlightLabel*)), this, SLOT(slotFlightLabelSelected(ATCAmanFlightLabel*)));
-//        connect(label2, SIGNAL(signalLabelHovered(bool)), uiInner->amanDisplay, SLOT(slotLabelHovered(bool)));
-//        //----------------------
-    }
-
-    QString etiquette("CONCERNED: AAA     ON TIME: DDD\n"
-                      "UNMETERED: BBB    DEVIATED: EEE\n"
-                      "  METERED: CCC COMPROMISED: FFF"
-                     );
-    uiInner->labelStats->setText(etiquette);
-
-    QFont font("Consolas");
-    font.setPointSizeF(12);
-    uiInner->labelStats->setFont(font);
 }
 
 void DialogAman::createSelector()
@@ -457,5 +498,38 @@ void DialogAman::initializeTimeEditValue()
         uiInner->timeEdit->setMinimumTime(timeFromY(rangeBar->mapToScene(rangeBar->rect().bottomLeft()).y()));
         uiInner->timeEdit->setMaximumTime(timeFromY(rangeBar->mapToScene(rangeBar->rect().topLeft()).y()));
     }
+}
+
+void DialogAman::updateLabelPosition(ATCAmanFlightLabel *label)
+{
+    //Assign pointers
+    ATCFlight *flight = label->getFlight();
+    QGraphicsLineItem *timeArrow = label->getTimeArrow();
+
+    //Assign times
+    QTime previousETA = timeFromY(timeArrow->mapToScene(timeArrow->line().p1()).y());
+    QTime ETA = flight->getWaypointTime(flight->getMeteringFixIndex());
+
+    //Calculate time difference
+    double secondsDiff = static_cast<double>(ETA.msecsTo(previousETA)) / 1000.0;
+    double oneSecondInterval = ATCConst::AMAN_DISPLAY_HEIGHT / 13 / 5 / 60;
+
+    //Move label
+    label->moveByInterval(0, oneSecondInterval * secondsDiff);
+
+    //Check scene boundaries
+    if(!isWithinSceneBoundaries(label)) uiInner->amanDisplay->removeFlightLabel(label);
+    else if(!label->isOnScene()) label->addToScene(uiInner->amanDisplay->scene());
+}
+
+bool DialogAman::isWithinSceneBoundaries(ATCAmanFlightLabel *label)
+{
+    QGraphicsLineItem *timeArrow = label->getTimeArrow();
+    double y = timeArrow->mapToScene(timeArrow->line().p1()).y();
+
+    double limit = ATCConst::AMAN_DISPLAY_HEIGHT / 2;
+
+    if((y > limit) || (y < -limit)) return false;
+    else return true;
 }
 

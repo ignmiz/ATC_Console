@@ -48,7 +48,8 @@ private slots:
     void slotSliderPressed();
     void slotSliderReleased();
 
-    void slotUpdateContainer();
+    void slotMeteringFixFound(ATCFlight *flight);
+    void slotMeteringFixLost(ATCFlight *flight);
 
 private:
     Ui::DialogAman *uiInner;
@@ -67,9 +68,9 @@ private:
     double pageDelta = 1200;   //seconds
 
     int RTAcount = 0;
+    QHash<ATCFlight*, ATCAmanFlightLabel*> labelsHash;
 
     void createLineEdit();
-    void populateAman();
 
     void createSelector();
     void createTimeRangeBar();
@@ -84,6 +85,9 @@ private:
 
     void initializeSliderPosition();
     void initializeTimeEditValue();
+
+    void updateLabelPosition(ATCAmanFlightLabel *label);
+    bool isWithinSceneBoundaries(ATCAmanFlightLabel *label);
 };
 
 #endif // DIALOGAMAN_H

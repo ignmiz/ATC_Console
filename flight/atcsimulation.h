@@ -48,9 +48,6 @@ public:
     void setMeteringFix(QString &fix);
     QString& getMeteringFix();
 
-    QSet<ATCFlight*>& getConcernedFlights();
-    void clearConcernedFlights();
-
 signals:
     void signalUpdateTags();
     void signalDisplayRoute(ATCFlight *flight);
@@ -63,7 +60,9 @@ signals:
     void signalHideFlightTag(ATCFlightTag *tag);
 
     void signalUpdateFlightList();
-    void signalUpdateContainer();
+
+    void signalMeteringFixFound(ATCFlight *flight);
+    void signalMeteringFixLost(ATCFlight *flight);
 
 public slots:
     void slotStartSimulation();
@@ -89,7 +88,6 @@ private:
     double sweepCounter = 0;
 
     QString meteringFix;
-    QSet<ATCFlight*> concernedFlights;
 
     int activeCount = 0;
     int predictorIterator = 0;

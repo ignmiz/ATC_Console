@@ -228,7 +228,8 @@ void MainWindow::on_buttonAman_clicked()
 
         connect(dialogAman, SIGNAL(closed()), this, SLOT(dialogAmanClosed()));
         connect(ui->buttonTime, SIGNAL(signalClockUpdated()), dialogAman, SLOT(slotClockUpdated()));
-        connect(simulation, SIGNAL(signalUpdateContainer()), dialogAman, SLOT(slotUpdateContainer()));
+        connect(simulation, SIGNAL(signalMeteringFixFound(ATCFlight*)), dialogAman, SLOT(slotMeteringFixFound(ATCFlight*)));
+        connect(simulation, SIGNAL(signalMeteringFixLost(ATCFlight*)), dialogAman, SLOT(slotMeteringFixLost(ATCFlight*)));
     }
 }
 
