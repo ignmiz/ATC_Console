@@ -99,13 +99,13 @@ void DialogAman::on_buttonSetRTA_clicked()
 {
     if(activeLabel != nullptr)
     {
+        if(!activeLabel->getFlight()->getRTA().isValid()) RTAcount++;
+
         activeLabel->getFlight()->setRTA(uiInner->timeEdit->time());
         activeLabel->updateRTA();
         activeLabel->updateColor();
 
         emit activeLabel->signalFlightLabelSelected(nullptr);
-
-        RTAcount++;
         toggleClearAll();
     }
 }
