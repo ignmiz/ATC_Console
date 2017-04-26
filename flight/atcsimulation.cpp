@@ -1708,7 +1708,9 @@ void ATCSimulation::calculateTODposition(ATCFlight *flight)
 
 void ATCSimulation::calculateWaypointTraits(ATCFlight *flight)
 {
-    double AFL = flight->getState().h;
+    State state = flight->getState();
+
+    double AFL = state.h;
     double CFL = ATCMath::ft2m(flight->getTargetAltitude().right(3).toDouble() * 100);
     double RFL = ATCMath::ft2m(flight->getFlightPlan()->getAltitude().right(3).toDouble() * 100);
 
@@ -1854,7 +1856,7 @@ void ATCSimulation::calculateWaypointTraits(ATCFlight *flight)
                 {
                     //Assign levels for cruise
                     distanceCounter = flight->getDistanceToNext();
-                    double crsSpd = speedProfile->nominalCruiseSpeed(topLevel);
+                    double crsSpd = state.v;
 
                     for(int i = climbLimit; i < cruiseLimit; i++)
                     {
@@ -1927,7 +1929,11 @@ void ATCSimulation::calculateWaypointTraits(ATCFlight *flight)
                 double TODfromCFL = distanceToGo - distanceTOD(flight, CFL);
 
                 QTime descentBaseTime = timeHandle->addSecs(qRound(descentProfile->timeInterval(AFL, CFL)));
-                double lvlSpd = speedProfile->nominalCruiseSpeed(CFL);
+
+                double lvlSpd;
+                if(state.cm == BADA::Level) lvlSpd = state.v;
+                else lvlSpd = speedProfile->nominalCruiseSpeed(CFL);
+
                 QTime TODfromCFLtime = descentBaseTime.addSecs(qRound((TODfromCFL - descentBase) / lvlSpd));
                 QTime ilsTime = TODfromCFLtime.addSecs(descentProfile->timeInterval(CFL, appLvl));
 
@@ -1980,6 +1986,9 @@ void ATCSimulation::calculateWaypointTraits(ATCFlight *flight)
                     {
                         double level = descentProfile->mixedDistanceInterval(AFL, distanceCounter);
                         labels.replace(i, QString::number(qRound(ATCMath::m2ft(level) / 100), 'f', 0).rightJustified(3, '0'));
+
+                        QTime time = timeHandle->addSecs(qRound(descentProfile->timeInterval(AFL, level)));
+                        times.replace(i, time);
                     }
 
                     if(i != fixListSize - 1) distanceCounter += flight->getLegDistance(i);
