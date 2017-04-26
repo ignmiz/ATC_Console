@@ -10,11 +10,6 @@
 #include <QGraphicsPolygonItem>
 #include <QGraphicsScene>
 
-enum class SelectStatus
-{
-    Inactive, Active
-};
-
 class ATCAmanFlightLabel : public QObject, public QGraphicsPolygonItem
 {
     Q_OBJECT
