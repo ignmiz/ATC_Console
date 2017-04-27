@@ -211,6 +211,11 @@ void ATCAmanDisplay::clockUpdated()
     }
 }
 
+void ATCAmanDisplay::setPageDelta(double delta)
+{
+    pageDelta = delta / 60; //convert from s to min
+}
+
 void ATCAmanDisplay::slotFlightLabelSelected(ATCAmanFlightLabel *label)
 {
     if(activeLabel != nullptr) activeLabel->deselect();

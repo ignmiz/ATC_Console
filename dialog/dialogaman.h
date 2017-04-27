@@ -68,7 +68,7 @@ private:
     bool flagSliderPressed = false;
 
     int pageNumber = 0;
-    double pageDelta = 1200;   //seconds
+    double pageDelta = 300;   //seconds
 
     int RTAcount = 0;
     int onTimeCount = 0;

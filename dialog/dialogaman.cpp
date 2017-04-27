@@ -13,6 +13,7 @@ DialogAman::DialogAman(ATCAirspace *airspace, ATCSettings *settings, QTime *time
 
     uiInner->amanDisplay->setSettings(settings);
     uiInner->amanDisplay->createTimeline(time);
+    uiInner->amanDisplay->setPageDelta(pageDelta);
 
     deactivateRTAgui();
     toggleClearAll();

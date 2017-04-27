@@ -32,6 +32,8 @@ public:
     void setLineEditMeteringFixVisible(bool flag);
     void clockUpdated();
 
+    void setPageDelta(double delta);
+
 signals:
     void signalHideLineEdit();
     void signalScrollBy(double i);
@@ -68,6 +70,8 @@ private:
     bool timelineCreated = false;
 
     bool labelHovered = false;
+
+    double pageDelta;
 
     void initializeTimelinePosition();
     void progressTimeBy(double seconds);
