@@ -284,5 +284,17 @@ void ATCAmanDisplay::wheelEvent(QWheelEvent *event)
     //Notify DialogAman to move labels
     emit signalScrollBy(increment);
 
+    //Change timeline labels
+    for(int i = 0; i < labels.size(); i++)
+    {
+        QGraphicsSimpleTextItem *label = labels.at(i);
+
+        int number = label->text().toInt();
+        number = (number + qRound(pageDelta * increment)) % 60;
+        if(number < 0) number += 60;
+
+        labels.at(i)->setText(QString::number(number).rightJustified(2, '0'));
+    }
+
     event->accept();
 }
