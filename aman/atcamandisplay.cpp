@@ -211,9 +211,14 @@ void ATCAmanDisplay::clockUpdated()
     }
 }
 
-void ATCAmanDisplay::setPageDelta(double delta)
+double ATCAmanDisplay::getPageDelta()
 {
-    pageDelta = delta / 60; //convert from s to min
+    return pageDelta * 60; //convert from min to s
+}
+
+int ATCAmanDisplay::getPageNumber()
+{
+    return pageNumber;
 }
 
 void ATCAmanDisplay::slotFlightLabelSelected(ATCAmanFlightLabel *label)
@@ -296,5 +301,9 @@ void ATCAmanDisplay::wheelEvent(QWheelEvent *event)
         labels.at(i)->setText(QString::number(number).rightJustified(2, '0'));
     }
 
+    //Assign lowest label
+    lowestLabel = labels.at(0)->text().toInt();
+
+    //Accept event
     event->accept();
 }

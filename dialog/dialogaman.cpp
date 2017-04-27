@@ -13,7 +13,6 @@ DialogAman::DialogAman(ATCAirspace *airspace, ATCSettings *settings, QTime *time
 
     uiInner->amanDisplay->setSettings(settings);
     uiInner->amanDisplay->createTimeline(time);
-    uiInner->amanDisplay->setPageDelta(pageDelta);
 
     deactivateRTAgui();
     toggleClearAll();
@@ -501,6 +500,9 @@ void DialogAman::toggleClearAll()
 
 QTime DialogAman::timeFromY(double y)
 {
+    double pageDelta = uiInner->amanDisplay->getPageDelta();
+    int pageNumber = uiInner->amanDisplay->getPageNumber();
+
     double oneSecondInterval = ATCConst::AMAN_DISPLAY_HEIGHT / 13 / 5 / 60;
     double secondsFromCurrent = pageNumber * pageDelta + (ATCConst::AMAN_DISPLAY_HEIGHT / 2 - y) / oneSecondInterval - 300;
 

@@ -32,7 +32,8 @@ public:
     void setLineEditMeteringFixVisible(bool flag);
     void clockUpdated();
 
-    void setPageDelta(double delta);
+    double getPageDelta();
+    int getPageNumber();
 
 signals:
     void signalHideLineEdit();
@@ -71,7 +72,8 @@ private:
 
     bool labelHovered = false;
 
-    double pageDelta;
+    double pageDelta = 5;
+    int pageNumber = 0;
 
     void initializeTimelinePosition();
     void progressTimeBy(double seconds);
