@@ -2007,9 +2007,23 @@ void ATCSimulation::findMeteringFixIndex(ATCFlight *flight)
 {
     if(!meteringFix.isEmpty())
     {
+        //Check if flight has changed the nav mode to HDG
+        if(flight->getNavMode() == ATC::Hdg)
+        {
+            if(flight->getMeteringFixIndex() != -1)
+            {
+                emit signalMeteringFixLost(flight);
+                flight->setMeteringFixIndex(-1);
+            }
+
+            return;
+        }
+
+        //Assign fix lists properties
         QStringList fixList = flight->getFixList();
         int fixListSize = fixList.size();
 
+        //Search for metering fix
         bool found = false;
         for(int i = flight->getWaypointIndex(); i < fixListSize; i++)
         {
@@ -2019,11 +2033,11 @@ void ATCSimulation::findMeteringFixIndex(ATCFlight *flight)
                 found = true;
 
                 emit signalMeteringFixFound(flight);
-                break;
+                return;
             }
         }
 
-
+        //Check if flight has passed the metering fix or was rerouted
         if(!found && (flight->getMeteringFixIndex() != -1))
         {
             if(fixList.at(flight->getMeteringFixIndex()) == meteringFix) emit signalMeteringFixLost(flight);
@@ -2052,11 +2066,14 @@ void ATCSimulation::predictTrajectories()
                         calculateTODposition(flight);
 
                         calculateWaypointTraits(flight);
-                        findMeteringFixIndex(flight);
 
                         flight->setAccuratePredictionFlag(true);
                         if(flight->getRoutePrediction() != nullptr) emit signalUpdateRoute(flight);
                     }
+
+                    //Check metering fix state
+                    findMeteringFixIndex(flight);
+
 //                    qDebug() << "Iterator: " << predictorIterator << ", flight: " << flight->getFlightPlan()->getCompany()->getCode() + flight->getFlightPlan()->getFlightNumber() << " ToC: " << ATCMath::m2nm(flight->getTOC()) << " TOClevel: " << ATCMath::m2ft(flight->getTOClevel()) << " ToD: " << ATCMath::m2nm(flight->getTOD()) << " TODlevel: " << ATCMath::m2ft(flight->getTODlevel());
 
                     predictorIterator++;

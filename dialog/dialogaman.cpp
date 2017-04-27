@@ -363,10 +363,10 @@ void DialogAman::slotMeteringFixLost(ATCFlight *flight)
                 flight->setRTA(QTime());
                 RTAcount--;
             }
-        }
 
-        slotUpdateStatistics();
-        toggleClearAll();
+            slotUpdateStatistics();
+            toggleClearAll();
+        }
     }
 }
 

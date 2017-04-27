@@ -291,6 +291,7 @@ void ATCAmanDisplay::wheelEvent(QWheelEvent *event)
     QPoint numDegrees = event->angleDelta();
     int increment = numDegrees.y() / qFabs(numDegrees.y()); //Value normalized to 1 or -1 only
 
+    //If timeline will remain in allowed range: scroll
     if(pageNumber + increment >= 0)
     {
         //Change timeline labels
@@ -316,7 +317,6 @@ void ATCAmanDisplay::wheelEvent(QWheelEvent *event)
         if(pageNumber > 0) timeHorizon->hide();
         else timeHorizon->show();
     }
-
 
     //Accept event
     event->accept();
