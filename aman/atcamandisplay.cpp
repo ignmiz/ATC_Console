@@ -269,3 +269,15 @@ void ATCAmanDisplay::mousePressEvent(QMouseEvent *event)
     QGraphicsView::mousePressEvent(event);
     event->accept();
 }
+
+void ATCAmanDisplay::wheelEvent(QWheelEvent *event)
+{
+    //Calculate mouse scroll increment
+    QPoint numDegrees = event->angleDelta();
+    double increment = static_cast<double>(numDegrees.y()) / 120.0;
+
+    //Notify DialogAman to move labels
+    emit signalScrollBy(increment);
+
+    event->accept();
+}

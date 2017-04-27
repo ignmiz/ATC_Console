@@ -52,6 +52,7 @@ private slots:
     void slotMeteringFixLost(ATCFlight *flight);
 
     void slotUpdateStatistics();
+    void slotScrollBy(double i);
 
 private:
     Ui::DialogAman *uiInner;

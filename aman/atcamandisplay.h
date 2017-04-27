@@ -9,6 +9,7 @@
 #include <QSet>
 #include <QPushButton>
 #include <QMouseEvent>
+#include <QWheelEvent>
 #include <QGraphicsItem>
 #include <QGraphicsView>
 #include <QDebug>
@@ -33,6 +34,7 @@ public:
 
 signals:
     void signalHideLineEdit();
+    void signalScrollBy(double i);
 
 private slots:
     void slotFlightLabelSelected(ATCAmanFlightLabel *label);
@@ -72,6 +74,7 @@ private:
 
 protected:
     void mousePressEvent(QMouseEvent *event);
+    void wheelEvent(QWheelEvent *event);
 };
 
 #endif // ATCAMANDISPLAY_H
