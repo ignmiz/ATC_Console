@@ -25,7 +25,7 @@ DialogAman::DialogAman(ATCAirspace *airspace, ATCSettings *settings, QTime *time
 
     createLineEdit();
     connect(uiInner->amanDisplay, SIGNAL(signalHideLineEdit()), this, SLOT(slotHideLineEdit()));
-    connect(uiInner->amanDisplay, SIGNAL(signalScrollBy(double)), this, SLOT(slotScrollBy(double)));
+    connect(uiInner->amanDisplay, SIGNAL(signalScrollBy(int)), this, SLOT(slotScrollBy(int)));
 
     connect(uiInner->horizontalSlider, SIGNAL(sliderPressed()), this, SLOT(slotSliderPressed()));
     connect(uiInner->horizontalSlider, SIGNAL(sliderReleased()), this, SLOT(slotSliderReleased()));
@@ -397,7 +397,7 @@ void DialogAman::slotUpdateStatistics()
     updateStatsEtiquette();
 }
 
-void DialogAman::slotScrollBy(double i)
+void DialogAman::slotScrollBy(int i)
 {
 
 }

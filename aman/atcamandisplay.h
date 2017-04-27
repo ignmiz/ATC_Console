@@ -37,7 +37,7 @@ public:
 
 signals:
     void signalHideLineEdit();
-    void signalScrollBy(double i);
+    void signalScrollBy(int i);
 
 private slots:
     void slotFlightLabelSelected(ATCAmanFlightLabel *label);
@@ -49,6 +49,7 @@ private:
     QGraphicsScene *currentScene;
     QTime *time;
 
+    QGraphicsLineItem *timeHorizon;
     QGraphicsLineItem *leftBar;
     QGraphicsLineItem *rightBar;
     QList<QGraphicsLineItem*> minorLeftTicks;

@@ -59,7 +59,7 @@ void ATCAmanDisplay::createTimeline(QTime *t)
         minorTickSpacing = majorTickSpacing / 5;
 
         //Time scale horizon
-        QGraphicsLineItem *timeHorizon = new QGraphicsLineItem(-ATCConst::AMAN_DISPLAY_WIDTH/2, ATCConst::AMAN_DISPLAY_HEIGHT/2 - majorTickSpacing, ATCConst::AMAN_DISPLAY_WIDTH/2, ATCConst::AMAN_DISPLAY_HEIGHT/2 - majorTickSpacing);
+        timeHorizon = new QGraphicsLineItem(-ATCConst::AMAN_DISPLAY_WIDTH/2, ATCConst::AMAN_DISPLAY_HEIGHT/2 - majorTickSpacing, ATCConst::AMAN_DISPLAY_WIDTH/2, ATCConst::AMAN_DISPLAY_HEIGHT/2 - majorTickSpacing);
         timeHorizon->setPen(horizonPen);
         currentScene->addItem(timeHorizon);
 
@@ -284,25 +284,34 @@ void ATCAmanDisplay::wheelEvent(QWheelEvent *event)
 {
     //Calculate mouse scroll increment
     QPoint numDegrees = event->angleDelta();
-    double increment = static_cast<double>(numDegrees.y()) / 120.0;
+    int increment = numDegrees.y() / qFabs(numDegrees.y()); //Value normalized to 1 or -1 only
 
-    //Notify DialogAman to move labels
-    emit signalScrollBy(increment);
-
-    //Change timeline labels
-    for(int i = 0; i < labels.size(); i++)
+    if(pageNumber + increment >= 0)
     {
-        QGraphicsSimpleTextItem *label = labels.at(i);
+        //Notify DialogAman to move labels
+        emit signalScrollBy(increment);
 
-        int number = label->text().toInt();
-        number = (number + qRound(pageDelta * increment)) % 60;
-        if(number < 0) number += 60;
+        //Change timeline labels
+        for(int i = 0; i < labels.size(); i++)
+        {
+            QGraphicsSimpleTextItem *label = labels.at(i);
 
-        labels.at(i)->setText(QString::number(number).rightJustified(2, '0'));
+            int number = label->text().toInt();
+            number = (number + qRound(pageDelta * increment)) % 60;
+            if(number < 0) number += 60;
+
+            labels.at(i)->setText(QString::number(number).rightJustified(2, '0'));
+        }
+
+        //Keep track of lowestLabel and pageNumber
+        lowestLabel = labels.at(0)->text().toInt();
+        pageNumber += increment;
+
+        //Show or hide time horizon
+        if(pageNumber > 0) timeHorizon->hide();
+        else timeHorizon->show();
     }
 
-    //Assign lowest label
-    lowestLabel = labels.at(0)->text().toInt();
 
     //Accept event
     event->accept();
