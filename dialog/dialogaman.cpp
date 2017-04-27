@@ -509,10 +509,13 @@ QTime DialogAman::timeFromY(double y)
 
 double DialogAman::timeToY(QTime &t)
 {
+    double pageDelta = uiInner->amanDisplay->getPageDelta();
+    int pageNumber = uiInner->amanDisplay->getPageNumber();
+
     double oneSecondInterval = ATCConst::AMAN_DISPLAY_HEIGHT / 13 / 5 / 60;
     double secDiff = static_cast<double>(time->msecsTo(t)) / 1000.0;
 
-    return ATCConst::AMAN_DISPLAY_HEIGHT / 2 - (300.0 + secDiff) * oneSecondInterval;
+    return ATCConst::AMAN_DISPLAY_HEIGHT / 2 - (300.0 + secDiff - pageNumber * pageDelta) * oneSecondInterval;
 }
 
 void DialogAman::initializeSliderPosition()
