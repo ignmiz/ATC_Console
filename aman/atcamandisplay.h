@@ -34,6 +34,7 @@ public:
 
     double getPageDelta();
     int getPageNumber();
+    int* getPageNumberPointer();
 
 signals:
     void signalHideLineEdit();

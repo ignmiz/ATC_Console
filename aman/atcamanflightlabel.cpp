@@ -308,6 +308,11 @@ void ATCAmanFlightLabel::updateColor()
     setPen(pen);
 }
 
+void ATCAmanFlightLabel::setPageNumber(int *number)
+{
+    pageNumber = number;
+}
+
 QGraphicsLineItem *ATCAmanFlightLabel::getTimeArrow()
 {
     return timeArrow;
@@ -412,16 +417,13 @@ QVariant ATCAmanFlightLabel::itemChange(QGraphicsItem::GraphicsItemChange change
         double polygonArrowY = timeArrowEndY + yValue;
 
         //Assign scene limits
-        double limit = ATCConst::AMAN_DISPLAY_HEIGHT / 2;
+        double pageInterval = ATCConst::AMAN_DISPLAY_HEIGHT / 13;
+        double limit = ATCConst::AMAN_DISPLAY_HEIGHT / 2 + *pageNumber * pageInterval;
 
         //Check saturation
         if(polygonArrowY > limit)
         {
             yValue = limit - timeArrowEndY;
-        }
-        else if(polygonArrowY < - limit)
-        {
-            yValue = - limit - timeArrowEndY;
         }
 
         //Move connector and flight label

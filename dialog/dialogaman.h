@@ -67,9 +67,6 @@ private:
     bool RTAgui = false;
     bool flagSliderPressed = false;
 
-    int pageNumber;
-    double pageDelta;
-
     int RTAcount = 0;
     int onTimeCount = 0;
     int deviatedCount = 0;

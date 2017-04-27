@@ -47,6 +47,8 @@ public:
     void updateRTA();
     void updateColor();
 
+    void setPageNumber(int *number);
+
     QGraphicsLineItem* getTimeArrow();
     QGraphicsLineItem* getConnector();
     QGraphicsSimpleTextItem* getText();
@@ -74,6 +76,8 @@ private:
     bool hovered = false;
     bool labelVisible = true;
     bool onScene = false;
+
+    int *pageNumber;
 
     void moveLine(QPointF newPos);
 

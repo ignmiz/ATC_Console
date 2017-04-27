@@ -221,6 +221,11 @@ int ATCAmanDisplay::getPageNumber()
     return pageNumber;
 }
 
+int *ATCAmanDisplay::getPageNumberPointer()
+{
+    return &pageNumber;
+}
+
 void ATCAmanDisplay::slotFlightLabelSelected(ATCAmanFlightLabel *label)
 {
     if(activeLabel != nullptr) activeLabel->deselect();
@@ -288,9 +293,6 @@ void ATCAmanDisplay::wheelEvent(QWheelEvent *event)
 
     if(pageNumber + increment >= 0)
     {
-        //Notify DialogAman to move labels
-        emit signalScrollBy(increment);
-
         //Change timeline labels
         for(int i = 0; i < labels.size(); i++)
         {
@@ -306,6 +308,9 @@ void ATCAmanDisplay::wheelEvent(QWheelEvent *event)
         //Keep track of lowestLabel and pageNumber
         lowestLabel = labels.at(0)->text().toInt();
         pageNumber += increment;
+
+        //Notify DialogAman to move labels
+        emit signalScrollBy(increment);
 
         //Show or hide time horizon
         if(pageNumber > 0) timeHorizon->hide();

@@ -315,24 +315,16 @@ void DialogAman::slotMeteringFixFound(ATCFlight *flight)
         {
             QTime ETA = flight->getWaypointTime(flight->getMeteringFixIndex());
 
-            ATCAmanFlightLabel *label;
-            if(time->secsTo(ETA) <= 3600) //On current page - create & add to scene - TO BE CHANGED FOR SCROLLING
-            {
-                label = new ATCAmanFlightLabel(flight, time, QPointF(32, timeToY(ETA)));
-                label->addToScene(uiInner->amanDisplay->scene());
-                uiInner->amanDisplay->insertFlightLabel(label);
+            ATCAmanFlightLabel *label = new ATCAmanFlightLabel(flight, time, QPointF(32, timeToY(ETA)));
+            label->setPageNumber(uiInner->amanDisplay->getPageNumberPointer());
+            label->addToScene(uiInner->amanDisplay->scene());
+            uiInner->amanDisplay->insertFlightLabel(label);
 
-                connect(label, SIGNAL(signalFlightLabelSelected(ATCAmanFlightLabel*)), uiInner->amanDisplay, SLOT(slotFlightLabelSelected(ATCAmanFlightLabel*)));
-                connect(label, SIGNAL(signalFlightLabelSelected(ATCAmanFlightLabel*)), this, SLOT(slotFlightLabelSelected(ATCAmanFlightLabel*)));
-                connect(label, SIGNAL(signalLabelHovered(bool)), uiInner->amanDisplay, SLOT(slotLabelHovered(bool)));
+            labelsHash.insert(flight, label);
 
-                labelsHash.insert(flight, label);
-            }
-            else //Not on current page - just create
-            {
-                label = new ATCAmanFlightLabel(flight, time);
-                labelsHash.insert(flight, label);
-            }
+            connect(label, SIGNAL(signalFlightLabelSelected(ATCAmanFlightLabel*)), uiInner->amanDisplay, SLOT(slotFlightLabelSelected(ATCAmanFlightLabel*)));
+            connect(label, SIGNAL(signalFlightLabelSelected(ATCAmanFlightLabel*)), this, SLOT(slotFlightLabelSelected(ATCAmanFlightLabel*)));
+            connect(label, SIGNAL(signalLabelHovered(bool)), uiInner->amanDisplay, SLOT(slotLabelHovered(bool)));
 
             if(flight->getRTA().isValid()) RTAcount++;
         }
@@ -399,7 +391,13 @@ void DialogAman::slotUpdateStatistics()
 
 void DialogAman::slotScrollBy(int i)
 {
+    double pageInterval = ATCConst::AMAN_DISPLAY_HEIGHT / 13;
 
+    QHash<ATCFlight*, ATCAmanFlightLabel*>::iterator it;
+    for(it = labelsHash.begin(); it != labelsHash.end(); it++)
+    {
+        it.value()->moveByInterval(0, i * pageInterval);
+    }
 }
 
 void DialogAman::createLineEdit()
@@ -565,10 +563,6 @@ void DialogAman::updateLabelPosition(ATCAmanFlightLabel *label)
 
     //Move label
     label->moveByInterval(0, oneSecondInterval * secondsDiff);
-
-    //Check scene boundaries
-    if(!isWithinSceneBoundaries(label)) uiInner->amanDisplay->removeFlightLabel(label);
-    else if(!label->isOnScene()) label->addToScene(uiInner->amanDisplay->scene());
 }
 
 bool DialogAman::isWithinSceneBoundaries(ATCAmanFlightLabel *label)
