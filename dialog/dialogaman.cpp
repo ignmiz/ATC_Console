@@ -450,15 +450,27 @@ void DialogAman::createSelector()
 
 void DialogAman::createTimeRangeBar()
 {
+    ATCFlight *flight = activeLabel->getFlight();
     QGraphicsLineItem *timeArrow = activeLabel->getTimeArrow();
     QPointF arrow = timeArrow->mapToScene(timeArrow->line().p1());
 
-    //Here a proper calculation of height should be made based on acft performance
+    //Need to include acceleration / deceleration phase
 
     double oneSecondInterval = ATCConst::AMAN_DISPLAY_HEIGHT / 13 / 5 / 60;
 
-    double lower = 60;
-    double upper = 180;
+    double dstToMeteringFix = flight->getDistanceToNext();;
+    for(int i = flight->getWaypointIndex(); i < flight->getMeteringFixIndex(); i++)
+    {
+        dstToMeteringFix += flight->getLegDistance(i);
+    }
+
+    double secsToMeteringFix = static_cast<double>(time->msecsTo(flight->getWaypointTime(flight->getMeteringFixIndex()))) / 1000;
+    double avgSpdToMeteringFix = dstToMeteringFix / secsToMeteringFix;
+
+    qDebug() << ATCMath::m2nm(dstToMeteringFix) << secsToMeteringFix << ATCMath::mps2kt(avgSpdToMeteringFix);
+
+    double lower = dstToMeteringFix / (ATCConst::TRAJECTORY_SPD_INC * avgSpdToMeteringFix);
+    double upper = dstToMeteringFix / (ATCConst::TRAJECTORY_SPD_DEC * avgSpdToMeteringFix);
 
     double height = (lower + upper) * oneSecondInterval; //Lower part + upper part
     double topY = arrow.y() - upper * oneSecondInterval;
