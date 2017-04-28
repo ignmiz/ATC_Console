@@ -61,6 +61,9 @@ const double ATCConst::PROFILE_ALT_INTERVAL = 76.2;             //m
 const double ATCConst::TRAJECTORY_TOC_LVL_FLIGHT = 120;         //s
 const double ATCConst::TRAJECTORY_TOD_APP_LVL_BUFFER = 4630;    //m (2.5nm)
 
+static double ATCConst::TRAJECTORY_SPD_INC = 1.03;              //max  3% increase
+static double ATCConst::TRAJECTORY_SPD_DEC = 0.85;              //max 15$ decrease
+
 //Environment
 const double ATCConst::betaTrop = -0.0065;
 const double ATCConst::betaStrat1 = 0.001;

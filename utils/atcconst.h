@@ -64,6 +64,9 @@ public:
     static const double TRAJECTORY_TOC_LVL_FLIGHT;
     static const double TRAJECTORY_TOD_APP_LVL_BUFFER;
 
+    static const double TRAJECTORY_SPD_INC;
+    static const double TRAJECTORY_SPD_DEC;
+
     //Environment
     static const double betaTrop;
     static const double betaStrat1;
