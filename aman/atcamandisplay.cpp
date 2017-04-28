@@ -226,6 +226,11 @@ int *ATCAmanDisplay::getPageNumberPointer()
     return &pageNumber;
 }
 
+void ATCAmanDisplay::resetPageNumber()
+{
+    scrollBy(-pageNumber);
+}
+
 void ATCAmanDisplay::slotFlightLabelSelected(ATCAmanFlightLabel *label)
 {
     if(activeLabel != nullptr) activeLabel->deselect();
@@ -265,6 +270,32 @@ void ATCAmanDisplay::progressTimeBy(double seconds)
     for(int i = 0; i < labels.size(); i++) labels.at(i)->moveBy(0, dy);
 }
 
+void ATCAmanDisplay::scrollBy(int increment)
+{
+    //Change timeline labels
+    for(int i = 0; i < labels.size(); i++)
+    {
+        QGraphicsSimpleTextItem *label = labels.at(i);
+
+        int number = label->text().toInt();
+        number = (number + qRound(pageDelta * increment)) % 60;
+        if(number < 0) number += 60;
+
+        labels.at(i)->setText(QString::number(number).rightJustified(2, '0'));
+    }
+
+    //Keep track of lowestLabel and pageNumber
+    lowestLabel = labels.at(0)->text().toInt();
+    pageNumber += increment;
+
+    //Notify DialogAman to move labels
+    emit signalScrollBy(increment);
+
+    //Show or hide time horizon
+    if(pageNumber > 0) timeHorizon->hide();
+    else timeHorizon->show();
+}
+
 void ATCAmanDisplay::mousePressEvent(QMouseEvent *event)
 {
     if(lineEditMeteringFixVisible)
@@ -292,31 +323,7 @@ void ATCAmanDisplay::wheelEvent(QWheelEvent *event)
     int increment = numDegrees.y() / qFabs(numDegrees.y()); //Value normalized to 1 or -1 only
 
     //If timeline will remain in allowed range: scroll
-    if(pageNumber + increment >= 0)
-    {
-        //Change timeline labels
-        for(int i = 0; i < labels.size(); i++)
-        {
-            QGraphicsSimpleTextItem *label = labels.at(i);
-
-            int number = label->text().toInt();
-            number = (number + qRound(pageDelta * increment)) % 60;
-            if(number < 0) number += 60;
-
-            labels.at(i)->setText(QString::number(number).rightJustified(2, '0'));
-        }
-
-        //Keep track of lowestLabel and pageNumber
-        lowestLabel = labels.at(0)->text().toInt();
-        pageNumber += increment;
-
-        //Notify DialogAman to move labels
-        emit signalScrollBy(increment);
-
-        //Show or hide time horizon
-        if(pageNumber > 0) timeHorizon->hide();
-        else timeHorizon->show();
-    }
+    if(pageNumber + increment >= 0) scrollBy(increment);
 
     //Accept event
     event->accept();

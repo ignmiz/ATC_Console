@@ -33,9 +33,6 @@
    </property>
   </widget>
   <widget class="QPushButton" name="buttonClock">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
    <property name="geometry">
     <rect>
      <x>290</x>
@@ -45,7 +42,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">QPushButton::disabled
+    <string notr="true">QPushButton
 {
 	font: 19pt;
 	color: #c8c8c8;

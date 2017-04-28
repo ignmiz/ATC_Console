@@ -36,6 +36,8 @@ public:
     int getPageNumber();
     int* getPageNumberPointer();
 
+    void resetPageNumber();
+
 signals:
     void signalHideLineEdit();
     void signalScrollBy(int i);
@@ -79,6 +81,8 @@ private:
 
     void initializeTimelinePosition();
     void progressTimeBy(double seconds);
+
+    void scrollBy(int increment);
 
 protected:
     void mousePressEvent(QMouseEvent *event);

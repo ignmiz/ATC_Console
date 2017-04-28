@@ -149,6 +149,14 @@ void DialogAman::on_buttonClearAll_clicked()
     toggleClearAll();
 }
 
+void DialogAman::on_buttonClock_clicked()
+{
+    if(uiInner->amanDisplay->getPageNumber() > 0)
+    {
+        uiInner->amanDisplay->resetPageNumber();
+    }
+}
+
 void DialogAman::slotMeteringFixEntered()
 {
     QString name = lineEditMeteringFix->text();
