@@ -213,6 +213,11 @@ void DialogAman::slotHideLineEdit()
 void DialogAman::slotClockUpdated()
 {
     uiInner->amanDisplay->clockUpdated();
+
+    if(activeLabel != nullptr && activeLabel->getRangeBar() != nullptr)
+    {
+        updateTimeRangeBar();
+    }
 }
 
 void DialogAman::slotFlightLabelSelected(ATCAmanFlightLabel *label)
@@ -467,15 +472,48 @@ void DialogAman::createTimeRangeBar()
     double secsToMeteringFix = static_cast<double>(time->msecsTo(flight->getWaypointTime(flight->getMeteringFixIndex()))) / 1000;
     double avgSpdToMeteringFix = dstToMeteringFix / secsToMeteringFix;
 
-    qDebug() << ATCMath::m2nm(dstToMeteringFix) << secsToMeteringFix << ATCMath::mps2kt(avgSpdToMeteringFix);
+//    qDebug() << ATCMath::m2nm(dstToMeteringFix) << secsToMeteringFix << ATCMath::mps2kt(avgSpdToMeteringFix);
 
-    double lower = dstToMeteringFix / (ATCConst::TRAJECTORY_SPD_INC * avgSpdToMeteringFix);
-    double upper = dstToMeteringFix / (ATCConst::TRAJECTORY_SPD_DEC * avgSpdToMeteringFix);
+    double lower = qFabs(dstToMeteringFix / (ATCConst::TRAJECTORY_SPD_INC * avgSpdToMeteringFix) - secsToMeteringFix);
+    double upper = qFabs(dstToMeteringFix / (ATCConst::TRAJECTORY_SPD_DEC * avgSpdToMeteringFix) - secsToMeteringFix);
 
     double height = (lower + upper) * oneSecondInterval; //Lower part + upper part
     double topY = arrow.y() - upper * oneSecondInterval;
 
     activeLabel->createTimeRangeBar(uiInner->amanDisplay->scene(), topY, height);
+}
+
+void DialogAman::updateTimeRangeBar()
+{
+    ATCFlight *flight = activeLabel->getFlight();
+    QGraphicsLineItem *timeArrow = activeLabel->getTimeArrow();
+    QPointF arrow = timeArrow->mapToScene(timeArrow->line().p1());
+    QGraphicsRectItem *rangeBar = activeLabel->getRangeBar();
+
+    double secsToMeteringFix = static_cast<double>(time->msecsTo(flight->getWaypointTime(flight->getMeteringFixIndex()))) / 1000;
+
+    if(secsToMeteringFix > 0)
+    {
+        double oneSecondInterval = ATCConst::AMAN_DISPLAY_HEIGHT / 13 / 5 / 60;
+
+        double dstToMeteringFix = flight->getDistanceToNext();;
+        for(int i = flight->getWaypointIndex(); i < flight->getMeteringFixIndex(); i++)
+        {
+            dstToMeteringFix += flight->getLegDistance(i);
+        }
+
+        double avgSpdToMeteringFix = dstToMeteringFix / secsToMeteringFix;
+
+        qDebug() << ATCMath::m2nm(dstToMeteringFix) << secsToMeteringFix << ATCMath::mps2kt(avgSpdToMeteringFix);
+
+        double lower = qFabs(dstToMeteringFix / (ATCConst::TRAJECTORY_SPD_INC * avgSpdToMeteringFix) - secsToMeteringFix);
+        double upper = qFabs(dstToMeteringFix / (ATCConst::TRAJECTORY_SPD_DEC * avgSpdToMeteringFix) - secsToMeteringFix);
+
+        double height = (lower + upper) * oneSecondInterval; //Lower part + upper part
+        double topY = arrow.y() - upper * oneSecondInterval;
+
+        rangeBar->setRect(rangeBar->mapRectFromScene(QRectF(-30, topY, 60, height)));
+    }
 }
 
 void DialogAman::activateRTAgui(bool hasRTA)

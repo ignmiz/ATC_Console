@@ -80,6 +80,7 @@ private:
 
     void createSelector();
     void createTimeRangeBar();
+    void updateTimeRangeBar();
 
     void activateRTAgui(bool hasRTA);
     void deactivateRTAgui();
