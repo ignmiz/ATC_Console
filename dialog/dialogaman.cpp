@@ -185,6 +185,7 @@ void DialogAman::slotMeteringFixEntered()
     for(i = labelsHash.begin(); i != labelsHash.end(); i++)
     {
         ATCAmanFlightLabel *label = i.value();
+        if(label == activeLabel) emit activeLabel->signalFlightLabelSelected(nullptr);
         if(label->isOnScene()) uiInner->amanDisplay->removeFlightLabel(label);
         delete label;
     }
@@ -369,6 +370,7 @@ void DialogAman::slotMeteringFixLost(ATCFlight *flight)
 
             if(label != nullptr)
             {
+                if(label == activeLabel) emit activeLabel->signalFlightLabelSelected(nullptr);
                 if(label->isOnScene()) uiInner->amanDisplay->removeFlightLabel(label);
                 delete label;
             }

@@ -46,6 +46,9 @@ void ATCAmanFlightLabel::removeFromScene(QGraphicsScene *scene)
     scene->removeItem(connector);
     scene->removeItem(this);
 
+    if(rangeBar != nullptr) scene->removeItem(rangeBar);
+    if(selector != nullptr) scene->removeItem(selector);
+
     onScene = false;
 }
 
