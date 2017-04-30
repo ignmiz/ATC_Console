@@ -214,9 +214,13 @@ void DialogAman::slotClockUpdated()
 {
     uiInner->amanDisplay->clockUpdated();
 
-    if(activeLabel != nullptr && activeLabel->getRangeBar() != nullptr)
+    if(activeLabel != nullptr)
     {
-        updateTimeRangeBar();
+        if(activeLabel->getRangeBar() != nullptr && activeLabel->getSelector() != nullptr)
+        {
+            updateTimeRangeBar();
+            initializeTimeEditValue();
+        }
     }
 }
 
@@ -438,19 +442,7 @@ void DialogAman::createSelector()
     QGraphicsLineItem *timeArrow = activeLabel->getTimeArrow();
     QPointF arrow = timeArrow->mapToScene(timeArrow->line().p1());
 
-    QTime RTA(activeLabel->getFlight()->getRTA());
-    double y;
-
-    if(RTA.isValid())
-    {
-        y = timeToY(RTA);
-    }
-    else
-    {
-        y = arrow.y();
-    }
-
-    activeLabel->createSelector(uiInner->amanDisplay->scene(), y);
+    activeLabel->createSelector(uiInner->amanDisplay->scene(), arrow.y());
 }
 
 void DialogAman::createTimeRangeBar()
@@ -459,28 +451,32 @@ void DialogAman::createTimeRangeBar()
     QGraphicsLineItem *timeArrow = activeLabel->getTimeArrow();
     QPointF arrow = timeArrow->mapToScene(timeArrow->line().p1());
 
-    //Need to include acceleration / deceleration phase
-
-    double oneSecondInterval = ATCConst::AMAN_DISPLAY_HEIGHT / 13 / 5 / 60;
-
-    double dstToMeteringFix = flight->getDistanceToNext();;
-    for(int i = flight->getWaypointIndex(); i < flight->getMeteringFixIndex(); i++)
-    {
-        dstToMeteringFix += flight->getLegDistance(i);
-    }
-
     double secsToMeteringFix = static_cast<double>(time->msecsTo(flight->getWaypointTime(flight->getMeteringFixIndex()))) / 1000;
-    double avgSpdToMeteringFix = dstToMeteringFix / secsToMeteringFix;
 
-//    qDebug() << ATCMath::m2nm(dstToMeteringFix) << secsToMeteringFix << ATCMath::mps2kt(avgSpdToMeteringFix);
+    if(secsToMeteringFix > 0)
+    {
+        double oneSecondInterval = ATCConst::AMAN_DISPLAY_HEIGHT / 13 / 5 / 60;
 
-    double lower = qFabs(dstToMeteringFix / (ATCConst::TRAJECTORY_SPD_INC * avgSpdToMeteringFix) - secsToMeteringFix);
-    double upper = qFabs(dstToMeteringFix / (ATCConst::TRAJECTORY_SPD_DEC * avgSpdToMeteringFix) - secsToMeteringFix);
+        double dstToMeteringFix = flight->getDistanceToNext();;
+        for(int i = flight->getWaypointIndex(); i < flight->getMeteringFixIndex(); i++)
+        {
+            dstToMeteringFix += flight->getLegDistance(i);
+        }
 
-    double height = (lower + upper) * oneSecondInterval; //Lower part + upper part
-    double topY = arrow.y() - upper * oneSecondInterval;
+        double avgSpdToMeteringFix = dstToMeteringFix / secsToMeteringFix;
 
-    activeLabel->createTimeRangeBar(uiInner->amanDisplay->scene(), topY, height);
+        double lower = qFabs(dstToMeteringFix / (ATCConst::TRAJECTORY_SPD_INC * avgSpdToMeteringFix) - secsToMeteringFix);
+        double upper = qFabs(dstToMeteringFix / (ATCConst::TRAJECTORY_SPD_DEC * avgSpdToMeteringFix) - secsToMeteringFix);
+
+        double height = (lower + upper) * oneSecondInterval; //Lower part + upper part
+        double topY = arrow.y() - upper * oneSecondInterval;
+
+        activeLabel->createTimeRangeBar(uiInner->amanDisplay->scene(), topY, height);
+    }
+    else
+    {
+        activeLabel->createTimeRangeBar(uiInner->amanDisplay->scene(), arrow.y(), 0);
+    }
 }
 
 void DialogAman::updateTimeRangeBar()
@@ -513,6 +509,10 @@ void DialogAman::updateTimeRangeBar()
         double topY = arrow.y() - upper * oneSecondInterval;
 
         rangeBar->setRect(rangeBar->mapRectFromScene(QRectF(-30, topY, 60, height)));
+    }
+    else
+    {
+        activeLabel->createTimeRangeBar(uiInner->amanDisplay->scene(), arrow.y(), 0);
     }
 }
 
@@ -582,14 +582,14 @@ void DialogAman::initializeSliderPosition()
     {
         double lowBound = ATCConst::AMAN_DISPLAY_HEIGHT / 2;
 
-        QGraphicsLineItem *timeArrow = activeLabel->getTimeArrow();
+        QGraphicsLineItem *selector = activeLabel->getSelector();
         QGraphicsRectItem *rangeBar = activeLabel->getRangeBar();
 
-        double timeArrowDst = lowBound - timeArrow->mapToScene(timeArrow->line().p1()).y();
+        double selectorDst = lowBound - selector->mapToScene(selector->line().p1()).y();
         double rangeBarBottomDst = lowBound - rangeBar->mapToScene(rangeBar->rect().bottomLeft()).y();
         double rangeBarUpperDst = lowBound - rangeBar->mapToScene(rangeBar->rect().topLeft()).y();
 
-        int sliderValue = qRound((rangeBarUpperDst - timeArrowDst) / (rangeBarUpperDst - rangeBarBottomDst) * 100);
+        int sliderValue = qRound((rangeBarUpperDst - selectorDst) / (rangeBarUpperDst - rangeBarBottomDst) * 100);
 
         uiInner->horizontalSlider->setValue(sliderValue);
     }
