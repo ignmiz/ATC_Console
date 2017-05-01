@@ -907,15 +907,15 @@ BADA::TroposphereMode ATCMath::assignTRM(double currentAltM)
 
 BADA::AccelerationMode ATCMath::assignAM(double tasMPS, double tasNomMPS)
 {
-    if(qFabs(tasMPS - tasNomMPS) <= 1)
+    if(qFabs(tasMPS - tasNomMPS) <= 0.25)
     {
         return BADA::Constant;
     }
-    else if(tasMPS - tasNomMPS > 1)
+    else if(tasMPS - tasNomMPS > 0.25)
     {
         return BADA::Decelerate;
     }
-    else if(tasMPS - tasNomMPS < -1)
+    else if(tasMPS - tasNomMPS < -0.25)
     {
         return BADA::Accelerate;
     }
