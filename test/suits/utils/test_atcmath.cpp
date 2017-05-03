@@ -944,8 +944,8 @@ void Test_ATCMath::test_assignTRM()
 void Test_ATCMath::test_assignAM()
 {
     QVERIFY(ATCMath::assignAM(10, 10) == BADA::Constant);
-    QVERIFY(ATCMath::assignAM(9, 10) == BADA::Constant);
-    QVERIFY(ATCMath::assignAM(11, 10) == BADA::Constant);
+    QVERIFY(ATCMath::assignAM(9.75, 10) == BADA::Constant);
+    QVERIFY(ATCMath::assignAM(10.25, 10) == BADA::Constant);
     QVERIFY(ATCMath::assignAM(15, 10) == BADA::Decelerate);
     QVERIFY(ATCMath::assignAM(5, 10) == BADA::Accelerate);
 }
