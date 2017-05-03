@@ -42,6 +42,7 @@ private slots:
     void test_sgn();
     void test_inverseQVector();
     void test_sortQVector();
+    void test_findCrossingPoint();
 
     void test_atmosISA();
 

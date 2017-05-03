@@ -190,6 +190,55 @@ void Test_ATCMath::test_sortQVector()
     QVERIFY(vector == sorted);
 }
 
+void Test_ATCMath::test_findCrossingPoint()
+{
+    QList<double> list;
+    list << 0;
+
+    QList<double>::iterator first = list.begin();
+    QList<double>::iterator last = std::prev(list.end());
+
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, -2.0) == 0);
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, 0.0) == 0);
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, 2.0) == 0);
+
+    list << 1;
+    first = list.begin();
+    last = std::prev(list.end());
+
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, -2.0) == 0);
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, 0.0) == 0);
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, 0.5) == 0);
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, 1.0) == 1);
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, 2.0) == 1);
+
+    list << 2 << 3 << 4 << 5 << 6;
+    first = list.begin();
+    last = std::prev(list.end());
+
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, -2.0) == 0);
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, 0.0) == 0);
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, 1.0) == 1);
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, 1.5) == 1);
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, 3.0) == 3);
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, 4.5) == 4);
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, 6.0) == 6);
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, 8.0) == 6);
+
+    list << 7;
+    first = list.begin();
+    last = std::prev(list.end());
+
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, -2.0) == 0);
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, 0.0) == 0);
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, 1.0) == 1);
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, 1.5) == 1);
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, 3.0) == 3);
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, 4.5) == 4);
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, 7.0) == 7);
+    QVERIFY(*ATCMath::findCrossingPoint(first, last, 8.0) == 7);
+}
+
 void Test_ATCMath::test_atmosISA()
 {
     double errorA = 1E-5;

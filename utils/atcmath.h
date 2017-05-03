@@ -11,6 +11,8 @@
 #include <QDateTime>
 #include <QtMath>
 
+#include <iterator>
+
 struct ISA
 {
     double a;
@@ -60,6 +62,9 @@ public:
 
     template<typename T>
     static void sortQVector(QVector<T> &v);
+
+    template<typename InputIterator, typename T>
+    static InputIterator findCrossingPoint(InputIterator low, InputIterator high, T value);
 
     //Simulation Functions
     static ISA atmosISA(double h);
@@ -130,6 +135,7 @@ public:
     static QPointF rotatePoint(QPointF pt, double angle, ATC::AngularUnits units);
 };
 
+//Template functions declarations
 template<typename T>
 void ATCMath::inverseQVector(QVector<T> &v)
 {
@@ -149,6 +155,24 @@ template<typename T>
 void ATCMath::sortQVector(QVector<T> &v)
 {
     std::sort(v.begin(), v.end());
+}
+
+template<typename InputIterator, typename T>
+InputIterator ATCMath::findCrossingPoint(InputIterator low, InputIterator high, T value)
+{
+    //Special base cases
+    if(*high <= value) return high;
+    else if(*low > value) return low;
+
+    //Find middle point
+    InputIterator mid = std::next(low, qFloor(std::distance(low, high) / 2));
+
+    //Check midpoint
+    if((*mid <= value) && (*(std::next(mid)) > value)) return mid;
+
+    //Call appropriate ranges recursively
+    if(*mid < value) return findCrossingPoint(std::next(mid), high, value);
+    else return findCrossingPoint(low, std::prev(mid), value);
 }
 
 #endif // ATCMATH_H
