@@ -27,7 +27,8 @@ void DialogSpeed::slotClicked(const QModelIndex &index)
 {
     QString speedString = index.data(Qt::DisplayRole).toString();
 
-    flight->setTargetSpeed(speedString);
+    if(speedString == "---") flight->setTargetSpeed(QString());
+    else flight->setTargetSpeed(speedString);
 
     QString longEtiquette = flight->getFlightTag()->getTagBox()->getLongEtiquette();
 
