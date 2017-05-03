@@ -459,7 +459,7 @@ void DialogAman::createTimeRangeBar()
     {
         double oneSecondInterval = ATCConst::AMAN_DISPLAY_HEIGHT / 13 / 5 / 60;
 
-        double dstToMeteringFix = flight->getDistanceToNext();;
+        double dstToMeteringFix = flight->getDistanceToNext();
         for(int i = flight->getWaypointIndex(); i < flight->getMeteringFixIndex(); i++)
         {
             dstToMeteringFix += flight->getLegDistance(i);
