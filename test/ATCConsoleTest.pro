@@ -146,6 +146,7 @@ SOURCES += \
     ../dialog/dialogaman.cpp \
     ../aman/atcamandisplay.cpp \
     ../aman/atcamanflightlabel.cpp \
+    ../utils/atcinterpolator2d.cpp \
 
 HEADERS  += \
     mainwindow.h \
@@ -298,6 +299,7 @@ HEADERS  += \
     ../dialog/dialogaman.h \
     ../aman/atcamandisplay.h \
     ../aman/atcamanflightlabel.h \
+    ../utils/atcinterpolator2d.h \
 
 FORMS    += mainwindow.ui \
     atcdialog.ui \
@@ -391,7 +393,8 @@ SOURCES += main/main.cpp \
     test_atcprofileapproach.cpp \
     \
     test_atcmath.cpp \
-    test_atcinterpolator.cpp
+    test_atcinterpolator.cpp \
+    test_atcinterpolator2d.cpp
 
 HEADERS += \
     test_atcabstractairway.h \
@@ -442,7 +445,8 @@ HEADERS += \
     test_atcprofileapproach.h \
     \
     test_atcmath.h \
-    test_atcinterpolator.h
+    test_atcinterpolator.h \
+    test_atcinterpolator2d.h
 
 DISTFILES += \
     ../resources/acft_cursor.png
