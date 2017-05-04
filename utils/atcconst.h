@@ -67,6 +67,10 @@ public:
     static const double TRAJECTORY_SPD_INC;
     static const double TRAJECTORY_SPD_DEC;
 
+    static const double TRAJECTORY_MOD_MIN;
+    static const double TRAJECTORY_MOD_MAX;
+    static const double TRAJECTORY_MOD_STEP;
+
     //Environment
     static const double betaTrop;
     static const double betaStrat1;
