@@ -502,7 +502,7 @@ void DialogAman::updateTimeRangeBar()
 
         double avgSpdToMeteringFix = dstToMeteringFix / secsToMeteringFix;
 
-        qDebug() << ATCMath::m2nm(dstToMeteringFix) << secsToMeteringFix << ATCMath::mps2kt(avgSpdToMeteringFix);
+//        qDebug() << ATCMath::m2nm(dstToMeteringFix) << secsToMeteringFix << ATCMath::mps2kt(avgSpdToMeteringFix);
 
         double lower = qFabs(dstToMeteringFix / (ATCConst::TRAJECTORY_SPD_INC * avgSpdToMeteringFix) - secsToMeteringFix);
         double upper = qFabs(dstToMeteringFix / (ATCConst::TRAJECTORY_SPD_DEC * avgSpdToMeteringFix) - secsToMeteringFix);
