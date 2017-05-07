@@ -98,3 +98,27 @@ void Test_ATCInterpolator::test_isCorrect()
     ATCInterpolator interpolator(x, y, ExType::Tangent);
     QVERIFY(interpolator.isCorrect() == true);
 }
+
+void Test_ATCInterpolator::test_getBreakpoints()
+{
+    QVector<double> x;
+    QVector<double> y;
+
+    x << 0 << 1 << 2;
+    y << 0 << 1 << 3;
+
+    ATCInterpolator interpolator(x, y, ExType::Tangent);
+    QVERIFY(interpolator.getBreakpoints() == x);
+}
+
+void Test_ATCInterpolator::test_getValues()
+{
+    QVector<double> x;
+    QVector<double> y;
+
+    x << 0 << 1 << 2;
+    y << 0 << 1 << 3;
+
+    ATCInterpolator interpolator(x, y, ExType::Tangent);
+    QVERIFY(interpolator.getValues() == y);
+}

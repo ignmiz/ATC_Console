@@ -28,6 +28,9 @@ public:
 
     ATCInterpolator& operator=(ATCInterpolator const &other);
 
+    QVector<double>& getBreakpoints();
+    QVector<double>& getValues();
+
 private:
     QVector<double> xBreakpoints;
     QVector<double> yValues;

@@ -115,6 +115,16 @@ ATCInterpolator &ATCInterpolator::operator=(ATCInterpolator const &other)
     return *this;
 }
 
+QVector<double> &ATCInterpolator::getBreakpoints()
+{
+    return xBreakpoints;
+}
+
+QVector<double> &ATCInterpolator::getValues()
+{
+    return yValues;
+}
+
 void ATCInterpolator::initializeTask()
 {
     //Create task

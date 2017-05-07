@@ -15,6 +15,8 @@ private slots:
     void test_interpolate();
     void test_setExtrapolationType();
     void test_isCorrect();
+    void test_getBreakpoints();
+    void test_getValues();
 };
 
 #endif // TEST_ATCINTERPOLATOR_H
