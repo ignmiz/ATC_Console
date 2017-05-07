@@ -1,20 +1,9 @@
 
 #include "atcabstractprofile.h"
 
-ATCAbstractProfile::ATCAbstractProfile(QVector<double> &levels, QVector<double> &time, QVector<double> &distance, ExType type) :
-    levels(levels),
-    time(time),
-    distance(distance),
-    timeInterpolator(levels, time, type),
-    distanceInterpolator(levels, distance, type)
+ATCAbstractProfile::ATCAbstractProfile()
 {
-    //Inverse interpolators need to be implemented in derived classes due breakpoints sequence limitation
-}
 
-void ATCAbstractProfile::initializeInverseInterpolators(ATCInterpolator &invTime, ATCInterpolator &invDst)
-{
-    inverseTimeInterpolator = invTime;
-    inverseDistanceInterpolator = invDst;
 }
 
 ATCAbstractProfile::~ATCAbstractProfile()
@@ -22,74 +11,74 @@ ATCAbstractProfile::~ATCAbstractProfile()
 
 }
 
-void ATCAbstractProfile::setTimeExtrapolationType(ExType t)
+ATCInterpolator2D *ATCAbstractProfile::getTimeInterpolator()
 {
-    timeInterpolator.setExtrapolationType(t);
+    return &timeInterpolator;
 }
 
-ExType ATCAbstractProfile::getTimeExtrapolationType()
+ATCInterpolator2D *ATCAbstractProfile::getDistanceInterpolator()
 {
-    return timeInterpolator.getExtrapolationType();
+    return &distanceInterpolator;
 }
 
-void ATCAbstractProfile::setDistanceExtrapolationType(ExType t)
+ATCInterpolator2D *ATCAbstractProfile::getInverseTimeInterpolator()
 {
-    distanceInterpolator.setExtrapolationType(t);
+    return &inverseTimeInterpolator;
 }
 
-ExType ATCAbstractProfile::getDistanceExtrapolationType()
+ATCInterpolator2D *ATCAbstractProfile::getInverseDistanceInterpolator()
 {
-    return distanceInterpolator.getExtrapolationType();
+    return &inverseDistanceInterpolator;
 }
 
-double ATCAbstractProfile::timeInterval(double lvlFrom, double lvlTo)
+double ATCAbstractProfile::timeInterval(double key, double lvlFrom, double lvlTo)
 {
-    return interval(timeInterpolator, lvlFrom, lvlTo);
+    return interval(timeInterpolator, key, lvlFrom, lvlTo);
 }
 
-double ATCAbstractProfile::distanceInterval(double lvlFrom, double lvlTo)
+double ATCAbstractProfile::distanceInterval(double key, double lvlFrom, double lvlTo)
 {
-    return interval(distanceInterpolator, lvlFrom, lvlTo);
+    return interval(distanceInterpolator, key, lvlFrom, lvlTo);
 }
 
-double ATCAbstractProfile::mixedTimeInterval(double lvlFrom, double interval)
+double ATCAbstractProfile::mixedTimeInterval(double key, double lvlFrom, double interval)
 {
-    return mixedInterval(timeInterpolator, inverseTimeInterpolator, lvlFrom, interval);
+    return mixedInterval(timeInterpolator, inverseTimeInterpolator, key, lvlFrom, interval);
 }
 
-QVector<double> ATCAbstractProfile::mixedTimeInterval(double lvlFrom, QVector<double> &intervals)
+QVector<double> ATCAbstractProfile::mixedTimeInterval(double key, double lvlFrom, QVector<double> &intervals)
 {
-    return mixedInterval(timeInterpolator, inverseTimeInterpolator, lvlFrom, intervals);
+    return mixedInterval(timeInterpolator, inverseTimeInterpolator, key, lvlFrom, intervals);
 }
 
-double ATCAbstractProfile::mixedDistanceInterval(double lvlFrom, double interval)
+double ATCAbstractProfile::mixedDistanceInterval(double key, double lvlFrom, double interval)
 {
-    return mixedInterval(distanceInterpolator, inverseDistanceInterpolator, lvlFrom, interval);
+    return mixedInterval(distanceInterpolator, inverseDistanceInterpolator, key, lvlFrom, interval);
 }
 
-QVector<double> ATCAbstractProfile::mixedDistanceInterval(double lvlFrom, QVector<double> &intervals)
+QVector<double> ATCAbstractProfile::mixedDistanceInterval(double key, double lvlFrom, QVector<double> &intervals)
 {
-    return mixedInterval(distanceInterpolator, inverseDistanceInterpolator, lvlFrom, intervals);
+    return mixedInterval(distanceInterpolator, inverseDistanceInterpolator, key, lvlFrom, intervals);
 }
 
-double ATCAbstractProfile::interval(ATCInterpolator &interpolator, double lvlFrom, double lvlTo)
+double ATCAbstractProfile::interval(ATCInterpolator2D &interpolator, double key, double lvlFrom, double lvlTo)
 {
     QVector<double> sites;
     sites << lvlFrom << lvlTo;
 
     QVector<double> results(2);
 
-    interpolator.interpolate(sites, results);
+    interpolator.interpolate(key, sites, results);
 
     return qFabs(results.at(1) - results.at(0)); //to - from
 }
 
-double ATCAbstractProfile::mixedInterval(ATCInterpolator &interpolator, ATCInterpolator &inverseInterpolator, double lvlFrom, double interval)
+double ATCAbstractProfile::mixedInterval(ATCInterpolator2D &interpolator, ATCInterpolator2D &inverseInterpolator, double key, double lvlFrom, double interval)
 {
     //Calculate quantity X from initial level using standard interpolator
     QVector<double> site(1, lvlFrom);
     QVector<double> result(1);
-    interpolator.interpolate(site, result);
+    interpolator.interpolate(key, site, result);
 
     //Update quantity X for final level using input interval
     double finalX = interval + result.at(0);
@@ -97,18 +86,18 @@ double ATCAbstractProfile::mixedInterval(ATCInterpolator &interpolator, ATCInter
     //Calculate final level using updated quantity X
     QVector<double> finalSite(1, finalX);
     QVector<double> finalResult(1);
-    inverseInterpolator.interpolate(finalSite, finalResult);
+    inverseInterpolator.interpolate(key, finalSite, finalResult);
 
     //Return calculated level
     return finalResult.at(0);
 }
 
-QVector<double> ATCAbstractProfile::mixedInterval(ATCInterpolator &interpolator, ATCInterpolator &inverseInterpolator, double lvlFrom, QVector<double> &intervals)
+QVector<double> ATCAbstractProfile::mixedInterval(ATCInterpolator2D &interpolator, ATCInterpolator2D &inverseInterpolator, double key, double lvlFrom, QVector<double> &intervals)
 {
     //Calculate quantity X from initial level using standard interpolator
     QVector<double> site(1, lvlFrom);
     QVector<double> result(1);
-    interpolator.interpolate(site, result);
+    interpolator.interpolate(key, site, result);
 
     //Update quantity X for final level using input interval
     for(int i = 0; i < intervals.size(); i++)
@@ -118,7 +107,7 @@ QVector<double> ATCAbstractProfile::mixedInterval(ATCInterpolator &interpolator,
 
     //Calculate final level using updated quantity X
     QVector<double> finalResults(intervals.size());
-    inverseInterpolator.interpolate(intervals, finalResults);
+    inverseInterpolator.interpolate(key, intervals, finalResults);
 
     //Return calculated level
     return finalResults;

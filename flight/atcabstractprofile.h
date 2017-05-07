@@ -1,7 +1,7 @@
 #ifndef ATCABSTRACTPROFILE_H
 #define ATCABSTRACTPROFILE_H
 
-#include "atcinterpolator.h"
+#include "atcinterpolator2d.h"
 #include "atcmath.h"
 
 #include <QVector>
@@ -9,40 +9,34 @@
 class ATCAbstractProfile
 {
 public:
-    explicit ATCAbstractProfile(QVector<double> &levels, QVector<double> &time, QVector<double> &distance, ExType type = ExType::Tangent);
+    explicit ATCAbstractProfile();
     virtual ~ATCAbstractProfile() = 0;
 
-    void initializeInverseInterpolators(ATCInterpolator &invTime, ATCInterpolator &invDst);
+    ATCInterpolator2D* getTimeInterpolator();
+    ATCInterpolator2D* getDistanceInterpolator();
 
-    void setTimeExtrapolationType(ExType t);
-    ExType getTimeExtrapolationType();
+    ATCInterpolator2D* getInverseTimeInterpolator();
+    ATCInterpolator2D* getInverseDistanceInterpolator();
 
-    void setDistanceExtrapolationType(ExType t);
-    ExType getDistanceExtrapolationType();
+    double timeInterval(double key, double lvlFrom, double lvlTo);
+    double distanceInterval(double key, double lvlFrom, double lvlTo);
 
-    double timeInterval(double lvlFrom, double lvlTo);
-    double distanceInterval(double lvlFrom, double lvlTo);
-
-    double mixedTimeInterval(double lvlFrom, double interval);
-    QVector<double> mixedTimeInterval(double lvlFrom, QVector<double> &intervals);
-    double mixedDistanceInterval(double lvlFrom, double interval);
-    QVector<double> mixedDistanceInterval(double lvlFrom, QVector<double> &intervals);
+    double mixedTimeInterval(double key, double lvlFrom, double interval);
+    QVector<double> mixedTimeInterval(double key, double lvlFrom, QVector<double> &intervals);
+    double mixedDistanceInterval(double key, double lvlFrom, double interval);
+    QVector<double> mixedDistanceInterval(double key, double lvlFrom, QVector<double> &intervals);
 
 private:
-    QVector<double> levels;
-    QVector<double> time;
-    QVector<double> distance;
+    ATCInterpolator2D timeInterpolator;
+    ATCInterpolator2D distanceInterpolator;
 
-    ATCInterpolator timeInterpolator;
-    ATCInterpolator distanceInterpolator;
+    ATCInterpolator2D inverseTimeInterpolator;
+    ATCInterpolator2D inverseDistanceInterpolator;
 
-    ATCInterpolator inverseTimeInterpolator;
-    ATCInterpolator inverseDistanceInterpolator;
+    double interval(ATCInterpolator2D &interpolator, double key, double lvlFrom, double lvlTo);
 
-    double interval(ATCInterpolator &interpolator, double lvlFrom, double lvlTo);
-
-    double mixedInterval(ATCInterpolator &interpolator, ATCInterpolator &inverseInterpolator, double lvlFrom, double interval);
-    QVector<double> mixedInterval(ATCInterpolator &interpolator, ATCInterpolator &inverseInterpolator, double lvlFrom, QVector<double> &intervals);
+    double mixedInterval(ATCInterpolator2D &interpolator, ATCInterpolator2D &inverseInterpolator, double key, double lvlFrom, double interval);
+    QVector<double> mixedInterval(ATCInterpolator2D &interpolator, ATCInterpolator2D &inverseInterpolator, double key, double lvlFrom, QVector<double> &intervals);
 };
 
 #endif // ATCABSTRACTPROFILE_H
