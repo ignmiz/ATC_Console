@@ -69,7 +69,7 @@ public:
 
     static const double TRAJECTORY_MOD_MIN;
     static const double TRAJECTORY_MOD_MAX;
-    static const double TRAJECTORY_MOD_STEP;
+    static const double TRAJECTORY_MOD_COUNT;
 
     //Environment
     static const double betaTrop;

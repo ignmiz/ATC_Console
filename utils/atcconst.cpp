@@ -66,7 +66,7 @@ const double ATCConst::TRAJECTORY_SPD_DEC = 0.85;              //max 15$ decreas
 
 const double ATCConst::TRAJECTORY_MOD_MIN = 0.8;
 const double ATCConst::TRAJECTORY_MOD_MAX = 1.05;
-const double ATCConst::TRAJECTORY_MOD_STEP = 0.025;
+const double ATCConst::TRAJECTORY_MOD_COUNT = 11;
 
 //Environment
 const double ATCConst::betaTrop = -0.0065;
