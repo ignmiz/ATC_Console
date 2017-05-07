@@ -14,6 +14,8 @@
 #include <QSet>
 #include <QDebug>
 
+#include "atcinterpolator2d.h"
+
 class ATCSimulation : public QObject
 {
     Q_OBJECT
@@ -113,7 +115,7 @@ private:
     void progressState(GeographicLib::Geodesic &geo);
 
     ISA calculateEnvironment(ATCFlight *flight, QString &buffer);
-    void assignDiscreteState(ATCFlight *flight, ISA &isa, QString &buffer);
+    void assignDiscreteState(ATCFlight *flight, ISA &isa, QString &buffer, bool RTAmodOverride);
     void assignContinuousState(ATCFlight *flight, ISA &isa, GeographicLib::Geodesic &geo, int flightIndex, QString &buffer);
     void assignVerticalProfile(ATCFlight *flight, ISA &isa, bool &maxAlt);
     void assignApproachProfile(ATCFlight *flight, ISA &isa);
@@ -123,11 +125,14 @@ private:
     QTime timeTOC(ATCFlight *flight, double AFL, double targetFL);
     QTime timeTOD(ATCFlight *flight, double AFL, double fromLvl, double dstToTOD);
 
+    void modifyNominalProfile(ATCFlight *flight);
+
     void assignTOCandTOD(ATCFlight *flight);
     void calculateTOCposition(ATCFlight *flight);
     void calculateTODposition(ATCFlight *flight);
 
     void calculateWaypointTraits(ATCFlight *flight);
+    void calculateMeteringFixTraits(ATCFlight *flight, double &levelOut, QTime &timeOut);
     void findMeteringFixIndex(ATCFlight *flight);
 
     void predictTrajectories();
