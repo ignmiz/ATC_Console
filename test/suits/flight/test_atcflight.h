@@ -65,6 +65,7 @@ private slots:
     void test_setWaypointTimes();
     void test_setRTA();
     void test_setMeteringFixIndex();
+    void test_setRTAmod();
 };
 
 #endif // TEST_ATCFLIGHT_H

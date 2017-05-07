@@ -684,6 +684,16 @@ int ATCFlight::getMeteringFixIndex()
     return meteringFixIndex;
 }
 
+void ATCFlight::setRTAmod(double d)
+{
+    RTAmod = d;
+}
+
+double ATCFlight::getRTAmod()
+{
+    return RTAmod;
+}
+
 void ATCFlight::slotCreateDialogAltitude(QPoint point)
 {
     emit signalCreateDialogAltitude(this, point);

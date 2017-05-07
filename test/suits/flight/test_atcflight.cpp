@@ -584,7 +584,7 @@ void Test_ATCFlight::test_setProfileClimb()
     time << 0 << 1;
     distance << 0 << 2;
 
-    ATCProfileClimb *p = new ATCProfileClimb(levels, time, distance);
+    ATCProfileClimb *p = new ATCProfileClimb();
 
     ATCFlight foo;
     QVERIFY(foo.getProfileClimb() == nullptr);
@@ -603,7 +603,7 @@ void Test_ATCFlight::test_setProfileDescent()
     time << 0 << 1;
     distance << 0 << 2;
 
-    ATCProfileDescent *p = new ATCProfileDescent(levels, time, distance);
+    ATCProfileDescent *p = new ATCProfileDescent();
 
     ATCFlight foo;
     QVERIFY(foo.getProfileDescent() == nullptr);
@@ -845,4 +845,13 @@ void Test_ATCFlight::test_setMeteringFixIndex()
 
     foo.setMeteringFixIndex(5);
     QVERIFY(foo.getMeteringFixIndex() == 5);
+}
+
+void Test_ATCFlight::test_setRTAmod()
+{
+    ATCFlight foo;
+    QVERIFY(foo.getRTAmod() == 1);
+
+    foo.setRTAmod(0.85);
+    QVERIFY(foo.getRTAmod() == 0.85);
 }

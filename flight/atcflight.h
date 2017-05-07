@@ -229,6 +229,9 @@ public:
     void setMeteringFixIndex(int i);
     int getMeteringFixIndex();
 
+    void setRTAmod(double d);
+    double getRTAmod();
+
 signals:
     void signalCreateDialogAltitude(ATCFlight *flight, QPoint point);
     void signalCreateDialogSpeed(ATCFlight *flight, QPoint point);
@@ -328,6 +331,7 @@ private:
 
     QTime RTA;
     int meteringFixIndex = -1;
+    double RTAmod = 1;
 };
 
 #endif // ATCFLIGHT_H
