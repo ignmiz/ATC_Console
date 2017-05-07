@@ -6,7 +6,7 @@
 class ATCProfileClimb : public ATCAbstractProfile
 {
 public:
-    explicit ATCProfileClimb(QVector<double> &levels, QVector<double> &time, QVector<double> &distance, ExType type = ExType::Tangent);
+    explicit ATCProfileClimb();
     ~ATCProfileClimb();
 };
 
