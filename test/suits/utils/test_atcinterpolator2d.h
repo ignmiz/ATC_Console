@@ -14,6 +14,7 @@ private slots:
     void test_insertInterpolator();
     void test_removeInterpolator();
     void test_interpolate();
+    void test_closestKeys();
 };
 
 #endif // TEST_ATCINTERPOLATOR2D_H

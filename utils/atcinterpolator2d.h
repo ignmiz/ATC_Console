@@ -15,6 +15,7 @@ public:
     ~ATCInterpolator2D();
 
     void interpolate(double key, QVector<double> &sites, QVector<double> &results);
+    QPair<double, double> closestKeys(double key);
 
     ATCInterpolator* getInterpolator(double key);
     void insertInterpolator(double key, ATCInterpolator *value);

@@ -119,3 +119,56 @@ void Test_ATCInterpolator2D::test_interpolate()
     foo.interpolate(key, sites, results);
     QVERIFY(results == QVector<double>(7, 5));
 }
+
+void Test_ATCInterpolator2D::test_closestKeys()
+{
+    ATCInterpolator2D foo;
+
+    //Interpolator 1
+    QVector<double> breakpoints1;
+    QVector<double> values1;
+
+    breakpoints1 << 0 << 1 << 2;
+    values1 << 0 << 0 << 0;
+
+    double key1 = 0;
+    ATCInterpolator *interp1 = new ATCInterpolator(breakpoints1, values1, ExType::Tangent);
+
+    foo.insertInterpolator(key1, interp1);
+
+    QVERIFY(foo.closestKeys(-1) == (QPair<double, double>(0, 0)));
+    QVERIFY(foo.closestKeys(0) == (QPair<double, double>(0, 0)));
+    QVERIFY(foo.closestKeys(1) == (QPair<double, double>(0, 0)));
+
+    //Interpolator 2
+    QVector<double> breakpoints2;
+    QVector<double> values2;
+
+    breakpoints2 << 0 << 1 << 2;
+    values2 << 1 << 1 << 1;
+
+    double key2 = 1;
+    ATCInterpolator *interp2 = new ATCInterpolator(breakpoints2, values2, ExType::Tangent);
+
+    foo.insertInterpolator(key2, interp2);
+
+    //Interpolator 3
+    QVector<double> breakpoints3;
+    QVector<double> values3;
+
+    breakpoints3 << 0 << 1 << 2;
+    values3 << 3 << 3 << 3;
+
+    double key3 = 2;
+    ATCInterpolator *interp3 = new ATCInterpolator(breakpoints3, values3, ExType::Tangent);
+
+    foo.insertInterpolator(key3, interp3);
+
+    QVERIFY(foo.closestKeys(-1) == (QPair<double, double>(0, 1)));
+    QVERIFY(foo.closestKeys(0) == (QPair<double, double>(0, 0)));
+    QVERIFY(foo.closestKeys(0.5) == (QPair<double, double>(0, 1)));
+    QVERIFY(foo.closestKeys(1) == (QPair<double, double>(1, 1)));
+    QVERIFY(foo.closestKeys(1.5) == (QPair<double, double>(1, 2)));
+    QVERIFY(foo.closestKeys(2) == (QPair<double, double>(2, 2)));
+    QVERIFY(foo.closestKeys(3) == (QPair<double, double>(1, 2)));
+}

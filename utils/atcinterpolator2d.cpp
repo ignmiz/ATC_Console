@@ -25,6 +25,10 @@ void ATCInterpolator2D::interpolate(double key, QVector<double> &sites, QVector<
     {
         interpolators.find(key).value()->interpolate(sites, results);
     }
+    else if(keys.size() == 1) //Only one 1D interpolator is provided
+    {
+        interpolators.begin().value()->interpolate(sites, results);
+    }
     else //Two 1D interpolators needed
     {
         QMap<double, ATCInterpolator*>::iterator first = interpolators.find(*Xpoint);
@@ -49,6 +53,34 @@ void ATCInterpolator2D::interpolate(double key, QVector<double> &sites, QVector<
         {
             results.replace(i, resultsFirst.at(i) + (key - first.key()) * (resultsSecond.at(i) - resultsFirst.at(i)) / (second.key() - first.key()));
         }
+    }
+}
+
+QPair<double, double> ATCInterpolator2D::closestKeys(double key)
+{
+    QList<double>::iterator Xpoint = ATCMath::findCrossingPoint(keys.begin(), std::prev(keys.end()), key);
+
+    if(*Xpoint == key)
+    {
+        return QPair<double, double>(key, key);
+    }
+    else if(keys.size() == 1)
+    {
+        double k = interpolators.begin().key();
+        return QPair<double, double>(k, k);
+    }
+    else
+    {
+        QMap<double, ATCInterpolator*>::iterator first = interpolators.find(*Xpoint);
+        QMap<double, ATCInterpolator*>::iterator second = std::next(first);
+
+        if(second == interpolators.end()) //Move iterators back by one position
+        {
+            second = first;
+            first = std::prev(second);
+        }
+
+        return QPair<double, double>(first.key(), second.key());
     }
 }
 
