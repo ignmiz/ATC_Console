@@ -388,6 +388,7 @@ void DialogAman::slotMeteringFixLost(ATCFlight *flight)
             if(flight->getRTA().isValid())
             {
                 flight->setRTA(QTime());
+                flight->setRTAmod(1);
                 RTAcount--;
             }
 
