@@ -13,8 +13,6 @@ class Test_ATCAbstractProfile : public QObject
 private slots:
     void test_timeInterval();
     void test_distanceInterval();
-//    void test_mixedTimeInterval();
-//    void test_mixedDistanceInterval();
 };
 
 #endif // TEST_ATCABSTRACTPROFILE_H
