@@ -242,12 +242,20 @@ void DialogAman::slotFlightLabelSelected(ATCAmanFlightLabel *label)
     {
         if(!RTAgui)
         {
-            createTimeRangeBar();
-            createSelector();
+            if(!label->getFlight()->getRTA().isValid())
+            {
+                createTimeRangeBar();
+                createSelector();
 
-            activateRTAgui(label->getFlight()->getRTA().isValid());
-            initializeSliderPosition();
-            initializeTimeEditValue();
+                activateRTAgui(label->getFlight()->getRTA().isValid());
+
+                initializeSliderPosition();
+                initializeTimeEditValue();
+            }
+            else
+            {
+                activateLimitedRTAgui();
+            }
         }
 
         connect(uiInner->horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(slotValueChanged(int)));
@@ -526,6 +534,13 @@ void DialogAman::activateRTAgui(bool hasRTA)
     uiInner->horizontalSlider->setEnabled(true);
     uiInner->labelLater->setEnabled(true);
     uiInner->labelSooner->setEnabled(true);
+
+    RTAgui = true;
+}
+
+void DialogAman::activateLimitedRTAgui()
+{
+    uiInner->buttonClear->setEnabled(true);
 
     RTAgui = true;
 }

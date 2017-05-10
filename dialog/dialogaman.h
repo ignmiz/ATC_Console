@@ -83,6 +83,7 @@ private:
     void updateTimeRangeBar();
 
     void activateRTAgui(bool hasRTA);
+    void activateLimitedRTAgui();
     void deactivateRTAgui();
 
     void toggleClearAll();
