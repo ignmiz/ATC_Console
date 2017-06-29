@@ -5,7 +5,7 @@ Research air traffic control simulators are used to simulate high fidelity aircr
 ## License & Warranty
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Project is released under MIT License. It can be freely used as long as the original creator is attributed. Software provided comes with no warranty whatsoever.
+Project is released under MIT License. It can be freely used as long as the original creator is attributed. Software provided comes with no warranty.
 
 ## Contents
 Repository contains the source code for two projects:
