@@ -20,7 +20,7 @@ The project uses functionalities from two other external libraries:
  - [GeographicLib](https://geographiclib.sourceforge.io/) - computations on WGS-84 ellipsoid
  - [Intel Math Kernel Library](https://software.intel.com/en-us/mkl) - linear interpolators
 
-GeographicLib is provided in `./lib/GeographicLib`, but you may want to build it yourself to avoid binary incompatibility. Intel MKL is not provided due large size. After the libraries have been obtained, paths in project files `./ATCConsole.pro`, `./test/ATCConsoleTest.pro` should be updated, e.g.:
+GeographicLib is provided in `./lib/GeographicLib`, but you may want to build it yourself to avoid binary incompatibility. Intel MKL is not provided due to large size. After the libraries have been obtained, paths in project files `./ATCConsole.pro`, `./test/ATCConsoleTest.pro` should be updated, e.g.:
 ```
 CONFIG(debug): LIBS += -L"$$_PRO_FILE_PWD_/lib/GeographicLib/" -lGeographic_d
 CONFIG(release): LIBS += -L"$$_PRO_FILE_PWD_/lib/GeographicLib/" -lGeographic
