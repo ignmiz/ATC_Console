@@ -12,7 +12,7 @@ Repository contains the source code for two projects:
  - main project - `./ATCConsole.pro` - containing C++ source code of simulator using Qt 5.6 libraries
  - test project - `./test/ATCConsoleTest.pro` - containing C++ unit tests using own solution based on QtTest
  
-Sometimes `main.cpp` files from both projects may be mixed up during compilation. If that happens, I would reccommend either total separation of both projects or decorating the `main.cpp` name (e.g. `main_.cpp`) in the other project.
+Sometimes `main.cpp` files from both projects may be mixed up during compilation. If that happens, I would recommend either total separation of both projects or decorating the `main.cpp` name (e.g. `main_.cpp`) in the other project.
 
 ## Installation
 Code can be downloaded and built straight away using qmake in Qt Toolkit with Qt Libraries version of at least 5.6. Alternatively, you can convert it to CMake and go from there (you will need to provide Qt Libraries manually).
@@ -49,8 +49,10 @@ As for every first big, overly ambitious project in young dev's life, several mi
 This section provides sample videos and screens of different simulator functionalities.
 
 Videos:
- - [simulation with basic 3D trajectory](https://youtu.be/GWc-Kyylh48)
- - [simulation with elements of 4D trajectory](https://youtu.be/bYN1PGMVWBc)
+ - simulation with 3D technology:
+[![3D](http://img.youtube.com/vi/GWc-Kyylh48/maxresdefault.jpg)](https://youtu.be/GWc-Kyylh48)
+ - simulation with elements of 4D technology:
+[![4D](http://img.youtube.com/vi/bYN1PGMVWBc/maxresdefault.jpg)](https://youtu.be/bYN1PGMVWBc)
  
 Screenshots:
  - Scenario Creator with file handling:
