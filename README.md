@@ -36,7 +36,7 @@ Aircraft types are imported from Eurocontrol [Base of Aircraft Data](http://www.
 
 Path to the sectorfiles and BADA directory should be changed in `./config/paths.txt`.
 
-## Bug & Issues
+## Bugs & Issues
 As for every first big, overly ambitious project in young dev's life, several mistakes were made. I'll try to list them here, based of what I learned since then. If you are insane, suffering from insomnia and thus having enough time to solve any of them, feel free to open a pull request. The problems I know of are:
  - local code replication due mistakes in architecture
  - poorly designed multithreading resulting in data races
