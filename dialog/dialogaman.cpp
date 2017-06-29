@@ -2,7 +2,7 @@
 #include "ui_dialogaman.h"
 
 DialogAman::DialogAman(ATCAirspace *airspace, ATCSettings *settings, QTime *time, QWidget *parent) :
-    ATCDialog(parent, "Approach Manager", 700, 900),
+    ATCDialog(parent, "Arrival Manager", 700, 900),
     airspace(airspace),
     settings(settings),
     time(time),

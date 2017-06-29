@@ -945,43 +945,6 @@ void ATCSimulation::assignDiscreteState(ATCFlight *flight, ISA &isa, QString &bu
         }
     }
 
-    //Calculate RTA modifier
-//    if(!RTAmodOverride)
-//    {
-//        if(flight->hasAccuratePrediction() && flight->getRTA().isValid())
-//        {
-//            int RTAindex = flight->getMeteringFixIndex();
-
-//            QTime RTA = flight->getRTA();
-//            QTime ETA = flight->getWaypointTime(RTAindex);
-
-//            double secsToMeteringFix = static_cast<double>(timeHandle->msecsTo(ETA)) / 1000;
-//            double targetSecsToMeteringFix = static_cast<double>(timeHandle->msecsTo(RTA)) / 1000;
-
-//            if(secsToMeteringFix > 60)
-//            {
-//                double dstToMeteringFix = flight->getDistanceToNext();
-//                for(int i = flight->getWaypointIndex(); i < RTAindex; i++)
-//                {
-//                    dstToMeteringFix += flight->getLegDistance(i);
-//                }
-
-//                double avgSpdToMeteringFix = dstToMeteringFix / secsToMeteringFix;
-//                double targetAvgSpdToMeteringFix = dstToMeteringFix / targetSecsToMeteringFix;
-
-//                double RTAmod = targetAvgSpdToMeteringFix / avgSpdToMeteringFix;
-
-//                if(RTAmod < 0.8) RTAmod = 0.8;
-//                else if(RTAmod > 1.05) RTAmod = 1.05;
-
-//                qDebug() << ATCMath::mps2kt(avgSpdToMeteringFix) << ATCMath::mps2kt(targetAvgSpdToMeteringFix) << RTAmod << ATCMath::mps2kt(Vnom * RTAmod);
-
-//                flight->setRTAmod(RTAmod);
-//            }
-//        }
-//        else  flight->setRTAmod(1);
-//    }
-
     //Modify Vnom
     if((flight->getRTA().isValid() && flight->getTargetSpeed().isEmpty()) || RTAmodOverride)
     {
@@ -1029,6 +992,7 @@ void ATCSimulation::assignDiscreteState(ATCFlight *flight, ISA &isa, QString &bu
         appendToLogBuffer(buffer, QString::number(state.am));
         appendToLogBuffer(buffer, QString::number(ATCMath::m2ft(targetAltitude)).rightJustified(9, '0'));
         appendToLogBuffer(buffer, QString::number(ATCMath::mps2kt(Vnom)).rightJustified(7, '0'));
+        appendToLogBuffer(buffer, QString::number(flight->getRTAmod()).leftJustified(4, ' '));
     }
 }
 
@@ -1562,7 +1526,10 @@ QTime ATCSimulation::timeTOD(ATCFlight *flight, double AFL, double fromLvl, doub
 
     double climbMSecs = profileClimb->timeInterval(flight->getRTAmod(), AFL, fromLvl) * 1000;
 
-    double cruiseSpeed = flight->getRTAmod() * flight->getProfileSpeed()->nominalCruiseSpeed(fromLvl);
+    double cruiseSpeed;
+    if(flight->getState().cm == BADA::Level) cruiseSpeed = flight->getState().v;
+    else cruiseSpeed = flight->getRTAmod() * flight->getProfileSpeed()->nominalCruiseSpeed(fromLvl);
+
     double cruiseDistance = dstToTOD - profileClimb->distanceInterval(flight->getRTAmod(), AFL, fromLvl);
     double cruiseMSecs = cruiseDistance / cruiseSpeed * 1000;
 
@@ -1684,7 +1651,10 @@ void ATCSimulation::assignTOCandTOD(ATCFlight *flight)
 
             QTime descentBaseTime = timeHandle->addMSecs(qRound(flight->getProfileDescent()->timeInterval(flight->getRTAmod(), AFL, CFL) * 1000));
             double levelDst = (distanceToGo - TODfromCFL) - (distanceToGo - descentBase);
-            double levelSpd = flight->getProfileSpeed()->nominalCruiseSpeed(CFL);
+
+            double levelSpd;
+            if(flight->getState().cm == BADA::Level) levelSpd = flight->getState().v;
+            else levelSpd = flight->getRTAmod() * flight->getProfileSpeed()->nominalCruiseSpeed(CFL);
 
             ToC = 0;
             ToD = (descentBase > TODfromCFL) ? TODfromCFL : 0;
@@ -1919,7 +1889,7 @@ void ATCSimulation::calculateWaypointTraits(ATCFlight *flight)
                 }
 
                 //Assign levels for cruise
-                double crsSpd = flight->getRTAmod() + speedProfile->nominalCruiseSpeed(topLevel);
+                double crsSpd = flight->getRTAmod() * speedProfile->nominalCruiseSpeed(topLevel);
 
                 for(int i = climbLimit; i < cruiseLimit; i++)
                 {
