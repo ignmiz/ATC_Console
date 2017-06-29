@@ -44,3 +44,56 @@ As for every first big, overly ambitious project in young dev's life, several mi
  - old code style not using RAII
  - some Qt components are badly handled (e.g. main display)
  - lack of design patterns where they should obviously be used
+ 
+## Functionalities
+This section provides sample videos and screens of different simulator functionalities.
+
+Videos:
+ - [simulation with basic 3D trajectory](https://youtu.be/GWc-Kyylh48)
+ - [simulation with elements of 4D trajectory](https://youtu.be/bYN1PGMVWBc)
+ 
+Screenshots:
+ - Scenario Creator with file handling:
+<p align="center">
+  <img src="https://github.com/ignmiz/Images/blob/master/ATC_Console/scenario_editor.png">
+</p>
+
+ - Flight Creator integrated with Eurocontrol Base of Aircraft Data:
+<p align="center">
+  <img src="https://github.com/ignmiz/Images/blob/master/ATC_Console/flight_editor.png">
+</p>
+
+ - Settings Editor with file handling:
+<p align="center">
+  <img src="https://github.com/ignmiz/Images/blob/master/ATC_Console/settings.png">
+</p>
+
+ - Leader Lines and Trailing Dots Editor:
+<p align="center">
+  <img src="https://github.com/ignmiz/Images/blob/master/ATC_Console/leader_trailing.png">
+</p>
+
+ - Flight List allowing change of runways, SIDs and STARs during simulation:
+<p align="center">
+  <img src="https://github.com/ignmiz/Images/blob/master/ATC_Console/flight_list.png">
+</p>
+
+ - Extended Arrival Manager with interactive labels, interface for RTA modification and statistics:
+<p align="center">
+  <img src="https://github.com/ignmiz/Images/blob/master/ATC_Console/aman.png">
+</p>
+
+ - two-state interactive Data Tags:
+<p align="center">
+  <img src="https://github.com/ignmiz/Images/blob/master/ATC_Console/data_tags.png">
+</p>
+
+ - Ruler with magnetic headings and distances along rhumb and geodesic:
+<p align="center">
+  <img src="https://github.com/ignmiz/Images/blob/master/ATC_Console/ruler.png">
+</p>
+
+ - 4D Route Prediction with levels and ETAs estimation:
+<p align="center">
+  <img src="https://github.com/ignmiz/Images/blob/master/ATC_Console/route_all_2.png">
+</p>
