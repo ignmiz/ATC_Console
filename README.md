@@ -20,7 +20,7 @@ The project uses functionalities from two other external libraries:
  - [GeographicLib](https://geographiclib.sourceforge.io/) - computations on WGS-84 ellipsoid
  - [Intel Math Kernel Library](https://software.intel.com/en-us/mkl) - linear interpolators
 
-GeographicLib is provided in `./lib/GeographicLib`, but you may want to build it yourself to avoid binary incompatibility. Intel MKL is not provided due large size. After the libraries have been obtained, paths in project files `./ATCConsole.pro`, `./test/ATCConsoleTest.pro` should be updated, eg.:
+GeographicLib is provided in `./lib/GeographicLib`, but you may want to build it yourself to avoid binary incompatibility. Intel MKL is not provided due large size. After the libraries have been obtained, paths in project files `./ATCConsole.pro`, `./test/ATCConsoleTest.pro` should be updated, e.g.:
 ```
 CONFIG(debug): LIBS += -L"$$_PRO_FILE_PWD_/lib/GeographicLib/" -lGeographic_d
 CONFIG(release): LIBS += -L"$$_PRO_FILE_PWD_/lib/GeographicLib/" -lGeographic
@@ -37,7 +37,7 @@ Aircraft types are imported from Eurocontrol [Base of Aircraft Data](http://www.
 Path to the sectorfiles and BADA directory should be changed in `./config/paths.txt`.
 
 ## Bug & Issues
-As for every first big, overly ambitious project in young dev's life, several mistakes were made. I'll try to list them here, based of what I learned since then. If you are insane enough, suffering from insomnia and thus having enough time to solve any of them, feel free to open a pull request. The problems I know of are:
+As for every first big, overly ambitious project in young dev's life, several mistakes were made. I'll try to list them here, based of what I learned since then. If you are insane, suffering from insomnia and thus having enough time to solve any of them, feel free to open a pull request. The problems I know of are:
  - local code replication due mistakes in architecture
  - poorly designed multithreading resulting in data races
  - few rare, hard to track out-of-bounds errors
